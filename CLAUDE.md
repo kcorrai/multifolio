@@ -4,7 +4,7 @@
 **bir kez** girer; sistem her platform (LinkedIn, Upwork, Fiverr, Bionluk, Armut) için
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
-Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 0 (zemin).**
+Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 2 (portfolyo sitesi).**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
