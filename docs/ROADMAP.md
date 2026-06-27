@@ -17,14 +17,18 @@ Yeni faz başlarken yeni dal açılır (`git checkout -b phase-N-*`).
   optimize metinler üretilir. USD harcama takibi (`usage_events` tablosu, `lib/ai/pricing.ts`).
   `phase-1-adaptation` dalı `main`'e merge edildi (ff-only).
 
-- **Faz 2 — Otomatik portfolyo sitesi** *(şu an buradayız)*
-  Profil verisinden yayımlanabilir portfolyo. Üretilen HTML render öncesi sanitize edilir.
+- **Faz 2 — Otomatik portfolyo sitesi** ✅
+  Profil verisinden yayımlanabilir portfolyo. `/p/[slug]` genel sayfası, OG meta,
+  slug/published ayarları. `phase-2-portfolio` dalı `main`'e merge edildi (ff-only).
 
-- **Faz 3 — Akıllı eşleşme + başvuru takibi**
-  İlanlarla eşleştirme ve başvuru durum takibi (pipeline).
+- **Faz 3 — Akıllı eşleşme + başvuru takibi** ✅
+  `job_listings` tablosu (RLS), AI profil×ilan eşleştirme (0-100 skor + güçlü/eksik),
+  başvuru pipeline (Kaydedildi→Görüşme→Teklif→Reddedildi), İlanlar sekmesi UI.
+  SaaS UI yeniden tasarımı: Plus Jakarta Sans, koyu hero, ürün mockup, 6 özellik bölümü.
+  `phase-3-matching` dalı `main`'e merge edildi (ff-only).
 
-- **Faz 4 — Fiverr, Bionluk, Armut + analitik + ödeme (Stripe)**
-  Kalan platform uyarlamaları, kullanım analitiği ve kredi satın alma.
+- **Faz 4 — Fiverr, Bionluk, Armut + analitik + ödeme (Stripe)** *(şu an buradayız)*
+  Kalan platform uyarlamaları, kullanım analitiği ve kredi satın alma. `phase-4-platforms` dalı.
 
 - **Faz 5 — İşveren tarafı / iki taraflı pazar** *(çok sonra)*
   İşveren tarafı akışları ve pazar yeri.
