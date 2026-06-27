@@ -186,7 +186,7 @@ export function ProfileStudio({
               <Input
                 id="headline"
                 value={headline}
-                onChange={(e) => setHeadline(e.target.value)}
+                onChange={(e) => { setHeadline(e.target.value); setSaveState("idle"); }}
                 placeholder="ör. Senior Frontend Developer"
               />
             </div>
@@ -196,7 +196,7 @@ export function ProfileStudio({
                 id="summary"
                 rows={5}
                 value={summary}
-                onChange={(e) => setSummary(e.target.value)}
+                onChange={(e) => { setSummary(e.target.value); setSaveState("idle"); }}
                 placeholder="Deneyimini, uzmanlığını ve öne çıkan sonuçlarını kısaca anlat."
               />
             </div>
@@ -205,7 +205,7 @@ export function ProfileStudio({
               <Input
                 id="skills"
                 value={skills}
-                onChange={(e) => setSkills(e.target.value)}
+                onChange={(e) => { setSkills(e.target.value); setSaveState("idle"); }}
                 placeholder="React, TypeScript, Next.js"
               />
             </div>
