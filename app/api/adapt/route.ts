@@ -1,14 +1,13 @@
 // MVP çekirdeği — uyarlama uç noktası. /api/profile şablonuyla aynı koruma deseni:
 // withErrorHandler + auth + Zod. Kullanıcının profilini (satır-içi veya kayıtlı)
-// hedef platform için Claude ile uyarlar.
-//
-// NOT (Faz 1 sonraki adım): kredi düşümü burada yapılacak — uyarlama bir kredi
-// tüketen işlemdir. Şu an kredi kontrolü/düşümü henüz eklenmedi.
+// hedef platform için Claude ile uyarlar ve gerçek maliyeti server-otoritatif
+// olarak (service-role) usage_events'e kaydeder (harcama takibi).
 import { NextResponse } from "next/server";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { adaptRequestSchema } from "@/lib/validation/schemas/adapt";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { adaptProfile } from "@/lib/ai/adapt";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
@@ -37,5 +36,22 @@ export const POST = withErrorHandler(async (req) => {
 
   const result = await adaptProfile(profile, input.platform);
 
-  return NextResponse.json({ platform: input.platform, result });
+  // Maliyeti server-otoritatif kaydet (service-role — RLS yazma politikası yok).
+  const admin = createSupabaseAdminClient();
+  const { error: insertError } = await admin.from("usage_events").insert({
+    user_id: user.id,
+    kind: "adaptation",
+    platform: input.platform,
+    model: result.model,
+    input_tokens: result.inputTokens,
+    output_tokens: result.outputTokens,
+    cost_usd: result.costUsd,
+  });
+  if (insertError) throw insertError;
+
+  return NextResponse.json({
+    platform: input.platform,
+    output: result.output,
+    cost: { usd: result.costUsd, inputTokens: result.inputTokens, outputTokens: result.outputTokens },
+  });
 });

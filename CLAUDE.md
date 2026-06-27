@@ -11,18 +11,23 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 `@supabase/ssr`) · Anthropic Claude (uyarlama motoru) · Sentry · Zod · DOMPurify · Vercel.
 
 ## Neyin nerede
+- `app/page.tsx` — ana sayfa (sunucu): oturum varsa Profil Stüdyosu, yoksa giriş çağrısı.
+- `app/login`, `app/auth/{confirm,signout}` — magic-link (e-posta OTP) auth akışı.
 - `app/` — sayfalar + `app/api/*/route.ts` uç noktaları. `app/global-error.tsx` kök ErrorBoundary.
   - `app/api/health` — canlılık. `app/api/debug-sentry` — Sentry test (kaldırılabilir).
   - `app/api/profile` — **korumalı uç nokta ŞABLONU** (yeni route'lar bunu örnek alır).
-  - `app/api/adapt` — uyarlama uç noktası (profil → platform metni; kredi tüketir).
+  - `app/api/adapt` — uyarlama uç noktası (profil → platform metni; maliyeti kaydeder).
+  - `app/api/usage` — kullanıcının kümülatif harcaması (USD).
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `anthropic.ts` (Claude istemcisi),
-  `platforms.ts` (LinkedIn/Upwork yönergeleri), `adapt.ts` (`adaptProfile`).
+  `platforms.ts` (LinkedIn/Upwork yönergeleri + `platformIdSchema`), `adapt.ts` (`adaptProfile`),
+  `pricing.ts` (token kullanımı → USD maliyet).
 - `lib/validation/` — Zod yardımcıları (`parseJson`/`parseQuery`) + `schemas/`.
 - `lib/supabase/` — `server.ts` (RLS'li, varsayılan), `admin.ts` (service-role, RLS bypass — dikkat),
-  `client.ts` (tarayıcı).
+  `client.ts` (tarayıcı), `middleware.ts` (oturum yenileme). Kök `proxy.ts` bunu çağırır.
 - `lib/sanitize.ts` — portfolyo HTML'i için XSS sanitize (render öncesi zorunlu).
-- `components/ui/` — shadcn bileşenleri. `lib/utils.ts` — `cn()`.
+- `components/ui/` — shadcn bileşenleri. `components/profile-studio.tsx` — Faz 1 MVP UI'ı.
+  `lib/utils.ts` — `cn()`.
 - `supabase/migrations/` — SQL şema + RLS politikaları (`supabase db push`).
 - Sentry: `instrumentation*.ts`, `sentry.*.config.ts`, `next.config.ts` (`withSentryConfig`).
 - `.env.example` — ortam değişkeni şablonu (gerçek değerler `.env.local`'da, commit edilmez).

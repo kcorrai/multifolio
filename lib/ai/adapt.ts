@@ -6,6 +6,7 @@ import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { ADAPTATION_MODEL, getAnthropicClient } from "./anthropic";
 import { PLATFORMS, type PlatformId } from "./platforms";
+import { computeCostUsd } from "./pricing";
 import { InternalError } from "@/lib/errors";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
@@ -15,6 +16,15 @@ export const adaptedOutputSchema = z.object({
   body: z.string().describe("Platforma uygun, optimize edilmiş profil/özet metni."),
 });
 export type AdaptedOutput = z.infer<typeof adaptedOutputSchema>;
+
+// adaptProfile sonucu: çıktı + harcama takibi için maliyet/usage.
+export interface AdaptResult {
+  output: AdaptedOutput;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  costUsd: number;
+}
 
 const SYSTEM_PROMPT =
   "Sen freelancer'lar için platforma özel profil metinleri üreten bir uzman " +
@@ -29,7 +39,7 @@ const SYSTEM_PROMPT =
 export async function adaptProfile(
   profile: ProfileInput,
   platformId: PlatformId,
-): Promise<AdaptedOutput> {
+): Promise<AdaptResult> {
   const platform = PLATFORMS[platformId];
   const client = getAnthropicClient();
 
@@ -61,5 +71,12 @@ export async function adaptProfile(
       context: { stopReason: message.stop_reason, platformId },
     });
   }
-  return message.parsed_output;
+
+  return {
+    output: message.parsed_output,
+    model: ADAPTATION_MODEL,
+    inputTokens: message.usage.input_tokens,
+    outputTokens: message.usage.output_tokens,
+    costUsd: computeCostUsd(ADAPTATION_MODEL, message.usage),
+  };
 }
