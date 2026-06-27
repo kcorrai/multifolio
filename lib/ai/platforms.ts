@@ -1,15 +1,19 @@
 // Desteklenen platformlar ve her birine özgü uyarlama yönergesi.
-// Faz 1: LinkedIn + Upwork. Yeni platform eklemek = buraya bir giriş eklemek.
+// Yeni platform eklemek = buraya bir giriş eklemek (başka değişiklik gerekmez).
 import { z } from "zod";
 
-// platformIdSchema = tek doğruluk kaynağı; PlatformId ve PLATFORM_IDS bundan türer.
-export const platformIdSchema = z.enum(["linkedin", "upwork"]);
+export const platformIdSchema = z.enum([
+  "linkedin",
+  "upwork",
+  "fiverr",
+  "bionluk",
+  "armut",
+]);
 export type PlatformId = z.infer<typeof platformIdSchema>;
 
 export interface PlatformSpec {
   id: PlatformId;
   label: string;
-  /** Modele verilecek platform-özgü ton/biçim yönergesi. */
   guidance: string;
 }
 
@@ -32,6 +36,36 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
       "Frontend Developer'). body: müşterinin sorununu çözmeye odaklı bir özet; ne " +
       "yapabileceğini, hangi sonuçları getirdiğini ve neden seçilmesi gerektiğini açıkla; " +
       "kısa, taranabilir, harekete geçirici.",
+  },
+  fiverr: {
+    id: "fiverr",
+    label: "Fiverr",
+    guidance:
+      "Fiverr seller profili için yaz. Enerjik, güven verici, hizmet-odaklı bir ton. " +
+      "headline: 'I will...' kalıbıyla değil, Türkçe freelancer kimliği olarak; " +
+      "net hizmet alanı + fark yaratan bir özellik belirt. " +
+      "body: kısa paragraflar; alıcı kime yardım ettiğini, nasıl çalıştığını ve neden " +
+      "tercih edilmesi gerektiğini anlasın. Rakamlar ve somut örneklerle güven oluştur.",
+  },
+  bionluk: {
+    id: "bionluk",
+    label: "Bionluk",
+    guidance:
+      "Bionluk (Türk freelance platformu) profili için yaz. Samimi, profesyonel, " +
+      "yerel pazara uygun bir ton — Türk müşterilere hitap et. " +
+      "headline: uzmanlık alanını ve hedef müşteriyi açıkça belirten kısa bir başlık. " +
+      "body: Türk iş dünyasının beklentilerine uygun; iletişim kolaylığı, hızlı teslimat " +
+      "ve güvenilirliği vurgula. Somut proje türleri ve sektörleri listele.",
+  },
+  armut: {
+    id: "armut",
+    label: "Armut",
+    guidance:
+      "Armut (Türk hizmet platformu) profili için yaz. Net, güven verici, " +
+      "hizmet tanımı odaklı bir ton — yerel müşteriyle doğrudan konuş. " +
+      "headline: sunulan hizmetin tam adını içeren, arama dostu bir başlık. " +
+      "body: hangi hizmetleri verdiğini, neden tercih edilmesi gerektiğini ve " +
+      "müşterinin ne bekleyebileceğini (süreç, teslimat, iletişim) netçe anlat.",
   },
 };
 

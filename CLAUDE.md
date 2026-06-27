@@ -21,11 +21,12 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/jobs` — GET (liste) / POST (oluştur) iş ilanı uç noktaları.
   - `app/api/jobs/[id]` — PATCH (durum/başlık güncelle) / DELETE.
   - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı.
+  - `app/api/analytics` — GET: tür bazında özet + 30 günlük günlük harcama serisi.
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `anthropic.ts` (Claude istemcisi),
-  `platforms.ts` (LinkedIn/Upwork yönergeleri + `platformIdSchema`), `adapt.ts` (`adaptProfile`),
-  `portfolio.ts` (`generatePortfolio`), `match.ts` (`matchJobToProfile`),
-  `pricing.ts` (token kullanımı → USD maliyet).
+  `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `platformIdSchema`),
+  `adapt.ts` (`adaptProfile`), `portfolio.ts` (`generatePortfolio`),
+  `match.ts` (`matchJobToProfile`), `pricing.ts` (token kullanımı → USD maliyet).
 - `lib/validation/` — Zod yardımcıları (`parseJson`/`parseQuery`) + `schemas/`.
 - `lib/supabase/` — `server.ts` (RLS'li, varsayılan), `admin.ts` (service-role, RLS bypass — dikkat),
   `client.ts` (tarayıcı), `middleware.ts` (oturum yenileme). Kök `proxy.ts` bunu çağırır.

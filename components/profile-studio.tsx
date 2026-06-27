@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   User, Layers, Globe, Briefcase, Save, Sparkles, Target,
-  Trash2, Plus, X, ExternalLink, CheckCircle2, AlertCircle,
+  Trash2, Plus, X, ExternalLink, CheckCircle2, AlertCircle, BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -44,7 +44,14 @@ interface JobRow {
   created_at: string;
 }
 
-type Tab = "profil" | "uyarlama" | "portfolyo" | "ilanlar";
+interface AnalyticsData {
+  totalUsd: number;
+  totalCount: number;
+  byKind: Record<string, { count: number; costUsd: number }>;
+  dailySeries: { date: string; costUsd: number }[];
+}
+
+type Tab = "profil" | "uyarlama" | "portfolyo" | "ilanlar" | "analitik";
 
 /* ── Constants ──────────────────────────────────────────────────────── */
 
@@ -81,11 +88,13 @@ export function ProfileStudio({
   initialSpendUsd,
   initialPortfolio,
   initialJobs,
+  initialAnalytics,
 }: {
   initialProfile: InitialProfile | null;
   initialSpendUsd: number;
   initialPortfolio: InitialPortfolio | null;
   initialJobs: JobRow[];
+  initialAnalytics: AnalyticsData;
 }) {
   const [activeTab, setActiveTab] = useState<Tab>("profil");
 
@@ -278,11 +287,18 @@ export function ProfileStudio({
   }
 
   /* — Tabs config — */
+  const KIND_LABELS: Record<string, string> = {
+    adaptation: "Platform Uyarlama",
+    portfolio_generation: "Portfolyo Üretimi",
+    job_match: "İlan Eşleştirme",
+  };
+
   const TABS: { id: Tab; label: string; icon: React.ElementType; badge?: number }[] = [
     { id: "profil",    label: "Profil",           icon: User },
     { id: "uyarlama",  label: "Platform Uyarlama", icon: Layers },
     { id: "portfolyo", label: "Portfolyo",         icon: Globe },
     { id: "ilanlar",   label: "İlanlar",           icon: Briefcase, badge: jobs.length || undefined },
+    { id: "analitik",  label: "Analitik",          icon: BarChart3 },
   ];
 
   const profileSaved = saveState === "saved";
@@ -744,6 +760,75 @@ export function ProfileStudio({
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          )}
+        </div>
+      )}
+      {/* ── Analitik sekmesi ── */}
+      {activeTab === "analitik" && (
+        <div className="space-y-4">
+          {/* Özet kartları */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <Card className="shadow-sm">
+              <CardContent className="pt-4 pb-4">
+                <p className="text-xs text-muted-foreground font-medium">Toplam Harcama</p>
+                <p className="text-2xl font-extrabold tabular-nums mt-1">{formatUsd(initialAnalytics.totalUsd)}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{initialAnalytics.totalCount} işlem</p>
+              </CardContent>
+            </Card>
+            {Object.entries(initialAnalytics.byKind).map(([kind, { count, costUsd }]) => (
+              <Card key={kind} className="shadow-sm">
+                <CardContent className="pt-4 pb-4">
+                  <p className="text-xs text-muted-foreground font-medium">{KIND_LABELS[kind] ?? kind}</p>
+                  <p className="text-2xl font-extrabold tabular-nums mt-1">{count}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{formatUsd(costUsd)}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Günlük harcama grafiği (CSS bar chart) */}
+          {initialAnalytics.dailySeries.length > 0 ? (
+            <Card className="shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Son 30 Gün — Günlük Harcama</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const max = Math.max(...initialAnalytics.dailySeries.map((d) => d.costUsd), 0.000001);
+                  return (
+                    <div className="flex items-end gap-1 h-28">
+                      {initialAnalytics.dailySeries.map(({ date, costUsd }) => (
+                        <div
+                          key={date}
+                          className="group relative flex-1 min-w-0"
+                          title={`${date}: ${formatUsd(costUsd)}`}
+                        >
+                          <div
+                            className="w-full rounded-sm bg-primary/60 hover:bg-primary transition-colors"
+                            style={{ height: `${Math.max((costUsd / max) * 100, 4)}%` }}
+                          />
+                          <span className="pointer-events-none absolute -top-6 left-1/2 -translate-x-1/2 hidden group-hover:block text-[10px] bg-foreground text-background rounded px-1 py-0.5 whitespace-nowrap z-10">
+                            {formatUsd(costUsd)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+                <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
+                  <span>{initialAnalytics.dailySeries[0]?.date?.slice(5)}</span>
+                  <span>{initialAnalytics.dailySeries.at(-1)?.date?.slice(5)}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed py-14 text-center">
+              <BarChart3 className="h-8 w-8 text-muted-foreground/40 mb-3" />
+              <p className="text-sm font-medium text-muted-foreground">Henüz kullanım yok</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">
+                Uyarlama, portfolyo veya eşleştirme yaptıkça burada görünür.
+              </p>
             </div>
           )}
         </div>
