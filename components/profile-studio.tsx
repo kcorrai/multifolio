@@ -10,6 +10,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
 import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
+import {
+  JOB_STATUSES,
+  type JobStatus,
+  type JobMatchResult,
+} from "@/lib/validation/schemas/job";
 
 interface InitialProfile {
   headline: string;
@@ -28,7 +33,34 @@ interface AdaptOutput {
   body: string;
 }
 
-type Tab = "profil" | "uyarlama" | "portfolyo";
+interface JobRow {
+  id: string;
+  title: string;
+  company: string | null;
+  platform: string | null;
+  status: JobStatus;
+  match_score: number | null;
+  match_result: JobMatchResult | null;
+  created_at: string;
+}
+
+const STATUS_LABELS: Record<JobStatus, string> = {
+  saved: "Kaydedildi",
+  applied: "Başvuruldu",
+  interview: "Görüşme",
+  offer: "Teklif",
+  rejected: "Reddedildi",
+};
+
+const STATUS_COLORS: Record<JobStatus, string> = {
+  saved: "bg-neutral-100 text-neutral-600",
+  applied: "bg-blue-100 text-blue-700",
+  interview: "bg-amber-100 text-amber-700",
+  offer: "bg-green-100 text-green-700",
+  rejected: "bg-red-100 text-red-600",
+};
+
+type Tab = "profil" | "uyarlama" | "portfolyo" | "ilanlar";
 
 function formatUsd(n: number): string {
   return `$${n.toFixed(n < 0.01 ? 6 : 4)}`;
@@ -38,10 +70,12 @@ export function ProfileStudio({
   initialProfile,
   initialSpendUsd,
   initialPortfolio,
+  initialJobs,
 }: {
   initialProfile: InitialProfile | null;
   initialSpendUsd: number;
   initialPortfolio: InitialPortfolio | null;
+  initialJobs: JobRow[];
 }) {
   const [activeTab, setActiveTab] = useState<Tab>("profil");
 
@@ -63,6 +97,18 @@ export function ProfileStudio({
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [portfolioError, setPortfolioError] = useState("");
+
+  const [jobs, setJobs] = useState<JobRow[]>(initialJobs);
+  const [addFormOpen, setAddFormOpen] = useState(false);
+  const [addTitle, setAddTitle] = useState("");
+  const [addCompany, setAddCompany] = useState("");
+  const [addPlatform, setAddPlatform] = useState("");
+  const [addDescription, setAddDescription] = useState("");
+  const [adding, setAdding] = useState(false);
+  const [addError, setAddError] = useState("");
+  const [matchingId, setMatchingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [jobError, setJobError] = useState("");
 
   async function saveProfile() {
     setSaveState("saving");
@@ -142,10 +188,83 @@ export function ProfileStudio({
     setAdapting(null);
   }
 
+  async function addJob() {
+    setAdding(true);
+    setAddError("");
+    const res = await fetch("/api/jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: addTitle,
+        company: addCompany || undefined,
+        platform: addPlatform || undefined,
+        description: addDescription,
+      }),
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) {
+      setAddError(body?.error?.message ?? "İlan eklenemedi.");
+      setAdding(false);
+      return;
+    }
+    setJobs((prev) => [body.job as JobRow, ...prev]);
+    setAddTitle("");
+    setAddCompany("");
+    setAddPlatform("");
+    setAddDescription("");
+    setAddFormOpen(false);
+    setAdding(false);
+  }
+
+  async function updateJobStatus(id: string, status: JobStatus) {
+    setJobError("");
+    const res = await fetch(`/api/jobs/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) {
+      setJobError(body?.error?.message ?? "Durum güncellenemedi.");
+      return;
+    }
+    setJobs((prev) => prev.map((j) => (j.id === id ? (body.job as JobRow) : j)));
+  }
+
+  async function matchJob(id: string) {
+    setMatchingId(id);
+    setJobError("");
+    const res = await fetch(`/api/jobs/${id}/match`, { method: "POST" });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) {
+      setJobError(body?.error?.message ?? "Eşleştirme başarısız.");
+      setMatchingId(null);
+      return;
+    }
+    setJobs((prev) => prev.map((j) => (j.id === id ? (body.job as JobRow) : j)));
+    if (typeof body.cost?.usd === "number") setSpend((s) => s + body.cost.usd);
+    setMatchingId(null);
+  }
+
+  async function deleteJob(id: string) {
+    setDeletingId(id);
+    setJobError("");
+    const res = await fetch(`/api/jobs/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      setJobError(body?.error?.message ?? "İlan silinemedi.");
+      setDeletingId(null);
+      return;
+    }
+    setJobs((prev) => prev.filter((j) => j.id !== id));
+    setDeletingId(null);
+  }
+
   const TABS: { id: Tab; label: string }[] = [
     { id: "profil", label: "Profil" },
     { id: "uyarlama", label: "Platform Uyarlama" },
     { id: "portfolyo", label: "Portfolyo Sitesi" },
+    { id: "ilanlar", label: `İlanlar${jobs.length > 0 ? ` (${jobs.length})` : ""}` },
   ];
 
   return (
@@ -253,6 +372,169 @@ export function ProfileStudio({
               </CardContent>
             </Card>
           ))}
+        </div>
+      )}
+
+      {/* İlanlar sekmesi */}
+      {activeTab === "ilanlar" && (
+        <div className="space-y-4">
+          {/* İlan ekleme formu */}
+          <div className="flex items-center justify-between">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { setAddFormOpen((v) => !v); setAddError(""); }}
+            >
+              {addFormOpen ? "İptal" : "+ İlan Ekle"}
+            </Button>
+          </div>
+
+          {addFormOpen && (
+            <Card>
+              <CardContent className="space-y-3 pt-4">
+                <div className="space-y-1">
+                  <Label htmlFor="add-title">Başlık *</Label>
+                  <Input
+                    id="add-title"
+                    value={addTitle}
+                    onChange={(e) => setAddTitle(e.target.value)}
+                    placeholder="ör. Senior React Developer"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label htmlFor="add-company">Şirket</Label>
+                    <Input
+                      id="add-company"
+                      value={addCompany}
+                      onChange={(e) => setAddCompany(e.target.value)}
+                      placeholder="ör. Acme Corp"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="add-platform">Platform</Label>
+                    <Input
+                      id="add-platform"
+                      value={addPlatform}
+                      onChange={(e) => setAddPlatform(e.target.value)}
+                      placeholder="ör. LinkedIn"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="add-description">İlan metni *</Label>
+                  <Textarea
+                    id="add-description"
+                    rows={6}
+                    value={addDescription}
+                    onChange={(e) => setAddDescription(e.target.value)}
+                    placeholder="İlanın tam metnini buraya yapıştır."
+                  />
+                </div>
+                {addError && <p className="text-sm text-red-600">{addError}</p>}
+                <Button onClick={addJob} disabled={adding || !addTitle.trim() || !addDescription.trim()}>
+                  {adding ? "Ekleniyor…" : "Ekle"}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {jobError && <p className="text-sm text-red-600">{jobError}</p>}
+
+          {jobs.length === 0 ? (
+            <p className="text-sm text-neutral-400 py-4">
+              Henüz ilan yok. &quot;+ İlan Ekle&quot; ile başla.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {jobs.map((job) => (
+                <Card key={job.id}>
+                  <CardContent className="pt-4 space-y-3">
+                    {/* Başlık + skor */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="font-medium leading-tight">{job.title}</p>
+                        {(job.company || job.platform) && (
+                          <p className="text-xs text-neutral-400 mt-0.5">
+                            {[job.company, job.platform].filter(Boolean).join(" · ")}
+                          </p>
+                        )}
+                      </div>
+                      {job.match_score !== null && (
+                        <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${
+                          job.match_score >= 70
+                            ? "bg-green-100 text-green-700"
+                            : job.match_score >= 40
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-red-100 text-red-600"
+                        }`}>
+                          {job.match_score}/100
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Kontroller */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <select
+                        value={job.status}
+                        onChange={(e) => updateJobStatus(job.id, e.target.value as JobStatus)}
+                        className={`rounded-full px-2 py-0.5 text-xs font-medium border-0 cursor-pointer ${STATUS_COLORS[job.status]}`}
+                      >
+                        {JOB_STATUSES.map((s) => (
+                          <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                        ))}
+                      </select>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => matchJob(job.id)}
+                        disabled={matchingId === job.id || !initialProfile}
+                        title={!initialProfile ? "Önce profil doldur" : undefined}
+                      >
+                        {matchingId === job.id ? "Eşleştiriliyor…" : "Eşleştir"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => deleteJob(job.id)}
+                        disabled={deletingId === job.id}
+                        className="text-neutral-400 hover:text-red-600 ml-auto"
+                      >
+                        {deletingId === job.id ? "…" : "Sil"}
+                      </Button>
+                    </div>
+
+                    {/* Eşleştirme sonucu */}
+                    {job.match_result && (
+                      <div className="rounded-lg bg-neutral-50 p-3 space-y-2 text-sm border">
+                        <p className="text-neutral-600">{job.match_result.summary}</p>
+                        {job.match_result.strengths.length > 0 && (
+                          <div>
+                            <p className="text-xs font-semibold text-green-700 mb-1">Güçlü yönler</p>
+                            <ul className="space-y-0.5">
+                              {job.match_result.strengths.map((s, i) => (
+                                <li key={i} className="text-xs text-neutral-600">· {s}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {job.match_result.gaps.length > 0 && (
+                          <div>
+                            <p className="text-xs font-semibold text-red-600 mb-1">Eksikler</p>
+                            <ul className="space-y-0.5">
+                              {job.match_result.gaps.map((g, i) => (
+                                <li key={i} className="text-xs text-neutral-600">· {g}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

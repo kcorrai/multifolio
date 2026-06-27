@@ -36,8 +36,8 @@ export default async function Home() {
     );
   }
 
-  // Profil, portfolyo ve kümülatif harcamayı paralel çek (RLS sahibe sınırlar).
-  const [profileRes, portfolioRes, usageRes] = await Promise.all([
+  // Profil, portfolyo, ilanlar ve kümülatif harcamayı paralel çek (RLS sahibe sınırlar).
+  const [profileRes, portfolioRes, jobsRes, usageRes] = await Promise.all([
     supabase
       .from("profiles")
       .select("headline, summary, skills")
@@ -48,6 +48,11 @@ export default async function Home() {
       .select("slug, published, content")
       .eq("user_id", user.id)
       .maybeSingle(),
+    supabase
+      .from("job_listings")
+      .select("id, title, company, platform, status, match_score, match_result, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false }),
     supabase.from("usage_events").select("cost_usd").eq("user_id", user.id),
   ]);
 
@@ -67,6 +72,8 @@ export default async function Home() {
       }
     : null;
 
+  const initialJobs = (jobsRes.data ?? []) as Parameters<typeof ProfileStudio>[0]["initialJobs"];
+
   const initialSpendUsd = (usageRes.data ?? []).reduce(
     (sum, row) => sum + Number(row.cost_usd ?? 0),
     0,
@@ -85,6 +92,7 @@ export default async function Home() {
         initialProfile={initialProfile}
         initialSpendUsd={initialSpendUsd}
         initialPortfolio={initialPortfolio}
+        initialJobs={initialJobs}
       />
     </main>
   );

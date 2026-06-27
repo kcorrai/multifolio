@@ -18,14 +18,19 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/profile` — **korumalı uç nokta ŞABLONU** (yeni route'lar bunu örnek alır).
   - `app/api/adapt` — uyarlama uç noktası (profil → platform metni; maliyeti kaydeder).
   - `app/api/usage` — kullanıcının kümülatif harcaması (USD).
+  - `app/api/jobs` — GET (liste) / POST (oluştur) iş ilanı uç noktaları.
+  - `app/api/jobs/[id]` — PATCH (durum/başlık güncelle) / DELETE.
+  - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı.
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `anthropic.ts` (Claude istemcisi),
   `platforms.ts` (LinkedIn/Upwork yönergeleri + `platformIdSchema`), `adapt.ts` (`adaptProfile`),
+  `portfolio.ts` (`generatePortfolio`), `match.ts` (`matchJobToProfile`),
   `pricing.ts` (token kullanımı → USD maliyet).
 - `lib/validation/` — Zod yardımcıları (`parseJson`/`parseQuery`) + `schemas/`.
 - `lib/supabase/` — `server.ts` (RLS'li, varsayılan), `admin.ts` (service-role, RLS bypass — dikkat),
   `client.ts` (tarayıcı), `middleware.ts` (oturum yenileme). Kök `proxy.ts` bunu çağırır.
 - `lib/sanitize.ts` — portfolyo HTML'i için XSS sanitize (render öncesi zorunlu).
+- `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` + `JobStatus`.
 - `components/ui/` — shadcn bileşenleri. `components/profile-studio.tsx` — Faz 1 MVP UI'ı.
   `lib/utils.ts` — `cn()`.
 - `supabase/migrations/` — SQL şema + RLS politikaları (`supabase db push`).
