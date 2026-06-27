@@ -36,11 +36,16 @@ export default async function Home() {
     );
   }
 
-  // Kayıtlı profil ve kümülatif harcamayı paralel çek (RLS sahibe sınırlar).
-  const [profileRes, usageRes] = await Promise.all([
+  // Profil, portfolyo ve kümülatif harcamayı paralel çek (RLS sahibe sınırlar).
+  const [profileRes, portfolioRes, usageRes] = await Promise.all([
     supabase
       .from("profiles")
       .select("headline, summary, skills")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("portfolios")
+      .select("slug, published, content")
       .eq("user_id", user.id)
       .maybeSingle(),
     supabase.from("usage_events").select("cost_usd").eq("user_id", user.id),
@@ -51,6 +56,14 @@ export default async function Home() {
         headline: profileRes.data.headline as string,
         summary: profileRes.data.summary as string,
         skills: (profileRes.data.skills as string[]) ?? [],
+      }
+    : null;
+
+  const initialPortfolio = portfolioRes.data
+    ? {
+        slug: portfolioRes.data.slug as string,
+        published: portfolioRes.data.published as boolean,
+        content: portfolioRes.data.content ?? null,
       }
     : null;
 
@@ -68,7 +81,11 @@ export default async function Home() {
           </Button>
         </form>
       </div>
-      <ProfileStudio initialProfile={initialProfile} initialSpendUsd={initialSpendUsd} />
+      <ProfileStudio
+        initialProfile={initialProfile}
+        initialSpendUsd={initialSpendUsd}
+        initialPortfolio={initialPortfolio}
+      />
     </main>
   );
 }
