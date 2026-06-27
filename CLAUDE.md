@@ -14,7 +14,10 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `app/` — sayfalar + `app/api/*/route.ts` uç noktaları. `app/global-error.tsx` kök ErrorBoundary.
   - `app/api/health` — canlılık. `app/api/debug-sentry` — Sentry test (kaldırılabilir).
   - `app/api/profile` — **korumalı uç nokta ŞABLONU** (yeni route'lar bunu örnek alır).
+  - `app/api/adapt` — uyarlama uç noktası (profil → platform metni; kredi tüketir).
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
+- `lib/ai/` — uyarlama motoru (sunucu-only): `anthropic.ts` (Claude istemcisi),
+  `platforms.ts` (LinkedIn/Upwork yönergeleri), `adapt.ts` (`adaptProfile`).
 - `lib/validation/` — Zod yardımcıları (`parseJson`/`parseQuery`) + `schemas/`.
 - `lib/supabase/` — `server.ts` (RLS'li, varsayılan), `admin.ts` (service-role, RLS bypass — dikkat),
   `client.ts` (tarayıcı).
