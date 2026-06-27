@@ -2,6 +2,10 @@
 
 Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
 
+## Dal stratejisi
+Her faz kendi `phase-N-*` dalında geliştirilir → `main`'e `--ff-only` merge ile kapanır.
+Yeni faz başlarken yeni dal açılır (`git checkout -b phase-N-*`).
+
 - **Faz 0 — Zemin + üç sütun** ✅
   Çalışan Next.js iskeleti; (1) anlık hata görünürlüğü (Sentry + `lib/errors`),
   (2) güvenli-by-default (Zod + RLS + sanitize), (3) dokümantasyon disiplini.
@@ -11,7 +15,7 @@ Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
 - **Faz 1 — Tek profil → LinkedIn + Upwork uyarlaması** ✅
   Kullanıcı profilini bir kez girer; Anthropic Claude ile LinkedIn ve Upwork için
   optimize metinler üretilir. USD harcama takibi (`usage_events` tablosu, `lib/ai/pricing.ts`).
-  `phase-1-adaptation` dalında; main'e merge bekliyor.
+  `phase-1-adaptation` dalı `main`'e merge edildi (ff-only).
 
 - **Faz 2 — Otomatik portfolyo sitesi** *(şu an buradayız)*
   Profil verisinden yayımlanabilir portfolyo. Üretilen HTML render öncesi sanitize edilir.
