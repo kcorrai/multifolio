@@ -1,8 +1,6 @@
-// Portfolyo üretim motoru: profil → genel portfolyo içeriği (headline, bio, skills, projects).
-// Sunucu-only. adapt.ts ile aynı istemci/model/maliyet desenini kullanır.
 import "server-only";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { ADAPTATION_MODEL, getAnthropicClient } from "./anthropic";
+import { zodResponseFormat } from "openai/helpers/zod";
+import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { InternalError } from "@/lib/errors";
 import { portfolioContentSchema, type PortfolioContent } from "@/lib/validation/schemas/portfolio";
@@ -24,7 +22,7 @@ const SYSTEM_PROMPT =
 export async function generatePortfolio(
   profile: ProfileInput,
 ): Promise<GeneratePortfolioResult> {
-  const client = getAnthropicClient();
+  const client = getOpenAIClient();
 
   const userContent = [
     "Aşağıdaki profil verisinden portfolyo içeriği üret:",
@@ -40,29 +38,32 @@ export async function generatePortfolio(
     "- projects: profil verisinde somut bir proje/başarı varsa çıkar; yoksa boş bırak.",
   ].join("\n");
 
-  const message = await client.messages.parse({
-    model: ADAPTATION_MODEL,
-    max_tokens: 4096,
-    thinking: { type: "adaptive" },
-    output_config: {
-      effort: "medium",
-      format: zodOutputFormat(portfolioContentSchema),
-    },
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userContent }],
+  const completion = await client.chat.completions.parse({
+    model: AI_MODEL,
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: userContent },
+    ],
+    response_format: zodResponseFormat(portfolioContentSchema, "portfolio"),
   });
 
-  if (!message.parsed_output) {
+  const parsed = completion.choices[0].message.parsed;
+  if (!parsed) {
     throw new InternalError("Portfolyo içeriği ayrıştırılamadı.", {
-      context: { stopReason: message.stop_reason },
+      context: { finish_reason: completion.choices[0].finish_reason },
     });
   }
 
+  const usage = {
+    prompt_tokens: completion.usage?.prompt_tokens ?? 0,
+    completion_tokens: completion.usage?.completion_tokens ?? 0,
+  };
+
   return {
-    content: message.parsed_output,
-    model: ADAPTATION_MODEL,
-    inputTokens: message.usage.input_tokens,
-    outputTokens: message.usage.output_tokens,
-    costUsd: computeCostUsd(ADAPTATION_MODEL, message.usage),
+    content: parsed,
+    model: AI_MODEL,
+    inputTokens: usage.prompt_tokens,
+    outputTokens: usage.completion_tokens,
+    costUsd: computeCostUsd(AI_MODEL, usage),
   };
 }

@@ -1,23 +1,18 @@
-// Uyarlama motoru: tek profil + hedef platform → o platforma optimize metin.
-// Sunucu-only. Anthropic Claude'u structured outputs ile çağırır; çıktı şemaya
-// göre doğrulanmış JSON olarak döner (serbest metin ayrıştırma yok).
 import "server-only";
 import { z } from "zod";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { ADAPTATION_MODEL, getAnthropicClient } from "./anthropic";
+import { zodResponseFormat } from "openai/helpers/zod";
+import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { PLATFORMS, type PlatformId } from "./platforms";
 import { computeCostUsd } from "./pricing";
 import { InternalError } from "@/lib/errors";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
-// Modelin üreteceği yapı. Structured outputs bunu garanti eder.
 export const adaptedOutputSchema = z.object({
   headline: z.string().describe("Platforma uygun, optimize edilmiş başlık."),
   body: z.string().describe("Platforma uygun, optimize edilmiş profil/özet metni."),
 });
 export type AdaptedOutput = z.infer<typeof adaptedOutputSchema>;
 
-// adaptProfile sonucu: çıktı + harcama takibi için maliyet/usage.
 export interface AdaptResult {
   output: AdaptedOutput;
   model: string;
@@ -32,16 +27,12 @@ const SYSTEM_PROMPT =
   "konvansiyonlarına, tonuna ve okuyucu beklentisine göre uyarlarsın. Gerçeği abartma; " +
   "yalnızca verilen bilgiden yaz. Çıktıyı istenen yapıda döndür.";
 
-/**
- * Bir profili belirli bir platform için uyarlar.
- * @throws InternalError — model çıktısı ayrıştırılamazsa.
- */
 export async function adaptProfile(
   profile: ProfileInput,
   platformId: PlatformId,
 ): Promise<AdaptResult> {
   const platform = PLATFORMS[platformId];
-  const client = getAnthropicClient();
+  const client = getOpenAIClient();
 
   const userContent = [
     `Hedef platform: ${platform.label}`,
@@ -53,30 +44,32 @@ export async function adaptProfile(
     `- Beceriler: ${profile.skills.join(", ")}`,
   ].join("\n");
 
-  const message = await client.messages.parse({
-    model: ADAPTATION_MODEL,
-    max_tokens: 4096,
-    // Uyarlama nüanslı bir görev; adaptive thinking + dengeli efor.
-    thinking: { type: "adaptive" },
-    output_config: {
-      effort: "medium",
-      format: zodOutputFormat(adaptedOutputSchema),
-    },
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userContent }],
+  const completion = await client.chat.completions.parse({
+    model: AI_MODEL,
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: userContent },
+    ],
+    response_format: zodResponseFormat(adaptedOutputSchema, "output"),
   });
 
-  if (!message.parsed_output) {
+  const parsed = completion.choices[0].message.parsed;
+  if (!parsed) {
     throw new InternalError("Uyarlama çıktısı ayrıştırılamadı.", {
-      context: { stopReason: message.stop_reason, platformId },
+      context: { finish_reason: completion.choices[0].finish_reason, platformId },
     });
   }
 
+  const usage = {
+    prompt_tokens: completion.usage?.prompt_tokens ?? 0,
+    completion_tokens: completion.usage?.completion_tokens ?? 0,
+  };
+
   return {
-    output: message.parsed_output,
-    model: ADAPTATION_MODEL,
-    inputTokens: message.usage.input_tokens,
-    outputTokens: message.usage.output_tokens,
-    costUsd: computeCostUsd(ADAPTATION_MODEL, message.usage),
+    output: parsed,
+    model: AI_MODEL,
+    inputTokens: usage.prompt_tokens,
+    outputTokens: usage.completion_tokens,
+    costUsd: computeCostUsd(AI_MODEL, usage),
   };
 }

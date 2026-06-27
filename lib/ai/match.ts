@@ -1,7 +1,6 @@
-// Profil × iş ilanı eşleştirme motoru. adapt.ts ile aynı istemci/model/maliyet desenini kullanır.
 import "server-only";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { ADAPTATION_MODEL, getAnthropicClient } from "./anthropic";
+import { zodResponseFormat } from "openai/helpers/zod";
+import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { InternalError } from "@/lib/errors";
 import { jobMatchResultSchema, type JobMatchResult } from "@/lib/validation/schemas/job";
@@ -24,7 +23,7 @@ export async function matchJobToProfile(
   profile: ProfileInput,
   jobDescription: string,
 ): Promise<MatchResult> {
-  const client = getAnthropicClient();
+  const client = getOpenAIClient();
 
   const userContent = [
     "Profil:",
@@ -36,28 +35,32 @@ export async function matchJobToProfile(
     jobDescription,
   ].join("\n");
 
-  const message = await client.messages.parse({
-    model: ADAPTATION_MODEL,
-    max_tokens: 1024,
-    thinking: { type: "disabled" },
-    output_config: {
-      format: zodOutputFormat(jobMatchResultSchema),
-    },
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userContent }],
+  const completion = await client.chat.completions.parse({
+    model: AI_MODEL,
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: userContent },
+    ],
+    response_format: zodResponseFormat(jobMatchResultSchema, "match"),
   });
 
-  if (!message.parsed_output) {
+  const parsed = completion.choices[0].message.parsed;
+  if (!parsed) {
     throw new InternalError("Eşleştirme sonucu ayrıştırılamadı.", {
-      context: { stopReason: message.stop_reason },
+      context: { finish_reason: completion.choices[0].finish_reason },
     });
   }
 
+  const usage = {
+    prompt_tokens: completion.usage?.prompt_tokens ?? 0,
+    completion_tokens: completion.usage?.completion_tokens ?? 0,
+  };
+
   return {
-    result: message.parsed_output,
-    model: ADAPTATION_MODEL,
-    inputTokens: message.usage.input_tokens,
-    outputTokens: message.usage.output_tokens,
-    costUsd: computeCostUsd(ADAPTATION_MODEL, message.usage),
+    result: parsed,
+    model: AI_MODEL,
+    inputTokens: usage.prompt_tokens,
+    outputTokens: usage.completion_tokens,
+    costUsd: computeCostUsd(AI_MODEL, usage),
   };
 }

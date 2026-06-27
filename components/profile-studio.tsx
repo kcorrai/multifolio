@@ -102,7 +102,9 @@ export function ProfileStudio({
   const [headline, setHeadline] = useState(initialProfile?.headline ?? "");
   const [summary, setSummary] = useState(initialProfile?.summary ?? "");
   const [skills, setSkills] = useState((initialProfile?.skills ?? []).join(", "));
-  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">(
+    initialProfile !== null ? "saved" : "idle",
+  );
   const [profileError, setProfileError] = useState("");
 
   /* — Spend — */
