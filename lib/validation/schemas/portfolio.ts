@@ -3,7 +3,11 @@ import { z } from "zod";
 export const portfolioProjectSchema = z.object({
   title: z.string().min(1).max(120),
   description: z.string().min(1).max(500),
-  url: z.string().url().optional(),
+  url: z
+    .string()
+    .url()
+    .refine((u) => /^https?:\/\//i.test(u), "Yalnızca http/https bağlantılar geçerlidir.")
+    .optional(),
 });
 
 // AI'nın ürettiği ve kullanıcının düzenleyebildiği portfolyo içeriği.

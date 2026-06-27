@@ -1,6 +1,8 @@
 // /p/[slug] — genel portfolyo sayfası. Auth gerekmez; yalnızca published=true
 // portfolyolar görünür. İçerik yapılandırılmış JSON; React metin render'ı
 // otomatik escape eder (dangerouslySetInnerHTML kullanılmaz).
+import { cache } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
@@ -9,25 +11,43 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function PortfolioPage({ params }: PageProps) {
-  const { slug } = await params;
-
+// cache() ile aynı istek içinde generateMetadata + page tek sorgu yapar.
+const fetchPortfolio = cache(async (slug: string) => {
   const supabase = await createSupabaseServerClient();
-
   const { data, error } = await supabase
     .from("portfolios")
     .select("content, updated_at")
     .eq("slug", slug)
     .eq("published", true)
     .maybeSingle();
-
-  if (error || !data) notFound();
-
-  // Veritabanından gelen içeriği Zod ile doğrula.
+  if (error || !data) return null;
   const parsed = portfolioContentSchema.safeParse(data.content);
-  if (!parsed.success) notFound();
+  if (!parsed.success) return null;
+  return { content: parsed.data, updatedAt: data.updated_at as string };
+});
 
-  const content = parsed.data;
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const portfolio = await fetchPortfolio(slug);
+  if (!portfolio) return { title: "Portfolyo bulunamadı" };
+  const { headline, bio } = portfolio.content;
+  const description = bio.slice(0, 160);
+  return {
+    title: headline,
+    description,
+    openGraph: {
+      title: headline,
+      description,
+      type: "profile",
+    },
+  };
+}
+
+export default async function PortfolioPage({ params }: PageProps) {
+  const { slug } = await params;
+  const portfolio = await fetchPortfolio(slug);
+  if (!portfolio) notFound();
+  const { content, updatedAt } = portfolio;
 
   return (
     <main className="mx-auto max-w-2xl flex-1 p-8">
@@ -89,7 +109,7 @@ export default async function PortfolioPage({ params }: PageProps) {
         )}
 
         <p className="text-xs text-neutral-400">
-          Son güncelleme: {new Date(data.updated_at).toLocaleDateString("tr-TR")}
+          Son güncelleme: {new Date(updatedAt).toLocaleDateString("tr-TR")}
         </p>
       </div>
     </main>
