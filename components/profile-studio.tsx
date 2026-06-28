@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   User, Layers, Globe, Briefcase, Save, Sparkles, Target,
   Trash2, Plus, X, ExternalLink, CheckCircle2, AlertCircle, BarChart3,
-  Copy, Check, TrendingUp, Zap,
+  Copy, Check, TrendingUp, Zap, Wallet, ShoppingCart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -103,13 +103,14 @@ function CopyButton({ text }: { text: string }) {
 /* ── Component ──────────────────────────────────────────────────────── */
 
 export function ProfileStudio({
-  initialProfile, initialSpendUsd, initialPortfolio, initialJobs, initialAnalytics,
+  initialProfile, initialSpendUsd, initialPortfolio, initialJobs, initialAnalytics, initialCredits,
 }: {
   initialProfile: InitialProfile | null;
   initialSpendUsd: number;
   initialPortfolio: InitialPortfolio | null;
   initialJobs: JobRow[];
   initialAnalytics: AnalyticsData;
+  initialCredits: number;
 }) {
   const [activeTab, setActiveTab] = useState<Tab>("profil");
 
@@ -121,6 +122,8 @@ export function ProfileStudio({
   );
   const [profileError, setProfileError] = useState("");
   const [spend, setSpend] = useState(initialSpendUsd);
+  const [credits] = useState(initialCredits);
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const [results, setResults] = useState<Partial<Record<PlatformId, AdaptOutput>>>({});
   const [adapting, setAdapting] = useState<PlatformId | null>(null);
   const [adaptError, setAdaptError] = useState("");
@@ -255,19 +258,47 @@ export function ProfileStudio({
     <div className="space-y-6">
 
       {/* ── Page header ── */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Profil Stüdyosu</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
             Profilini yönet, platformlara uyarla ve ilanları takip et.
           </p>
         </div>
-        <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 shadow-sm">
-          <Zap className="h-3.5 w-3.5 text-primary shrink-0" />
-          <span className="text-xs text-muted-foreground">AI harcama</span>
-          <span className="text-sm font-bold tabular-nums text-foreground">{formatUsd(spend)}</span>
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 shadow-sm">
+            <Zap className="h-3.5 w-3.5 text-primary shrink-0" />
+            <span className="text-xs text-muted-foreground">AI harcama</span>
+            <span className="text-sm font-bold tabular-nums text-foreground">{formatUsd(spend)}</span>
+          </div>
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 shadow-sm">
+            <Wallet className="h-3.5 w-3.5 text-violet-500 shrink-0" />
+            <span className="text-xs text-muted-foreground">Kredi</span>
+            <span className="text-sm font-bold tabular-nums text-foreground">{credits}</span>
+            <div className="w-px h-4 bg-border mx-0.5" />
+            <button
+              onClick={() => { setShowComingSoon(true); setTimeout(() => setShowComingSoon(false), 3000); }}
+              className="flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              <ShoppingCart className="h-3 w-3" />
+              Satın Al
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* ── Coming soon toast ── */}
+      {showComingSoon && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-violet-200 bg-white dark:bg-slate-900 dark:border-violet-800/60 px-4 py-3 shadow-lg shadow-violet-500/10">
+          <div className="h-7 w-7 rounded-lg bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center shrink-0">
+            <Wallet className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-foreground">Ödeme sistemi yakında!</p>
+            <p className="text-xs text-muted-foreground">Stripe entegrasyonu hazırlanıyor.</p>
+          </div>
+        </div>
+      )}
 
       {/* ── Quick stats strip ── */}
       <div className="grid grid-cols-3 gap-3">
@@ -767,6 +798,33 @@ export function ProfileStudio({
       {/* ── Analitik sekmesi ── */}
       {activeTab === "analitik" && (
         <div className="space-y-4">
+          {/* Kredi durumu kartı */}
+          <Card className="shadow-sm overflow-hidden border-violet-200 dark:border-violet-800/40">
+            <div className="h-1 bg-gradient-to-r from-violet-500 to-indigo-500" />
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-xl bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center shrink-0">
+                    <Wallet className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-medium">Kredi Bakiyesi</p>
+                    <p className="text-3xl font-extrabold tabular-nums">{credits}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">kredi kaldı</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => { setShowComingSoon(true); setTimeout(() => setShowComingSoon(false), 3000); }}
+                  className="flex items-center gap-2 rounded-xl border border-violet-200 dark:border-violet-800/60 bg-violet-50 dark:bg-violet-950/40 px-4 py-2.5 text-sm font-semibold text-violet-700 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  Kredi Satın Al
+                  <span className="rounded-full bg-violet-200 dark:bg-violet-800 px-1.5 py-0.5 text-[10px] font-bold text-violet-700 dark:text-violet-300">Yakında</span>
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <Card className="shadow-sm overflow-hidden">
               <div className="h-1 bg-gradient-to-r from-primary to-violet-500" />

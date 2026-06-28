@@ -158,7 +158,7 @@ function LandingPage() {
             </h1>
 
             <p className="text-lg text-slate-500 dark:text-white/50 leading-relaxed max-w-md font-medium">
-              Profilini bir kez gir. LinkedIn, Upwork ve daha fazlası için Claude AI
+              Profilini bir kez gir. LinkedIn, Upwork ve daha fazlası için AI
               ile optimize et; portfolyonu saniyeler içinde yayınla.
             </p>
 
@@ -195,7 +195,7 @@ function LandingPage() {
           {[
             { value: "5", label: "Desteklenen Platform" },
             { value: "%89", label: "Ort. Uyum Skoru" },
-            { value: "Claude AI", label: "Güçlü Motor" },
+            { value: "GPT-4o", label: "Güçlü Motor" },
             { value: "2 dk", label: "İlk Uyarlama" },
           ].map(({ value, label }) => (
             <div key={label} className="text-center space-y-1">
@@ -218,11 +218,11 @@ function LandingPage() {
 
         <div className="grid md:grid-cols-3 gap-5">
           {[
-            { icon: Layers,      title: "Platform Uyarlama", desc: "Profilini bir kez yaz. Claude AI her platform için ayrı optimize eder — LinkedIn'in resmi tonu, Upwork'ün sonuç odaklı dili.", accent: "indigo" },
+            { icon: Layers,      title: "Platform Uyarlama", desc: "Profilini bir kez yaz. AI her platform için ayrı optimize eder — LinkedIn'in resmi tonu, Upwork'ün sonuç odaklı dili.", accent: "indigo" },
             { icon: Globe,       title: "Portfolyo Sitesi",  desc: "/p/kullanici-adin adresinde yayınlanan, SEO'ya uygun kişisel portfolyo sayfası. OG etiketleriyle sosyal paylaşıma hazır.", accent: "violet" },
             { icon: Briefcase,   title: "İlan Eşleştirme",  desc: "İlanı yapıştır; profilinle karşılaştırır, 0-100 uyum skoru verir, güçlü yönlerini ve eksiklerini listeler.", accent: "indigo" },
             { icon: Target,      title: "Başvuru Takibi",   desc: "Kaydedildi → Başvuruldu → Görüşme → Teklif pipeline'ı. Tüm başvurularını tek ekrandan yönet.", accent: "violet" },
-            { icon: Sparkles,    title: "AI ile Üretim",    desc: "Anthropic Claude ile çalışır; adaptive thinking ve structured output ile her seferinde doğru format.", accent: "indigo" },
+            { icon: Sparkles,    title: "AI ile Üretim",    desc: "GPT-4o destekli; structured output ile her seferinde doğru format ve platform diline uygun içerik.", accent: "indigo" },
             { icon: CheckCircle2,title: "Güvenli & Hızlı",  desc: "Supabase RLS ile her veri sahibine özel. Pay-as-you-go model: yalnızca kullandığın kadar öde.", accent: "violet" },
           ].map(({ icon: Icon, title, desc, accent }) => (
             <div key={title}
@@ -312,11 +312,12 @@ export default async function Home() {
 
   if (!user) return <LandingPage />;
 
-  const [profileRes, portfolioRes, jobsRes, usageRes] = await Promise.all([
+  const [profileRes, portfolioRes, jobsRes, usageRes, creditsRes] = await Promise.all([
     supabase.from("profiles").select("headline, summary, skills").eq("user_id", user.id).maybeSingle(),
     supabase.from("portfolios").select("slug, published, content").eq("user_id", user.id).maybeSingle(),
     supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
     supabase.from("usage_events").select("kind, platform, cost_usd, input_tokens, output_tokens, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
+    supabase.from("credits").select("balance").eq("user_id", user.id).maybeSingle(),
   ]);
 
   const initialProfile = profileRes.data
@@ -328,6 +329,7 @@ export default async function Home() {
     : null;
 
   const initialJobs = (jobsRes.data ?? []) as Parameters<typeof ProfileStudio>[0]["initialJobs"];
+  const initialCredits = creditsRes.data?.balance ?? 0;
 
   const usageRows = usageRes.data ?? [];
   const initialSpendUsd = usageRows.reduce((sum, row) => sum + Number(row.cost_usd ?? 0), 0);
@@ -386,6 +388,7 @@ export default async function Home() {
           initialPortfolio={initialPortfolio}
           initialJobs={initialJobs}
           initialAnalytics={initialAnalytics}
+          initialCredits={initialCredits}
         />
       </main>
     </div>

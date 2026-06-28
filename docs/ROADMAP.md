@@ -3,8 +3,7 @@
 Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
 
 ## Dal stratejisi
-Her faz kendi `phase-N-*` dalında geliştirilir → `main`'e `--ff-only` merge ile kapanır.
-Yeni faz başlarken yeni dal açılır (`git checkout -b phase-N-*`).
+`phase-N-*` dal stratejisi Faz 4 sonrasında terk edildi. Artık direkt `main` üzerinde çalışılıyor.
 
 - **Faz 0 — Zemin + üç sütun** ✅
   Çalışan Next.js iskeleti; (1) anlık hata görünürlüğü (Sentry + `lib/errors`),
@@ -27,8 +26,13 @@ Yeni faz başlarken yeni dal açılır (`git checkout -b phase-N-*`).
   SaaS UI yeniden tasarımı: Plus Jakarta Sans, koyu hero, ürün mockup, 6 özellik bölümü.
   `phase-3-matching` dalı `main`'e merge edildi (ff-only).
 
-- **Faz 4 — Fiverr, Bionluk, Armut + analitik + ödeme (Stripe)** *(şu an buradayız)*
-  Kalan platform uyarlamaları, kullanım analitiği ve kredi satın alma. `phase-4-platforms` dalı.
+- **Faz 4 — Fiverr, Bionluk, Armut + analitik + OpenAI** ✅
+  5 platform uyarlaması (LinkedIn/Upwork/Fiverr/Bionluk/Armut), kullanım analitiği sekmesi,
+  OpenAI `gpt-4o-mini` geçişi, production deploy (Vercel). `phase-4-platforms` dalı main'e merge edildi.
+
+- **Faz 4.5 — Kredi UI + Stripe hazırlığı** *(şu an buradayız)*
+  `credits` tablosu (migration), dashboard kredi bakiyesi göstergesi, "Kredi Satın Al" butonu.
+  Stripe backend entegrasyonu beklemede (US banka hesabı gerekiyor); UI şimdi, ödeme altyapısı sonra.
 
 - **Faz 5 — İşveren tarafı / iki taraflı pazar** *(çok sonra)*
   İşveren tarafı akışları ve pazar yeri.
