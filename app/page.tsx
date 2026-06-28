@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProfileStudio } from "@/components/profile-studio";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 /* ─── Product mockup shown in hero ─────────────────────────────── */
@@ -120,6 +121,7 @@ function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle variant="outline" />
             <Button asChild variant="ghost" size="sm" className="text-white/60 hover:text-white hover:bg-white/8">
               <Link href="/login">Giriş Yap</Link>
             </Button>
@@ -394,7 +396,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="sticky top-0 z-10 border-b border-border/60 bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between h-14 px-6">
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center">
@@ -402,8 +404,9 @@ export default async function Home() {
             </div>
             <span className="font-bold text-sm tracking-tight">Multifolio</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <span className="hidden sm:block text-xs text-muted-foreground font-medium">{user.email}</span>
+            <ThemeToggle />
             <form action="/auth/signout" method="post">
               <Button type="submit" variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground font-medium">
                 <LogOut className="h-3.5 w-3.5" />

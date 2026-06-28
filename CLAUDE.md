@@ -33,6 +33,8 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/sanitize.ts` — portfolyo HTML'i için XSS sanitize (render öncesi zorunlu).
 - `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` + `JobStatus`.
 - `components/ui/` — shadcn bileşenleri. `components/profile-studio.tsx` — Faz 1 MVP UI'ı.
+  `components/theme-provider.tsx` — next-themes provider (defaultTheme: dark).
+  `components/theme-toggle.tsx` — Sun/Moon toggle butonu (her iki header'da kullanılır).
   `lib/utils.ts` — `cn()`.
 - `supabase/migrations/` — SQL şema + RLS politikaları (`supabase db push`).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
