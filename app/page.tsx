@@ -100,10 +100,10 @@ function ProductMockup() {
 /* ─── Landing page ──────────────────────────────────────────────── */
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#07070f] text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#07070f] text-slate-900 dark:text-white">
 
       {/* Nav */}
-      <header className="border-b border-white/5">
+      <header className="border-b border-slate-200 dark:border-white/5">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-8 py-4">
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-lg bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/40">
@@ -114,15 +114,15 @@ function LandingPage() {
 
           <nav className="hidden md:flex items-center gap-7">
             {["Özellikler", "Nasıl Çalışır", "Fiyat"].map((item) => (
-              <a key={item} href="#" className="text-sm text-white/50 hover:text-white transition-colors font-medium">
+              <a key={item} href="#" className="text-sm text-slate-500 dark:text-white/50 hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
                 {item}
               </a>
             ))}
           </nav>
 
           <div className="flex items-center gap-3">
-            <ThemeToggle variant="outline" />
-            <Button asChild variant="ghost" size="sm" className="text-white/60 hover:text-white hover:bg-white/8">
+            <ThemeToggle />
+            <Button asChild variant="ghost" size="sm" className="text-slate-600 dark:text-white/60 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/8">
               <Link href="/login">Giriş Yap</Link>
             </Button>
             <Button asChild size="sm" className="font-semibold shadow-lg shadow-indigo-500/30">
@@ -134,33 +134,30 @@ function LandingPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        {/* Background radial glow */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-indigo-600/10 blur-[120px]" />
         </div>
 
         <div className="relative mx-auto max-w-6xl px-8 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left */}
           <div className="space-y-6">
-            {/* Social proof badge */}
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/25 bg-indigo-500/10 px-3.5 py-1.5">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <span className="text-xs font-semibold text-white/70">Beta — İlk 100 kullanıcı ücretsiz</span>
+              <span className="text-xs font-semibold text-slate-600 dark:text-white/70">Beta — İlk 100 kullanıcı ücretsiz</span>
             </div>
 
             <h1 className="text-5xl lg:text-[3.5rem] font-extrabold leading-[1.1] tracking-tight">
               Freelancer kariyerini{" "}
-              <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent">
                 tek platformdan
               </span>{" "}
               yönet.
             </h1>
 
-            <p className="text-lg text-white/50 leading-relaxed max-w-md font-medium">
+            <p className="text-lg text-slate-500 dark:text-white/50 leading-relaxed max-w-md font-medium">
               Profilini bir kez gir. LinkedIn, Upwork ve daha fazlası için Claude AI
               ile optimize et; portfolyonu saniyeler içinde yayınla.
             </p>
@@ -171,23 +168,21 @@ function LandingPage() {
                   Hemen Başla <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg"
-                className="h-12 px-7 text-base font-semibold border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white hover:border-white/25">
+              <Button asChild variant="outline" size="lg" className="h-12 px-7 text-base font-semibold">
                 <Link href="#features">Özellikleri Gör</Link>
               </Button>
             </div>
 
             <div className="flex flex-wrap gap-4 pt-1">
               {["Kredi kartı gerekmez", "5 dakikada kur", "Pay-as-you-go"].map((t) => (
-                <span key={t} className="flex items-center gap-1.5 text-sm text-white/40 font-medium">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
+                <span key={t} className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-white/40 font-medium">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-indigo-500 dark:text-indigo-400 shrink-0" />
                   {t}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Right — product mockup */}
           <div className="hidden lg:block">
             <ProductMockup />
           </div>
@@ -195,7 +190,7 @@ function LandingPage() {
       </section>
 
       {/* Stats bar */}
-      <div className="border-y border-white/5 bg-white/[0.02]">
+      <div className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-white/[0.02]">
         <div className="mx-auto max-w-6xl px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
             { value: "5", label: "Desteklenen Platform" },
@@ -204,8 +199,8 @@ function LandingPage() {
             { value: "2 dk", label: "İlk Uyarlama" },
           ].map(({ value, label }) => (
             <div key={label} className="text-center space-y-1">
-              <p className="text-2xl font-extrabold text-white">{value}</p>
-              <p className="text-xs text-white/35 font-medium">{label}</p>
+              <p className="text-2xl font-extrabold text-slate-900 dark:text-white">{value}</p>
+              <p className="text-xs text-slate-400 dark:text-white/35 font-medium">{label}</p>
             </div>
           ))}
         </div>
@@ -214,62 +209,30 @@ function LandingPage() {
       {/* Features */}
       <section id="features" className="mx-auto max-w-6xl px-8 py-24">
         <div className="text-center space-y-3 mb-14">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-400">Özellikler</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-500 dark:text-indigo-400">Özellikler</p>
           <h2 className="text-4xl font-extrabold tracking-tight">Her şey tek bir yerde.</h2>
-          <p className="text-white/40 text-lg max-w-xl mx-auto font-medium">
+          <p className="text-slate-500 dark:text-white/40 text-lg max-w-xl mx-auto font-medium">
             Freelancer olarak ihtiyacın olan tüm araçlar, birbirine bağlı ve otomatik.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-5">
           {[
-            {
-              icon: Layers,
-              title: "Platform Uyarlama",
-              desc: "Profilini bir kez yaz. Claude AI her platform için ayrı optimize eder — LinkedIn'in resmi tonu, Upwork'ün sonuç odaklı dili.",
-              accent: "indigo",
-            },
-            {
-              icon: Globe,
-              title: "Portfolyo Sitesi",
-              desc: "/p/kullanici-adin adresinde yayınlanan, SEO'ya uygun kişisel portfolyo sayfası. OG etiketleriyle sosyal paylaşıma hazır.",
-              accent: "violet",
-            },
-            {
-              icon: Briefcase,
-              title: "İlan Eşleştirme",
-              desc: "İlanı yapıştır; profilinle karşılaştırır, 0-100 uyum skoru verir, güçlü yönlerini ve eksiklerini listeler.",
-              accent: "indigo",
-            },
-            {
-              icon: Target,
-              title: "Başvuru Takibi",
-              desc: "Kaydedildi → Başvuruldu → Görüşme → Teklif pipeline'ı. Tüm başvurularını tek ekrandan yönet.",
-              accent: "violet",
-            },
-            {
-              icon: Sparkles,
-              title: "AI ile Üretim",
-              desc: "Anthropic Claude ile çalışır; adaptive thinking ve structured output ile her seferinde doğru format.",
-              accent: "indigo",
-            },
-            {
-              icon: CheckCircle2,
-              title: "Güvenli & Hızlı",
-              desc: "Supabase RLS ile her veri sahibine özel. Pay-as-you-go model: yalnızca kullandığın kadar öde.",
-              accent: "violet",
-            },
+            { icon: Layers,      title: "Platform Uyarlama", desc: "Profilini bir kez yaz. Claude AI her platform için ayrı optimize eder — LinkedIn'in resmi tonu, Upwork'ün sonuç odaklı dili.", accent: "indigo" },
+            { icon: Globe,       title: "Portfolyo Sitesi",  desc: "/p/kullanici-adin adresinde yayınlanan, SEO'ya uygun kişisel portfolyo sayfası. OG etiketleriyle sosyal paylaşıma hazır.", accent: "violet" },
+            { icon: Briefcase,   title: "İlan Eşleştirme",  desc: "İlanı yapıştır; profilinle karşılaştırır, 0-100 uyum skoru verir, güçlü yönlerini ve eksiklerini listeler.", accent: "indigo" },
+            { icon: Target,      title: "Başvuru Takibi",   desc: "Kaydedildi → Başvuruldu → Görüşme → Teklif pipeline'ı. Tüm başvurularını tek ekrandan yönet.", accent: "violet" },
+            { icon: Sparkles,    title: "AI ile Üretim",    desc: "Anthropic Claude ile çalışır; adaptive thinking ve structured output ile her seferinde doğru format.", accent: "indigo" },
+            { icon: CheckCircle2,title: "Güvenli & Hızlı",  desc: "Supabase RLS ile her veri sahibine özel. Pay-as-you-go model: yalnızca kullandığın kadar öde.", accent: "violet" },
           ].map(({ icon: Icon, title, desc, accent }) => (
-            <div
-              key={title}
-              className="group rounded-2xl border border-white/8 bg-white/[0.02] p-6 space-y-4 hover:border-white/15 hover:bg-white/[0.04] transition-all"
-            >
-              <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${accent === "indigo" ? "bg-indigo-500/15" : "bg-violet-500/15"}`}>
-                <Icon className={`h-5 w-5 ${accent === "indigo" ? "text-indigo-400" : "text-violet-400"}`} />
+            <div key={title}
+              className="group rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.02] p-6 space-y-4 hover:border-slate-300 dark:hover:border-white/15 hover:bg-slate-50 dark:hover:bg-white/[0.04] hover:shadow-md transition-all">
+              <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${accent === "indigo" ? "bg-indigo-100 dark:bg-indigo-500/15" : "bg-violet-100 dark:bg-violet-500/15"}`}>
+                <Icon className={`h-5 w-5 ${accent === "indigo" ? "text-indigo-600 dark:text-indigo-400" : "text-violet-600 dark:text-violet-400"}`} />
               </div>
               <div className="space-y-1.5">
-                <h3 className="font-bold text-white">{title}</h3>
-                <p className="text-sm text-white/40 leading-relaxed font-medium">{desc}</p>
+                <h3 className="font-bold text-slate-900 dark:text-white">{title}</h3>
+                <p className="text-sm text-slate-500 dark:text-white/40 leading-relaxed font-medium">{desc}</p>
               </div>
             </div>
           ))}
@@ -277,10 +240,10 @@ function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="border-y border-white/5 bg-white/[0.02] py-24">
+      <section className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-white/[0.02] py-24">
         <div className="mx-auto max-w-6xl px-8">
           <div className="text-center space-y-3 mb-14">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-400">Nasıl Çalışır</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-500 dark:text-indigo-400">Nasıl Çalışır</p>
             <h2 className="text-4xl font-extrabold tracking-tight">3 adımda başla.</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -290,11 +253,11 @@ function LandingPage() {
               { step: "03", title: "Paylaş & takip et", desc: "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir." },
             ].map(({ step, title, desc }) => (
               <div key={step} className="space-y-4">
-                <div className="text-5xl font-extrabold text-white/8 tabular-nums">{step}</div>
+                <div className="text-5xl font-extrabold text-slate-200 dark:text-white/8 tabular-nums">{step}</div>
                 <div className="h-px w-12 bg-indigo-500" />
                 <div className="space-y-2">
                   <h3 className="font-bold text-lg">{title}</h3>
-                  <p className="text-sm text-white/40 leading-relaxed font-medium">{desc}</p>
+                  <p className="text-sm text-slate-500 dark:text-white/40 leading-relaxed font-medium">{desc}</p>
                 </div>
               </div>
             ))}
@@ -304,7 +267,7 @@ function LandingPage() {
 
       {/* Final CTA */}
       <section className="mx-auto max-w-6xl px-8 py-24 text-center">
-        <div className="relative rounded-3xl border border-indigo-500/20 bg-indigo-500/5 px-8 py-16 overflow-hidden">
+        <div className="relative rounded-3xl border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/5 px-8 py-16 overflow-hidden">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full bg-indigo-600/10 blur-[80px]" />
           </div>
@@ -312,7 +275,7 @@ function LandingPage() {
             <h2 className="text-4xl font-extrabold tracking-tight">
               Freelancer kariyerini bir üst seviyeye taşı.
             </h2>
-            <p className="text-white/40 text-lg font-medium max-w-md mx-auto">
+            <p className="text-slate-500 dark:text-white/40 text-lg font-medium max-w-md mx-auto">
               Beta sürecinde ücretsiz. Kredi kartı gerekmez.
             </p>
             <Button asChild size="lg" className="h-12 px-8 text-base font-bold shadow-xl shadow-indigo-500/30 mt-2">
@@ -325,15 +288,15 @@ function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8">
+      <footer className="border-t border-slate-200 dark:border-white/5 py-8">
         <div className="mx-auto max-w-6xl px-8 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-5 w-5 rounded-md bg-indigo-500 flex items-center justify-center">
               <span className="text-white text-[9px] font-extrabold">M</span>
             </div>
-            <span className="text-sm font-bold text-white/50">Multifolio</span>
+            <span className="text-sm font-bold text-slate-500 dark:text-white/50">Multifolio</span>
           </div>
-          <p className="text-xs text-white/20 font-medium">© 2026 Multifolio. Tüm hakları saklıdır.</p>
+          <p className="text-xs text-slate-400 dark:text-white/20 font-medium">© 2026 Multifolio. Tüm hakları saklıdır.</p>
         </div>
       </footer>
     </div>
