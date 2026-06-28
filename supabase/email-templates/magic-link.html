@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multifolio — Giriş Bağlantısı</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <!-- Container -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;">
+
+          <!-- Logo / Header -->
+          <tr>
+            <td align="center" style="padding-bottom:32px;">
+              <table cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <div style="width:44px;height:44px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:12px;display:inline-block;text-align:center;line-height:44px;font-size:20px;font-weight:700;color:#ffffff;vertical-align:middle;">M</div>
+                  </td>
+                  <td style="padding-left:12px;vertical-align:middle;">
+                    <span style="font-size:18px;font-weight:700;color:#0f172a;letter-spacing:-0.3px;">Multifolio</span><br/>
+                    <span style="font-size:12px;color:#64748b;">Freelancer kariyer platformu</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Card -->
+          <tr>
+            <td style="background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+
+              <!-- Card header accent -->
+              <tr>
+                <td style="height:4px;background:linear-gradient(90deg,#6366f1,#8b5cf6,#a78bfa);"></td>
+              </tr>
+
+              <!-- Card body -->
+              <tr>
+                <td style="padding:40px 40px 32px;">
+
+                  <!-- Icon -->
+                  <table cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                    <tr>
+                      <td style="width:48px;height:48px;background:#eef2ff;border-radius:12px;text-align:center;line-height:48px;font-size:22px;">🔐</td>
+                    </tr>
+                  </table>
+
+                  <!-- Title -->
+                  <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#0f172a;letter-spacing:-0.4px;">Giriş bağlantın hazır</h1>
+                  <p style="margin:0 0 24px;font-size:15px;color:#475569;line-height:1.6;">
+                    Hesabına güvenli şekilde giriş yapmak için aşağıdaki butona tıkla. Bu bağlantı <strong style="color:#0f172a;">60 dakika</strong> geçerlidir.
+                  </p>
+
+                  <!-- CTA Button -->
+                  <table cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                    <tr>
+                      <td style="background:linear-gradient(135deg,#6366f1,#7c3aed);border-radius:10px;text-align:center;">
+                        <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;letter-spacing:-0.1px;">
+                          Hesabıma gir →
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- Divider -->
+                  <hr style="border:none;border-top:1px solid #f1f5f9;margin:0 0 24px;" />
+
+                  <!-- Fallback link -->
+                  <p style="margin:0 0 8px;font-size:13px;color:#64748b;">Buton çalışmıyorsa bu bağlantıyı tarayıcına kopyala:</p>
+                  <p style="margin:0;font-size:12px;color:#6366f1;word-break:break-all;font-family:'Courier New',Courier,monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 12px;">{{ .ConfirmationURL }}</p>
+
+                </td>
+              </tr>
+
+              <!-- Card footer -->
+              <tr>
+                <td style="padding:20px 40px 28px;background:#f8fafc;border-top:1px solid #f1f5f9;">
+                  <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.7;">
+                    Bu e-postayı talep etmediysen güvenle yoksay — hesabına erişilmemiştir.<br/>
+                    Giriş isteği gönderildi: <strong style="color:#64748b;">{{ .Email }}</strong>
+                  </p>
+                </td>
+              </tr>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding-top:28px;">
+              <p style="margin:0;font-size:12px;color:#94a3b8;">
+                &copy; 2026 Multifolio · Tüm hakları saklıdır
+              </p>
+              <p style="margin:6px 0 0;font-size:11px;color:#cbd5e1;">
+                Güvenli bir şifresiz giriş sistemi kullanıyorsun 🔒
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

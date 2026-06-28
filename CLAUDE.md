@@ -35,6 +35,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `components/ui/` — shadcn bileşenleri. `components/profile-studio.tsx` — Faz 1 MVP UI'ı.
   `lib/utils.ts` — `cn()`.
 - `supabase/migrations/` — SQL şema + RLS politikaları (`supabase db push`).
+- `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
 - Sentry: `instrumentation*.ts`, `sentry.*.config.ts`, `next.config.ts` (`withSentryConfig`).
 - `.env.example` — ortam değişkeni şablonu (gerçek değerler `.env.local`'da, commit edilmez).
 - `docs/` — tüm detay buradadır (aşağıdaki sert kurallar dışında bu dosyaya detay yazma).
