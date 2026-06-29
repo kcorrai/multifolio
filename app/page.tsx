@@ -164,9 +164,19 @@ function LandingPage() {
             </h1>
 
             <p className="text-lg text-slate-500 dark:text-white/50 leading-relaxed max-w-md font-medium">
-              Profilini bir kez gir. LinkedIn, Upwork ve daha fazlası için AI
-              ile optimize et; portfolyonu saniyeler içinde yayınla.
+              Profilini bir kez gir. LinkedIn, Upwork, Fiverr, Bionluk ve Armut
+              için AI ile optimize et; portfolyonu saniyeler içinde yayınla.
             </p>
+
+            {/* Platform logoları - hero altı */}
+            <div className="flex items-center gap-3 flex-wrap pt-1">
+              {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
+                <div key={id} className="rounded-lg border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.03] p-1.5">
+                  <PlatformLogo platform={id} size={16} />
+                </div>
+              ))}
+              <span className="text-xs text-slate-400 dark:text-white/25 font-medium">5 platform destekleniyor</span>
+            </div>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Button asChild size="lg" className="h-12 px-7 text-base font-bold shadow-xl shadow-indigo-500/30">
@@ -244,12 +254,31 @@ function LandingPage() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-5">
+          {/* Platform Uyarlama — özel kart (platform logoları ile) */}
+          <div className="group rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.02] p-6 space-y-4 hover:border-indigo-200 dark:hover:border-indigo-500/20 hover:bg-slate-50 dark:hover:bg-white/[0.04] hover:shadow-md transition-all">
+            <div className="h-10 w-10 rounded-xl bg-indigo-100 dark:bg-indigo-500/15 flex items-center justify-center">
+              <Layers className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+            </div>
+            <div className="space-y-1.5">
+              <h3 className="font-bold text-slate-900 dark:text-white">Platform Uyarlama</h3>
+              <p className="text-sm text-slate-500 dark:text-white/40 leading-relaxed font-medium">
+                Profilini bir kez yaz. AI her platform için ayrı optimize eder — tona, dile ve beklentiye göre.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap pt-1">
+              {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
+                <div key={id} className="rounded-lg border border-slate-100 dark:border-white/6 bg-slate-50 dark:bg-white/[0.03] p-1.5">
+                  <PlatformLogo platform={id} size={14} />
+                </div>
+              ))}
+            </div>
+          </div>
+
           {[
-            { icon: Layers,      title: "Platform Uyarlama", desc: "Profilini bir kez yaz. AI her platform için ayrı optimize eder — LinkedIn'in resmi tonu, Upwork'ün sonuç odaklı dili.", accent: "indigo" },
             { icon: Globe,       title: "Portfolyo Sitesi",  desc: "/p/kullanici-adin adresinde yayınlanan, SEO'ya uygun kişisel portfolyo sayfası. OG etiketleriyle sosyal paylaşıma hazır.", accent: "violet" },
             { icon: Briefcase,   title: "İlan Eşleştirme",  desc: "İlanı yapıştır; profilinle karşılaştırır, 0-100 uyum skoru verir, güçlü yönlerini ve eksiklerini listeler.", accent: "indigo" },
             { icon: Target,      title: "Başvuru Takibi",   desc: "Kaydedildi → Başvuruldu → Görüşme → Teklif pipeline'ı. Tüm başvurularını tek ekrandan yönet.", accent: "violet" },
-            { icon: Sparkles,    title: "AI ile Üretim",    desc: "GPT-4o destekli; structured output ile her seferinde doğru format ve platform diline uygun içerik.", accent: "indigo" },
+            { icon: Sparkles,    title: "AI ile Üretim",    desc: "GPT-4o mini destekli; structured output ile her seferinde doğru format ve platform diline uygun içerik.", accent: "indigo" },
             { icon: CheckCircle2,title: "Güvenli & Hızlı",  desc: "Supabase RLS ile her veri sahibine özel. Pay-as-you-go model: yalnızca kullandığın kadar öde.", accent: "violet" },
           ].map(({ icon: Icon, title, desc, accent }) => (
             <div key={title}
