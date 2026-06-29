@@ -6,7 +6,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { ProfileStudio } from "@/components/profile-studio";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { PlatformLogo } from "@/components/platform-logo";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import type { PlatformId } from "@/lib/ai/platforms";
 
 /* ─── Product mockup shown in hero ─────────────────────────────── */
 function ProductMockup() {
@@ -52,15 +54,19 @@ function ProductMockup() {
           </div>
 
           {/* Platform results */}
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { name: "LinkedIn", done: true },
-              { name: "Upwork", done: true },
-            ].map(({ name, done }) => (
-              <div key={name} className="rounded-lg border border-white/8 bg-white/[0.03] p-2.5 flex items-center justify-between">
-                <span className="text-[10px] text-white/50 font-medium">{name}</span>
-                <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold ${done ? "bg-green-500/15 text-green-400" : "bg-white/10 text-white/30"}`}>
-                  {done ? "✓ Hazır" : "Bekliyor"}
+          <div className="grid grid-cols-2 gap-1.5">
+            {([
+              { id: "linkedin" as PlatformId, name: "LinkedIn",  done: true },
+              { id: "upwork"   as PlatformId, name: "Upwork",    done: true },
+              { id: "fiverr"   as PlatformId, name: "Fiverr",    done: true },
+              { id: "bionluk"  as PlatformId, name: "Bionluk",   done: false },
+              { id: "armut"    as PlatformId, name: "Armut",     done: false },
+            ]).map(({ id, name, done }) => (
+              <div key={name} className="rounded-lg border border-white/8 bg-white/[0.03] p-2 flex items-center gap-1.5">
+                <PlatformLogo platform={id} size={12} />
+                <span className="text-[9px] text-white/50 font-medium flex-1 truncate">{name}</span>
+                <span className={`text-[8px] px-1 py-0.5 rounded font-semibold shrink-0 ${done ? "bg-green-500/15 text-green-400" : "bg-white/8 text-white/25"}`}>
+                  {done ? "✓" : "…"}
                 </span>
               </div>
             ))}
@@ -205,6 +211,27 @@ function LandingPage() {
           ))}
         </div>
       </div>
+
+      {/* Platforms strip */}
+      <section className="mx-auto max-w-6xl px-8 py-14">
+        <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-white/25 mb-8">
+          Desteklenen platformlar
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          {([
+            { id: "linkedin" as PlatformId, label: "LinkedIn",  color: "bg-[#0A66C2]/10 border-[#0A66C2]/20 text-[#0A66C2] dark:text-[#4da3ff]" },
+            { id: "upwork"   as PlatformId, label: "Upwork",    color: "bg-[#6FDA44]/10 border-[#6FDA44]/20 text-[#3d8c1a] dark:text-[#6FDA44]" },
+            { id: "fiverr"   as PlatformId, label: "Fiverr",    color: "bg-[#1DBF73]/10 border-[#1DBF73]/20 text-[#0d8a52] dark:text-[#1DBF73]" },
+            { id: "bionluk"  as PlatformId, label: "Bionluk",   color: "bg-violet-50 border-violet-200 text-violet-700 dark:bg-violet-500/10 dark:border-violet-500/20 dark:text-violet-400" },
+            { id: "armut"    as PlatformId, label: "Armut",     color: "bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-500/10 dark:border-orange-500/20 dark:text-orange-400" },
+          ]).map(({ id, label, color }) => (
+            <div key={id} className={`flex items-center gap-2.5 rounded-2xl border px-5 py-3 ${color}`}>
+              <PlatformLogo platform={id} size={20} />
+              <span className="text-sm font-semibold">{label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Features */}
       <section id="features" className="mx-auto max-w-6xl px-8 py-24">

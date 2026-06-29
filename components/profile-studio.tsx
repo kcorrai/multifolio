@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
+import { PlatformLogo } from "@/components/platform-logo";
 import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
 import { JOB_STATUSES, type JobStatus, type JobMatchResult } from "@/lib/validation/schemas/job";
 
@@ -491,8 +492,8 @@ export function ProfileStudio({
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs font-extrabold ${style.icon}`}>
-                          {PLATFORMS[id].label.slice(0, 1)}
+                        <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${style.icon}`}>
+                          <PlatformLogo platform={id} size={18} />
                         </div>
                         <div>
                           <p className="text-sm font-semibold">{PLATFORMS[id].label}</p>
