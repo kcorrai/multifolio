@@ -55,8 +55,7 @@ function ProductMockup() {
       {/* 3-D perspective wrapper */}
       <div style={{ perspective: "1000px" }}>
         <div
-          style={{ transform: "rotateX(10deg) rotateY(-18deg) rotate(-1deg)" }}
-          className="card-3d relative rounded-3xl bg-white dark:bg-[#161923] w-[380px] overflow-hidden"
+          className="card-3d card-spin-in relative rounded-3xl bg-white dark:bg-[#161923] w-[380px] overflow-hidden"
         >
           {/* Top shimmer */}
           <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/80 to-transparent dark:via-[#00F0FF]/40" />
