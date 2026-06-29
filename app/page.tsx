@@ -11,93 +11,118 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { PlatformId } from "@/lib/ai/platforms";
 
+/* ─── Circular progress ring ────────────────────────────────────── */
+function CircleScore({ score }: { score: number }) {
+  const r = 52;
+  const circ = 2 * Math.PI * r;
+  const offset = circ * (1 - score / 100);
+  return (
+    <svg width="130" height="130" viewBox="0 0 130 130" className="-rotate-90">
+      {/* Track */}
+      <circle cx="65" cy="65" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+      {/* Cyan fill */}
+      <circle
+        cx="65" cy="65" r={r} fill="none"
+        stroke="url(#scoreGrad)" strokeWidth="10"
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+      />
+      <defs>
+        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#00F0FF" />
+          <stop offset="100%" stopColor="#8B5CF6" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+/* ─── Score bar ─────────────────────────────────────────────────── */
+function ScoreBar({ label, value, color }: { label: string; value: number; color: string }) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] text-white/50 font-medium">{label}</span>
+        <span className="text-[11px] font-bold text-white/80 tabular-nums">{value}</span>
+      </div>
+      <div className="h-1.5 rounded-full bg-white/6 overflow-hidden">
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
+}
+
 /* ─── Product mockup shown in hero ─────────────────────────────── */
 function ProductMockup() {
   return (
     <div className="relative anim-scale-in anim-d3">
-      {/* Dual-tone glow behind mockup */}
-      <div className="absolute -inset-4 rounded-3xl bg-[#00F0FF]/10 blur-3xl" />
-      <div className="absolute -inset-6 rounded-3xl bg-violet-500/10 blur-[60px]" />
+      {/* Dual-tone glow */}
+      <div className="absolute -inset-6 rounded-3xl bg-[#00F0FF]/12 blur-[70px]" />
+      <div className="absolute -inset-8 rounded-3xl bg-violet-500/10 blur-[90px]" />
 
-      <div className="relative rounded-2xl border border-white/10 bg-[#161923] shadow-2xl overflow-hidden">
-        {/* Window chrome */}
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
-          <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
-          <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
-          <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
-          <span className="ml-2 text-xs text-white/25 font-medium">Multifolio — Profil Stüdyosu</span>
-          <span className="ml-auto text-[10px] text-indigo-400 font-semibold tabular-nums">$0.0042</span>
+      <div className="relative rounded-3xl border border-white/10 bg-[#161923] shadow-2xl overflow-hidden w-[340px]">
+
+        {/* Header */}
+        <div className="px-6 pt-6 pb-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {/* Avatar */}
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#00F0FF]/30 to-violet-500/30 border border-white/10 flex items-center justify-center shrink-0">
+              <span className="text-sm font-bold text-white">AY</span>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white leading-tight">Ahmet Yılmaz</p>
+              <p className="text-[11px] text-white/40 mt-0.5">Senior React Developer</p>
+            </div>
+          </div>
+          {/* Badge */}
+          <span className="flex items-center gap-1 rounded-full bg-[#00F0FF]/15 border border-[#00F0FF]/30 px-2.5 py-1 text-[10px] font-bold text-[#00F0FF]">
+            ✦ Optimize
+          </span>
         </div>
 
-        <div className="p-4 space-y-3">
-          {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-white/5 p-1">
-            {["Profil", "Platform", "Portfolyo", "İlanlar"].map((t, i) => (
-              <div key={t} className={`flex-1 rounded-md px-2 py-1.5 text-center text-[10px] font-semibold ${i === 0 ? "bg-white/10 text-white" : "text-white/30"}`}>
-                {t}
+        <div className="h-px bg-white/5 mx-6" />
+
+        {/* Score ring + label */}
+        <div className="flex items-center gap-5 px-6 py-5">
+          <div className="relative shrink-0">
+            <CircleScore score={87} />
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-2xl font-extrabold text-white leading-none">87</span>
+              <span className="text-[9px] font-bold text-[#00F0FF] uppercase tracking-wider mt-0.5">Güçlü</span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[10px] font-bold text-white/35 uppercase tracking-wider">Genel Skor</p>
+            <p className="text-xs text-white/60 leading-relaxed">
+              Güçlü profil. Başlık ve özet
+              daha yükseğe çıkmak için
+              en büyük kaldıraçlar.
+            </p>
+          </div>
+        </div>
+
+        <div className="h-px bg-white/5 mx-6" />
+
+        {/* Breakdown bars */}
+        <div className="px-6 py-5 space-y-3.5">
+          <ScoreBar label="Platform Uyumu"      value={92} color="bg-gradient-to-r from-[#00F0FF] to-[#00D4E8]" />
+          <ScoreBar label="Profil Gücü"         value={84} color="bg-gradient-to-r from-violet-400 to-violet-500" />
+          <ScoreBar label="Beceri Eşleşmesi"    value={88} color="bg-gradient-to-r from-[#00F0FF] to-violet-400" />
+          <ScoreBar label="Müşteri Çekiciliği"  value={79} color="bg-gradient-to-r from-violet-500 to-violet-400" />
+        </div>
+
+        {/* Platform pills */}
+        <div className="px-6 pb-6">
+          <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-3 flex items-center justify-between">
+            {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
+              <div key={id} className="flex flex-col items-center gap-1.5">
+                <div className="rounded-lg border border-white/8 bg-white/[0.05] p-1.5">
+                  <PlatformLogo platform={id} size={14} />
+                </div>
+                <div className="h-1 w-1 rounded-full bg-[#00F0FF]" />
               </div>
             ))}
-          </div>
-
-          {/* Profile card */}
-          <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3 space-y-2">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs font-bold text-white">Senior React Developer</p>
-                <p className="text-[10px] text-white/40 mt-0.5">5+ yıl · TypeScript · Next.js uzmanı</p>
-              </div>
-              <span className="text-[10px] bg-green-500/15 text-green-400 px-2 py-0.5 rounded-full font-medium">Kaydedildi ✓</span>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {["React", "TypeScript", "Next.js", "Node.js", "GraphQL"].map((s) => (
-                <span key={s} className="text-[9px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.5 rounded font-medium">{s}</span>
-              ))}
-            </div>
-          </div>
-
-          {/* Platform results */}
-          <div className="grid grid-cols-2 gap-1.5">
-            {([
-              { id: "linkedin" as PlatformId, name: "LinkedIn",  done: true },
-              { id: "upwork"   as PlatformId, name: "Upwork",    done: true },
-              { id: "fiverr"   as PlatformId, name: "Fiverr",    done: true },
-              { id: "bionluk"  as PlatformId, name: "Bionluk",   done: false },
-              { id: "armut"    as PlatformId, name: "Armut",     done: false },
-            ]).map(({ id, name, done }) => (
-              <div key={name} className="rounded-lg border border-white/8 bg-white/[0.03] p-2 flex items-center gap-1.5">
-                <PlatformLogo platform={id} size={12} />
-                <span className="text-[9px] text-white/50 font-medium flex-1 truncate">{name}</span>
-                <span className={`text-[8px] px-1 py-0.5 rounded font-semibold shrink-0 ${done ? "bg-green-500/15 text-green-400" : "bg-white/8 text-white/25"}`}>
-                  {done ? "✓" : "…"}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Match score */}
-          <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3 space-y-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[10px] text-white/50 font-medium">Senior Dev · Acme Corp</p>
-                <p className="text-[9px] text-white/25">İlan eşleştirme sonucu</p>
-              </div>
-              <span className="text-lg font-extrabold text-green-400 tabular-nums">87<span className="text-xs font-normal text-white/30">/100</span></span>
-            </div>
-            <div className="h-1.5 rounded-full bg-white/8">
-              <div className="h-1.5 rounded-full bg-gradient-to-r from-green-500 to-green-400" style={{ width: "87%" }} />
-            </div>
-            <div className="grid grid-cols-2 gap-2 pt-0.5">
-              <div className="space-y-0.5">
-                <p className="text-[9px] text-green-400 font-semibold">Güçlü</p>
-                <p className="text-[9px] text-white/30">· React uzmanlığı</p>
-                <p className="text-[9px] text-white/30">· TypeScript deneyimi</p>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-[9px] text-red-400 font-semibold">Eksik</p>
-                <p className="text-[9px] text-white/30">· AWS sertifikası</p>
-                <p className="text-[9px] text-white/30">· Go deneyimi</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
