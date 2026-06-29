@@ -30,9 +30,14 @@ Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
   5 platform uyarlaması (LinkedIn/Upwork/Fiverr/Bionluk/Armut), kullanım analitiği sekmesi,
   OpenAI `gpt-4o-mini` geçişi, production deploy (Vercel). `phase-4-platforms` dalı main'e merge edildi.
 
-- **Faz 4.5 — Kredi UI + Stripe hazırlığı** *(şu an buradayız)*
+- **Faz 4.5 — Kredi UI + Stripe hazırlığı** ✅
   `credits` tablosu (migration), dashboard kredi bakiyesi göstergesi, "Kredi Satın Al" butonu.
   Stripe backend entegrasyonu beklemede (US banka hesabı gerekiyor); UI şimdi, ödeme altyapısı sonra.
 
-- **Faz 5 — İşveren tarafı / iki taraflı pazar** *(çok sonra)*
+- **Faz 5 — Landing maksimasyon + onboarding** ✅
+  PlatformLogo bileşeni (LinkedIn/Upwork/Fiverr SVG + Bionluk/Armut letter-mark);
+  landing: hero'da 5 platform adı + logo strip, platforms bölümü, Feature kartında logolar;
+  dashboard: 3 adımlı onboarding banner (profil → uyarlama → portfolyo), ilerleme takibi.
+
+- **Faz 6 — İşveren tarafı / iki taraflı pazar** *(çok sonra)*
   İşveren tarafı akışları ve pazar yeri.
