@@ -56,74 +56,80 @@ function ScoreBar({ label, value, color }: { label: string; value: number; color
 /* ─── Product mockup shown in hero ─────────────────────────────── */
 function ProductMockup() {
   return (
-    <div className="relative anim-scale-in anim-d3">
-      {/* Dual-tone glow */}
-      <div className="absolute -inset-6 rounded-3xl bg-[#00F0FF]/12 blur-[70px]" />
-      <div className="absolute -inset-8 rounded-3xl bg-violet-500/10 blur-[90px]" />
+    <div className="relative flex items-center justify-center py-10 anim-fade-in anim-d2">
+      {/* Ambient glows */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[320px] w-[320px] rounded-full bg-[#00F0FF]/10 blur-[80px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/3 -translate-y-1/3 h-[280px] w-[280px] rounded-full bg-violet-500/10 blur-[80px]" />
 
-      <div className="relative rounded-3xl border border-white/10 bg-[#161923] shadow-2xl overflow-hidden w-[340px]">
+      {/* 3-D perspective wrapper */}
+      <div style={{ perspective: "900px" }}>
+        <div
+          style={{
+            transform: "rotateX(10deg) rotateY(-18deg) rotate(-1deg)",
+            boxShadow: "0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07)",
+          }}
+          className="relative rounded-3xl bg-[#161923] w-[310px] overflow-hidden"
+        >
+          {/* Top shimmer line */}
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-[#00F0FF]/50 to-transparent" />
 
-        {/* Header */}
-        <div className="px-6 pt-6 pb-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Avatar */}
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#00F0FF]/30 to-violet-500/30 border border-white/10 flex items-center justify-center shrink-0">
-              <span className="text-sm font-bold text-white">AY</span>
+          {/* Header */}
+          <div className="px-5 pt-5 pb-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#00F0FF]/25 to-violet-500/30 border border-white/10 flex items-center justify-center shrink-0">
+                <span className="text-xs font-bold text-white">AY</span>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white leading-tight">Ahmet Yılmaz</p>
+                <p className="text-[11px] text-white/40">Senior React Developer</p>
+              </div>
+            </div>
+            <span className="text-[10px] font-bold text-[#00F0FF] bg-[#00F0FF]/10 border border-[#00F0FF]/25 rounded-full px-2.5 py-1">
+              ✦ AI
+            </span>
+          </div>
+
+          <div className="h-px bg-white/5 mx-5" />
+
+          {/* Score ring */}
+          <div className="flex items-center gap-4 px-5 py-4">
+            <div className="relative shrink-0">
+              <CircleScore score={87} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-[22px] font-extrabold text-white leading-none">87</span>
+                <span className="text-[8px] font-bold text-[#00F0FF] uppercase tracking-widest mt-0.5">Güçlü</span>
+              </div>
             </div>
             <div>
-              <p className="text-sm font-bold text-white leading-tight">Ahmet Yılmaz</p>
-              <p className="text-[11px] text-white/40 mt-0.5">Senior React Developer</p>
+              <p className="text-[9px] text-white/30 uppercase tracking-widest font-bold mb-1.5">Genel Skor</p>
+              <p className="text-[11px] text-white/55 leading-relaxed">
+                Güçlü profil. Başlık<br />optimizasyonu en büyük fırsat.
+              </p>
             </div>
           </div>
-          {/* Badge */}
-          <span className="flex items-center gap-1 rounded-full bg-[#00F0FF]/15 border border-[#00F0FF]/30 px-2.5 py-1 text-[10px] font-bold text-[#00F0FF]">
-            ✦ Optimize
-          </span>
-        </div>
 
-        <div className="h-px bg-white/5 mx-6" />
+          <div className="h-px bg-white/5 mx-5" />
 
-        {/* Score ring + label */}
-        <div className="flex items-center gap-5 px-6 py-5">
-          <div className="relative shrink-0">
-            <CircleScore score={87} />
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-2xl font-extrabold text-white leading-none">87</span>
-              <span className="text-[9px] font-bold text-[#00F0FF] uppercase tracking-wider mt-0.5">Güçlü</span>
-            </div>
+          {/* Score bars */}
+          <div className="px-5 py-4 space-y-3">
+            <ScoreBar label="Platform Uyumu"    value={92} color="bg-gradient-to-r from-[#00F0FF] to-cyan-400" />
+            <ScoreBar label="Beceri Eşleşmesi"  value={88} color="bg-gradient-to-r from-[#00F0FF] to-violet-400" />
+            <ScoreBar label="Müşteri Çekiciliği" value={76} color="bg-gradient-to-r from-violet-400 to-violet-500" />
           </div>
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold text-white/35 uppercase tracking-wider">Genel Skor</p>
-            <p className="text-xs text-white/60 leading-relaxed">
-              Güçlü profil. Başlık ve özet
-              daha yükseğe çıkmak için
-              en büyük kaldıraçlar.
-            </p>
-          </div>
-        </div>
 
-        <div className="h-px bg-white/5 mx-6" />
+          <div className="h-px bg-white/5 mx-5" />
 
-        {/* Breakdown bars */}
-        <div className="px-6 py-5 space-y-3.5">
-          <ScoreBar label="Platform Uyumu"      value={92} color="bg-gradient-to-r from-[#00F0FF] to-[#00D4E8]" />
-          <ScoreBar label="Profil Gücü"         value={84} color="bg-gradient-to-r from-violet-400 to-violet-500" />
-          <ScoreBar label="Beceri Eşleşmesi"    value={88} color="bg-gradient-to-r from-[#00F0FF] to-violet-400" />
-          <ScoreBar label="Müşteri Çekiciliği"  value={79} color="bg-gradient-to-r from-violet-500 to-violet-400" />
-        </div>
-
-        {/* Platform pills */}
-        <div className="px-6 pb-6">
-          <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-3 flex items-center justify-between">
+          {/* Platform logos */}
+          <div className="px-5 py-4 flex items-center justify-between">
             {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
-              <div key={id} className="flex flex-col items-center gap-1.5">
-                <div className="rounded-lg border border-white/8 bg-white/[0.05] p-1.5">
-                  <PlatformLogo platform={id} size={14} />
-                </div>
-                <div className="h-1 w-1 rounded-full bg-[#00F0FF]" />
+              <div key={id} className="rounded-xl border border-white/8 bg-white/[0.04] p-1.5">
+                <PlatformLogo platform={id} size={15} />
               </div>
             ))}
           </div>
+
+          {/* Bottom shimmer */}
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
         </div>
       </div>
     </div>
