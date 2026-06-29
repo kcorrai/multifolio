@@ -227,7 +227,7 @@ export default function LoginPage() {
         </div>
 
         {/* ══ DESKTOP LAYOUT ══ */}
-        <div className="relative hidden lg:flex flex-col flex-1 min-h-0 gap-5 pt-6">
+        <div className="relative hidden lg:flex flex-col flex-1 min-h-0 justify-between pt-5 pb-2">
 
           {/* ① Badge + Headline — tam genişlik */}
           <div className="flex-none space-y-3 anim-fade-up anim-d1">
@@ -260,7 +260,7 @@ export default function LoginPage() {
           </div>
 
           {/* ② 2-sütun: Features | Büyük mockup */}
-          <div className="flex-1 min-h-0 grid grid-cols-[5fr_7fr] gap-6">
+          <div className="grid grid-cols-[5fr_7fr] gap-6 items-center">
 
             {/* Sol: 4 özellik */}
             <div className="flex flex-col justify-center space-y-4 anim-fade-up anim-d3">
@@ -273,7 +273,7 @@ export default function LoginPage() {
                   >
                     <CheckCircle2 className="h-3 w-3 text-indigo-500 dark:text-[#00F0FF]" />
                   </div>
-                  <span className="text-sm font-medium leading-snug
+                  <span className="text-base font-medium leading-snug
                                    text-slate-600 dark:text-white/65">
                     {f}
                   </span>
@@ -281,8 +281,8 @@ export default function LoginPage() {
               ))}
             </div>
 
-            {/* Sağ: BÜYÜK animasyonlu platform hub */}
-            <div className="anim-scale-in anim-d3 min-h-0">
+            {/* Sağ: animasyonlu platform hub — orta boy */}
+            <div className="anim-scale-in anim-d3 h-[300px] self-center">
               <PlatformHubMockup />
             </div>
           </div>
