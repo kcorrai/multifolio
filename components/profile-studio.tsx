@@ -114,6 +114,7 @@ export function ProfileStudio({
   initialCredits: number;
 }) {
   const [activeTab, setActiveTab] = useState<Tab>("profil");
+  const [onboardingDismissed, setOnboardingDismissed] = useState(initialProfile !== null);
 
   const [headline, setHeadline] = useState(initialProfile?.headline ?? "");
   const [summary, setSummary] = useState(initialProfile?.summary ?? "");
@@ -255,8 +256,73 @@ export function ProfileStudio({
     { id: "analitik",  label: "Analitik",          icon: BarChart3 },
   ];
 
+  const onboardingStep = !profileSaved ? 1 : readyPlatforms === 0 ? 2 : !portfolio?.published ? 3 : 4;
+
   return (
     <div className="space-y-6">
+
+      {/* ── Onboarding banner ── */}
+      {!onboardingDismissed && onboardingStep < 4 && (
+        <div className="relative rounded-2xl border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/5 overflow-hidden">
+          <div className="h-0.5 bg-gradient-to-r from-indigo-500 via-violet-500 to-indigo-300" />
+          <div className="p-5">
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <div>
+                <p className="text-sm font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
+                  <Sparkles className="h-4 w-4" />
+                  Multifolio&apos;ya hoş geldin!
+                </p>
+                <p className="text-xs text-indigo-600/70 dark:text-indigo-400/60 mt-0.5">
+                  3 adımda freelancer profilini kuralım.
+                </p>
+              </div>
+              <button
+                onClick={() => setOnboardingDismissed(true)}
+                className="text-indigo-400 hover:text-indigo-600 dark:text-indigo-500 dark:hover:text-indigo-300 transition-colors shrink-0"
+                title="Kapat"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { step: 1, label: "Profil doldur", desc: "Başlık, özet ve becerileri gir.", tab: "profil" as Tab },
+                { step: 2, label: "Platform uyarla", desc: "AI ile 5 platform için optimize et.", tab: "uyarlama" as Tab },
+                { step: 3, label: "Portfolyo yayınla", desc: "Herkese açık sayfanı hazırla.", tab: "portfolyo" as Tab },
+              ].map(({ step, label, desc, tab }) => {
+                const done = onboardingStep > step;
+                const active = onboardingStep === step;
+                return (
+                  <button
+                    key={step}
+                    onClick={() => { setActiveTab(tab); if (active || done) return; }}
+                    className={`text-left rounded-xl p-3 border transition-all ${
+                      done
+                        ? "border-green-200 bg-green-50 dark:border-green-800/40 dark:bg-green-950/20"
+                        : active
+                        ? "border-indigo-300 bg-white dark:border-indigo-500/40 dark:bg-indigo-950/30 shadow-sm"
+                        : "border-indigo-100 dark:border-indigo-500/10 opacity-50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 text-[10px] font-extrabold ${
+                        done ? "bg-green-500 text-white" : active ? "bg-indigo-500 text-white" : "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-500"
+                      }`}>
+                        {done ? <Check className="h-3 w-3" /> : step}
+                      </div>
+                      <span className={`text-xs font-semibold ${done ? "text-green-700 dark:text-green-400" : active ? "text-indigo-700 dark:text-indigo-300" : "text-indigo-500"}`}>
+                        {label}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-white/40 leading-snug pl-7">{desc}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Page header ── */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
