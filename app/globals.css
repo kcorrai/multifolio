@@ -198,19 +198,19 @@
   box-shadow: 0 40px 80px rgba(0,0,0,0.60), 0 0 0 1px rgba(255,255,255,0.07);
 }
 
-/* ─── Login page — animated hero blobs ────────────────────────── */
+/* ─── Login page — blob + hub + platform animations ───────────── */
 @keyframes loginBlobFloat {
-  0%, 100% { transform: translate(0, 0)      scale(1);    }
+  0%, 100% { transform: translate(0, 0)        scale(1);    }
   33%       { transform: translate(24px, -36px) scale(1.06); }
   66%       { transform: translate(-18px, 18px) scale(0.96); }
 }
 @keyframes loginBlobFloat2 {
-  0%, 100% { transform: translate(0, 0)       scale(1);    }
+  0%, 100% { transform: translate(0, 0)        scale(1);    }
   40%       { transform: translate(-28px, 22px) scale(1.08); }
   70%       { transform: translate(20px, -24px) scale(0.94); }
 }
 @keyframes loginBlobFloat3 {
-  0%, 100% { transform: translate(0, 0)       scale(1);    }
+  0%, 100% { transform: translate(0, 0)        scale(1);    }
   30%       { transform: translate(15px,  28px) scale(0.95); }
   65%       { transform: translate(-20px,-14px) scale(1.06); }
 }
@@ -219,6 +219,41 @@
 .login-blob-2 { animation: loginBlobFloat2 18s ease-in-out infinite; }
 .login-blob-3 { animation: loginBlobFloat3 22s ease-in-out infinite; }
 
+/* Platform icons gentle bob */
+@keyframes platformFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-9px); }
+}
+.platform-float { animation: platformFloat 3s ease-in-out infinite; }
+
+/* Marching-ants on connecting lines */
+@keyframes marchingAnts { to { stroke-dashoffset: -20; } }
+.login-line {
+  stroke-dasharray: 4 6;
+  opacity: 0.55;
+  animation: marchingAnts 2s linear infinite;
+}
+
+/* Hub center pulse */
+@keyframes hubGlow {
+  0%, 100% { box-shadow: 0 0 14px rgba(99,102,241,.22), 0 0 0 0 rgba(99,102,241,0); }
+  50%       { box-shadow: 0 0 24px rgba(99,102,241,.38), 0 0 9px rgba(99,102,241,.14); }
+}
+@keyframes hubGlowDark {
+  0%, 100% { box-shadow: 0 0 14px rgba(0,240,255,.22), 0 0 0 0 rgba(0,240,255,0); }
+  50%       { box-shadow: 0 0 28px rgba(0,240,255,.42), 0 0 9px rgba(0,240,255,.18); }
+}
+.hub-glow      { animation: hubGlow     3s ease-in-out infinite; }
+.dark .hub-glow{ animation: hubGlowDark 3s ease-in-out infinite; }
+
+/* Decorative sparkle */
+@keyframes sparkleAnim {
+  0%, 100% { transform: scale(1)    rotate(0deg);  opacity: .35; }
+  50%       { transform: scale(1.2) rotate(18deg); opacity: .65; }
+}
+.anim-sparkle { animation: sparkleAnim 3.5s ease-in-out infinite; }
+
+/* Form card slide-in from right */
 @keyframes loginFormIn {
   from { opacity: 0; transform: translateX(24px); }
   to   { opacity: 1; transform: translateX(0); }

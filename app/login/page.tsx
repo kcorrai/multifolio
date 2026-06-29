@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Mail, CheckCircle2, Star, ArrowRight } from "lucide-react";
+import { ArrowLeft, Mail, CheckCircle2, Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -10,15 +10,151 @@ import { PlatformLogo } from "@/components/platform-logo";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { PlatformId } from "@/lib/ai/platforms";
 
+/* ─── Static data ─────────────────────────────────────────────── */
 const FEATURES = [
-  "Profilini bir kez gir, 5 platform için uyarla",
-  "AI ile saniyeler içinde portfolyo oluştur",
-  "İlanlarla uyum skorunu anında gör",
-  "Başvurularını tek ekrandan takip et",
+  "Profilini bir kez gir, çoklu platform için uyarla",
+  "Yapay Zeka ile profesyonel portfolyo oluştur",
+  "İş ilanlarına mükemmel uyumu anında gör",
+  "Tüm başvurularını tek bir panelden takip et",
 ];
 
 const PLATFORMS: PlatformId[] = ["linkedin", "upwork", "fiverr", "bionluk", "armut"];
 
+interface HubPlatform {
+  id: PlatformId;
+  style: { top?: string; bottom?: string; left?: string; right?: string };
+  delay: string;
+}
+
+const HUB_PLATFORMS: HubPlatform[] = [
+  { id: "linkedin", style: { top: "8%",    left: "8%"   }, delay: "0s"   },
+  { id: "upwork",   style: { top: "8%",    right: "8%"  }, delay: "0.7s" },
+  { id: "fiverr",   style: { top: "40%",   right: "2%"  }, delay: "1.4s" },
+  { id: "bionluk",  style: { bottom: "8%", right: "20%" }, delay: "2.1s" },
+  { id: "armut",    style: { bottom: "8%", left: "20%"  }, delay: "2.8s" },
+];
+
+/* SVG line endpoints from hub-center (50,50) to each platform icon center */
+const LINE_ENDPOINTS = [
+  { x2: "15", y2: "16" },   // linkedin
+  { x2: "85", y2: "16" },   // upwork
+  { x2: "91", y2: "50" },   // fiverr
+  { x2: "79", y2: "84" },   // bionluk
+  { x2: "27", y2: "84" },   // armut
+];
+
+/* ─── Platform hub mockup ──────────────────────────────────────── */
+function PlatformHubMockup() {
+  return (
+    <div
+      className="w-full max-w-[320px] mx-auto rounded-2xl overflow-hidden anim-scale-in anim-d3
+                 border border-slate-200 dark:border-white/8
+                 bg-white/90 dark:bg-white/[0.03]
+                 shadow-2xl shadow-slate-300/40 dark:shadow-black/60
+                 backdrop-blur-sm"
+    >
+      {/* Browser chrome */}
+      <div
+        className="flex items-center gap-1.5 px-4 py-2.5
+                   border-b border-slate-100 dark:border-white/6
+                   bg-slate-50 dark:bg-white/[0.03]"
+      >
+        <div className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+        <div className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
+        <div className="h-2.5 w-2.5 rounded-full bg-green-400/80" />
+        <span className="ml-3 text-[10px] font-medium text-slate-400 dark:text-white/25 tracking-tight">
+          multifolio.app/studio
+        </span>
+      </div>
+
+      {/* Hub area */}
+      <div className="relative h-[200px]">
+        {/* Ambient glow */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="h-20 w-20 rounded-full blur-[40px]
+                          bg-indigo-300/30 dark:bg-[#00F0FF]/10" />
+        </div>
+
+        {/* Connecting lines */}
+        <svg
+          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="hubLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#6366F1" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#00F0FF" stopOpacity="0.7" />
+            </linearGradient>
+          </defs>
+          {LINE_ENDPOINTS.map(({ x2, y2 }, i) => (
+            <line
+              key={i}
+              x1="50" y1="50"
+              x2={x2} y2={y2}
+              stroke="url(#hubLineGrad)"
+              strokeWidth="0.9"
+              className="login-line"
+              style={{ animationDelay: `${i * 0.4}s` }}
+            />
+          ))}
+        </svg>
+
+        {/* Central hub */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+          <div
+            className="h-14 w-14 rounded-2xl flex items-center justify-center hub-glow
+                       bg-gradient-to-br from-indigo-100 to-violet-100
+                       dark:from-[#00F0FF]/15 dark:to-violet-600/20
+                       border border-indigo-200/80 dark:border-[#00F0FF]/30"
+          >
+            <span className="text-indigo-600 dark:text-[#00F0FF] font-extrabold text-xl">M</span>
+          </div>
+        </div>
+
+        {/* Orbiting platform icons */}
+        {HUB_PLATFORMS.map(({ id, style, delay }) => (
+          <div
+            key={id}
+            className="absolute z-10 platform-float"
+            style={{ ...style, animationDelay: delay }}
+          >
+            <div
+              className="h-11 w-11 rounded-xl p-1.5
+                         border border-slate-200 dark:border-white/10
+                         bg-white dark:bg-white/8
+                         shadow-lg shadow-slate-200/60 dark:shadow-black/40
+                         backdrop-blur-sm"
+            >
+              <PlatformLogo platform={id} size={28} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Sparkle decoration ──────────────────────────────────────── */
+function SparkleDecor({ className }: { className?: string }) {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className={className}>
+      <path
+        d="M16 2 L17.8 13.2 L28 16 L17.8 18.8 L16 30 L14.2 18.8 L4 16 L14.2 13.2 Z"
+        fill="url(#sparkDecorGrad)"
+      />
+      <defs>
+        <linearGradient id="sparkDecorGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#6366F1" />
+          <stop offset="1" stopColor="#00F0FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+/* ─── Page ─────────────────────────────────────────────────────── */
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -45,150 +181,233 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col lg:flex-row">
 
       {/* ══════════════════════════════════════════════════════════
-          LEFT PANEL — always-dark hero with animated blobs
+          LEFT PANEL — light/dark responsive hero
       ══════════════════════════════════════════════════════════ */}
-      <div className="relative lg:w-[55%] flex flex-col overflow-hidden bg-[#080A10]
-                      px-8 pt-8 pb-10 lg:px-14 lg:pt-12 lg:pb-12">
+      <div
+        className="relative lg:w-[58%] flex flex-col overflow-hidden
+                   bg-slate-50 dark:bg-[#080A10]
+                   px-8 pt-8 pb-10 lg:px-12 lg:pt-10 lg:pb-10"
+      >
+        {/* Light-mode gradient overlay */}
+        <div className="pointer-events-none absolute inset-0 dark:hidden
+                        bg-gradient-to-br from-indigo-50/80 via-white/30 to-violet-50/50" />
 
-        {/* Animated blobs */}
+        {/* Blobs — pastel in light, vibrant in dark */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="login-blob-1 absolute -top-40 -left-40 h-[560px] w-[560px] rounded-full bg-[#00F0FF]/10 blur-[110px]" />
-          <div className="login-blob-2 absolute top-1/2 -right-24 h-[440px] w-[440px] rounded-full bg-violet-600/12 blur-[95px]" />
-          <div className="login-blob-3 absolute -bottom-24 left-1/4 h-[400px] w-[400px] rounded-full bg-indigo-600/10 blur-[90px]" />
-          {/* Subtle dot grid */}
-          <svg className="absolute inset-0 h-full w-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+          <div className="login-blob-1 absolute -top-40 -left-40 h-[560px] w-[560px] rounded-full blur-[110px]
+                          bg-indigo-200/50 dark:bg-[#00F0FF]/10" />
+          <div className="login-blob-2 absolute top-1/2 -right-24 h-[440px] w-[440px] rounded-full blur-[95px]
+                          bg-violet-200/50 dark:bg-violet-600/12" />
+          <div className="login-blob-3 absolute -bottom-24 left-1/4 h-[400px] w-[400px] rounded-full blur-[90px]
+                          bg-blue-200/40 dark:bg-indigo-600/10" />
+
+          {/* Dot grid */}
+          <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <pattern id="login-dot-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-                <circle cx="1.5" cy="1.5" r="1.5" fill="white" />
+              <pattern id="left-dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                <circle cx="1.5" cy="1.5" r="1.5"
+                  className="fill-slate-300/60 dark:fill-white/[0.035]" />
               </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#login-dot-grid)" />
+            <rect width="100%" height="100%" fill="url(#left-dots)" />
           </svg>
         </div>
 
         {/* ── Logo ── */}
         <div className="relative anim-fade-in anim-d0 flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl bg-[#00F0FF]/15 border border-[#00F0FF]/30
-                          flex items-center justify-center shadow-lg shadow-[#00F0FF]/20">
-            <span className="text-[#00F0FF] text-sm font-extrabold">M</span>
+          <div
+            className="h-9 w-9 rounded-xl flex items-center justify-center
+                       bg-indigo-100 dark:bg-[#00F0FF]/15
+                       border border-indigo-200 dark:border-[#00F0FF]/30
+                       shadow shadow-indigo-200/60 dark:shadow-[#00F0FF]/20"
+          >
+            <span className="text-indigo-600 dark:text-[#00F0FF] text-sm font-extrabold">M</span>
           </div>
-          <span className="font-bold text-lg text-white tracking-tight">Multifolio</span>
+          <span className="font-bold text-lg text-slate-900 dark:text-white tracking-tight">
+            Multifolio
+          </span>
         </div>
 
-        {/* ── Desktop: full hero content ── */}
-        <div className="relative hidden lg:flex flex-col justify-center flex-1 space-y-9 py-6">
+        {/* ── Desktop: 2-col inner layout ── */}
+        <div className="relative hidden lg:grid grid-cols-[5fr_6fr] gap-4 items-center flex-1 py-6">
 
-          {/* Stars badge */}
-          <div className="anim-fade-up anim-d1 inline-flex w-fit items-center gap-2
-                          rounded-full border border-[#00F0FF]/20 bg-[#00F0FF]/8
-                          px-4 py-1.5">
-            <div className="flex gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-3 w-3 fill-amber-300 text-amber-300" />
-              ))}
+          {/* Left col: stars + headline + features */}
+          <div className="space-y-6">
+
+            {/* Stars badge */}
+            <div
+              className="anim-fade-up anim-d1 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5
+                         border border-indigo-200 dark:border-[#00F0FF]/20
+                         bg-indigo-50 dark:bg-[#00F0FF]/8"
+            >
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              <span className="text-xs font-semibold text-indigo-700 dark:text-white/65">
+                Beta — İlk 100 ücretsiz
+              </span>
             </div>
-            <span className="text-xs font-semibold text-white/65">
-              Beta — İlk 100 kullanıcı ücretsiz
-            </span>
+
+            {/* Headline */}
+            <div className="anim-fade-up anim-d2 leading-none">
+              <h1 className="text-[2.15rem] font-extrabold tracking-tight leading-[1.12]
+                             text-slate-900 dark:text-white">
+                Freelancer kariyerini
+              </h1>
+              <h1 className="text-[2.15rem] font-extrabold tracking-tight leading-[1.12]
+                             bg-gradient-to-r from-indigo-500 to-violet-500
+                             dark:from-[#00F0FF] dark:to-violet-400
+                             bg-clip-text text-transparent">
+                tek platformdan
+              </h1>
+              <h1 className="text-[2.15rem] font-extrabold tracking-tight leading-[1.12]
+                             text-slate-900 dark:text-white">
+                yönet.
+              </h1>
+            </div>
+
+            {/* Feature list */}
+            <ul className="anim-fade-up anim-d3 space-y-3.5">
+              {FEATURES.map((f, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <div
+                    className="mt-0.5 shrink-0 h-5 w-5 rounded-full flex items-center justify-center
+                               border border-indigo-200 dark:border-[#00F0FF]/25
+                               bg-indigo-50 dark:bg-[#00F0FF]/10"
+                  >
+                    <CheckCircle2 className="h-3 w-3 text-indigo-500 dark:text-[#00F0FF]" />
+                  </div>
+                  <span className="text-sm font-medium leading-snug
+                                   text-slate-600 dark:text-white/65">
+                    {f}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Headline */}
-          <div className="anim-fade-up anim-d2 space-y-1">
-            <h1 className="text-[2.7rem] font-extrabold leading-[1.1] tracking-tight text-white">
-              Freelancer kariyerini
-            </h1>
-            <h1 className="text-[2.7rem] font-extrabold leading-[1.1] tracking-tight
-                           bg-gradient-to-r from-[#00F0FF] to-violet-400 bg-clip-text text-transparent">
-              tek platformdan
-            </h1>
-            <h1 className="text-[2.7rem] font-extrabold leading-[1.1] tracking-tight text-white">
-              yönet.
-            </h1>
-          </div>
+          {/* Right col: browser mockup */}
+          <PlatformHubMockup />
+        </div>
 
-          {/* Feature list */}
-          <ul className="anim-fade-up anim-d3 space-y-4">
-            {FEATURES.map((f, i) => (
-              <li key={i} className="flex items-center gap-3.5">
-                <div className="shrink-0 h-5 w-5 rounded-full
-                                bg-[#00F0FF]/12 border border-[#00F0FF]/25
-                                flex items-center justify-center">
-                  <CheckCircle2 className="h-3 w-3 text-[#00F0FF]" />
-                </div>
-                <span className="text-sm text-white/65 font-medium leading-relaxed">{f}</span>
-              </li>
+        {/* ── Desktop: platform logo strip ── */}
+        <div className="relative hidden lg:block anim-fade-up anim-d5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] mb-3
+                        text-slate-400 dark:text-white/25">
+            Desteklenen platformlar
+          </p>
+          <div
+            className="inline-flex items-center gap-2 px-3 py-2.5 rounded-2xl
+                       border border-slate-200 dark:border-white/8
+                       bg-white/70 dark:bg-white/[0.03]
+                       backdrop-blur-sm"
+          >
+            {PLATFORMS.map((id) => (
+              <div
+                key={id}
+                className="h-10 w-10 rounded-xl flex items-center justify-center p-1.5
+                           border border-slate-200 dark:border-white/10
+                           bg-white dark:bg-white/8
+                           hover:scale-110 transition-transform duration-200"
+              >
+                <PlatformLogo platform={id} size={22} />
+              </div>
             ))}
-          </ul>
-
-          {/* Divider */}
-          <div className="h-px w-full bg-gradient-to-r from-white/0 via-white/10 to-white/0" />
-
-          {/* Platform logos */}
-          <div className="anim-fade-up anim-d4 space-y-3.5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/25">
-              Desteklenen platformlar
-            </p>
-            <div className="flex items-center gap-2.5 flex-wrap">
-              {PLATFORMS.map((id) => (
-                <div
-                  key={id}
-                  className="rounded-xl border border-white/10 bg-white/[0.06]
-                             p-2.5 hover:bg-white/[0.11] hover:border-white/18
-                             transition-colors duration-200"
-                >
-                  <PlatformLogo platform={id} size={18} />
-                </div>
-              ))}
-              <span className="text-xs text-white/25 font-medium ml-1">5 platform</span>
-            </div>
+            <span className="text-xs font-medium px-2 text-slate-400 dark:text-white/30">
+              5 platform
+            </span>
           </div>
         </div>
 
         {/* ── Mobile: compact tagline ── */}
         <div className="relative lg:hidden mt-5 space-y-2">
-          <p className="text-2xl font-extrabold text-white leading-tight">
+          <p className="text-2xl font-extrabold leading-tight text-slate-900 dark:text-white">
             Tek profil.{" "}
-            <span className="bg-gradient-to-r from-[#00F0FF] to-violet-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-500 to-violet-500
+                             dark:from-[#00F0FF] dark:to-violet-400 bg-clip-text text-transparent">
               5 platform.
             </span>
           </p>
-          <p className="text-sm text-white/50 font-medium">
+          <p className="text-sm font-medium text-slate-500 dark:text-white/50">
             Freelancer kariyerini tek yerden yönet.
           </p>
         </div>
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          RIGHT PANEL — adaptive form (light / dark)
+          RIGHT PANEL — dot-grid background + floating card
       ══════════════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col items-center justify-center
-                      px-6 py-12 lg:py-0 bg-background relative">
+      <div
+        className="flex-1 relative flex items-center justify-center
+                   px-6 py-10 lg:py-0
+                   bg-slate-100 dark:bg-[#0D0F18]"
+      >
+        {/* Dot grid */}
+        <svg
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <pattern id="right-dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1"
+                className="fill-slate-400/35 dark:fill-white/[0.055]" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#right-dots)" />
+        </svg>
+
+        {/* Subtle ambient glow — right panel */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+                          h-[400px] w-[400px] rounded-full blur-[120px]
+                          bg-indigo-100/60 dark:bg-violet-600/6" />
+        </div>
 
         {/* Theme toggle */}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 z-10">
           <ThemeToggle />
         </div>
 
-        <div className="w-full max-w-[380px] login-form-in">
+        {/* Decorative sparkle */}
+        <div className="absolute bottom-8 right-8 z-10 anim-sparkle">
+          <SparkleDecor className="opacity-25 dark:opacity-15" />
+        </div>
 
+        {/* Second sparkle — top-left, smaller */}
+        <div className="absolute top-16 left-8 z-10 anim-sparkle" style={{ animationDelay: "1.8s" }}>
+          <SparkleDecor className="opacity-15 dark:opacity-10 scale-[0.6]" />
+        </div>
+
+        {/* ── Floating form card ── */}
+        <div
+          className="relative z-10 w-full max-w-[390px] login-form-in
+                     rounded-2xl p-8
+                     border border-white/90 dark:border-white/8
+                     bg-white dark:bg-[#161B2C]
+                     shadow-2xl shadow-slate-200/70 dark:shadow-black/60"
+        >
           {status === "sent" ? (
             /* ── Success state ── */
-            <div className="space-y-6 anim-scale-in">
-              <div className="mx-auto h-16 w-16 rounded-2xl
-                              bg-[#00F0FF]/10 border border-[#00F0FF]/20
-                              flex items-center justify-center">
-                <Mail className="h-7 w-7 text-[#00F0FF]" />
+            <div className="space-y-6 text-center anim-scale-in">
+              <div
+                className="mx-auto h-16 w-16 rounded-2xl flex items-center justify-center
+                           bg-indigo-50 dark:bg-[#00F0FF]/10
+                           border border-indigo-100 dark:border-[#00F0FF]/20"
+              >
+                <Mail className="h-7 w-7 text-indigo-500 dark:text-[#00F0FF]" />
               </div>
-              <div className="text-center space-y-3">
+              <div className="space-y-2">
                 <h2 className="text-2xl font-bold text-foreground">E-postanı kontrol et</h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  <span className="font-semibold text-foreground">{email}</span> adresine giriş
-                  bağlantısı gönderdik. Spam klasörünü de kontrol et.
+                  <span className="font-semibold text-foreground">{email}</span> adresine
+                  giriş bağlantısı gönderdik. Spam klasörünü de kontrol et.
                 </p>
               </div>
               <button
                 onClick={() => setStatus("idle")}
-                className="w-full text-sm text-muted-foreground hover:text-foreground
+                className="text-sm text-muted-foreground hover:text-foreground
                            underline underline-offset-2 transition-colors"
               >
                 Farklı e-posta ile dene
@@ -198,17 +417,20 @@ export default function LoginPage() {
             /* ── Form state ── */
             <>
               {/* Mobile-only logo */}
-              <div className="lg:hidden mb-8 flex items-center gap-2.5">
-                <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center
-                                shadow shadow-primary/30">
-                  <span className="text-primary-foreground text-sm font-extrabold">M</span>
+              <div className="lg:hidden mb-6 flex items-center justify-center gap-2.5">
+                <div
+                  className="h-8 w-8 rounded-xl flex items-center justify-center
+                             bg-indigo-100 dark:bg-[#00F0FF]/15
+                             border border-indigo-200 dark:border-[#00F0FF]/30"
+                >
+                  <span className="text-indigo-600 dark:text-[#00F0FF] text-sm font-extrabold">M</span>
                 </div>
                 <span className="font-bold text-base text-foreground">Multifolio</span>
               </div>
 
-              {/* Heading */}
-              <div className="mb-8 space-y-2">
-                <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
+              {/* Heading — centered */}
+              <div className="text-center mb-7 space-y-2 anim-fade-up anim-d0">
+                <h1 className="text-[1.8rem] font-extrabold text-foreground tracking-tight">
                   Giriş yap
                 </h1>
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -218,7 +440,7 @@ export default function LoginPage() {
               </div>
 
               {/* Form */}
-              <form onSubmit={onSubmit} className="space-y-4">
+              <form onSubmit={onSubmit} className="space-y-4 anim-fade-up anim-d1">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-semibold text-foreground">
                     E-posta adresi
@@ -243,57 +465,44 @@ export default function LoginPage() {
                   type="submit"
                   disabled={status === "sending"}
                   className="w-full h-11 rounded-lg font-semibold text-sm cursor-pointer
+                             flex items-center justify-center gap-2
                              bg-[#00F0FF] hover:bg-[#00d8e8] active:bg-[#00c8d6]
                              text-[#080A10]
                              shadow-lg shadow-[#00F0FF]/20
                              hover:shadow-xl hover:shadow-[#00F0FF]/30
                              disabled:opacity-50 disabled:cursor-not-allowed
-                             transition-all duration-200
-                             flex items-center justify-center gap-2"
+                             transition-all duration-200"
                 >
-                  {status === "sending" ? (
-                    "Gönderiliyor…"
-                  ) : (
-                    <>
-                      Bağlantı gönder
-                      <ArrowRight className="h-4 w-4" />
-                    </>
-                  )}
+                  {status === "sending" ? "Gönderiliyor…" : "Bağlantı gönder →"}
                 </button>
               </form>
 
-              {/* Trust note */}
-              <div className="mt-8 pt-6 border-t border-border">
+              {/* Legal + back */}
+              <div className="mt-7 space-y-4 anim-fade-in anim-d2">
                 <p className="text-xs text-center text-muted-foreground leading-relaxed">
                   Devam ederek{" "}
-                  <a
-                    href="#"
-                    className="underline underline-offset-2 hover:text-foreground transition-colors"
-                  >
+                  <a href="#"
+                    className="underline underline-offset-2 hover:text-foreground transition-colors">
                     Kullanım Şartları
                   </a>
                   {" "}ve{" "}
-                  <a
-                    href="#"
-                    className="underline underline-offset-2 hover:text-foreground transition-colors"
-                  >
+                  <a href="#"
+                    className="underline underline-offset-2 hover:text-foreground transition-colors">
                     Gizlilik Politikası
                   </a>
                   {"'"}nı kabul etmiş olursun.
                 </p>
+                <Link
+                  href="/"
+                  className="flex items-center justify-center gap-1.5
+                             text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ArrowLeft className="h-3 w-3" />
+                  Ana sayfaya dön
+                </Link>
               </div>
             </>
           )}
-
-          {/* Back link */}
-          <Link
-            href="/"
-            className="mt-8 flex items-center justify-center gap-1.5
-                       text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-3 w-3" />
-            Ana sayfaya dön
-          </Link>
         </div>
       </div>
     </div>
