@@ -29,25 +29,24 @@ interface HubPlatform {
 const HUB_PLATFORMS: HubPlatform[] = [
   { id: "linkedin", style: { top: "8%",    left: "8%"   }, delay: "0s"   },
   { id: "upwork",   style: { top: "8%",    right: "8%"  }, delay: "0.7s" },
-  { id: "fiverr",   style: { top: "40%",   right: "2%"  }, delay: "1.4s" },
-  { id: "bionluk",  style: { bottom: "8%", right: "20%" }, delay: "2.1s" },
-  { id: "armut",    style: { bottom: "8%", left: "20%"  }, delay: "2.8s" },
+  { id: "fiverr",   style: { top: "42%",   right: "2%"  }, delay: "1.4s" },
+  { id: "bionluk",  style: { bottom: "8%", right: "16%" }, delay: "2.1s" },
+  { id: "armut",    style: { bottom: "8%", left: "16%"  }, delay: "2.8s" },
 ];
 
-/* SVG line endpoints from hub-center (50,50) to each platform icon center */
 const LINE_ENDPOINTS = [
-  { x2: "15", y2: "16" },   // linkedin
-  { x2: "85", y2: "16" },   // upwork
-  { x2: "91", y2: "50" },   // fiverr
-  { x2: "79", y2: "84" },   // bionluk
-  { x2: "27", y2: "84" },   // armut
+  { x2: "14", y2: "14" },  // linkedin
+  { x2: "86", y2: "14" },  // upwork
+  { x2: "92", y2: "50" },  // fiverr
+  { x2: "78", y2: "86" },  // bionluk
+  { x2: "22", y2: "86" },  // armut
 ];
 
-/* ─── Platform hub mockup ──────────────────────────────────────── */
+/* ─── Platform hub mockup (full-height) ───────────────────────── */
 function PlatformHubMockup() {
   return (
     <div
-      className="w-full max-w-[320px] mx-auto rounded-2xl overflow-hidden anim-scale-in anim-d3
+      className="w-full h-full flex flex-col rounded-2xl overflow-hidden
                  border border-slate-200 dark:border-white/8
                  bg-white/90 dark:bg-white/[0.03]
                  shadow-2xl shadow-slate-300/40 dark:shadow-black/60
@@ -55,24 +54,24 @@ function PlatformHubMockup() {
     >
       {/* Browser chrome */}
       <div
-        className="flex items-center gap-1.5 px-4 py-2.5
+        className="flex-none flex items-center gap-1.5 px-5 py-3
                    border-b border-slate-100 dark:border-white/6
                    bg-slate-50 dark:bg-white/[0.03]"
       >
-        <div className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
-        <div className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
-        <div className="h-2.5 w-2.5 rounded-full bg-green-400/80" />
-        <span className="ml-3 text-[10px] font-medium text-slate-400 dark:text-white/25 tracking-tight">
+        <div className="h-3 w-3 rounded-full bg-red-400/80" />
+        <div className="h-3 w-3 rounded-full bg-amber-400/80" />
+        <div className="h-3 w-3 rounded-full bg-green-400/80" />
+        <span className="ml-3 text-xs font-medium text-slate-400 dark:text-white/25 tracking-tight">
           multifolio.app/studio
         </span>
       </div>
 
-      {/* Hub area */}
-      <div className="relative h-[200px]">
+      {/* Hub area — fills remaining height */}
+      <div className="relative flex-1 min-h-[220px]">
         {/* Ambient glow */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="h-20 w-20 rounded-full blur-[40px]
-                          bg-indigo-300/30 dark:bg-[#00F0FF]/10" />
+          <div className="h-32 w-32 rounded-full blur-[60px]
+                          bg-indigo-300/30 dark:bg-[#00F0FF]/12" />
         </div>
 
         {/* Connecting lines */}
@@ -84,8 +83,8 @@ function PlatformHubMockup() {
         >
           <defs>
             <linearGradient id="hubLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#6366F1" stopOpacity="0.7" />
-              <stop offset="100%" stopColor="#00F0FF" stopOpacity="0.7" />
+              <stop offset="0%" stopColor="#6366F1" stopOpacity="0.65" />
+              <stop offset="100%" stopColor="#00F0FF" stopOpacity="0.65" />
             </linearGradient>
           </defs>
           {LINE_ENDPOINTS.map(({ x2, y2 }, i) => (
@@ -94,22 +93,22 @@ function PlatformHubMockup() {
               x1="50" y1="50"
               x2={x2} y2={y2}
               stroke="url(#hubLineGrad)"
-              strokeWidth="0.9"
+              strokeWidth="0.8"
               className="login-line"
               style={{ animationDelay: `${i * 0.4}s` }}
             />
           ))}
         </svg>
 
-        {/* Central hub */}
+        {/* Central M hub */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
           <div
-            className="h-14 w-14 rounded-2xl flex items-center justify-center hub-glow
+            className="h-16 w-16 rounded-2xl flex items-center justify-center hub-glow
                        bg-gradient-to-br from-indigo-100 to-violet-100
                        dark:from-[#00F0FF]/15 dark:to-violet-600/20
                        border border-indigo-200/80 dark:border-[#00F0FF]/30"
           >
-            <span className="text-indigo-600 dark:text-[#00F0FF] font-extrabold text-xl">M</span>
+            <span className="text-indigo-600 dark:text-[#00F0FF] font-extrabold text-2xl">M</span>
           </div>
         </div>
 
@@ -121,13 +120,13 @@ function PlatformHubMockup() {
             style={{ ...style, animationDelay: delay }}
           >
             <div
-              className="h-11 w-11 rounded-xl p-1.5
+              className="h-13 w-13 rounded-xl p-2
                          border border-slate-200 dark:border-white/10
                          bg-white dark:bg-white/8
                          shadow-lg shadow-slate-200/60 dark:shadow-black/40
                          backdrop-blur-sm"
             >
-              <PlatformLogo platform={id} size={28} />
+              <PlatformLogo platform={id} size={32} />
             </div>
           </div>
         ))}
@@ -186,13 +185,13 @@ export default function LoginPage() {
       <div
         className="relative lg:w-[58%] flex flex-col overflow-hidden
                    bg-slate-50 dark:bg-[#080A10]
-                   px-8 pt-8 pb-10 lg:px-12 lg:pt-10 lg:pb-10"
+                   px-8 pt-8 pb-8 lg:px-12 lg:pt-10 lg:pb-8"
       >
         {/* Light-mode gradient overlay */}
         <div className="pointer-events-none absolute inset-0 dark:hidden
                         bg-gradient-to-br from-indigo-50/80 via-white/30 to-violet-50/50" />
 
-        {/* Blobs — pastel in light, vibrant in dark */}
+        {/* Blobs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="login-blob-1 absolute -top-40 -left-40 h-[560px] w-[560px] rounded-full blur-[110px]
                           bg-indigo-200/50 dark:bg-[#00F0FF]/10" />
@@ -200,7 +199,6 @@ export default function LoginPage() {
                           bg-violet-200/50 dark:bg-violet-600/12" />
           <div className="login-blob-3 absolute -bottom-24 left-1/4 h-[400px] w-[400px] rounded-full blur-[90px]
                           bg-blue-200/40 dark:bg-indigo-600/10" />
-
           {/* Dot grid */}
           <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -214,7 +212,7 @@ export default function LoginPage() {
         </div>
 
         {/* ── Logo ── */}
-        <div className="relative anim-fade-in anim-d0 flex items-center gap-3">
+        <div className="relative anim-fade-in anim-d0 flex items-center gap-3 flex-none">
           <div
             className="h-9 w-9 rounded-xl flex items-center justify-center
                        bg-indigo-100 dark:bg-[#00F0FF]/15
@@ -228,15 +226,14 @@ export default function LoginPage() {
           </span>
         </div>
 
-        {/* ── Desktop: 2-col inner layout ── */}
-        <div className="relative hidden lg:grid grid-cols-[5fr_6fr] gap-4 items-center flex-1 py-6">
+        {/* ══ DESKTOP LAYOUT ══ */}
+        <div className="relative hidden lg:flex flex-col flex-1 min-h-0 gap-5 pt-6">
 
-          {/* Left col: stars + headline + features */}
-          <div className="space-y-6">
-
+          {/* ① Badge + Headline — tam genişlik */}
+          <div className="flex-none space-y-3 anim-fade-up anim-d1">
             {/* Stars badge */}
             <div
-              className="anim-fade-up anim-d1 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5
+              className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5
                          border border-indigo-200 dark:border-[#00F0FF]/20
                          bg-indigo-50 dark:bg-[#00F0FF]/8"
             >
@@ -246,32 +243,29 @@ export default function LoginPage() {
                 ))}
               </div>
               <span className="text-xs font-semibold text-indigo-700 dark:text-white/65">
-                Beta — İlk 100 ücretsiz
+                Beta — İlk 100 kullanıcı ücretsiz
               </span>
             </div>
 
-            {/* Headline */}
-            <div className="anim-fade-up anim-d2 leading-none">
-              <h1 className="text-[2.15rem] font-extrabold tracking-tight leading-[1.12]
-                             text-slate-900 dark:text-white">
-                Freelancer kariyerini
-              </h1>
-              <h1 className="text-[2.15rem] font-extrabold tracking-tight leading-[1.12]
-                             bg-gradient-to-r from-indigo-500 to-violet-500
-                             dark:from-[#00F0FF] dark:to-violet-400
-                             bg-clip-text text-transparent">
-                tek platformdan
-              </h1>
-              <h1 className="text-[2.15rem] font-extrabold tracking-tight leading-[1.12]
-                             text-slate-900 dark:text-white">
-                yönet.
-              </h1>
-            </div>
+            {/* Headline — 2 sütun genişliğinde */}
+            <h1 className="anim-fade-up anim-d2 text-[2.75rem] font-extrabold tracking-tight leading-[1.1]">
+              <span className="text-slate-900 dark:text-white">Freelancer kariyerini </span>
+              <span className="bg-gradient-to-r from-indigo-500 to-violet-500
+                               dark:from-[#00F0FF] dark:to-violet-400
+                               bg-clip-text text-transparent">
+                tek platformdan{" "}
+              </span>
+              <span className="text-slate-900 dark:text-white">yönet.</span>
+            </h1>
+          </div>
 
-            {/* Feature list */}
-            <ul className="anim-fade-up anim-d3 space-y-3.5">
+          {/* ② 2-sütun: Features | Büyük mockup */}
+          <div className="flex-1 min-h-0 grid grid-cols-[5fr_7fr] gap-6">
+
+            {/* Sol: 4 özellik */}
+            <div className="flex flex-col justify-center space-y-4 anim-fade-up anim-d3">
               {FEATURES.map((f, i) => (
-                <li key={i} className="flex items-start gap-3">
+                <div key={i} className="flex items-start gap-3">
                   <div
                     className="mt-0.5 shrink-0 h-5 w-5 rounded-full flex items-center justify-center
                                border border-indigo-200 dark:border-[#00F0FF]/25
@@ -283,41 +277,39 @@ export default function LoginPage() {
                                    text-slate-600 dark:text-white/65">
                     {f}
                   </span>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
+
+            {/* Sağ: BÜYÜK animasyonlu platform hub */}
+            <div className="anim-scale-in anim-d3 min-h-0">
+              <PlatformHubMockup />
+            </div>
           </div>
 
-          {/* Right col: browser mockup */}
-          <PlatformHubMockup />
-        </div>
-
-        {/* ── Desktop: platform logo strip ── */}
-        <div className="relative hidden lg:block anim-fade-up anim-d5">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] mb-3
-                        text-slate-400 dark:text-white/25">
-            Desteklenen platformlar
-          </p>
-          <div
-            className="inline-flex items-center gap-2 px-3 py-2.5 rounded-2xl
-                       border border-slate-200 dark:border-white/8
-                       bg-white/70 dark:bg-white/[0.03]
-                       backdrop-blur-sm"
-          >
-            {PLATFORMS.map((id) => (
-              <div
-                key={id}
-                className="h-10 w-10 rounded-xl flex items-center justify-center p-1.5
-                           border border-slate-200 dark:border-white/10
-                           bg-white dark:bg-white/8
-                           hover:scale-110 transition-transform duration-200"
-              >
-                <PlatformLogo platform={id} size={22} />
-              </div>
-            ))}
-            <span className="text-xs font-medium px-2 text-slate-400 dark:text-white/30">
-              5 platform
-            </span>
+          {/* ③ Platform logoları — ortalı */}
+          <div className="flex-none text-center space-y-3 anim-fade-up anim-d5 pb-1">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em]
+                          text-slate-400 dark:text-white/25">
+              Desteklenen platformlar
+            </p>
+            <div className="flex items-center justify-center gap-2.5">
+              {PLATFORMS.map((id) => (
+                <div
+                  key={id}
+                  className="h-10 w-10 rounded-xl flex items-center justify-center p-1.5
+                             border border-slate-200 dark:border-white/10
+                             bg-white dark:bg-white/8
+                             shadow-sm shadow-slate-100 dark:shadow-black/20
+                             hover:scale-110 transition-transform duration-200"
+                >
+                  <PlatformLogo platform={id} size={22} />
+                </div>
+              ))}
+              <span className="text-xs font-medium text-slate-400 dark:text-white/30 ml-1">
+                5 platform
+              </span>
+            </div>
           </div>
         </div>
 
@@ -337,7 +329,7 @@ export default function LoginPage() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          RIGHT PANEL — dot-grid background + floating card
+          RIGHT PANEL — dot-grid + floating form card
       ══════════════════════════════════════════════════════════ */}
       <div
         className="flex-1 relative flex items-center justify-center
@@ -358,7 +350,7 @@ export default function LoginPage() {
           <rect width="100%" height="100%" fill="url(#right-dots)" />
         </svg>
 
-        {/* Subtle ambient glow — right panel */}
+        {/* Ambient glow */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
                           h-[400px] w-[400px] rounded-full blur-[120px]
@@ -370,12 +362,10 @@ export default function LoginPage() {
           <ThemeToggle />
         </div>
 
-        {/* Decorative sparkle */}
+        {/* Decorative sparkles */}
         <div className="absolute bottom-8 right-8 z-10 anim-sparkle">
           <SparkleDecor className="opacity-25 dark:opacity-15" />
         </div>
-
-        {/* Second sparkle — top-left, smaller */}
         <div className="absolute top-16 left-8 z-10 anim-sparkle" style={{ animationDelay: "1.8s" }}>
           <SparkleDecor className="opacity-15 dark:opacity-10 scale-[0.6]" />
         </div>
@@ -428,7 +418,7 @@ export default function LoginPage() {
                 <span className="font-bold text-base text-foreground">Multifolio</span>
               </div>
 
-              {/* Heading — centered */}
+              {/* Heading */}
               <div className="text-center mb-7 space-y-2 anim-fade-up anim-d0">
                 <h1 className="text-[1.8rem] font-extrabold text-foreground tracking-tight">
                   Giriş yap
