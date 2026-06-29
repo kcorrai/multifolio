@@ -227,7 +227,7 @@ export default function LoginPage() {
         </div>
 
         {/* ══ DESKTOP LAYOUT ══ */}
-        <div className="relative hidden lg:flex flex-col flex-1 min-h-0 justify-between pt-5 pb-2">
+        <div className="relative hidden lg:flex flex-col flex-1 min-h-0 justify-center gap-8 py-4">
 
           {/* ① Badge + Headline — tam genişlik */}
           <div className="flex-none space-y-3 anim-fade-up anim-d1">
