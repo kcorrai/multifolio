@@ -7,17 +7,19 @@ import { Button } from "@/components/ui/button";
 import { ProfileStudio } from "@/components/profile-studio";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PlatformLogo } from "@/components/platform-logo";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { PlatformId } from "@/lib/ai/platforms";
 
 /* ─── Product mockup shown in hero ─────────────────────────────── */
 function ProductMockup() {
   return (
-    <div className="relative">
-      {/* Glow behind mockup */}
-      <div className="absolute -inset-4 rounded-3xl bg-indigo-500/20 blur-3xl" />
+    <div className="relative anim-scale-in anim-d3">
+      {/* Dual-tone glow behind mockup */}
+      <div className="absolute -inset-4 rounded-3xl bg-[#00F0FF]/10 blur-3xl" />
+      <div className="absolute -inset-6 rounded-3xl bg-violet-500/10 blur-[60px]" />
 
-      <div className="relative rounded-2xl border border-white/10 bg-[#0d0d18] shadow-2xl overflow-hidden">
+      <div className="relative rounded-2xl border border-white/10 bg-[#161923] shadow-2xl overflow-hidden">
         {/* Window chrome */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
           <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
@@ -106,21 +108,21 @@ function ProductMockup() {
 /* ─── Landing page ──────────────────────────────────────────────── */
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#07070f] text-slate-900 dark:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
 
       {/* Nav */}
-      <header className="border-b border-slate-200 dark:border-white/5">
+      <header className="border-b border-slate-200 dark:border-white/5 anim-fade-in anim-d0">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-8 py-4">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/40">
-              <span className="text-white text-sm font-extrabold">M</span>
+            <div className="h-8 w-8 rounded-lg bg-[#00F0FF]/20 border border-[#00F0FF]/30 flex items-center justify-center shadow-lg shadow-[#00F0FF]/20">
+              <span className="text-[#00F0FF] text-sm font-extrabold">M</span>
             </div>
             <span className="font-bold text-lg tracking-tight">Multifolio</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-7">
             {["Özellikler", "Nasıl Çalışır", "Fiyat"].map((item) => (
-              <a key={item} href="#" className="text-sm text-slate-500 dark:text-white/50 hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
+              <a key={item} href="#" className="text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
                 {item}
               </a>
             ))}
@@ -128,10 +130,10 @@ function LandingPage() {
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Button asChild variant="ghost" size="sm" className="text-slate-600 dark:text-white/60 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/8">
+            <Button asChild variant="ghost" size="sm" className="text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/8">
               <Link href="/login">Giriş Yap</Link>
             </Button>
-            <Button asChild size="sm" className="font-semibold shadow-lg shadow-indigo-500/30">
+            <Button asChild size="sm" className="font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/30">
               <Link href="/login">Ücretsiz Başla</Link>
             </Button>
           </div>
@@ -140,13 +142,16 @@ function LandingPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
+        {/* Background glows */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-0 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-indigo-600/10 blur-[120px]" />
+          <div className="absolute left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-[#00F0FF]/6 blur-[100px]" />
+          <div className="absolute right-1/4 top-20 h-[400px] w-[400px] rounded-full bg-violet-500/8 blur-[100px]" />
         </div>
 
         <div className="relative mx-auto max-w-6xl px-8 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/25 bg-indigo-500/10 px-3.5 py-1.5">
+            {/* Badge */}
+            <div className="anim-fade-up anim-d0 inline-flex items-center gap-2 rounded-full border border-[#00F0FF]/25 bg-[#00F0FF]/8 px-3.5 py-1.5">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
@@ -155,44 +160,52 @@ function LandingPage() {
               <span className="text-xs font-semibold text-slate-600 dark:text-white/70">Beta — İlk 100 kullanıcı ücretsiz</span>
             </div>
 
-            <h1 className="text-5xl lg:text-[3.5rem] font-extrabold leading-[1.1] tracking-tight">
+            {/* H1 */}
+            <h1 className="anim-fade-up anim-d1 text-5xl lg:text-[3.5rem] font-extrabold leading-[1.1] tracking-tight">
               Freelancer kariyerini{" "}
-              <span className="bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#00F0FF] to-violet-400 bg-clip-text text-transparent">
                 tek platformdan
               </span>{" "}
               yönet.
             </h1>
 
-            <p className="text-lg text-slate-500 dark:text-white/50 leading-relaxed max-w-md font-medium">
+            {/* Description */}
+            <p className="anim-fade-up anim-d2 text-lg text-slate-500 dark:text-[#94A3B8] leading-relaxed max-w-md font-medium">
               Profilini bir kez gir. LinkedIn, Upwork, Fiverr, Bionluk ve Armut
               için AI ile optimize et; portfolyonu saniyeler içinde yayınla.
             </p>
 
-            {/* Platform logoları - hero altı */}
-            <div className="flex items-center gap-3 flex-wrap pt-1">
+            {/* Platform logo pills — hero */}
+            <div className="anim-fade-up anim-d3 flex items-center gap-2 flex-wrap pt-1">
               {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
-                <div key={id} className="rounded-lg border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.03] p-1.5">
+                <div key={id} className="rounded-lg border border-white/8 bg-white/[0.05] p-1.5 backdrop-blur-sm">
                   <PlatformLogo platform={id} size={16} />
                 </div>
               ))}
-              <span className="text-xs text-slate-400 dark:text-white/25 font-medium">5 platform destekleniyor</span>
+              <span className="text-xs text-slate-400 dark:text-[#94A3B8]/60 font-medium">5 platform destekleniyor</span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Button asChild size="lg" className="h-12 px-7 text-base font-bold shadow-xl shadow-indigo-500/30">
-                <Link href="/login">
-                  Hemen Başla <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="h-12 px-7 text-base font-semibold">
-                <Link href="#features">Özellikleri Gör</Link>
-              </Button>
+            {/* CTA buttons */}
+            <div className="anim-fade-up anim-d4 flex flex-wrap items-center gap-3 pt-2">
+              <Link
+                href="/login"
+                className="anim-neon-pulse inline-flex items-center h-12 px-7 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors"
+              >
+                Hemen Başla <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+              <Link
+                href="#features"
+                className="inline-flex items-center h-12 px-7 rounded-xl text-base font-semibold border border-violet-500/40 text-violet-400 hover:bg-violet-500/10 transition-colors"
+              >
+                Özellikleri Gör
+              </Link>
             </div>
 
-            <div className="flex flex-wrap gap-4 pt-1">
+            {/* Trust signals */}
+            <div className="anim-fade-up anim-d5 flex flex-wrap gap-4 pt-1">
               {["Kredi kartı gerekmez", "5 dakikada kur", "Pay-as-you-go"].map((t) => (
-                <span key={t} className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-white/40 font-medium">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-indigo-500 dark:text-indigo-400 shrink-0" />
+                <span key={t} className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-[#94A3B8]/70 font-medium">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-[#00F0FF] shrink-0" />
                   {t}
                 </span>
               ))}
@@ -206,116 +219,127 @@ function LandingPage() {
       </section>
 
       {/* Stats bar */}
-      <div className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-white/[0.02]">
-        <div className="mx-auto max-w-6xl px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { value: "5", label: "Desteklenen Platform" },
-            { value: "%89", label: "Ort. Uyum Skoru" },
-            { value: "GPT-4o", label: "Güçlü Motor" },
-            { value: "2 dk", label: "İlk Uyarlama" },
-          ].map(({ value, label }) => (
-            <div key={label} className="text-center space-y-1">
-              <p className="text-2xl font-extrabold text-slate-900 dark:text-white">{value}</p>
-              <p className="text-xs text-slate-400 dark:text-white/35 font-medium">{label}</p>
-            </div>
-          ))}
+      <ScrollReveal>
+        <div className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-[#161923]/60">
+          <div className="mx-auto max-w-6xl px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { value: "5",      label: "Desteklenen Platform", color: "text-[#00F0FF]" },
+              { value: "%89",    label: "Ort. Uyum Skoru",      color: "text-violet-400" },
+              { value: "GPT-4o", label: "Güçlü Motor",          color: "text-[#00F0FF]" },
+              { value: "2 dk",   label: "İlk Uyarlama",         color: "text-violet-400" },
+            ].map(({ value, label, color }) => (
+              <div key={label} className="text-center space-y-1">
+                <p className={`text-2xl font-extrabold ${color}`}>{value}</p>
+                <p className="text-xs text-slate-400 dark:text-[#94A3B8]/50 font-medium">{label}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Platforms strip */}
-      <section className="mx-auto max-w-6xl px-8 py-14">
-        <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-white/25 mb-8">
+      <ScrollReveal className="mx-auto max-w-6xl px-8 py-14">
+        <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-white/20 mb-8">
           Desteklenen platformlar
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-3">
           {([
-            { id: "linkedin" as PlatformId, label: "LinkedIn",  color: "bg-[#0A66C2]/10 border-[#0A66C2]/20 text-[#0A66C2] dark:text-[#4da3ff]" },
-            { id: "upwork"   as PlatformId, label: "Upwork",    color: "bg-[#6FDA44]/10 border-[#6FDA44]/20 text-[#3d8c1a] dark:text-[#6FDA44]" },
-            { id: "fiverr"   as PlatformId, label: "Fiverr",    color: "bg-[#1DBF73]/10 border-[#1DBF73]/20 text-[#0d8a52] dark:text-[#1DBF73]" },
-            { id: "bionluk"  as PlatformId, label: "Bionluk",   color: "bg-violet-50 border-violet-200 text-violet-700 dark:bg-violet-500/10 dark:border-violet-500/20 dark:text-violet-400" },
-            { id: "armut"    as PlatformId, label: "Armut",     color: "bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-500/10 dark:border-orange-500/20 dark:text-orange-400" },
-          ]).map(({ id, label, color }) => (
-            <div key={id} className={`flex items-center gap-2.5 rounded-2xl border px-5 py-3 ${color}`}>
+            { id: "linkedin" as PlatformId, label: "LinkedIn", delay: 0   },
+            { id: "upwork"   as PlatformId, label: "Upwork",   delay: 60  },
+            { id: "fiverr"   as PlatformId, label: "Fiverr",   delay: 120 },
+            { id: "bionluk"  as PlatformId, label: "Bionluk",  delay: 180 },
+            { id: "armut"    as PlatformId, label: "Armut",    delay: 240 },
+          ]).map(({ id, label }) => (
+            <div key={id} className="flex items-center gap-2.5 rounded-2xl border border-white/8 bg-white/[0.05] px-5 py-3 backdrop-blur-sm hover:bg-white/[0.09] hover:border-white/15 transition-colors">
               <PlatformLogo platform={id} size={20} />
-              <span className="text-sm font-semibold">{label}</span>
+              <span className="text-sm font-semibold text-slate-700 dark:text-[#94A3B8]">{label}</span>
             </div>
           ))}
         </div>
-      </section>
+      </ScrollReveal>
 
       {/* Features */}
-      <section id="features" className="mx-auto max-w-6xl px-8 py-24">
-        <div className="text-center space-y-3 mb-14">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-500 dark:text-indigo-400">Özellikler</p>
-          <h2 className="text-4xl font-extrabold tracking-tight">Her şey tek bir yerde.</h2>
-          <p className="text-slate-500 dark:text-white/40 text-lg max-w-xl mx-auto font-medium">
-            Freelancer olarak ihtiyacın olan tüm araçlar, birbirine bağlı ve otomatik.
-          </p>
-        </div>
+      <section id="features" className="mx-auto max-w-6xl px-8 pb-24">
+        <ScrollReveal>
+          <div className="text-center space-y-3 mb-14">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">Özellikler</p>
+            <h2 className="text-4xl font-extrabold tracking-tight">Her şey tek bir yerde.</h2>
+            <p className="text-slate-500 dark:text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">
+              Freelancer olarak ihtiyacın olan tüm araçlar, birbirine bağlı ve otomatik.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid md:grid-cols-3 gap-5">
-          {/* Platform Uyarlama — özel kart (platform logoları ile) */}
-          <div className="group rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.02] p-6 space-y-4 hover:border-indigo-200 dark:hover:border-indigo-500/20 hover:bg-slate-50 dark:hover:bg-white/[0.04] hover:shadow-md transition-all">
-            <div className="h-10 w-10 rounded-xl bg-indigo-100 dark:bg-indigo-500/15 flex items-center justify-center">
-              <Layers className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-            </div>
-            <div className="space-y-1.5">
-              <h3 className="font-bold text-slate-900 dark:text-white">Platform Uyarlama</h3>
-              <p className="text-sm text-slate-500 dark:text-white/40 leading-relaxed font-medium">
-                Profilini bir kez yaz. AI her platform için ayrı optimize eder — tona, dile ve beklentiye göre.
-              </p>
-            </div>
-            <div className="flex items-center gap-2 flex-wrap pt-1">
-              {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
-                <div key={id} className="rounded-lg border border-slate-100 dark:border-white/6 bg-slate-50 dark:bg-white/[0.03] p-1.5">
-                  <PlatformLogo platform={id} size={14} />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {[
-            { icon: Globe,       title: "Portfolyo Sitesi",  desc: "/p/kullanici-adin adresinde yayınlanan, SEO'ya uygun kişisel portfolyo sayfası. OG etiketleriyle sosyal paylaşıma hazır.", accent: "violet" },
-            { icon: Briefcase,   title: "İlan Eşleştirme",  desc: "İlanı yapıştır; profilinle karşılaştırır, 0-100 uyum skoru verir, güçlü yönlerini ve eksiklerini listeler.", accent: "indigo" },
-            { icon: Target,      title: "Başvuru Takibi",   desc: "Kaydedildi → Başvuruldu → Görüşme → Teklif pipeline'ı. Tüm başvurularını tek ekrandan yönet.", accent: "violet" },
-            { icon: Sparkles,    title: "AI ile Üretim",    desc: "GPT-4o mini destekli; structured output ile her seferinde doğru format ve platform diline uygun içerik.", accent: "indigo" },
-            { icon: CheckCircle2,title: "Güvenli & Hızlı",  desc: "Supabase RLS ile her veri sahibine özel. Pay-as-you-go model: yalnızca kullandığın kadar öde.", accent: "violet" },
-          ].map(({ icon: Icon, title, desc, accent }) => (
-            <div key={title}
-              className="group rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.02] p-6 space-y-4 hover:border-slate-300 dark:hover:border-white/15 hover:bg-slate-50 dark:hover:bg-white/[0.04] hover:shadow-md transition-all">
-              <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${accent === "indigo" ? "bg-indigo-100 dark:bg-indigo-500/15" : "bg-violet-100 dark:bg-violet-500/15"}`}>
-                <Icon className={`h-5 w-5 ${accent === "indigo" ? "text-indigo-600 dark:text-indigo-400" : "text-violet-600 dark:text-violet-400"}`} />
+          {/* Platform Uyarlama — özel kart */}
+          <ScrollReveal delay={0}>
+            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md hover:shadow-[#00F0FF]/5 transition-all">
+              <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
+                <Layers className="h-5 w-5 text-[#00F0FF]" />
               </div>
               <div className="space-y-1.5">
-                <h3 className="font-bold text-slate-900 dark:text-white">{title}</h3>
-                <p className="text-sm text-slate-500 dark:text-white/40 leading-relaxed font-medium">{desc}</p>
+                <h3 className="font-bold text-slate-900 dark:text-white">Platform Uyarlama</h3>
+                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">
+                  Profilini bir kez yaz. AI her platform için ayrı optimize eder — tona, dile ve beklentiye göre.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap pt-1">
+                {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
+                  <div key={id} className="rounded-lg border border-white/8 bg-white/[0.05] p-1.5">
+                    <PlatformLogo platform={id} size={14} />
+                  </div>
+                ))}
               </div>
             </div>
+          </ScrollReveal>
+
+          {[
+            { icon: Globe,        title: "Portfolyo Sitesi",  desc: "/p/kullanici-adin adresinde yayınlanan, SEO'ya uygun kişisel portfolyo sayfası. OG etiketleriyle sosyal paylaşıma hazır.", accent: "violet", delay: 60  },
+            { icon: Briefcase,    title: "İlan Eşleştirme",  desc: "İlanı yapıştır; profilinle karşılaştırır, 0-100 uyum skoru verir, güçlü yönlerini ve eksiklerini listeler.",             accent: "cyan",   delay: 120 },
+            { icon: Target,       title: "Başvuru Takibi",   desc: "Kaydedildi → Başvuruldu → Görüşme → Teklif pipeline'ı. Tüm başvurularını tek ekrandan yönet.",                           accent: "violet", delay: 180 },
+            { icon: Sparkles,     title: "AI ile Üretim",    desc: "GPT-4o mini destekli; structured output ile her seferinde doğru format ve platform diline uygun içerik.",                 accent: "cyan",   delay: 240 },
+            { icon: CheckCircle2, title: "Güvenli & Hızlı",  desc: "Supabase RLS ile her veri sahibine özel. Pay-as-you-go model: yalnızca kullandığın kadar öde.",                          accent: "violet", delay: 300 },
+          ].map(({ icon: Icon, title, desc, accent, delay }) => (
+            <ScrollReveal key={title} delay={delay}>
+              <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-violet-500/20 hover:shadow-md transition-all">
+                <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${accent === "cyan" ? "bg-[#00F0FF]/10 border border-[#00F0FF]/20" : "bg-violet-500/10 border border-violet-500/20"}`}>
+                  <Icon className={`h-5 w-5 ${accent === "cyan" ? "text-[#00F0FF]" : "text-violet-400"}`} />
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{title}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{desc}</p>
+                </div>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
       {/* How it works */}
-      <section className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-white/[0.02] py-24">
+      <section className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-[#161923]/40 py-24">
         <div className="mx-auto max-w-6xl px-8">
-          <div className="text-center space-y-3 mb-14">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-500 dark:text-indigo-400">Nasıl Çalışır</p>
-            <h2 className="text-4xl font-extrabold tracking-tight">3 adımda başla.</h2>
-          </div>
+          <ScrollReveal>
+            <div className="text-center space-y-3 mb-14">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-400">Nasıl Çalışır</p>
+              <h2 className="text-4xl font-extrabold tracking-tight">3 adımda başla.</h2>
+            </div>
+          </ScrollReveal>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { step: "01", title: "Profilini gir", desc: "Başlık, özet ve becerilerini bir kez doldur. Bu temel, her şeyin kaynağı." },
-              { step: "02", title: "Platform seç & uyarla", desc: "LinkedIn, Upwork veya diğer platformlar için AI'ın optimize metnini üret." },
-              { step: "03", title: "Paylaş & takip et", desc: "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir." },
-            ].map(({ step, title, desc }) => (
-              <div key={step} className="space-y-4">
-                <div className="text-5xl font-extrabold text-slate-200 dark:text-white/8 tabular-nums">{step}</div>
-                <div className="h-px w-12 bg-indigo-500" />
-                <div className="space-y-2">
-                  <h3 className="font-bold text-lg">{title}</h3>
-                  <p className="text-sm text-slate-500 dark:text-white/40 leading-relaxed font-medium">{desc}</p>
+              { step: "01", title: "Profilini gir",        desc: "Başlık, özet ve becerilerini bir kez doldur. Bu temel, her şeyin kaynağı.",                         delay: 0   },
+              { step: "02", title: "Platform seç & uyarla", desc: "LinkedIn, Upwork veya diğer platformlar için AI'ın optimize metnini üret.",                         delay: 100 },
+              { step: "03", title: "Paylaş & takip et",    desc: "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir.",                                   delay: 200 },
+            ].map(({ step, title, desc, delay }) => (
+              <ScrollReveal key={step} delay={delay}>
+                <div className="space-y-4">
+                  <div className="text-5xl font-extrabold text-slate-200 dark:text-white/6 tabular-nums">{step}</div>
+                  <div className="h-px w-12 bg-gradient-to-r from-[#00F0FF] to-violet-400" />
+                  <div className="space-y-2">
+                    <h3 className="font-bold text-lg">{title}</h3>
+                    <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{desc}</p>
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -323,34 +347,38 @@ function LandingPage() {
 
       {/* Final CTA */}
       <section className="mx-auto max-w-6xl px-8 py-24 text-center">
-        <div className="relative rounded-3xl border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/5 px-8 py-16 overflow-hidden">
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full bg-indigo-600/10 blur-[80px]" />
-          </div>
-          <div className="relative space-y-5">
-            <h2 className="text-4xl font-extrabold tracking-tight">
-              Freelancer kariyerini bir üst seviyeye taşı.
-            </h2>
-            <p className="text-slate-500 dark:text-white/40 text-lg font-medium max-w-md mx-auto">
-              Beta sürecinde ücretsiz. Kredi kartı gerekmez.
-            </p>
-            <Button asChild size="lg" className="h-12 px-8 text-base font-bold shadow-xl shadow-indigo-500/30 mt-2">
-              <Link href="/login">
+        <ScrollReveal scale>
+          <div className="relative rounded-3xl border border-[#00F0FF]/15 dark:border-[#00F0FF]/10 bg-slate-50 dark:bg-[#161923] px-8 py-16 overflow-hidden">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute left-1/3 top-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full bg-[#00F0FF]/6 blur-[80px]" />
+              <div className="absolute right-1/3 top-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full bg-violet-500/8 blur-[80px]" />
+            </div>
+            <div className="relative space-y-5">
+              <h2 className="text-4xl font-extrabold tracking-tight">
+                Freelancer kariyerini bir üst seviyeye taşı.
+              </h2>
+              <p className="text-slate-500 dark:text-[#94A3B8] text-lg font-medium max-w-md mx-auto">
+                Beta sürecinde ücretsiz. Kredi kartı gerekmez.
+              </p>
+              <Link
+                href="/login"
+                className="anim-neon-pulse inline-flex items-center h-12 px-8 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors mt-2"
+              >
                 Ücretsiz Başla <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
-            </Button>
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Footer */}
       <footer className="border-t border-slate-200 dark:border-white/5 py-8">
         <div className="mx-auto max-w-6xl px-8 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="h-5 w-5 rounded-md bg-indigo-500 flex items-center justify-center">
-              <span className="text-white text-[9px] font-extrabold">M</span>
+            <div className="h-5 w-5 rounded-md bg-[#00F0FF]/20 border border-[#00F0FF]/30 flex items-center justify-center">
+              <span className="text-[#00F0FF] text-[9px] font-extrabold">M</span>
             </div>
-            <span className="text-sm font-bold text-slate-500 dark:text-white/50">Multifolio</span>
+            <span className="text-sm font-bold text-slate-500 dark:text-[#94A3B8]/50">Multifolio</span>
           </div>
           <p className="text-xs text-slate-400 dark:text-white/20 font-medium">© 2026 Multifolio. Tüm hakları saklıdır.</p>
         </div>

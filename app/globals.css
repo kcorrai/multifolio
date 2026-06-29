@@ -128,3 +128,60 @@
     @apply font-sans;
   }
 }
+
+/* ─── Landing page animations ─────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 18px rgba(0,240,255,0.45), 0 0 36px rgba(0,240,255,0.20); }
+  50%       { box-shadow: 0 0 28px rgba(0,240,255,0.65), 0 0 56px rgba(0,240,255,0.30); }
+}
+@keyframes gridGlow {
+  0%, 100% { opacity: 0.03; }
+  50%       { opacity: 0.06; }
+}
+
+.anim-fade-up          { animation: fadeInUp 0.65s cubic-bezier(.22,1,.36,1) both; }
+.anim-fade-in          { animation: fadeIn   0.55s ease-out both; }
+.anim-scale-in         { animation: scaleIn  0.55s cubic-bezier(.22,1,.36,1) both; }
+.anim-neon-pulse       { animation: neonPulse 2.8s ease-in-out infinite; }
+
+.anim-d0  { animation-delay: 0ms; }
+.anim-d1  { animation-delay: 80ms; }
+.anim-d2  { animation-delay: 160ms; }
+.anim-d3  { animation-delay: 240ms; }
+.anim-d4  { animation-delay: 320ms; }
+.anim-d5  { animation-delay: 400ms; }
+.anim-d6  { animation-delay: 480ms; }
+
+/* Scroll-reveal — JS adds .sr-visible via IntersectionObserver */
+.sr {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s cubic-bezier(.22,1,.36,1),
+              transform 0.65s cubic-bezier(.22,1,.36,1);
+}
+.sr.sr-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.sr-scale {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.55s cubic-bezier(.22,1,.36,1),
+              transform 0.55s cubic-bezier(.22,1,.36,1);
+}
+.sr-scale.sr-visible {
+  opacity: 1;
+  transform: scale(1);
+}
