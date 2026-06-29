@@ -17,37 +17,29 @@ function CircleScore({ score }: { score: number }) {
   const circ = 2 * Math.PI * r;
   const offset = circ * (1 - score / 100);
   return (
-    <svg width="130" height="130" viewBox="0 0 130 130" className="-rotate-90">
-      {/* Track */}
-      <circle cx="65" cy="65" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
-      {/* Cyan fill */}
+    <svg width="140" height="140" viewBox="0 0 130 130" className="-rotate-90">
+      <circle cx="65" cy="65" r={r} fill="none" stroke="var(--ring-track)" strokeWidth="9" />
       <circle
         cx="65" cy="65" r={r} fill="none"
-        stroke="url(#scoreGrad)" strokeWidth="10"
+        stroke="var(--ring-arc)" strokeWidth="9"
         strokeLinecap="round"
         strokeDasharray={circ}
         strokeDashoffset={offset}
       />
-      <defs>
-        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#00F0FF" />
-          <stop offset="100%" stopColor="#8B5CF6" />
-        </linearGradient>
-      </defs>
     </svg>
   );
 }
 
 /* ─── Score bar ─────────────────────────────────────────────────── */
-function ScoreBar({ label, value, color }: { label: string; value: number; color: string }) {
+function ScoreBar({ label, value }: { label: string; value: number }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-white/50 font-medium">{label}</span>
-        <span className="text-[11px] font-bold text-white/80 tabular-nums">{value}</span>
+        <span className="text-[11px] text-slate-500 dark:text-white/50 font-medium">{label}</span>
+        <span className="text-[11px] font-bold text-slate-700 dark:text-white/80 tabular-nums">{value}</span>
       </div>
-      <div className="h-1.5 rounded-full bg-white/6 overflow-hidden">
-        <div className={`h-full rounded-full ${color}`} style={{ width: `${value}%` }} />
+      <div className="h-1.5 rounded-full bg-slate-100 dark:bg-white/6 overflow-hidden">
+        <div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: "var(--ring-arc)" }} />
       </div>
     </div>
   );
@@ -57,79 +49,75 @@ function ScoreBar({ label, value, color }: { label: string; value: number; color
 function ProductMockup() {
   return (
     <div className="relative flex items-center justify-center py-10 anim-fade-in anim-d2">
-      {/* Ambient glows */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[320px] w-[320px] rounded-full bg-[#00F0FF]/10 blur-[80px]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/3 -translate-y-1/3 h-[280px] w-[280px] rounded-full bg-violet-500/10 blur-[80px]" />
+      {/* Subtle ambient glow — tinted to ring-arc, works in both modes */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[380px] w-[380px] rounded-full bg-indigo-400/8 dark:bg-cyan-400/8 blur-[90px]" />
 
       {/* 3-D perspective wrapper */}
-      <div style={{ perspective: "900px" }}>
+      <div style={{ perspective: "1000px" }}>
         <div
-          style={{
-            transform: "rotateX(10deg) rotateY(-18deg) rotate(-1deg)",
-            boxShadow: "0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07)",
-          }}
-          className="relative rounded-3xl bg-[#161923] w-[310px] overflow-hidden"
+          style={{ transform: "rotateX(10deg) rotateY(-18deg) rotate(-1deg)" }}
+          className="card-3d relative rounded-3xl bg-white dark:bg-[#161923] w-[380px] overflow-hidden"
         >
-          {/* Top shimmer line */}
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-[#00F0FF]/50 to-transparent" />
+          {/* Top shimmer */}
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/80 to-transparent dark:via-[#00F0FF]/40" />
 
           {/* Header */}
-          <div className="px-5 pt-5 pb-4 flex items-center justify-between">
+          <div className="px-6 pt-6 pb-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#00F0FF]/25 to-violet-500/30 border border-white/10 flex items-center justify-center shrink-0">
-                <span className="text-xs font-bold text-white">AY</span>
+              <div className="h-10 w-10 rounded-full bg-indigo-50 dark:bg-white/10 border border-slate-200 dark:border-white/10 flex items-center justify-center shrink-0">
+                <span className="text-xs font-bold text-indigo-600 dark:text-white">AY</span>
               </div>
               <div>
-                <p className="text-sm font-bold text-white leading-tight">Ahmet Yılmaz</p>
-                <p className="text-[11px] text-white/40">Senior React Developer</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">Ahmet Yılmaz</p>
+                <p className="text-[11px] text-slate-400 dark:text-white/40">Senior React Developer</p>
               </div>
             </div>
-            <span className="text-[10px] font-bold text-[#00F0FF] bg-[#00F0FF]/10 border border-[#00F0FF]/25 rounded-full px-2.5 py-1">
+            <span className="text-[10px] font-bold text-indigo-600 dark:text-[#00F0FF] bg-indigo-50 dark:bg-[#00F0FF]/10 border border-indigo-200 dark:border-[#00F0FF]/25 rounded-full px-2.5 py-1">
               ✦ AI
             </span>
           </div>
 
-          <div className="h-px bg-white/5 mx-5" />
+          <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
           {/* Score ring */}
-          <div className="flex items-center gap-4 px-5 py-4">
+          <div className="flex items-center gap-5 px-6 py-5">
             <div className="relative shrink-0">
               <CircleScore score={87} />
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-[22px] font-extrabold text-white leading-none">87</span>
-                <span className="text-[8px] font-bold text-[#00F0FF] uppercase tracking-widest mt-0.5">Güçlü</span>
+                <span className="text-[24px] font-extrabold text-slate-900 dark:text-white leading-none">87</span>
+                <span className="text-[8px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--ring-arc)" }}>Güçlü</span>
               </div>
             </div>
             <div>
-              <p className="text-[9px] text-white/30 uppercase tracking-widest font-bold mb-1.5">Genel Skor</p>
-              <p className="text-[11px] text-white/55 leading-relaxed">
+              <p className="text-[9px] text-slate-400 dark:text-white/30 uppercase tracking-widest font-bold mb-2">Genel Skor</p>
+              <p className="text-[12px] text-slate-500 dark:text-white/55 leading-relaxed">
                 Güçlü profil. Başlık<br />optimizasyonu en büyük fırsat.
               </p>
             </div>
           </div>
 
-          <div className="h-px bg-white/5 mx-5" />
+          <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
           {/* Score bars */}
-          <div className="px-5 py-4 space-y-3">
-            <ScoreBar label="Platform Uyumu"    value={92} color="bg-gradient-to-r from-[#00F0FF] to-cyan-400" />
-            <ScoreBar label="Beceri Eşleşmesi"  value={88} color="bg-gradient-to-r from-[#00F0FF] to-violet-400" />
-            <ScoreBar label="Müşteri Çekiciliği" value={76} color="bg-gradient-to-r from-violet-400 to-violet-500" />
+          <div className="px-6 py-5 space-y-3.5">
+            <ScoreBar label="Platform Uyumu"     value={92} />
+            <ScoreBar label="Beceri Eşleşmesi"   value={88} />
+            <ScoreBar label="Müşteri Çekiciliği"  value={76} />
           </div>
 
-          <div className="h-px bg-white/5 mx-5" />
+          <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
           {/* Platform logos */}
-          <div className="px-5 py-4 flex items-center justify-between">
+          <div className="px-6 py-5 flex items-center justify-between">
             {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
-              <div key={id} className="rounded-xl border border-white/8 bg-white/[0.04] p-1.5">
-                <PlatformLogo platform={id} size={15} />
+              <div key={id} className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.04] p-1.5">
+                <PlatformLogo platform={id} size={16} />
               </div>
             ))}
           </div>
 
           {/* Bottom shimmer */}
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-indigo-500/20" />
         </div>
       </div>
     </div>
