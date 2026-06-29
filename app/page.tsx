@@ -368,12 +368,13 @@ export default async function Home() {
 
   if (!user) return <LandingPage />;
 
-  const [profileRes, portfolioRes, jobsRes, usageRes, creditsRes] = await Promise.all([
+  const [profileRes, portfolioRes, jobsRes, usageRes, creditsRes, connectionsRes] = await Promise.all([
     supabase.from("profiles").select("headline, summary, skills").eq("user_id", user.id).maybeSingle(),
     supabase.from("portfolios").select("slug, published, content").eq("user_id", user.id).maybeSingle(),
     supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
     supabase.from("usage_events").select("kind, platform, cost_usd, input_tokens, output_tokens, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
     supabase.from("credits").select("balance").eq("user_id", user.id).maybeSingle(),
+    supabase.from("platform_connections").select("platform, profile_url, updated_at").eq("user_id", user.id),
   ]);
 
   const initialProfile = profileRes.data
@@ -386,6 +387,9 @@ export default async function Home() {
 
   const initialJobs = (jobsRes.data ?? []) as Parameters<typeof ProfileStudio>[0]["initialJobs"];
   const initialCredits = creditsRes.data?.balance ?? 0;
+  const initialConnections = Object.fromEntries(
+    (connectionsRes.data ?? []).map((c) => [c.platform, c.profile_url as string])
+  ) as Record<string, string>;
 
   const usageRows = usageRes.data ?? [];
   const initialSpendUsd = usageRows.reduce((sum, row) => sum + Number(row.cost_usd ?? 0), 0);
@@ -445,6 +449,7 @@ export default async function Home() {
           initialJobs={initialJobs}
           initialAnalytics={initialAnalytics}
           initialCredits={initialCredits}
+          initialConnections={initialConnections}
         />
       </main>
     </div>

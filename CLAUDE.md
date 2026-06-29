@@ -23,6 +23,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı.
   - `app/api/analytics` — GET: tür bazında özet + 30 günlük günlük harcama serisi.
   - `app/api/credits` — GET: kullanıcının kredi bakiyesi (`credits` tablosu).
+  - `app/api/platform-connections` — GET (liste) / PUT (upsert) / DELETE: platform profil URL'leri.
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `openai-client.ts` (OpenAI gpt-4o-mini istemcisi),
   `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `platformIdSchema`),
@@ -33,6 +34,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `client.ts` (tarayıcı), `middleware.ts` (oturum yenileme). Kök `proxy.ts` bunu çağırır.
 - `lib/sanitize.ts` — portfolyo HTML'i için XSS sanitize (render öncesi zorunlu).
 - `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` + `JobStatus`.
+- `lib/validation/schemas/platform-connection.ts` — `platformConnectionUpsertSchema` + `PlatformConnection` tipi.
 - `components/ui/` — shadcn bileşenleri. `components/profile-studio.tsx` — Faz 1 MVP UI'ı.
   `components/theme-provider.tsx` — next-themes provider (defaultTheme: dark).
   `components/theme-toggle.tsx` — Sun/Moon toggle butonu (her iki header'da kullanılır).

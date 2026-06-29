@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   User, Layers, Globe, Briefcase, Save, Sparkles, Target,
   Trash2, Plus, X, ExternalLink, CheckCircle2, AlertCircle, BarChart3,
-  Copy, Check, TrendingUp, Zap, Wallet, ShoppingCart,
+  Copy, Check, TrendingUp, Zap, Wallet, ShoppingCart, Link2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -30,7 +30,7 @@ interface AnalyticsData {
   byKind: Record<string, { count: number; costUsd: number }>;
   dailySeries: { date: string; costUsd: number }[];
 }
-type Tab = "profil" | "uyarlama" | "portfolyo" | "ilanlar" | "analitik";
+type Tab = "profil" | "uyarlama" | "portfolyo" | "ilanlar" | "analitik" | "hesaplar";
 
 /* ── Constants ──────────────────────────────────────────────────────── */
 
@@ -58,6 +58,14 @@ const PLATFORM_STYLES: Record<PlatformId, { accent: string; icon: string; badge:
   fiverr:   { accent: "border-t-4 border-t-emerald-500",icon: "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400", badge: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" },
   bionluk:  { accent: "border-t-4 border-t-violet-500", icon: "bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400", badge: "bg-violet-50 text-violet-700 dark:bg-violet-950 dark:text-violet-300" },
   armut:    { accent: "border-t-4 border-t-orange-500", icon: "bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400", badge: "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300" },
+};
+
+const PLATFORM_URL_PLACEHOLDERS: Record<PlatformId, string> = {
+  linkedin: "https://www.linkedin.com/in/kullanici-adi",
+  upwork:   "https://www.upwork.com/freelancers/~profil-id",
+  fiverr:   "https://www.fiverr.com/kullanici-adi",
+  bionluk:  "https://www.bionluk.com/kullanici-adi",
+  armut:    "https://armut.com/kullanici/kullanici-adi",
 };
 
 const KIND_LABELS: Record<string, string> = {
@@ -104,7 +112,7 @@ function CopyButton({ text }: { text: string }) {
 /* ── Component ──────────────────────────────────────────────────────── */
 
 export function ProfileStudio({
-  initialProfile, initialSpendUsd, initialPortfolio, initialJobs, initialAnalytics, initialCredits,
+  initialProfile, initialSpendUsd, initialPortfolio, initialJobs, initialAnalytics, initialCredits, initialConnections,
 }: {
   initialProfile: InitialProfile | null;
   initialSpendUsd: number;
@@ -112,6 +120,7 @@ export function ProfileStudio({
   initialJobs: JobRow[];
   initialAnalytics: AnalyticsData;
   initialCredits: number;
+  initialConnections: Record<string, string>;
 }) {
   const [activeTab, setActiveTab] = useState<Tab>("profil");
   const [onboardingDismissed, setOnboardingDismissed] = useState(initialProfile !== null);
@@ -146,6 +155,13 @@ export function ProfileStudio({
   const [matchingId, setMatchingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [jobError, setJobError] = useState("");
+
+  // Hesaplar sekmesi state
+  const [connections, setConnections] = useState<Record<string, string>>(initialConnections);
+  const [connectionDraft, setConnectionDraft] = useState<Record<string, string>>(initialConnections);
+  const [savingConnection, setSavingConnection] = useState<PlatformId | null>(null);
+  const [deletingConnection, setDeletingConnection] = useState<PlatformId | null>(null);
+  const [connectionError, setConnectionError] = useState<Record<string, string>>({});
 
   /* — Handlers — */
 
@@ -245,8 +261,43 @@ export function ProfileStudio({
     setJobs((prev) => prev.filter((j) => j.id !== id)); setDeletingId(null);
   }
 
+  async function saveConnection(platform: PlatformId) {
+    const url = (connectionDraft[platform] ?? "").trim();
+    setSavingConnection(platform);
+    setConnectionError((prev) => ({ ...prev, [platform]: "" }));
+    const res = await fetch("/api/platform-connections", {
+      method: "PUT", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ platform, profile_url: url }),
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) {
+      setConnectionError((prev) => ({ ...prev, [platform]: body?.error?.message ?? "Kaydedilemedi." }));
+      setSavingConnection(null); return;
+    }
+    setConnections((prev) => ({ ...prev, [platform]: url }));
+    setSavingConnection(null);
+  }
+
+  async function removeConnection(platform: PlatformId) {
+    setDeletingConnection(platform);
+    const res = await fetch("/api/platform-connections", {
+      method: "DELETE", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ platform }),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      setConnectionError((prev) => ({ ...prev, [platform]: body?.error?.message ?? "Silinemedi." }));
+      setDeletingConnection(null); return;
+    }
+    setConnections((prev) => { const n = { ...prev }; delete n[platform]; return n; });
+    setConnectionDraft((prev) => { const n = { ...prev }; delete n[platform]; return n; });
+    setDeletingConnection(null);
+  }
+
   const profileSaved = saveState === "saved";
   const readyPlatforms = PLATFORM_IDS.filter((id) => results[id]).length;
+
+  const connectedCount = Object.keys(connections).length;
 
   const TABS: { id: Tab; label: string; icon: React.ElementType; badge?: number }[] = [
     { id: "profil",    label: "Profil",           icon: User },
@@ -254,6 +305,7 @@ export function ProfileStudio({
     { id: "portfolyo", label: "Portfolyo",         icon: Globe },
     { id: "ilanlar",   label: "İlanlar",           icon: Briefcase, badge: jobs.length || undefined },
     { id: "analitik",  label: "Analitik",          icon: BarChart3 },
+    { id: "hesaplar",  label: "Hesaplar",          icon: Link2, badge: connectedCount || undefined },
   ];
 
   const onboardingStep = !profileSaved ? 1 : readyPlatforms === 0 ? 2 : !portfolio?.published ? 3 : 4;
@@ -963,6 +1015,99 @@ export function ProfileStudio({
               </p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── Hesaplar sekmesi ── */}
+      {activeTab === "hesaplar" && (
+        <div className="space-y-4">
+          <div className="rounded-xl border border-border bg-card p-4 space-y-1">
+            <p className="text-sm font-semibold">Platform Hesaplarım</p>
+            <p className="text-xs text-muted-foreground">
+              Her platform için profil URL&apos;ni gir. Gelecekte bu bağlantılar üzerinden
+              profilini import edebileceksin.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {PLATFORM_IDS.map((id) => {
+              const style = PLATFORM_STYLES[id];
+              const saved = connections[id];
+              const draft = connectionDraft[id] ?? "";
+              const isDirty = draft !== (saved ?? "");
+              const err = connectionError[id];
+
+              return (
+                <Card key={id} className={`shadow-sm overflow-hidden ${style.accent}`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${style.icon}`}>
+                        <PlatformLogo platform={id} size={18} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold">{PLATFORMS[id].label}</p>
+                        {saved ? (
+                          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${style.badge}`}>
+                            ✓ Bağlı
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-muted-foreground/60">Bağlı değil</span>
+                        )}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="space-y-1.5">
+                      <input
+                        type="url"
+                        value={draft}
+                        onChange={(e) => setConnectionDraft((prev) => ({ ...prev, [id]: e.target.value }))}
+                        placeholder={PLATFORM_URL_PLACEHOLDERS[id]}
+                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/50 outline-none focus:ring-2 focus:ring-ring transition-shadow"
+                      />
+                      {err && (
+                        <p className="text-xs text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3 shrink-0" />{err}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant={saved && !isDirty ? "outline" : "default"}
+                        disabled={savingConnection === id || !draft.trim()}
+                        onClick={() => saveConnection(id)}
+                        className="gap-1.5 h-7 text-xs"
+                      >
+                        <Save className="h-3 w-3" />
+                        {savingConnection === id ? "Kaydediliyor…" : saved && !isDirty ? "Kaydedildi" : "Kaydet"}
+                      </Button>
+                      {saved && (
+                        <>
+                          <a
+                            href={saved}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <ExternalLink className="h-3 w-3" />Görüntüle
+                          </a>
+                          <button
+                            onClick={() => removeConnection(id)}
+                            disabled={deletingConnection === id}
+                            className="ml-auto text-muted-foreground/40 hover:text-destructive transition-colors"
+                            title="Bağlantıyı kaldır"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
