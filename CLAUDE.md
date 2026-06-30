@@ -11,8 +11,9 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 `@supabase/ssr`) · OpenAI `gpt-4o-mini` (uyarlama motoru) · Sentry · Zod · DOMPurify · Vercel.
 
 ## Neyin nerede
-- `app/page.tsx` — ana sayfa (sunucu): oturum varsa Profil Stüdyosu, yoksa giriş çağrısı.
-- `app/login`, `app/auth/{confirm,signout}` — magic-link (e-posta OTP) auth akışı.
+- `app/page.tsx` — ana sayfa (sunucu): her zaman landing gösterir; oturum açıksa nav'da "Dashboard" butonu.
+- `app/dashboard/page.tsx` — korumalı dashboard (sunucu): tüm veriyi çeker → `ProfileStudio`'ya iletir; oturumuz yoksa `/login`'e yönlendirir.
+- `app/login`, `app/auth/{confirm,signout}` — magic-link (e-posta OTP) auth akışı; giriş sonrası `/dashboard`'a yönlendirir.
 - `app/` — sayfalar + `app/api/*/route.ts` uç noktaları. `app/global-error.tsx` kök ErrorBoundary.
   - `app/api/health` — canlılık. `app/api/debug-sentry` — Sentry test (kaldırılabilir).
   - `app/api/profile` — **korumalı uç nokta ŞABLONU** (yeni route'lar bunu örnek alır).
@@ -35,7 +36,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/sanitize.ts` — portfolyo HTML'i için XSS sanitize (render öncesi zorunlu).
 - `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` + `JobStatus`.
 - `lib/validation/schemas/platform-connection.ts` — `platformConnectionUpsertSchema` + `PlatformConnection` tipi.
-- `components/ui/` — shadcn bileşenleri. `components/profile-studio.tsx` — Faz 1 MVP UI'ı.
+- `components/ui/` — shadcn bileşenleri. `components/profile-studio.tsx` — tam sayfa sidebar dashboard (7 tab, Genel Bakış varsayılan).
   `components/theme-provider.tsx` — next-themes provider (defaultTheme: dark).
   `components/theme-toggle.tsx` — Sun/Moon toggle butonu (her iki header'da kullanılır).
   `components/platform-logo.tsx` — 5 platform için SVG logo bileşeni (PlatformId → SVG).

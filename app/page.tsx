@@ -1,10 +1,9 @@
 import Link from "next/link";
 import {
-  Layers, Globe, Briefcase, ArrowRight, LogOut,
+  Layers, Globe, Briefcase, ArrowRight,
   CheckCircle2, Target, Sparkles, Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ProfileStudio } from "@/components/profile-studio";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PlatformLogo } from "@/components/platform-logo";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -49,18 +48,12 @@ function ScoreBar({ label, value }: { label: string; value: number }) {
 function ProductMockup() {
   return (
     <div className="relative flex items-center justify-center py-10 anim-fade-in anim-d2">
-      {/* Subtle ambient glow — tinted to ring-arc, works in both modes */}
       <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[380px] w-[380px] rounded-full bg-indigo-400/8 dark:bg-cyan-400/8 blur-[90px]" />
 
-      {/* 3-D perspective wrapper */}
       <div style={{ perspective: "1000px" }}>
-        <div
-          className="card-3d card-spin-in relative rounded-3xl bg-white dark:bg-[#161923] w-[380px] overflow-hidden"
-        >
-          {/* Top shimmer */}
+        <div className="card-3d card-spin-in relative rounded-3xl bg-white dark:bg-[#161923] w-[380px] overflow-hidden">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-300/80 to-transparent dark:via-[#00F0FF]/40" />
 
-          {/* Header */}
           <div className="px-6 pt-6 pb-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-indigo-50 dark:bg-white/10 border border-slate-200 dark:border-white/10 flex items-center justify-center shrink-0">
@@ -78,7 +71,6 @@ function ProductMockup() {
 
           <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
-          {/* Score ring */}
           <div className="flex items-center gap-5 px-6 py-5">
             <div className="relative shrink-0">
               <CircleScore score={87} />
@@ -97,7 +89,6 @@ function ProductMockup() {
 
           <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
-          {/* Score bars */}
           <div className="px-6 py-5 space-y-3.5">
             <ScoreBar label="Platform Uyumu"     value={92} />
             <ScoreBar label="Beceri Eşleşmesi"   value={88} />
@@ -106,7 +97,6 @@ function ProductMockup() {
 
           <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
-          {/* Platform logos */}
           <div className="px-6 py-5 flex items-center justify-between">
             {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
               <div key={id} className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.04] p-1.5">
@@ -115,7 +105,6 @@ function ProductMockup() {
             ))}
           </div>
 
-          {/* Bottom shimmer */}
           <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-indigo-500/20" />
         </div>
       </div>
@@ -124,7 +113,7 @@ function ProductMockup() {
 }
 
 /* ─── Landing page ──────────────────────────────────────────────── */
-function LandingPage() {
+function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
 
@@ -148,19 +137,26 @@ function LandingPage() {
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Button asChild variant="ghost" size="sm" className="text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/8">
-              <Link href="/login">Giriş Yap</Link>
-            </Button>
-            <Button asChild size="sm" className="font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/30">
-              <Link href="/login">Ücretsiz Başla</Link>
-            </Button>
+            {isLoggedIn ? (
+              <Button asChild size="sm" className="font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/30">
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+            ) : (
+              <>
+                <Button asChild variant="ghost" size="sm" className="text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/8">
+                  <Link href="/login">Giriş Yap</Link>
+                </Button>
+                <Button asChild size="sm" className="font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/30">
+                  <Link href="/login">Ücretsiz Başla</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </header>
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        {/* Background glows */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-[#00F0FF]/6 blur-[100px]" />
           <div className="absolute right-1/4 top-20 h-[400px] w-[400px] rounded-full bg-violet-500/8 blur-[100px]" />
@@ -168,7 +164,6 @@ function LandingPage() {
 
         <div className="relative mx-auto max-w-6xl px-8 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
-            {/* Badge */}
             <div className="anim-fade-up anim-d0 inline-flex items-center gap-2 rounded-full border border-[#00F0FF]/25 bg-[#00F0FF]/8 px-3.5 py-1.5">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
@@ -178,7 +173,6 @@ function LandingPage() {
               <span className="text-xs font-semibold text-slate-600 dark:text-white/70">Beta — İlk 100 kullanıcı ücretsiz</span>
             </div>
 
-            {/* H1 */}
             <h1 className="anim-fade-up anim-d1 text-5xl lg:text-[3.5rem] font-extrabold leading-[1.1] tracking-tight">
               Freelancer kariyerini{" "}
               <span className="bg-gradient-to-r from-[#00F0FF] to-violet-400 bg-clip-text text-transparent">
@@ -187,13 +181,11 @@ function LandingPage() {
               yönet.
             </h1>
 
-            {/* Description */}
             <p className="anim-fade-up anim-d2 text-lg text-slate-500 dark:text-[#94A3B8] leading-relaxed max-w-md font-medium">
               Profilini bir kez gir. LinkedIn, Upwork, Fiverr, Bionluk ve Armut
               için AI ile optimize et; portfolyonu saniyeler içinde yayınla.
             </p>
 
-            {/* Platform logo pills — hero */}
             <div className="anim-fade-up anim-d3 flex items-center gap-2 flex-wrap pt-1">
               {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
                 <div key={id} className="rounded-lg border border-white/8 bg-white/[0.05] p-1.5 backdrop-blur-sm">
@@ -203,23 +195,32 @@ function LandingPage() {
               <span className="text-xs text-slate-400 dark:text-[#94A3B8]/60 font-medium">5 platform destekleniyor</span>
             </div>
 
-            {/* CTA buttons */}
             <div className="anim-fade-up anim-d4 flex flex-wrap items-center gap-3 pt-2">
-              <Link
-                href="/login"
-                className="anim-neon-pulse inline-flex items-center h-12 px-7 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors"
-              >
-                Hemen Başla <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-              <Link
-                href="#features"
-                className="inline-flex items-center h-12 px-7 rounded-xl text-base font-semibold border border-violet-500/40 text-violet-400 hover:bg-violet-500/10 transition-colors"
-              >
-                Özellikleri Gör
-              </Link>
+              {isLoggedIn ? (
+                <Link
+                  href="/dashboard"
+                  className="anim-neon-pulse inline-flex items-center h-12 px-7 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors"
+                >
+                  Dashboard&apos;a Git <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="anim-neon-pulse inline-flex items-center h-12 px-7 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors"
+                  >
+                    Hemen Başla <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                  <Link
+                    href="#features"
+                    className="inline-flex items-center h-12 px-7 rounded-xl text-base font-semibold border border-violet-500/40 text-violet-400 hover:bg-violet-500/10 transition-colors"
+                  >
+                    Özellikleri Gör
+                  </Link>
+                </>
+              )}
             </div>
 
-            {/* Trust signals */}
             <div className="anim-fade-up anim-d5 flex flex-wrap gap-4 pt-1">
               {["Kredi kartı gerekmez", "5 dakikada kur", "Pay-as-you-go"].map((t) => (
                 <span key={t} className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-[#94A3B8]/70 font-medium">
@@ -262,11 +263,11 @@ function LandingPage() {
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           {([
-            { id: "linkedin" as PlatformId, label: "LinkedIn", delay: 0   },
-            { id: "upwork"   as PlatformId, label: "Upwork",   delay: 60  },
-            { id: "fiverr"   as PlatformId, label: "Fiverr",   delay: 120 },
-            { id: "bionluk"  as PlatformId, label: "Bionluk",  delay: 180 },
-            { id: "armut"    as PlatformId, label: "Armut",    delay: 240 },
+            { id: "linkedin" as PlatformId, label: "LinkedIn" },
+            { id: "upwork"   as PlatformId, label: "Upwork"   },
+            { id: "fiverr"   as PlatformId, label: "Fiverr"   },
+            { id: "bionluk"  as PlatformId, label: "Bionluk"  },
+            { id: "armut"    as PlatformId, label: "Armut"    },
           ]).map(({ id, label }) => (
             <div key={id} className="flex items-center gap-2.5 rounded-2xl border border-white/8 bg-white/[0.05] px-5 py-3 backdrop-blur-sm hover:bg-white/[0.09] hover:border-white/15 transition-colors">
               <PlatformLogo platform={id} size={20} />
@@ -289,7 +290,6 @@ function LandingPage() {
         </ScrollReveal>
 
         <div className="grid md:grid-cols-3 gap-5">
-          {/* Platform Uyarlama — özel kart */}
           <ScrollReveal delay={0}>
             <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md hover:shadow-[#00F0FF]/5 transition-all">
               <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
@@ -344,9 +344,9 @@ function LandingPage() {
           </ScrollReveal>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { step: "01", title: "Profilini gir",        desc: "Başlık, özet ve becerilerini bir kez doldur. Bu temel, her şeyin kaynağı.",                         delay: 0   },
-              { step: "02", title: "Platform seç & uyarla", desc: "LinkedIn, Upwork veya diğer platformlar için AI'ın optimize metnini üret.",                         delay: 100 },
-              { step: "03", title: "Paylaş & takip et",    desc: "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir.",                                   delay: 200 },
+              { step: "01", title: "Profilini gir",          desc: "Başlık, özet ve becerilerini bir kez doldur. Bu temel, her şeyin kaynağı.",        delay: 0   },
+              { step: "02", title: "Platform seç & uyarla",  desc: "LinkedIn, Upwork veya diğer platformlar için AI'ın optimize metnini üret.",        delay: 100 },
+              { step: "03", title: "Paylaş & takip et",      desc: "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir.",                  delay: 200 },
             ].map(({ step, title, desc, delay }) => (
               <ScrollReveal key={step} delay={delay}>
                 <div className="space-y-4">
@@ -379,10 +379,10 @@ function LandingPage() {
                 Beta sürecinde ücretsiz. Kredi kartı gerekmez.
               </p>
               <Link
-                href="/login"
+                href={isLoggedIn ? "/dashboard" : "/login"}
                 className="anim-neon-pulse inline-flex items-center h-12 px-8 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors mt-2"
               >
-                Ücretsiz Başla <ArrowRight className="ml-2 h-4 w-4" />
+                {isLoggedIn ? "Dashboard'a Git" : "Ücretsiz Başla"} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -405,99 +405,12 @@ function LandingPage() {
   );
 }
 
-/* ─── App shell (authenticated) ────────────────────────────────── */
+/* ─── Root server component ─────────────────────────────────────── */
 export default async function Home() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return <LandingPage />;
-
-  const [profileRes, portfolioRes, jobsRes, usageRes, creditsRes, connectionsRes] = await Promise.all([
-    supabase.from("profiles").select("headline, summary, skills").eq("user_id", user.id).maybeSingle(),
-    supabase.from("portfolios").select("slug, published, content").eq("user_id", user.id).maybeSingle(),
-    supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
-    supabase.from("usage_events").select("kind, platform, cost_usd, input_tokens, output_tokens, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
-    supabase.from("credits").select("balance").eq("user_id", user.id).maybeSingle(),
-    supabase.from("platform_connections").select("platform, profile_url, updated_at").eq("user_id", user.id),
-  ]);
-
-  const initialProfile = profileRes.data
-    ? { headline: profileRes.data.headline as string, summary: profileRes.data.summary as string, skills: (profileRes.data.skills as string[]) ?? [] }
-    : null;
-
-  const initialPortfolio = portfolioRes.data
-    ? { slug: portfolioRes.data.slug as string, published: portfolioRes.data.published as boolean, content: portfolioRes.data.content ?? null }
-    : null;
-
-  const initialJobs = (jobsRes.data ?? []) as Parameters<typeof ProfileStudio>[0]["initialJobs"];
-  const initialCredits = creditsRes.data?.balance ?? 0;
-  const initialConnections = Object.fromEntries(
-    (connectionsRes.data ?? []).map((c) => [c.platform, c.profile_url as string])
-  ) as Record<string, string>;
-
-  const usageRows = usageRes.data ?? [];
-  const initialSpendUsd = usageRows.reduce((sum, row) => sum + Number(row.cost_usd ?? 0), 0);
-
-  // Analitik: tür bazında özet ve son 30 günlük günlük harcama
-  const byKind: Record<string, { count: number; costUsd: number }> = {};
-  for (const r of usageRows) {
-    const k = r.kind as string;
-    byKind[k] ??= { count: 0, costUsd: 0 };
-    byKind[k].count += 1;
-    byKind[k].costUsd += Number(r.cost_usd ?? 0);
-  }
-  // eslint-disable-next-line react-hooks/purity
-  const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  const daily: Record<string, number> = {};
-  for (const r of usageRows) {
-    if (new Date(r.created_at as string).getTime() < cutoff) continue;
-    const day = (r.created_at as string).slice(0, 10);
-    daily[day] = (daily[day] ?? 0) + Number(r.cost_usd ?? 0);
-  }
-  const initialAnalytics = {
-    totalUsd: initialSpendUsd,
-    totalCount: usageRows.length,
-    byKind,
-    dailySeries: Object.entries(daily)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([date, costUsd]) => ({ date, costUsd })),
-  };
-
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl items-center justify-between h-14 px-6">
-          <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground text-xs font-extrabold">M</span>
-            </div>
-            <span className="font-bold text-sm tracking-tight">Multifolio</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="hidden sm:block text-xs text-muted-foreground font-medium">{user.email}</span>
-            <ThemeToggle />
-            <form action="/auth/signout" method="post">
-              <Button type="submit" variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground font-medium">
-                <LogOut className="h-3.5 w-3.5" />
-                Çıkış
-              </Button>
-            </form>
-          </div>
-        </div>
-      </header>
-      <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
-        <ProfileStudio
-          initialProfile={initialProfile}
-          initialSpendUsd={initialSpendUsd}
-          initialPortfolio={initialPortfolio}
-          initialJobs={initialJobs}
-          initialAnalytics={initialAnalytics}
-          initialCredits={initialCredits}
-          initialConnections={initialConnections}
-        />
-      </main>
-    </div>
-  );
+  return <LandingPage isLoggedIn={!!user} />;
 }

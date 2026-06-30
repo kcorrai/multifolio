@@ -9,7 +9,7 @@ export const GET = withErrorHandler(async (req) => {
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const next = searchParams.get("next") ?? "/";
+  const next = searchParams.get("next") ?? "/dashboard";
 
   const supabase = await createSupabaseServerClient();
 
