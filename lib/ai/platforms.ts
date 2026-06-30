@@ -70,3 +70,22 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
 };
 
 export const PLATFORM_IDS = Object.keys(PLATFORMS) as PlatformId[];
+
+// Her platform için iş teklifi (proposal) yönergesi.
+export const PROPOSAL_GUIDANCE: Record<PlatformId, string> = {
+  linkedin: "LinkedIn InMail veya bağlantı isteği mesajı olarak yaz. " +
+    "Kısa ve profesyonel (150-200 kelime). İlk cümlede ortak bağlantı noktasını veya ilgi çekici " +
+    "bir gözlemi paylaş. Deneyimi somut sonuçlarla destekle. Resmi ama insani bir ton kullan.",
+  upwork: "Upwork iş teklifi (cover letter) olarak yaz. İlk 2 cümlede alıcının dikkatini çek — " +
+    "ilanın özünü anladığını göster. Maksimum 200 kelime. Müşteri odaklı; kendi becerilerini " +
+    "müşterinin sorununu çözme kapasitesi üzerinden anlat. Net bir eylem çağrısıyla bitir.",
+  fiverr: "Fiverr Buyer Request yanıtı olarak yaz. Enerjik, doğrudan ve güven verici. " +
+    "Ne teslim edeceğini ve sürecinin nasıl işlediğini net anlat. " +
+    "150 kelimeyi geçme. Kısa paragraflar kullan.",
+  bionluk: "Bionluk iş teklifi olarak yaz. Türkçe, samimi ve profesyonel bir ton. " +
+    "Yerel iş dünyasına uygun; hızlı iletişim, güvenilirlik ve yerel referansları öne çıkar. " +
+    "150-200 kelime. İlanın gereksinimlerine özelleştirilmiş bir yaklaşım sun.",
+  armut: "Armut platformu için hizmet teklifi olarak yaz. Türkçe, net ve güven odaklı. " +
+    "Sunulan hizmetin kapsamını, sürecini ve neden tercih edilmesi gerektiğini açıkla. " +
+    "Yerel müşteriyle doğrudan konuş; somut örnekler ve referanslar ekle. 150-200 kelime.",
+};
