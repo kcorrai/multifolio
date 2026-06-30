@@ -279,7 +279,7 @@ export default function LoginPage() {
                   >
                     <Icon className="h-3.5 w-3.5 text-indigo-500 dark:text-[#00F0FF]" />
                   </div>
-                  <span className="text-base font-medium leading-relaxed
+                  <span className="text-lg font-medium leading-relaxed
                                    text-slate-600 dark:text-white/65">
                     {text}
                   </span>
