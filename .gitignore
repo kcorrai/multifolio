@@ -43,3 +43,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# tooling scratch (CLI temp, mcp logs, code-counter, skill specs)
+/.VSCodeCounter/
+/.playwright-mcp/
+/supabase/.temp/
+/docs/superpowers/

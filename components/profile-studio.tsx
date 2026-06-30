@@ -7,6 +7,8 @@ import {
   Copy, Check, TrendingUp, Zap, Wallet, ShoppingCart, Link2, LogOut,
   LayoutDashboard,
 } from "lucide-react";
+import { JobAddModal } from "@/components/job-add-modal";
+import { JobDetailPanel } from "@/components/job-detail-panel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,21 +39,14 @@ type Tab = "genel" | "profil" | "uyarlama" | "portfolyo" | "ilanlar" | "analitik
 /* ── Constants ──────────────────────────────────────────────────────── */
 
 const STATUS_LABELS: Record<JobStatus, string> = {
-  saved: "Kaydedildi", applied: "Başvuruldu", interview: "Görüşme",
-  offer: "Teklif", rejected: "Reddedildi",
+  saved: "Kaydedildi", applied: "Başvuruldu", awaiting_reply: "Yanıt Bekleniyor",
+  interview: "Görüşme", offer: "Teklif", rejected: "Reddedildi",
 };
 
-const STATUS_CLASSES: Record<JobStatus, string> = {
-  saved:     "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
-  applied:   "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
-  interview: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
-  offer:     "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",
-  rejected:  "bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400",
-};
 
 const STATUS_DOT: Record<JobStatus, string> = {
-  saved: "bg-slate-400", applied: "bg-blue-500", interview: "bg-amber-500",
-  offer: "bg-green-500", rejected: "bg-red-500",
+  saved: "bg-slate-400", applied: "bg-blue-500", awaiting_reply: "bg-cyan-400",
+  interview: "bg-amber-500", offer: "bg-green-500", rejected: "bg-red-500",
 };
 
 const PLATFORM_STYLES: Record<PlatformId, { accent: string; icon: string; badge: string }> = {
@@ -74,12 +69,14 @@ const KIND_LABELS: Record<string, string> = {
   adaptation: "Platform Uyarlama",
   portfolio_generation: "Portfolyo Üretimi",
   job_match: "İlan Eşleştirme",
+  proposal: "Teklif Üretimi",
 };
 
 const KIND_ICONS: Record<string, React.ElementType> = {
   adaptation: Layers,
   portfolio_generation: Globe,
   job_match: Target,
+  proposal: Sparkles,
 };
 
 function scoreColor(n: number) {
@@ -149,14 +146,8 @@ export function ProfileStudio({
   const [savingPortfolio, setSavingPortfolio] = useState(false);
   const [portfolioError, setPortfolioError] = useState("");
   const [jobs, setJobs] = useState<JobRow[]>(initialJobs);
-  const [addFormOpen, setAddFormOpen] = useState(false);
-  const [addTitle, setAddTitle] = useState("");
-  const [addCompany, setAddCompany] = useState("");
-  const [addPlatform, setAddPlatform] = useState("");
-  const [addDescription, setAddDescription] = useState("");
-  const [adding, setAdding] = useState(false);
-  const [addError, setAddError] = useState("");
-  const [matchingId, setMatchingId] = useState<string | null>(null);
+  const [jobAddModalOpen, setJobAddModalOpen] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [jobError, setJobError] = useState("");
 
@@ -220,38 +211,12 @@ export function ProfileStudio({
     setSavingPortfolio(false);
   }
 
-  async function addJob() {
-    setAdding(true); setAddError("");
-    const res = await fetch("/api/jobs", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: addTitle, company: addCompany || undefined, platform: addPlatform || undefined, description: addDescription }),
+  function handleJobAdded(job: JobRow) {
+    setJobs((prev) => {
+      const exists = prev.some((j) => j.id === job.id);
+      if (exists) return prev.map((j) => (j.id === job.id ? job : j));
+      return [job, ...prev];
     });
-    const body = await res.json().catch(() => null);
-    if (!res.ok) { setAddError(body?.error?.message ?? "İlan eklenemedi."); setAdding(false); return; }
-    setJobs((prev) => [body.job as JobRow, ...prev]);
-    setAddTitle(""); setAddCompany(""); setAddPlatform(""); setAddDescription("");
-    setAddFormOpen(false); setAdding(false);
-  }
-
-  async function updateJobStatus(id: string, status: JobStatus) {
-    setJobError("");
-    const res = await fetch(`/api/jobs/${id}`, {
-      method: "PATCH", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    const body = await res.json().catch(() => null);
-    if (!res.ok) { setJobError(body?.error?.message ?? "Durum güncellenemedi."); return; }
-    setJobs((prev) => prev.map((j) => (j.id === id ? (body.job as JobRow) : j)));
-  }
-
-  async function matchJob(id: string) {
-    setMatchingId(id); setJobError("");
-    const res = await fetch(`/api/jobs/${id}/match`, { method: "POST" });
-    const body = await res.json().catch(() => null);
-    if (!res.ok) { setJobError(body?.error?.message ?? "Eşleştirme başarısız."); setMatchingId(null); return; }
-    setJobs((prev) => prev.map((j) => (j.id === id ? (body.job as JobRow) : j)));
-    if (typeof body.cost?.usd === "number") setSpend((s) => s + body.cost.usd);
-    setMatchingId(null);
   }
 
   async function deleteJob(id: string) {
@@ -947,173 +912,121 @@ export function ProfileStudio({
             {/* ══════════════════════════════════════════════════════════
                 İLANLAR
             ══════════════════════════════════════════════════════════ */}
-            {activeTab === "ilanlar" && (
-              <div className="space-y-4">
-                {!addFormOpen ? (
-                  <Button variant="outline" onClick={() => setAddFormOpen(true)} className="gap-2">
-                    <Plus className="h-4 w-4" />İlan Ekle
-                  </Button>
-                ) : (
-                  <Card className="shadow-sm border-primary/30">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm">Yeni İlan</CardTitle>
-                        <button onClick={() => { setAddFormOpen(false); setAddError(""); }} className="text-muted-foreground hover:text-foreground cursor-pointer">
-                          <X className="h-4 w-4" />
-                        </button>
+            {activeTab === "ilanlar" && (() => {
+              const selectedJob = selectedJobId ? jobs.find((j) => j.id === selectedJobId) ?? null : null;
+              const awaitingCount = jobs.filter((j) => j.status === "awaiting_reply").length;
+              const appliedCount = jobs.filter((j) => j.status === "applied").length;
+              const activeCount = jobs.filter((j) => j.status !== "rejected" && j.status !== "offer").length;
+              return (
+                <div className="space-y-4">
+                  {/* Stat bar */}
+                  {jobs.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      <div className="flex items-center gap-1.5 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/40 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                        Başvurulan · {appliedCount}
                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-1.5">
-                        <Label htmlFor="add-title">İlan başlığı *</Label>
-                        <Input id="add-title" value={addTitle} onChange={(e) => setAddTitle(e.target.value)}
-                          placeholder="ör. Senior React Developer" autoFocus />
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1.5">
-                          <Label htmlFor="add-company">Şirket</Label>
-                          <Input id="add-company" value={addCompany} onChange={(e) => setAddCompany(e.target.value)} placeholder="ör. Acme Corp" />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label htmlFor="add-platform">Platform</Label>
-                          <Input id="add-platform" value={addPlatform} onChange={(e) => setAddPlatform(e.target.value)} placeholder="ör. LinkedIn" />
-                        </div>
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label htmlFor="add-description">İlan metni *</Label>
-                        <Textarea id="add-description" rows={5} value={addDescription}
-                          onChange={(e) => setAddDescription(e.target.value)}
-                          placeholder="İlanın tam metnini yapıştır…" className="resize-none" />
-                      </div>
-                      {addError && (
-                        <div className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                          <AlertCircle className="h-4 w-4 shrink-0" />{addError}
+                      {awaitingCount > 0 && (
+                        <div className="flex items-center gap-1.5 rounded-full bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800/40 px-3 py-1.5 text-xs font-semibold text-cyan-700 dark:text-cyan-300">
+                          <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+                          Yanıt Bekleniyor · {awaitingCount}
                         </div>
                       )}
-                      <div className="flex items-center gap-2">
-                        <Button onClick={addJob} disabled={adding || !addTitle.trim() || !addDescription.trim()} className="gap-2">
-                          <Plus className="h-4 w-4" />{adding ? "Ekleniyor…" : "Ekle"}
-                        </Button>
-                        <Button variant="ghost" onClick={() => { setAddFormOpen(false); setAddError(""); }}>İptal</Button>
+                      <div className="flex items-center gap-1.5 rounded-full bg-muted border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+                        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+                        Aktif · {activeCount}
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {jobError && (
-                  <div className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                    <AlertCircle className="h-4 w-4 shrink-0" />{jobError}
-                  </div>
-                )}
-
-                {jobs.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
-                    <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
-                      <Briefcase className="h-7 w-7 text-muted-foreground/40" />
                     </div>
-                    <p className="text-sm font-semibold text-muted-foreground">Henüz ilan yok</p>
-                    <p className="text-xs text-muted-foreground/60 mt-1 max-w-xs">
-                      &quot;İlan Ekle&quot; ile başla; profilinle eşleştir ve başvurularını takip et.
-                    </p>
+                  )}
+
+                  {/* Add + error */}
+                  <div className="flex items-center justify-between">
+                    <Button variant="outline" onClick={() => setJobAddModalOpen(true)} className="gap-2">
+                      <Plus className="h-4 w-4" />İlan Ekle
+                    </Button>
+                    {jobError && (
+                      <div className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                        <AlertCircle className="h-4 w-4 shrink-0" />{jobError}
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                      {JOB_STATUSES.map((s) => {
-                        const count = jobs.filter((j) => j.status === s).length;
-                        return count > 0 ? (
-                          <div key={s} className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold shrink-0 ${STATUS_CLASSES[s]}`}>
-                            <span className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT[s]}`} />
-                            {STATUS_LABELS[s]} · {count}
-                          </div>
-                        ) : null;
-                      })}
+
+                  {jobs.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
+                      <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
+                        <Briefcase className="h-7 w-7 text-muted-foreground/40" />
+                      </div>
+                      <p className="text-sm font-semibold text-muted-foreground">Henüz ilan yok</p>
+                      <p className="text-xs text-muted-foreground/60 mt-1 max-w-xs">
+                        &quot;İlan Ekle&quot; ile başla; AI ile eşleştir ve başvurularını takip et.
+                      </p>
                     </div>
-
-                    {jobs.map((job) => (
-                      <Card key={job.id} className="shadow-sm hover:shadow-md transition-shadow">
-                        <CardContent className="pt-4 space-y-3">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                              <p className="font-semibold text-sm leading-snug truncate">{job.title}</p>
-                              {(job.company || job.platform) && (
-                                <p className="text-xs text-muted-foreground mt-0.5">
-                                  {[job.company, job.platform].filter(Boolean).join(" · ")}
-                                </p>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                              {job.match_score !== null && (
-                                <span className={`rounded-lg px-2.5 py-1 text-xs font-bold tabular-nums ${scoreColor(job.match_score)}`}>
-                                  {job.match_score}<span className="font-normal text-[10px]">/100</span>
-                                </span>
-                              )}
-                              <button onClick={() => deleteJob(job.id)} disabled={deletingId === job.id}
-                                className="text-muted-foreground/40 hover:text-destructive transition-colors cursor-pointer" title="Sil">
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </div>
-                          </div>
-
-                          {job.match_score !== null && (
-                            <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                              <div className={`h-full rounded-full transition-all ${scoreBarColor(job.match_score)}`}
-                                style={{ width: `${job.match_score}%` }} />
-                            </div>
-                          )}
-
-                          <div className="flex flex-wrap items-center gap-2">
-                            <select value={job.status} onChange={(e) => updateJobStatus(job.id, e.target.value as JobStatus)}
-                              className={`rounded-full px-3 py-1 text-xs font-semibold border-0 outline-none cursor-pointer ${STATUS_CLASSES[job.status]}`}>
-                              {JOB_STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
-                            </select>
-                            <Button size="sm" variant="outline" onClick={() => matchJob(job.id)}
-                              disabled={matchingId === job.id || !initialProfile}
-                              title={!initialProfile ? "Önce profil doldur" : undefined}
-                              className="gap-1.5 h-7 text-xs">
-                              <Target className="h-3 w-3" />
-                              {matchingId === job.id ? "Analiz ediliyor…" : "Eşleştir"}
-                            </Button>
-                          </div>
-
-                          {job.match_result && (
-                            <div className="rounded-xl bg-muted/40 border p-3.5 space-y-3 text-sm">
-                              <p className="text-muted-foreground leading-relaxed text-xs">{job.match_result.summary}</p>
-                              <div className="grid grid-cols-2 gap-3">
-                                {job.match_result.strengths.length > 0 && (
-                                  <div className="space-y-1.5">
-                                    <p className="text-xs font-semibold text-green-700 dark:text-green-400 flex items-center gap-1">
-                                      <CheckCircle2 className="h-3 w-3" /> Güçlü
-                                    </p>
-                                    <ul className="space-y-0.5">
-                                      {job.match_result.strengths.map((s, i) => (
-                                        <li key={i} className="text-xs text-muted-foreground">· {s}</li>
-                                      ))}
-                                    </ul>
-                                  </div>
+                  ) : (
+                    <div className="grid lg:grid-cols-5 gap-3">
+                      {/* Sol: iş listesi */}
+                      <div className={`space-y-1.5 ${selectedJob ? "lg:col-span-2" : "lg:col-span-5"}`}>
+                        {jobs.map((job) => (
+                          <button
+                            key={job.id}
+                            onClick={() => setSelectedJobId(job.id === selectedJobId ? null : job.id)}
+                            className={`w-full text-left rounded-xl border px-3 py-2.5 transition-all cursor-pointer ${
+                              job.id === selectedJobId
+                                ? "border-[#00F0FF]/40 bg-[#00F0FF]/5"
+                                : "border-border hover:border-border/80 hover:bg-muted/40"
+                            }`}
+                          >
+                            <div className="flex items-start gap-2.5">
+                              <div className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${STATUS_DOT[job.status]}`} />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-semibold leading-snug truncate">{job.title}</p>
+                                {(job.company || job.platform) && (
+                                  <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                                    {[job.company, job.platform].filter(Boolean).join(" · ")}
+                                  </p>
                                 )}
-                                {job.match_result.gaps.length > 0 && (
-                                  <div className="space-y-1.5">
-                                    <p className="text-xs font-semibold text-red-600 dark:text-red-400 flex items-center gap-1">
-                                      <AlertCircle className="h-3 w-3" /> Eksik
-                                    </p>
-                                    <ul className="space-y-0.5">
-                                      {job.match_result.gaps.map((g, i) => (
-                                        <li key={i} className="text-xs text-muted-foreground">· {g}</li>
-                                      ))}
-                                    </ul>
-                                  </div>
+                                <p className="text-[10px] text-muted-foreground/60 mt-0.5">{STATUS_LABELS[job.status]}</p>
+                              </div>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                {job.match_score !== null && (
+                                  <span className={`text-[10px] font-bold rounded-md px-1.5 py-0.5 tabular-nums ${scoreColor(job.match_score)}`}>
+                                    {job.match_score}
+                                  </span>
                                 )}
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); deleteJob(job.id); }}
+                                  disabled={deletingId === job.id}
+                                  className="text-muted-foreground/30 hover:text-destructive transition-colors cursor-pointer"
+                                  title="Sil"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
                               </div>
                             </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+                            {job.match_score !== null && (
+                              <div className="mt-2 ml-4 h-1 rounded-full bg-muted overflow-hidden">
+                                <div className={`h-full rounded-full ${scoreBarColor(job.match_score)}`} style={{ width: `${job.match_score}%` }} />
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Sağ: iş detay paneli */}
+                      {selectedJob && (
+                        <div className="lg:col-span-3 rounded-2xl border border-border overflow-hidden min-h-[400px]">
+                          <JobDetailPanel
+                            job={selectedJob}
+                            onClose={() => setSelectedJobId(null)}
+                            onJobUpdated={(updated) => setJobs((prev) => prev.map((j) => j.id === updated.id ? updated : j))}
+                            onCostUpdate={(usd) => setSpend((s) => s + usd)}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* ══════════════════════════════════════════════════════════
                 ANALİTİK
@@ -1217,6 +1130,38 @@ export function ProfileStudio({
                     </p>
                   </div>
                 )}
+
+                {/* Başvuru Performansı */}
+                {jobs.length > 0 && (() => {
+                  const byStatus = JOB_STATUSES
+                    .map((s) => ({ status: s, count: jobs.filter((j) => j.status === s).length }))
+                    .filter((x) => x.count > 0);
+                  const maxCount = Math.max(...byStatus.map((x) => x.count), 1);
+                  return (
+                    <Card className="shadow-sm">
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="h-4 w-4 text-primary" />
+                          <CardTitle className="text-sm">Başvuru Performansı</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-2.5">
+                        {byStatus.map(({ status, count }) => (
+                          <div key={status} className="flex items-center gap-3">
+                            <span className="text-xs text-muted-foreground w-28 shrink-0">{STATUS_LABELS[status]}</span>
+                            <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                              <div
+                                className={`h-full rounded-full ${STATUS_DOT[status]}`}
+                                style={{ width: `${(count / maxCount) * 100}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-bold tabular-nums w-4 text-right">{count}</span>
+                          </div>
+                        ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })()}
               </div>
             )}
 
@@ -1318,6 +1263,16 @@ export function ProfileStudio({
           </div>
         </main>
       </div>
+
+      {/* ── Modals ──────────────────────────────────────────────────── */}
+      {jobAddModalOpen && (
+        <JobAddModal
+          hasProfile={profileSaved}
+          onClose={() => setJobAddModalOpen(false)}
+          onJobAdded={handleJobAdded}
+          onCostUpdate={(usd) => setSpend((s) => s + usd)}
+        />
+      )}
 
       {/* ── Coming soon toast ──────────────────────────────────────── */}
       {showComingSoon && (

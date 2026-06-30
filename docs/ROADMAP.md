@@ -39,5 +39,12 @@ Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
   landing: hero'da 5 platform adı + logo strip, platforms bölümü, Feature kartında logolar;
   dashboard: 3 adımlı onboarding banner (profil → uyarlama → portfolyo), ilerleme takibi.
 
+- **Faz 7 — Proposal Engine + iş detay paneli + bildirim + analitik** ✅
+  Platform-spesifik AI teklif üretimi (`lib/ai/proposal.ts`, `app/api/proposal`, `proposal-modal`,
+  `proposals` tablosu — migration `0007`); iş detay paneli (`job-detail-panel`, `job-add-modal`,
+  `awaiting_reply` durumu); e-posta bildirim (Resend API, `lib/notifications/email.ts` — skor ≥ 70
+  olunca; Telegram planı iptal edildi); analitik genişletme (`applicationStats` — başvuru performansı).
+  Dashboard tam sayfa sidebar düzenine geçti (7 tab). `main` üzerinde çalışıldı.
+
 - **Faz 6 — İşveren tarafı / iki taraflı pazar** *(çok sonra)*
   İşveren tarafı akışları ve pazar yeri.

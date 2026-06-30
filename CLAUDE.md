@@ -4,7 +4,7 @@
 **bir kez** girer; sistem her platform (LinkedIn, Upwork, Fiverr, Bionluk, Armut) için
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
-Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 4.5 (kredi UI, Stripe beklemede).**
+Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 7 (Proposal Engine, İş Detay Paneli, Telegram, Analitik).**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
@@ -19,29 +19,39 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/profile` — **korumalı uç nokta ŞABLONU** (yeni route'lar bunu örnek alır).
   - `app/api/adapt` — uyarlama uç noktası (profil → platform metni; maliyeti kaydeder).
   - `app/api/usage` — kullanıcının kümülatif harcaması (USD).
-  - `app/api/jobs` — GET (liste) / POST (oluştur) iş ilanı uç noktaları.
-  - `app/api/jobs/[id]` — PATCH (durum/başlık güncelle) / DELETE.
-  - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı.
-  - `app/api/analytics` — GET: tür bazında özet + 30 günlük günlük harcama serisi.
+  - `app/api/jobs` — GET (liste) / POST (oluştur) iş ilanı uç noktaları; url/budget/notes alanları desteklenir.
+  - `app/api/jobs/[id]` — GET (tam veri) / PATCH (durum/başlık/notlar) / DELETE.
+  - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı + Telegram trigger.
+  - `app/api/proposal` — GET (iş bazlı liste) / POST (AI teklif üretir, proposals'a kaydeder).
+  - `app/api/analytics` — GET: tür bazında özet + 30 günlük harcama + `applicationStats` (başvuru performansı).
   - `app/api/credits` — GET: kullanıcının kredi bakiyesi (`credits` tablosu).
   - `app/api/platform-connections` — GET (liste) / PUT (upsert) / DELETE: platform profil URL'leri.
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `openai-client.ts` (OpenAI gpt-4o-mini istemcisi),
-  `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `platformIdSchema`),
+  `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `PROPOSAL_GUIDANCE`),
   `adapt.ts` (`adaptProfile`), `portfolio.ts` (`generatePortfolio`),
-  `match.ts` (`matchJobToProfile`), `pricing.ts` (token kullanımı → USD maliyet).
+  `match.ts` (`matchJobToProfile`), `proposal.ts` (`generateProposal`), `pricing.ts` (token → USD).
+- `lib/notifications/email.ts` — `sendMatchNotificationEmail` (Resend API, fire-and-forget; skor ≥ 70 olunca kullanıcı e-postasına bildirim).
 - `lib/validation/` — Zod yardımcıları (`parseJson`/`parseQuery`) + `schemas/`.
 - `lib/supabase/` — `server.ts` (RLS'li, varsayılan), `admin.ts` (service-role, RLS bypass — dikkat),
   `client.ts` (tarayıcı), `middleware.ts` (oturum yenileme). Kök `proxy.ts` bunu çağırır.
 - `lib/sanitize.ts` — portfolyo HTML'i için XSS sanitize (render öncesi zorunlu).
-- `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` + `JobStatus`.
+- `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` + `JobStatus` (awaiting_reply dahil).
+- `lib/validation/schemas/proposal.ts` — `proposalCreateSchema` + `ProposalRow` tipi.
 - `lib/validation/schemas/platform-connection.ts` — `platformConnectionUpsertSchema` + `PlatformConnection` tipi.
 - `components/ui/` — shadcn bileşenleri. `components/profile-studio.tsx` — tam sayfa sidebar dashboard (7 tab, Genel Bakış varsayılan).
+  `components/job-detail-panel.tsx` — seçili iş için 2-sütun sağ panel (durum, AI skor, teklif CTA, notlar).
+  `components/proposal-modal.tsx` — platform-spesifik AI teklif üretimi + geçmiş teklifler.
+  `components/notification-settings-modal.tsx` — Telegram bağlantı + eşik ayarı.
+  `components/job-add-modal.tsx` — hızlı iş ekleme (platform/bütçe/URL) + otomatik AI eşleştirme.
   `components/theme-provider.tsx` — next-themes provider (defaultTheme: dark).
   `components/theme-toggle.tsx` — Sun/Moon toggle butonu (her iki header'da kullanılır).
   `components/platform-logo.tsx` — 5 platform için SVG logo bileşeni (PlatformId → SVG).
   `lib/utils.ts` — `cn()`.
 - `supabase/migrations/` — SQL şema + RLS politikaları (`supabase db push`).
+  `0007_proposals.sql` — proposals tablosu; job_listings'e url/notes/budget + awaiting_reply status.
+  `0008_notifications.sql` — boş (Telegram sistemi iptal edildi; e-posta Resend API üzerinden).
+- Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
 - Sentry: `instrumentation*.ts`, `sentry.*.config.ts`, `next.config.ts` (`withSentryConfig`).
 - `.env.example` — ortam değişkeni şablonu (gerçek değerler `.env.local`'da, commit edilmez).
