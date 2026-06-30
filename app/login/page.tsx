@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Mail, CheckCircle2, Star } from "lucide-react";
+import { ArrowLeft, Mail, Star, Pencil, Sparkles, Target, LayoutDashboard, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -12,10 +12,10 @@ import type { PlatformId } from "@/lib/ai/platforms";
 
 /* ─── Static data ─────────────────────────────────────────────── */
 const FEATURES = [
-  "Profilini bir kez gir, çoklu platform için uyarla",
-  "Yapay Zeka ile profesyonel portfolyo oluştur",
-  "İş ilanlarına mükemmel uyumu anında gör",
-  "Tüm başvurularını tek bir panelden takip et",
+  { text: "Profilini bir kez gir, çoklu platform için uyarla", Icon: Pencil },
+  { text: "Yapay Zeka ile profesyonel portfolyo oluştur",       Icon: Sparkles },
+  { text: "İş ilanlarına mükemmel uyumu anında gör",            Icon: Target },
+  { text: "Tüm başvurularını tek bir panelden takip et",         Icon: LayoutDashboard },
 ];
 
 const PLATFORMS: PlatformId[] = ["linkedin", "upwork", "fiverr", "bionluk", "armut"];
@@ -46,11 +46,11 @@ const LINE_ENDPOINTS = [
 function PlatformHubMockup() {
   return (
     <div
-      className="w-full h-full flex flex-col rounded-2xl overflow-hidden
-                 border border-slate-200 dark:border-white/8
-                 bg-white/90 dark:bg-white/[0.03]
-                 shadow-2xl shadow-slate-300/40 dark:shadow-black/60
-                 backdrop-blur-sm"
+      className="w-full h-full flex flex-col rounded-3xl overflow-hidden
+                 border border-slate-200/80 dark:border-white/10
+                 bg-white/80 dark:bg-white/[0.04]
+                 shadow-[0_20px_60px_-10px] shadow-slate-300/50 dark:shadow-black/70
+                 backdrop-blur-md"
     >
       {/* Browser chrome */}
       <div
@@ -70,8 +70,8 @@ function PlatformHubMockup() {
       <div className="relative flex-1 min-h-[220px]">
         {/* Ambient glow */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="h-32 w-32 rounded-full blur-[60px]
-                          bg-indigo-300/30 dark:bg-[#00F0FF]/12" />
+          <div className="h-44 w-44 rounded-full blur-[80px]
+                          bg-indigo-300/45 dark:bg-[#00F0FF]/18" />
         </div>
 
         {/* Connecting lines */}
@@ -104,9 +104,10 @@ function PlatformHubMockup() {
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
           <div
             className="h-16 w-16 rounded-2xl flex items-center justify-center hub-glow
-                       bg-gradient-to-br from-indigo-100 to-violet-100
-                       dark:from-[#00F0FF]/15 dark:to-violet-600/20
-                       border border-indigo-200/80 dark:border-[#00F0FF]/30"
+                       bg-gradient-to-br from-indigo-50 to-violet-100
+                       dark:from-[#00F0FF]/20 dark:to-violet-600/25
+                       border border-indigo-300/60 dark:border-[#00F0FF]/40
+                       shadow-lg shadow-indigo-300/40 dark:shadow-[#00F0FF]/25"
           >
             <span className="text-indigo-600 dark:text-[#00F0FF] font-extrabold text-2xl">M</span>
           </div>
@@ -248,12 +249,17 @@ export default function LoginPage() {
             </div>
 
             {/* Headline — 2 sütun genişliğinde */}
-            <h1 className="anim-fade-up anim-d2 text-[2.75rem] font-extrabold tracking-tight leading-[1.1]">
+            <h1 className="anim-fade-up anim-d2 text-[2.75rem] font-extrabold tracking-[-0.005em] leading-[1.12]">
               <span className="text-slate-900 dark:text-white">Freelancer kariyerini </span>
-              <span className="bg-gradient-to-r from-indigo-500 to-violet-500
-                               dark:from-[#00F0FF] dark:to-violet-400
-                               bg-clip-text text-transparent">
-                tek platformdan{" "}
+              <span className="relative inline-block">
+                <span className="bg-gradient-to-r from-indigo-500 to-violet-500
+                                 dark:from-[#00F0FF] dark:to-violet-400
+                                 bg-clip-text text-transparent font-black">
+                  tek platformdan{" "}
+                </span>
+                <span className="pointer-events-none absolute -bottom-1 left-0 right-[0.25em] h-[2px] rounded-full
+                                 bg-gradient-to-r from-indigo-400 to-violet-400
+                                 dark:from-[#00F0FF] dark:to-violet-400 opacity-50" />
               </span>
               <span className="text-slate-900 dark:text-white">yönet.</span>
             </h1>
@@ -263,19 +269,19 @@ export default function LoginPage() {
           <div className="grid grid-cols-[5fr_7fr] gap-6 items-center">
 
             {/* Sol: 4 özellik */}
-            <div className="flex flex-col justify-center space-y-4 anim-fade-up anim-d3">
-              {FEATURES.map((f, i) => (
+            <div className="flex flex-col justify-center space-y-5 anim-fade-up anim-d3">
+              {FEATURES.map(({ text, Icon }, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <div
-                    className="mt-0.5 shrink-0 h-5 w-5 rounded-full flex items-center justify-center
+                    className="mt-0.5 shrink-0 h-6 w-6 rounded-lg flex items-center justify-center
                                border border-indigo-200 dark:border-[#00F0FF]/25
                                bg-indigo-50 dark:bg-[#00F0FF]/10"
                   >
-                    <CheckCircle2 className="h-3 w-3 text-indigo-500 dark:text-[#00F0FF]" />
+                    <Icon className="h-3.5 w-3.5 text-indigo-500 dark:text-[#00F0FF]" />
                   </div>
-                  <span className="text-base font-medium leading-snug
+                  <span className="text-base font-medium leading-relaxed
                                    text-slate-600 dark:text-white/65">
-                    {f}
+                    {text}
                   </span>
                 </div>
               ))}
@@ -298,17 +304,25 @@ export default function LoginPage() {
                 <div
                   key={id}
                   className="h-10 w-10 rounded-xl flex items-center justify-center p-1.5
-                             border border-slate-200 dark:border-white/10
+                             border border-slate-200 dark:border-white/15
                              bg-white dark:bg-white/8
-                             shadow-sm shadow-slate-100 dark:shadow-black/20
-                             hover:scale-110 transition-transform duration-200"
+                             shadow-md shadow-slate-200/70 dark:shadow-black/30
+                             ring-1 ring-slate-100/80 dark:ring-white/5
+                             hover:scale-110 hover:shadow-lg hover:shadow-indigo-100/60
+                             dark:hover:shadow-[#00F0FF]/10
+                             transition-all duration-200"
                 >
                   <PlatformLogo platform={id} size={22} />
                 </div>
               ))}
-              <span className="text-xs font-medium text-slate-400 dark:text-white/30 ml-1">
-                5 platform
-              </span>
+              <div
+                className="h-10 w-10 rounded-xl flex items-center justify-center
+                           border border-dashed border-slate-300 dark:border-white/15
+                           bg-slate-50 dark:bg-white/4
+                           text-slate-400 dark:text-white/35 text-sm font-bold"
+              >
+                +
+              </div>
             </div>
           </div>
         </div>
@@ -419,8 +433,8 @@ export default function LoginPage() {
               </div>
 
               {/* Heading */}
-              <div className="text-center mb-7 space-y-2 anim-fade-up anim-d0">
-                <h1 className="text-[1.8rem] font-extrabold text-foreground tracking-tight">
+              <div className="text-center mb-8 space-y-3 anim-fade-up anim-d0">
+                <h1 className="text-[2rem] font-extrabold text-foreground tracking-[-0.02em]">
                   Giriş yap
                 </h1>
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -455,15 +469,22 @@ export default function LoginPage() {
                   type="submit"
                   disabled={status === "sending"}
                   className="w-full h-11 rounded-lg font-semibold text-sm cursor-pointer
-                             flex items-center justify-center gap-2
+                             flex items-center justify-center
                              bg-[#00F0FF] hover:bg-[#00d8e8] active:bg-[#00c8d6]
                              text-[#080A10]
                              shadow-lg shadow-[#00F0FF]/20
                              hover:shadow-xl hover:shadow-[#00F0FF]/30
                              disabled:opacity-50 disabled:cursor-not-allowed
-                             transition-all duration-200"
+                             transition-all duration-200 px-4"
                 >
-                  {status === "sending" ? "Gönderiliyor…" : "Bağlantı gönder →"}
+                  {status === "sending" ? (
+                    "Gönderiliyor…"
+                  ) : (
+                    <>
+                      <span className="flex-1 text-center">Bağlantı gönder</span>
+                      <ArrowRight className="h-4 w-4 shrink-0" />
+                    </>
+                  )}
                 </button>
               </form>
 
