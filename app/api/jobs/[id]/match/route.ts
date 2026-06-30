@@ -5,6 +5,7 @@ import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { matchJobToProfile } from "@/lib/ai/match";
+import { sendMatchNotificationEmail } from "@/lib/notifications/email";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export const POST = withErrorHandler(async (_req, { params }) => {
@@ -65,6 +66,16 @@ export const POST = withErrorHandler(async (_req, { params }) => {
     cost_usd: match.costUsd,
   });
   if (usageError) throw usageError;
+
+  // E-posta bildirimi: yüksek skor varsa bildir (fire-and-forget)
+  if (user.email) {
+    sendMatchNotificationEmail(
+      user.email,
+      updated.title,
+      match.result.score,
+      match.result.summary,
+    ).catch(() => {});
+  }
 
   return NextResponse.json({
     job: updated,

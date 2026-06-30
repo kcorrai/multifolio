@@ -1,0 +1,2 @@
+-- Faz 7: Telegram bildirim sistemi iptal edildi; e-posta bildirimleri Resend API üzerinden
+-- sunucu-taraflı çalışıyor (kullanıcı ayarı gerektirmez). Bu migration boştur.
