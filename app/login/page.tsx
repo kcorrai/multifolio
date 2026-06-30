@@ -228,10 +228,10 @@ export default function LoginPage() {
         </div>
 
         {/* ══ DESKTOP LAYOUT ══ */}
-        <div className="relative hidden lg:flex flex-col flex-1 min-h-0 justify-center gap-8 py-4">
+        <div className="relative hidden lg:flex flex-col items-center flex-1 min-h-0 justify-center gap-8 pt-0 pb-10">
 
           {/* ① Badge + Headline — tam genişlik */}
-          <div className="flex-none space-y-3 anim-fade-up anim-d1">
+          <div className="flex-none w-full space-y-3 anim-fade-up anim-d1 flex flex-col items-center text-center">
             {/* Stars badge */}
             <div
               className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5
@@ -249,24 +249,25 @@ export default function LoginPage() {
             </div>
 
             {/* Headline — 2 sütun genişliğinde */}
-            <h1 className="anim-fade-up anim-d2 text-[2.75rem] font-extrabold tracking-[-0.005em] leading-[1.12]">
+            <h1 className="anim-fade-up anim-d2 text-[3rem] font-extrabold tracking-[-0.005em] leading-[1.12]">
               <span className="text-slate-900 dark:text-white">Freelancer kariyerini </span>
               <span className="relative inline-block">
                 <span className="bg-gradient-to-r from-indigo-500 to-violet-500
                                  dark:from-[#00F0FF] dark:to-violet-400
                                  bg-clip-text text-transparent font-black">
-                  tek platformdan{" "}
+                  tek platformdan
                 </span>
-                <span className="pointer-events-none absolute -bottom-1 left-0 right-[0.25em] h-[2px] rounded-full
+                <span className="pointer-events-none absolute -bottom-1 left-0 right-0 h-[2px] rounded-full
                                  bg-gradient-to-r from-indigo-400 to-violet-400
                                  dark:from-[#00F0FF] dark:to-violet-400 opacity-50" />
               </span>
+              {" "}
               <span className="text-slate-900 dark:text-white">yönet.</span>
             </h1>
           </div>
 
           {/* ② 2-sütun: Features | Büyük mockup */}
-          <div className="grid grid-cols-[5fr_7fr] gap-6 items-center">
+          <div className="w-full grid grid-cols-[5fr_7fr] gap-6 items-center">
 
             {/* Sol: 4 özellik */}
             <div className="flex flex-col justify-center space-y-5 anim-fade-up anim-d3">
@@ -294,16 +295,16 @@ export default function LoginPage() {
           </div>
 
           {/* ③ Platform logoları — ortalı */}
-          <div className="flex-none text-center space-y-3 anim-fade-up anim-d5 pb-1">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em]
+          <div className="flex-none text-center space-y-4 anim-fade-up anim-d5 pb-1">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em]
                           text-slate-400 dark:text-white/25">
               Desteklenen platformlar
             </p>
-            <div className="flex items-center justify-center gap-2.5">
+            <div className="flex items-center justify-center gap-3">
               {PLATFORMS.map((id) => (
                 <div
                   key={id}
-                  className="h-10 w-10 rounded-xl flex items-center justify-center p-1.5
+                  className="h-14 w-14 rounded-2xl flex items-center justify-center p-2.5
                              border border-slate-200 dark:border-white/15
                              bg-white dark:bg-white/8
                              shadow-md shadow-slate-200/70 dark:shadow-black/30
@@ -312,14 +313,14 @@ export default function LoginPage() {
                              dark:hover:shadow-[#00F0FF]/10
                              transition-all duration-200"
                 >
-                  <PlatformLogo platform={id} size={22} />
+                  <PlatformLogo platform={id} size={32} />
                 </div>
               ))}
               <div
-                className="h-10 w-10 rounded-xl flex items-center justify-center
+                className="h-14 w-14 rounded-2xl flex items-center justify-center
                            border border-dashed border-slate-300 dark:border-white/15
                            bg-slate-50 dark:bg-white/4
-                           text-slate-400 dark:text-white/35 text-sm font-bold"
+                           text-slate-400 dark:text-white/35 text-base font-bold"
               >
                 +
               </div>

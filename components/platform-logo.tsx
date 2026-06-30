@@ -35,7 +35,10 @@ export function PlatformLogo({ platform, size = 20, className = "" }: Props) {
       return (
         <svg {...s} viewBox="0 0 24 24" fill="none">
           <rect width="24" height="24" rx="5" fill="#7C3AED" />
-          <path d="M7 6h4.5c1.933 0 3 .9 3 2.4 0 .9-.45 1.65-1.2 2.1.9.375 1.5 1.2 1.5 2.25C14.8 14.4 13.6 15 11.5 15H7V6zm2 3.6h2.3c.7 0 1.1-.3 1.1-.9s-.4-.9-1.1-.9H9v1.8zm0 3.6h2.4c.8 0 1.2-.375 1.2-1.05 0-.6-.4-1.05-1.2-1.05H9v2.1z" fill="white" />
+          <path
+            d="M7 6h5c1.1 0 2 .4 2.5 1.1.4.5.5 1.1.5 1.7 0 1-.4 1.8-1.1 2.2.9.4 1.6 1.3 1.6 2.4 0 .8-.3 1.5-.9 2-.6.5-1.5.8-2.6.8H7V6zm2 1.8v2.4h2.6c.5 0 .9-.1 1.1-.4.2-.2.3-.5.3-.8 0-.3-.1-.6-.3-.8-.2-.2-.6-.3-1.1-.3H9zm0 4.1v2.8h3c.6 0 1-.1 1.3-.4.3-.3.4-.6.4-1s-.1-.7-.4-1c-.3-.3-.7-.4-1.3-.4H9z"
+            fill="white"
+          />
         </svg>
       );
 
@@ -43,8 +46,10 @@ export function PlatformLogo({ platform, size = 20, className = "" }: Props) {
       return (
         <svg {...s} viewBox="0 0 24 24" fill="none">
           <rect width="24" height="24" rx="5" fill="#EA580C" />
-          <path d="M12 5L8 15h1.8l.9-2.4h2.6l.9 2.4H16L12 5zm0 3.2 .9 2.6h-1.8L12 8.2z" fill="white" />
-          <circle cx="12" cy="3.5" r="1" fill="white" opacity="0.7" />
+          <path
+            d="M12 5.5L7.5 18.5h2.1l1.1-3.1h2.6l1.1 3.1h2.1L12 5.5zm0 3.9 0.9 2.7h-1.8L12 9.4z"
+            fill="white"
+          />
         </svg>
       );
   }
