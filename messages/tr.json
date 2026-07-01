@@ -76,6 +76,24 @@
       "step2": { "title": "AI uyarlar & kurar", "desc": "Beş platform için optimize metin, üstüne paylaşıma hazır bir portfolyo sitesi al." },
       "step3": { "title": "Eşleştir, teklif ver, takip et", "desc": "İlanları puanla, uygun teklifler üret ve tüm başvurularını tek yerden takip et." }
     },
+    "pricing": {
+      "eyebrow": "Fiyatlandırma",
+      "title": "Sadece kullandığın kadar öde",
+      "subtitle": "Kredi tabanlı, kullandıkça öde. Abonelik yok, otomatik yenileme tuzağı yok. 100 ücretsiz krediyle başla.",
+      "badgePayg": "Kullandıkça öde",
+      "badgeNoSub": "Abonelik yok",
+      "badgeNeverExpire": "Krediler süresiz",
+      "badgeFreeStart": "100 ücretsiz kredi",
+      "popular": "En popüler",
+      "cta": "Başla",
+      "creditsLine": "{count} kredi",
+      "plans": { "starter": "Başlangıç", "pro": "Pro", "scale": "Ölçek" },
+      "desc": {
+        "starter": "Denemek için ideal — bir ay boyunca aktif uyarlama, eşleştirme ve teklif.",
+        "pro": "Her hafta başvuran aktif freelancer'lar için. Kredi başına en iyi değer.",
+        "scale": "Yoğun kullanıcılar ve küçük ajanslar için."
+      }
+    },
     "finalCta": {
       "title": "Freelancer kariyerini bir üst seviyeye taşı.",
       "subtitle": "Beta sürecinde ücretsiz. Kredi kartı gerekmez."

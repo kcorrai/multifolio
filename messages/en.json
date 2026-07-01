@@ -76,6 +76,24 @@
       "step2": { "title": "AI adapts & builds", "desc": "Get optimized text for all five platforms plus a ready-to-share portfolio site." },
       "step3": { "title": "Match, pitch & track", "desc": "Score job posts, generate proposals that fit, and track every application in one place." }
     },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "title": "Pay only for what you use",
+      "subtitle": "Credit-based, pay-as-you-go. No subscription, no auto-renew traps. Start with 100 free credits.",
+      "badgePayg": "Pay-as-you-go",
+      "badgeNoSub": "No subscription",
+      "badgeNeverExpire": "Credits never expire",
+      "badgeFreeStart": "100 free credits to start",
+      "popular": "Most popular",
+      "cta": "Get started",
+      "creditsLine": "{count} credits",
+      "plans": { "starter": "Starter", "pro": "Pro", "scale": "Scale" },
+      "desc": {
+        "starter": "Great for trying things out — a month of active adapting, matching and proposals.",
+        "pro": "For active freelancers applying every week. Best value per credit.",
+        "scale": "For power users and small agencies running at volume."
+      }
+    },
     "finalCta": {
       "title": "Take your freelance career to the next level.",
       "subtitle": "Free during beta. No credit card required."
