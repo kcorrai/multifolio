@@ -1,6 +1,7 @@
 // GET  /api/proposal?job_id={id} → o ilana ait teklifleri döner.
 // POST /api/proposal → AI teklifi üretir ve kaydeder.
 import { NextResponse } from "next/server";
+import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson, parseQuery } from "@/lib/validation";
 import { proposalCreateSchema, type ProposalCoverageItem } from "@/lib/validation/schemas/proposal";
@@ -82,7 +83,7 @@ export const POST = withErrorHandler(async (req) => {
     profileRes.data as ProfileInput,
     input.job_description,
     input.platform,
-    { requirements, focusRequirements: input.focus_requirements },
+    { requirements, focusRequirements: input.focus_requirements, locale: await getUserLocale() },
   );
 
   // Teklifi proposals tablosuna kaydet

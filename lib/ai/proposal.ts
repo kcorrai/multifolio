@@ -3,12 +3,14 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { buildRequirementsBlock, buildFocusBlock } from "./coverage";
+import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
 import { PROPOSAL_GUIDANCE, type PlatformId } from "@/lib/ai/platforms";
 import {
   proposalWithCoverageSchema,
   type ProposalCoverageItem,
 } from "@/lib/validation/schemas/proposal";
+import type { Locale } from "@/i18n/detect";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export interface ProposalResult {
@@ -23,6 +25,7 @@ export interface ProposalResult {
 export interface GenerateProposalOptions {
   requirements?: string[];
   focusRequirements?: string[];
+  locale?: Locale;
 }
 
 const SYSTEM_PROMPT =
@@ -31,7 +34,7 @@ const SYSTEM_PROMPT =
   "Ayrıca teklifin ilandaki her gereksinimi ne ölçüde karşıladığını 'coverage' olarak değerlendirirsin. " +
   "Sana gereksinim listesi verilirse onları kullan; verilmezse ilandan en önemli gereksinimleri (en çok 7) kendin çıkar. " +
   "Her gereksinim için status: 'met' (teklif açıkça karşılıyor), 'partial' (kısmen/dolaylı), 'missing' (teklifte yok). " +
-  "note kısa bir Türkçe gerekçe olsun.";
+  "note kısa bir gerekçe olsun; çıktı dili aşağıdaki dil direktifine uymalı.";
 
 export async function generateProposal(
   profile: ProfileInput,
@@ -54,6 +57,7 @@ export async function generateProposal(
     "",
     "Platform Yönergesi:",
     PROPOSAL_GUIDANCE[platform],
+    languageDirective(opts.locale ?? "en"),
   ].join("\n");
 
   const completion = await client.chat.completions.parse({

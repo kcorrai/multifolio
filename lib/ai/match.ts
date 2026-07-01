@@ -2,8 +2,10 @@ import "server-only";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
+import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
 import { jobMatchResultSchema, type JobMatchResult } from "@/lib/validation/schemas/job";
+import type { Locale } from "@/i18n/detect";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export interface MatchResult {
@@ -24,6 +26,7 @@ const SYSTEM_PROMPT =
 export async function matchJobToProfile(
   profile: ProfileInput,
   jobDescription: string,
+  locale: Locale = "en",
 ): Promise<MatchResult> {
   const client = getOpenAIClient();
 
@@ -35,6 +38,7 @@ export async function matchJobToProfile(
     "",
     "İlan:",
     jobDescription,
+    languageDirective(locale),
   ].join("\n");
 
   const completion = await client.chat.completions.parse({

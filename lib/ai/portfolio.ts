@@ -2,8 +2,10 @@ import "server-only";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
+import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
 import { portfolioContentSchema, type PortfolioContent } from "@/lib/validation/schemas/portfolio";
+import type { Locale } from "@/i18n/detect";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export interface GeneratePortfolioResult {
@@ -21,6 +23,7 @@ const SYSTEM_PROMPT =
 
 export async function generatePortfolio(
   profile: ProfileInput,
+  locale: Locale = "en",
 ): Promise<GeneratePortfolioResult> {
   const client = getOpenAIClient();
 
@@ -36,6 +39,7 @@ export async function generatePortfolio(
     "- bio: ilgi çekici biyografi (2-3 paragraf, max 1500 karakter).",
     "- skills: profildeki becerileri koruyarak öncelik sırasına diz.",
     "- projects: profil verisinde somut bir proje/başarı varsa çıkar; yoksa boş bırak.",
+    languageDirective(locale),
   ].join("\n");
 
   const completion = await client.chat.completions.parse({

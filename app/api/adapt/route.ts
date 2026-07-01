@@ -3,6 +3,7 @@
 // hedef platform için Claude ile uyarlar ve gerçek maliyeti server-otoritatif
 // olarak (service-role) usage_events'e kaydeder (harcama takibi).
 import { NextResponse } from "next/server";
+import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { adaptRequestSchema } from "@/lib/validation/schemas/adapt";
@@ -34,7 +35,7 @@ export const POST = withErrorHandler(async (req) => {
     profile = data as ProfileInput;
   }
 
-  const result = await adaptProfile(profile, input.platform);
+  const result = await adaptProfile(profile, input.platform, await getUserLocale());
 
   // Maliyeti server-otoritatif kaydet (service-role — RLS yazma politikası yok).
   const admin = createSupabaseAdminClient();

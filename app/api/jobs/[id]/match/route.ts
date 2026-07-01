@@ -1,6 +1,7 @@
 // POST /api/jobs/[id]/match → kullanıcının profilini ilanla karşılaştırır,
 // sonucu job_listings'e yazar ve maliyeti usage_events'e kaydeder.
 import { NextResponse } from "next/server";
+import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -39,9 +40,11 @@ export const POST = withErrorHandler(async (_req, { params }) => {
   if (jobRes.error) throw jobRes.error;
   if (!jobRes.data) throw new NotFoundError("İlan bulunamadı.");
 
+  const locale = await getUserLocale();
   const match = await matchJobToProfile(
     profileRes.data as ProfileInput,
     jobRes.data.description,
+    locale,
   );
 
   // Sonucu ilana yaz (regular client — RLS update_own politikası yeterli).

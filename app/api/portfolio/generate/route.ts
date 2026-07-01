@@ -1,6 +1,7 @@
 // POST /api/portfolio/generate → kullanıcının kayıtlı profilinden Claude ile portfolyo
 // içeriği üretir, portfolios tablosuna yazar ve maliyeti usage_events'e kaydeder.
 import { NextResponse } from "next/server";
+import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -25,7 +26,7 @@ export const POST = withErrorHandler(async () => {
   if (profileError) throw profileError;
   if (!profileData) throw new NotFoundError("Portfolyo oluşturmak için önce profil doldurmalısın.");
 
-  const result = await generatePortfolio(profileData as ProfileInput);
+  const result = await generatePortfolio(profileData as ProfileInput, await getUserLocale());
 
   // Mevcut portfolyoyu güncelle (yoksa oluştur). Slug: ilk üretimde user id'den türetilir.
   const { data: existing } = await supabase
