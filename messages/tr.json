@@ -302,6 +302,7 @@
       "descriptionPlaceholder": "İlanın tam metnini yapıştır…",
       "url": "İlan URL'si",
       "createError": "İlan eklenemedi.",
+      "matchError": "İlan eklendi ama AI eşleştirmesi başarısız oldu. İlan üzerinden elle eşleştirebilirsin.",
       "creating": "İlan oluşturuluyor…",
       "matching": "AI eşleştirme yapılıyor…",
       "submit": "Analiz Et ve Ekle",

@@ -67,9 +67,13 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
       if (matchRes.ok && matchBody?.job) {
         onJobAdded(matchBody.job as JobRow);
         if (matchBody.credits) onCreditsUpdate?.(matchBody.credits);
-      } else if (matchRes.status === 402) {
-        // İlan oluşturuldu ama kredi yetmediği için eşleştirme yapılamadı → "Kredi al" nudge.
-        triggerComingSoon();
+      } else {
+        // İlan oluşturuldu ama eşleştirme başarısız (402=yetersiz kredi ya da başka hata).
+        // Kullanıcıyı bilgilendir ve modalı kapatma; ilan zaten listeye eklendi, elle eşleştirilebilir.
+        if (matchRes.status === 402) triggerComingSoon(); // yetersiz kredi → "Kredi al" nudge
+        setError(matchBody?.error?.message ?? t("matchError"));
+        setStep("idle");
+        return;
       }
     }
 

@@ -302,6 +302,7 @@
       "descriptionPlaceholder": "Paste the full listing text…",
       "url": "Listing URL",
       "createError": "Could not add the job.",
+      "matchError": "Job added, but AI matching failed. You can match it manually from the job.",
       "creating": "Creating job…",
       "matching": "Running AI matching…",
       "submit": "Analyze & Add",
