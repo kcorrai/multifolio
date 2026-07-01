@@ -239,10 +239,11 @@ Alt-proje B (scraper worker) yalnız `job_pool`'a `source='upwork'` satırları 
 (`unique(source, external_id)` dedup). Dashboard değişmeden canlıya geçer. Seed satırları
 (`source='sample'`) prod'da temizlenir/gizlenir.
 
-## 14. Açık karar noktaları (review'da onayla)
+## 14. Kararlar (onaylandı — 2026-07-01)
 
-1. IA: segmented sub-view (öneri) mi, yeni üst-nav "Keşif" bölümü mü?
-2. Skorlama: on-demand (öneri, kredi korur) mi, feed'de otomatik top-N mi?
-3. Seed: migration içinde mi, ayrı seed dosyası mı?
-4. Applied = mevcut takipçiyle birleşsin (öneri) mi, ayrı kalsın mı?
-5. Feed başına üst sınır (öneri: 10) ve sayfa boyutu (öneri: 25).
+1. **IA:** segmented sub-view (`/dashboard/jobs?view=…`), yeni üst-nav yok.
+2. **Skorlama:** on-demand + `job_scores` cache (otomatik toplu skorlama yok).
+3. **Seed:** ayrı dosya `supabase/seed/job_pool_sample.sql` (şema migration'ından ayrık;
+   prod'da atlanabilir/temizlenebilir).
+4. **Applied:** mevcut takipçiyle birleşir (tek alan).
+5. **Limitler:** feed başına 10, feed sayfa boyutu 25.
