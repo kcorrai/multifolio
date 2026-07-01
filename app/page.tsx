@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
 import { PlatformLogo } from "@/components/platform-logo";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -136,6 +137,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </nav>
 
           <div className="flex items-center gap-3">
+            <LanguageToggle />
             <ThemeToggle />
             {isLoggedIn ? (
               <Button asChild size="sm" className="font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/30">

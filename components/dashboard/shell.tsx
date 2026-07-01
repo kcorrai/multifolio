@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Wallet, Zap, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
 import { NAV_ITEMS, formatUsd, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
 import { VerifyEmailBanner } from "./verify-email-banner";
@@ -146,6 +147,7 @@ export function DashboardShell({
                 <span className="text-[11px] text-muted-foreground font-medium">AI</span>
                 <span className="text-xs font-bold tabular-nums">{formatUsd(spend)}</span>
               </div>
+              <LanguageToggle />
               <ThemeToggle />
               <form action="/auth/signout" method="post" className="lg:hidden">
                 <Button type="submit" variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
