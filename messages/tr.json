@@ -1,9 +1,102 @@
 {
   "common": {
     "appName": "Multifolio",
-    "language": "Dil"
+    "language": "Dil",
+    "dashboard": "Dashboard",
+    "goToDashboard": "Dashboard'a Git"
   },
   "landing": {
-    "cta": "Başla"
+    "nav": {
+      "features": "Özellikler",
+      "howItWorks": "Nasıl Çalışır",
+      "pricing": "Fiyat"
+    },
+    "cta": {
+      "login": "Giriş Yap",
+      "signupFree": "Ücretsiz Başla"
+    },
+    "hero": {
+      "badge": "Beta — İlk 100 kullanıcı ücretsiz",
+      "title": "Freelancer kariyerini <hl>tek platformdan</hl> yönet.",
+      "subtitle": "Profilini bir kez gir. LinkedIn, Upwork, Fiverr, Bionluk ve Armut için AI ile optimize et; portfolyonu saniyeler içinde yayınla.",
+      "platformsSupported": "5 platform destekleniyor",
+      "ctaPrimary": "Hemen Başla",
+      "ctaSecondary": "Özellikleri Gör",
+      "trust1": "Kredi kartı gerekmez",
+      "trust2": "5 dakikada kur",
+      "trust3": "Pay-as-you-go"
+    },
+    "stats": {
+      "platforms": "Desteklenen Platform",
+      "avgScore": "Ort. Uyum Skoru",
+      "avgScoreValue": "%89",
+      "engine": "Güçlü Motor",
+      "firstAdapt": "İlk Uyarlama",
+      "firstAdaptValue": "2 dk"
+    },
+    "platformsStrip": {
+      "title": "Desteklenen platformlar"
+    },
+    "features": {
+      "eyebrow": "Özellikler",
+      "title": "Her şey tek bir yerde.",
+      "subtitle": "Freelancer olarak ihtiyacın olan tüm araçlar, birbirine bağlı ve otomatik.",
+      "adapt": {
+        "title": "Platform Uyarlama",
+        "desc": "Profilini bir kez yaz. AI her platform için ayrı optimize eder — tona, dile ve beklentiye göre."
+      },
+      "portfolio": {
+        "title": "Portfolyo Sitesi",
+        "desc": "/p/kullanici-adin adresinde yayınlanan, SEO'ya uygun kişisel portfolyo sayfası. OG etiketleriyle sosyal paylaşıma hazır."
+      },
+      "matching": {
+        "title": "İlan Eşleştirme",
+        "desc": "İlanı yapıştır; profilinle karşılaştırır, 0-100 uyum skoru verir, güçlü yönlerini ve eksiklerini listeler."
+      },
+      "tracking": {
+        "title": "Başvuru Takibi",
+        "desc": "Kaydedildi → Başvuruldu → Görüşme → Teklif pipeline'ı. Tüm başvurularını tek ekrandan yönet."
+      },
+      "ai": {
+        "title": "AI ile Üretim",
+        "desc": "GPT-4o mini destekli; structured output ile her seferinde doğru format ve platform diline uygun içerik."
+      },
+      "secure": {
+        "title": "Güvenli & Hızlı",
+        "desc": "Supabase RLS ile her veri sahibine özel. Pay-as-you-go model: yalnızca kullandığın kadar öde."
+      }
+    },
+    "how": {
+      "eyebrow": "Nasıl Çalışır",
+      "title": "3 adımda başla.",
+      "step1": {
+        "title": "Profilini gir",
+        "desc": "Başlık, özet ve becerilerini bir kez doldur. Bu temel, her şeyin kaynağı."
+      },
+      "step2": {
+        "title": "Platform seç & uyarla",
+        "desc": "LinkedIn, Upwork veya diğer platformlar için AI'ın optimize metnini üret."
+      },
+      "step3": {
+        "title": "Paylaş & takip et",
+        "desc": "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir."
+      }
+    },
+    "finalCta": {
+      "title": "Freelancer kariyerini bir üst seviyeye taşı.",
+      "subtitle": "Beta sürecinde ücretsiz. Kredi kartı gerekmez."
+    },
+    "footer": {
+      "rights": "© 2026 Multifolio. Tüm hakları saklıdır."
+    },
+    "mockup": {
+      "role": "Senior React Developer",
+      "scoreLabel": "Güçlü",
+      "overallScore": "Genel Skor",
+      "scoreNote": "Güçlü profil. Başlık optimizasyonu en büyük fırsat.",
+      "platformFit": "Platform Uyumu",
+      "skillMatch": "Beceri Eşleşmesi",
+      "clientAppeal": "Müşteri Çekiciliği"
+    }
   }
 }

@@ -1,9 +1,102 @@
 {
   "common": {
     "appName": "Multifolio",
-    "language": "Language"
+    "language": "Language",
+    "dashboard": "Dashboard",
+    "goToDashboard": "Go to dashboard"
   },
   "landing": {
-    "cta": "Get started"
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How it works",
+      "pricing": "Pricing"
+    },
+    "cta": {
+      "login": "Log in",
+      "signupFree": "Start free"
+    },
+    "hero": {
+      "badge": "Beta — first 100 users free",
+      "title": "Manage your freelance career <hl>from one platform</hl>.",
+      "subtitle": "Enter your profile once. Optimize it with AI for LinkedIn, Upwork, Fiverr, Bionluk and Armut; publish your portfolio in seconds.",
+      "platformsSupported": "5 platforms supported",
+      "ctaPrimary": "Get started now",
+      "ctaSecondary": "See features",
+      "trust1": "No credit card required",
+      "trust2": "Set up in 5 minutes",
+      "trust3": "Pay-as-you-go"
+    },
+    "stats": {
+      "platforms": "Supported platforms",
+      "avgScore": "Avg. match score",
+      "avgScoreValue": "89%",
+      "engine": "Powerful engine",
+      "firstAdapt": "First adaptation",
+      "firstAdaptValue": "2 min"
+    },
+    "platformsStrip": {
+      "title": "Supported platforms"
+    },
+    "features": {
+      "eyebrow": "Features",
+      "title": "Everything in one place.",
+      "subtitle": "All the tools you need as a freelancer, connected and automated.",
+      "adapt": {
+        "title": "Platform adaptation",
+        "desc": "Write your profile once. AI optimizes it separately for each platform — tone, language and expectations."
+      },
+      "portfolio": {
+        "title": "Portfolio site",
+        "desc": "An SEO-friendly personal portfolio page published at /p/your-username. Ready for social sharing with OG tags."
+      },
+      "matching": {
+        "title": "Job matching",
+        "desc": "Paste a listing; it compares against your profile, gives a 0–100 match score, and lists your strengths and gaps."
+      },
+      "tracking": {
+        "title": "Application tracking",
+        "desc": "Saved → Applied → Interview → Offer pipeline. Manage all your applications from one screen."
+      },
+      "ai": {
+        "title": "AI generation",
+        "desc": "Powered by GPT-4o mini; structured output delivers the right format and platform-appropriate content every time."
+      },
+      "secure": {
+        "title": "Secure & fast",
+        "desc": "Per-owner isolation with Supabase RLS. Pay-as-you-go model: only pay for what you use."
+      }
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Start in 3 steps.",
+      "step1": {
+        "title": "Enter your profile",
+        "desc": "Fill in your headline, summary and skills once. This foundation is the source of everything."
+      },
+      "step2": {
+        "title": "Pick a platform & adapt",
+        "desc": "Generate AI-optimized copy for LinkedIn, Upwork or other platforms."
+      },
+      "step3": {
+        "title": "Share & track",
+        "desc": "Publish your portfolio, track your applications, match listings."
+      }
+    },
+    "finalCta": {
+      "title": "Take your freelance career to the next level.",
+      "subtitle": "Free during beta. No credit card required."
+    },
+    "footer": {
+      "rights": "© 2026 Multifolio. All rights reserved."
+    },
+    "mockup": {
+      "role": "Senior React Developer",
+      "scoreLabel": "Strong",
+      "overallScore": "Overall score",
+      "scoreNote": "Strong profile. Headline optimization is the biggest opportunity.",
+      "platformFit": "Platform fit",
+      "skillMatch": "Skill match",
+      "clientAppeal": "Client appeal"
+    }
   }
 }

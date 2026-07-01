@@ -3,6 +3,7 @@ import {
   Layers, Globe, Briefcase, ArrowRight,
   CheckCircle2, Target, Sparkles, Star,
 } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
@@ -46,7 +47,8 @@ function ScoreBar({ label, value }: { label: string; value: number }) {
 }
 
 /* ─── Product mockup shown in hero ─────────────────────────────── */
-function ProductMockup() {
+async function ProductMockup() {
+  const t = await getTranslations("landing.mockup");
   return (
     <div className="relative flex items-center justify-center py-10 anim-fade-in anim-d2">
       <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[380px] w-[380px] rounded-full bg-indigo-400/8 dark:bg-cyan-400/8 blur-[90px]" />
@@ -62,7 +64,7 @@ function ProductMockup() {
               </div>
               <div>
                 <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">Ahmet Yılmaz</p>
-                <p className="text-[11px] text-slate-400 dark:text-white/40">Senior React Developer</p>
+                <p className="text-[11px] text-slate-400 dark:text-white/40">{t("role")}</p>
               </div>
             </div>
             <span className="text-[10px] font-bold text-indigo-600 dark:text-[#00F0FF] bg-indigo-50 dark:bg-[#00F0FF]/10 border border-indigo-200 dark:border-[#00F0FF]/25 rounded-full px-2.5 py-1">
@@ -77,13 +79,13 @@ function ProductMockup() {
               <CircleScore score={87} />
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-[24px] font-extrabold text-slate-900 dark:text-white leading-none">87</span>
-                <span className="text-[8px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--ring-arc)" }}>Güçlü</span>
+                <span className="text-[8px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--ring-arc)" }}>{t("scoreLabel")}</span>
               </div>
             </div>
             <div>
-              <p className="text-[9px] text-slate-400 dark:text-white/30 uppercase tracking-widest font-bold mb-2">Genel Skor</p>
+              <p className="text-[9px] text-slate-400 dark:text-white/30 uppercase tracking-widest font-bold mb-2">{t("overallScore")}</p>
               <p className="text-[12px] text-slate-500 dark:text-white/55 leading-relaxed">
-                Güçlü profil. Başlık<br />optimizasyonu en büyük fırsat.
+                {t("scoreNote")}
               </p>
             </div>
           </div>
@@ -91,9 +93,9 @@ function ProductMockup() {
           <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
           <div className="px-6 py-5 space-y-3.5">
-            <ScoreBar label="Platform Uyumu"     value={92} />
-            <ScoreBar label="Beceri Eşleşmesi"   value={88} />
-            <ScoreBar label="Müşteri Çekiciliği"  value={76} />
+            <ScoreBar label={t("platformFit")}  value={92} />
+            <ScoreBar label={t("skillMatch")}   value={88} />
+            <ScoreBar label={t("clientAppeal")} value={76} />
           </div>
 
           <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
@@ -114,7 +116,24 @@ function ProductMockup() {
 }
 
 /* ─── Landing page ──────────────────────────────────────────────── */
-function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+  const t = await getTranslations("landing");
+  const tc = await getTranslations("common");
+
+  const features = [
+    { icon: Globe,        title: t("features.portfolio.title"), desc: t("features.portfolio.desc"), accent: "violet", delay: 60  },
+    { icon: Briefcase,    title: t("features.matching.title"),  desc: t("features.matching.desc"),  accent: "cyan",   delay: 120 },
+    { icon: Target,       title: t("features.tracking.title"),  desc: t("features.tracking.desc"),  accent: "violet", delay: 180 },
+    { icon: Sparkles,     title: t("features.ai.title"),        desc: t("features.ai.desc"),        accent: "cyan",   delay: 240 },
+    { icon: CheckCircle2, title: t("features.secure.title"),    desc: t("features.secure.desc"),    accent: "violet", delay: 300 },
+  ];
+
+  const steps = [
+    { step: "01", title: t("how.step1.title"), desc: t("how.step1.desc"), delay: 0   },
+    { step: "02", title: t("how.step2.title"), desc: t("how.step2.desc"), delay: 100 },
+    { step: "03", title: t("how.step3.title"), desc: t("how.step3.desc"), delay: 200 },
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
 
@@ -129,7 +148,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
 
           <nav className="hidden md:flex items-center gap-7">
-            {["Özellikler", "Nasıl Çalışır", "Fiyat"].map((item) => (
+            {[t("nav.features"), t("nav.howItWorks"), t("nav.pricing")].map((item) => (
               <a key={item} href="#" className="text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
                 {item}
               </a>
@@ -141,15 +160,15 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             <ThemeToggle />
             {isLoggedIn ? (
               <Button asChild size="sm" className="font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/30">
-                <Link href="/dashboard">Dashboard</Link>
+                <Link href="/dashboard">{tc("dashboard")}</Link>
               </Button>
             ) : (
               <>
                 <Button asChild variant="ghost" size="sm" className="text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/8">
-                  <Link href="/login">Giriş Yap</Link>
+                  <Link href="/login">{t("cta.login")}</Link>
                 </Button>
                 <Button asChild size="sm" className="font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/30">
-                  <Link href="/signup">Ücretsiz Başla</Link>
+                  <Link href="/signup">{t("cta.signupFree")}</Link>
                 </Button>
               </>
             )}
@@ -172,20 +191,21 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                   <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <span className="text-xs font-semibold text-slate-600 dark:text-white/70">Beta — İlk 100 kullanıcı ücretsiz</span>
+              <span className="text-xs font-semibold text-slate-600 dark:text-white/70">{t("hero.badge")}</span>
             </div>
 
             <h1 className="anim-fade-up anim-d1 text-5xl lg:text-[3.5rem] font-extrabold leading-[1.1] tracking-tight">
-              Freelancer kariyerini{" "}
-              <span className="bg-gradient-to-r from-[#00F0FF] to-violet-400 bg-clip-text text-transparent">
-                tek platformdan
-              </span>{" "}
-              yönet.
+              {t.rich("hero.title", {
+                hl: (chunks) => (
+                  <span className="bg-gradient-to-r from-[#00F0FF] to-violet-400 bg-clip-text text-transparent">
+                    {chunks}
+                  </span>
+                ),
+              })}
             </h1>
 
             <p className="anim-fade-up anim-d2 text-lg text-slate-500 dark:text-[#94A3B8] leading-relaxed max-w-md font-medium">
-              Profilini bir kez gir. LinkedIn, Upwork, Fiverr, Bionluk ve Armut
-              için AI ile optimize et; portfolyonu saniyeler içinde yayınla.
+              {t("hero.subtitle")}
             </p>
 
             <div className="anim-fade-up anim-d3 flex items-center gap-2 flex-wrap pt-1">
@@ -194,7 +214,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                   <PlatformLogo platform={id} size={16} />
                 </div>
               ))}
-              <span className="text-xs text-slate-400 dark:text-[#94A3B8]/60 font-medium">5 platform destekleniyor</span>
+              <span className="text-xs text-slate-400 dark:text-[#94A3B8]/60 font-medium">{t("hero.platformsSupported")}</span>
             </div>
 
             <div className="anim-fade-up anim-d4 flex flex-wrap items-center gap-3 pt-2">
@@ -203,7 +223,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                   href="/dashboard"
                   className="anim-neon-pulse inline-flex items-center h-12 px-7 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors"
                 >
-                  Dashboard&apos;a Git <ArrowRight className="ml-2 h-4 w-4" />
+                  {tc("goToDashboard")} <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               ) : (
                 <>
@@ -211,23 +231,23 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                     href="/signup"
                     className="anim-neon-pulse inline-flex items-center h-12 px-7 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors"
                   >
-                    Hemen Başla <ArrowRight className="ml-2 h-4 w-4" />
+                    {t("hero.ctaPrimary")} <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                   <Link
                     href="#features"
                     className="inline-flex items-center h-12 px-7 rounded-xl text-base font-semibold border border-violet-500/40 text-violet-400 hover:bg-violet-500/10 transition-colors"
                   >
-                    Özellikleri Gör
+                    {t("hero.ctaSecondary")}
                   </Link>
                 </>
               )}
             </div>
 
             <div className="anim-fade-up anim-d5 flex flex-wrap gap-4 pt-1">
-              {["Kredi kartı gerekmez", "5 dakikada kur", "Pay-as-you-go"].map((t) => (
-                <span key={t} className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-[#94A3B8]/70 font-medium">
+              {[t("hero.trust1"), t("hero.trust2"), t("hero.trust3")].map((item) => (
+                <span key={item} className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-[#94A3B8]/70 font-medium">
                   <CheckCircle2 className="h-3.5 w-3.5 text-[#00F0FF] shrink-0" />
-                  {t}
+                  {item}
                 </span>
               ))}
             </div>
@@ -244,10 +264,10 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         <div className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-[#161923]/60">
           <div className="mx-auto max-w-6xl px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: "5",      label: "Desteklenen Platform", color: "text-[#00F0FF]" },
-              { value: "%89",    label: "Ort. Uyum Skoru",      color: "text-violet-400" },
-              { value: "GPT-4o", label: "Güçlü Motor",          color: "text-[#00F0FF]" },
-              { value: "2 dk",   label: "İlk Uyarlama",         color: "text-violet-400" },
+              { value: "5",                       label: t("stats.platforms"), color: "text-[#00F0FF]" },
+              { value: t("stats.avgScoreValue"),  label: t("stats.avgScore"),  color: "text-violet-400" },
+              { value: "GPT-4o",                  label: t("stats.engine"),    color: "text-[#00F0FF]" },
+              { value: t("stats.firstAdaptValue"), label: t("stats.firstAdapt"), color: "text-violet-400" },
             ].map(({ value, label, color }) => (
               <div key={label} className="text-center space-y-1">
                 <p className={`text-2xl font-extrabold ${color}`}>{value}</p>
@@ -261,7 +281,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
       {/* Platforms strip */}
       <ScrollReveal className="mx-auto max-w-6xl px-8 py-14">
         <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-white/20 mb-8">
-          Desteklenen platformlar
+          {t("platformsStrip.title")}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           {([
@@ -283,10 +303,10 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
       <section id="features" className="mx-auto max-w-6xl px-8 pb-24">
         <ScrollReveal>
           <div className="text-center space-y-3 mb-14">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">Özellikler</p>
-            <h2 className="text-4xl font-extrabold tracking-tight">Her şey tek bir yerde.</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("features.eyebrow")}</p>
+            <h2 className="text-4xl font-extrabold tracking-tight">{t("features.title")}</h2>
             <p className="text-slate-500 dark:text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">
-              Freelancer olarak ihtiyacın olan tüm araçlar, birbirine bağlı ve otomatik.
+              {t("features.subtitle")}
             </p>
           </div>
         </ScrollReveal>
@@ -298,9 +318,9 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                 <Layers className="h-5 w-5 text-[#00F0FF]" />
               </div>
               <div className="space-y-1.5">
-                <h3 className="font-bold text-slate-900 dark:text-white">Platform Uyarlama</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.adapt.title")}</h3>
                 <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">
-                  Profilini bir kez yaz. AI her platform için ayrı optimize eder — tona, dile ve beklentiye göre.
+                  {t("features.adapt.desc")}
                 </p>
               </div>
               <div className="flex items-center gap-2 flex-wrap pt-1">
@@ -313,13 +333,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </div>
           </ScrollReveal>
 
-          {[
-            { icon: Globe,        title: "Portfolyo Sitesi",  desc: "/p/kullanici-adin adresinde yayınlanan, SEO'ya uygun kişisel portfolyo sayfası. OG etiketleriyle sosyal paylaşıma hazır.", accent: "violet", delay: 60  },
-            { icon: Briefcase,    title: "İlan Eşleştirme",  desc: "İlanı yapıştır; profilinle karşılaştırır, 0-100 uyum skoru verir, güçlü yönlerini ve eksiklerini listeler.",             accent: "cyan",   delay: 120 },
-            { icon: Target,       title: "Başvuru Takibi",   desc: "Kaydedildi → Başvuruldu → Görüşme → Teklif pipeline'ı. Tüm başvurularını tek ekrandan yönet.",                           accent: "violet", delay: 180 },
-            { icon: Sparkles,     title: "AI ile Üretim",    desc: "GPT-4o mini destekli; structured output ile her seferinde doğru format ve platform diline uygun içerik.",                 accent: "cyan",   delay: 240 },
-            { icon: CheckCircle2, title: "Güvenli & Hızlı",  desc: "Supabase RLS ile her veri sahibine özel. Pay-as-you-go model: yalnızca kullandığın kadar öde.",                          accent: "violet", delay: 300 },
-          ].map(({ icon: Icon, title, desc, accent, delay }) => (
+          {features.map(({ icon: Icon, title, desc, accent, delay }) => (
             <ScrollReveal key={title} delay={delay}>
               <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-violet-500/20 hover:shadow-md transition-all">
                 <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${accent === "cyan" ? "bg-[#00F0FF]/10 border border-[#00F0FF]/20" : "bg-violet-500/10 border border-violet-500/20"}`}>
@@ -340,16 +354,12 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         <div className="mx-auto max-w-6xl px-8">
           <ScrollReveal>
             <div className="text-center space-y-3 mb-14">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-400">Nasıl Çalışır</p>
-              <h2 className="text-4xl font-extrabold tracking-tight">3 adımda başla.</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-400">{t("how.eyebrow")}</p>
+              <h2 className="text-4xl font-extrabold tracking-tight">{t("how.title")}</h2>
             </div>
           </ScrollReveal>
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { step: "01", title: "Profilini gir",          desc: "Başlık, özet ve becerilerini bir kez doldur. Bu temel, her şeyin kaynağı.",        delay: 0   },
-              { step: "02", title: "Platform seç & uyarla",  desc: "LinkedIn, Upwork veya diğer platformlar için AI'ın optimize metnini üret.",        delay: 100 },
-              { step: "03", title: "Paylaş & takip et",      desc: "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir.",                  delay: 200 },
-            ].map(({ step, title, desc, delay }) => (
+            {steps.map(({ step, title, desc, delay }) => (
               <ScrollReveal key={step} delay={delay}>
                 <div className="space-y-4">
                   <div className="text-5xl font-extrabold text-slate-200 dark:text-white/6 tabular-nums">{step}</div>
@@ -375,16 +385,16 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </div>
             <div className="relative space-y-5">
               <h2 className="text-4xl font-extrabold tracking-tight">
-                Freelancer kariyerini bir üst seviyeye taşı.
+                {t("finalCta.title")}
               </h2>
               <p className="text-slate-500 dark:text-[#94A3B8] text-lg font-medium max-w-md mx-auto">
-                Beta sürecinde ücretsiz. Kredi kartı gerekmez.
+                {t("finalCta.subtitle")}
               </p>
               <Link
                 href={isLoggedIn ? "/dashboard" : "/signup"}
                 className="anim-neon-pulse inline-flex items-center h-12 px-8 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors mt-2"
               >
-                {isLoggedIn ? "Dashboard'a Git" : "Ücretsiz Başla"} <ArrowRight className="ml-2 h-4 w-4" />
+                {isLoggedIn ? tc("goToDashboard") : t("cta.signupFree")} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -400,7 +410,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </div>
             <span className="text-sm font-bold text-slate-500 dark:text-[#94A3B8]/50">Multifolio</span>
           </div>
-          <p className="text-xs text-slate-400 dark:text-white/20 font-medium">© 2026 Multifolio. Tüm hakları saklıdır.</p>
+          <p className="text-xs text-slate-400 dark:text-white/20 font-medium">{t("footer.rights")}</p>
         </div>
       </footer>
     </div>
