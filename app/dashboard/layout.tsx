@@ -9,20 +9,20 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const [creditsRes, usageRes, jobsCountRes, connCountRes] = await Promise.all([
     supabase.from("credits").select("balance").eq("user_id", user.id).maybeSingle(),
-    supabase.from("usage_events").select("cost_usd").eq("user_id", user.id),
+    supabase.from("usage_events").select("credits_spent").eq("user_id", user.id),
     supabase.from("job_listings").select("id", { count: "exact", head: true }).eq("user_id", user.id),
     supabase.from("platform_connections").select("platform", { count: "exact", head: true }).eq("user_id", user.id),
   ]);
 
   const credits = creditsRes.data?.balance ?? 0;
-  const spend = (usageRes.data ?? []).reduce((sum, r) => sum + Number(r.cost_usd ?? 0), 0);
+  const creditsUsed = (usageRes.data ?? []).reduce((sum, r) => sum + Number(r.credits_spent ?? 0), 0);
   const emailVerified = user.app_metadata?.email_verified === true;
 
   return (
     <DashboardShell
       userEmail={user.email ?? ""}
       credits={credits}
-      initialSpendUsd={spend}
+      initialCreditsUsed={creditsUsed}
       initialJobsCount={jobsCountRes.count ?? 0}
       initialConnectionsCount={connCountRes.count ?? 0}
       emailVerified={emailVerified}

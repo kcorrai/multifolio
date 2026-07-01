@@ -1,4 +1,4 @@
-// Kullanıcının kümülatif harcamasını döner. RLS sayesinde yalnızca kendi
+// Kullanıcının kümülatif kredi tüketimini döner. RLS sayesinde yalnızca kendi
 // usage_events kayıtlarını okur (sahibe sınırlı).
 import { NextResponse } from "next/server";
 import { AuthError, withErrorHandler } from "@/lib/errors";
@@ -14,14 +14,14 @@ export const GET = withErrorHandler(async () => {
 
   const { data, error } = await supabase
     .from("usage_events")
-    .select("cost_usd")
+    .select("credits_spent")
     .eq("user_id", user.id);
   if (error) throw error;
 
-  const totalUsd = (data ?? []).reduce(
-    (sum, row) => sum + Number(row.cost_usd ?? 0),
+  const creditsUsed = (data ?? []).reduce(
+    (sum, row) => sum + Number(row.credits_spent ?? 0),
     0,
   );
 
-  return NextResponse.json({ totalUsd, count: data?.length ?? 0 });
+  return NextResponse.json({ creditsUsed, count: data?.length ?? 0 });
 });
