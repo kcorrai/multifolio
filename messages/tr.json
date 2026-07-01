@@ -458,6 +458,29 @@
     "projects": "Projeler",
     "lastUpdated": "Son güncelleme"
   },
+  "pricingPage": {
+    "metaTitle": "Fiyatlandırma — Multifolio",
+    "metaDescription": "Multifolio için kredi tabanlı, kullandıkça öde fiyatlandırma. Abonelik yok. Her AI aksiyonunun tam maliyetini gör.",
+    "heroEyebrow": "Fiyatlandırma",
+    "heroTitle": "Basit, kredi tabanlı fiyatlandırma",
+    "heroSubtitle": "Krediyi bir kez al, beş platformun tümünde herhangi bir AI aksiyonunda harca. Abonelik yok, son kullanma yok.",
+    "costsEyebrow": "Kredi maliyetleri",
+    "costsTitle": "Her aksiyon ne kadar",
+    "costsSubtitle": "AI aksiyonu başına şeffaf fiyatlandırma — harcamadan önce bakiyeni her zaman görürsün.",
+    "colAction": "Aksiyon",
+    "colCost": "Maliyet",
+    "creditUnit": "{count, plural, one {# kredi} other {# kredi}}",
+    "actions": {
+      "adaptation": "Profil uyarlama",
+      "job_match": "İş eşleştirme",
+      "proposal": "Teklif",
+      "portfolio_generation": "Tam portfolyo sitesi"
+    },
+    "actionsNote": "Örnek: 500 kredi = 500 uyarlama, ya da 250 teklif, ya da ~166 tam portfolyo.",
+    "ctaTitle": "100 ücretsiz krediyle başla",
+    "ctaSubtitle": "Her yeni hesap 100 kredi alır — beş platformu uyarlamaya ve ilk işlerini eşleştirmeye yeter.",
+    "ctaButton": "Ücretsiz başla"
+  },
   "errors": {
     "profileRequired": "Önce bir profil oluşturmalısın.",
     "profileRequiredPortfolio": "Portfolyo oluşturmak için önce profil doldurmalısın.",

@@ -458,6 +458,29 @@
     "projects": "Projects",
     "lastUpdated": "Last updated"
   },
+  "pricingPage": {
+    "metaTitle": "Pricing — Multifolio",
+    "metaDescription": "Credit-based, pay-as-you-go pricing for Multifolio. No subscription. See exactly what each AI action costs.",
+    "heroEyebrow": "Pricing",
+    "heroTitle": "Simple, credit-based pricing",
+    "heroSubtitle": "Buy credits once, spend them on any AI action across all five platforms. No subscription, no expiry.",
+    "costsEyebrow": "Credit costs",
+    "costsTitle": "What each action costs",
+    "costsSubtitle": "Transparent pricing per AI action — you always see your balance before you spend.",
+    "colAction": "Action",
+    "colCost": "Cost",
+    "creditUnit": "{count, plural, one {# credit} other {# credits}}",
+    "actions": {
+      "adaptation": "Profile adaptation",
+      "job_match": "Job match",
+      "proposal": "Proposal",
+      "portfolio_generation": "Full portfolio site"
+    },
+    "actionsNote": "Example: 500 credits = 500 adaptations, or 250 proposals, or ~166 full portfolios.",
+    "ctaTitle": "Start with 100 free credits",
+    "ctaSubtitle": "Every new account gets 100 credits — enough to adapt all five platforms and match your first jobs.",
+    "ctaButton": "Get started free"
+  },
   "errors": {
     "profileRequired": "You need to create a profile first.",
     "profileRequiredPortfolio": "Fill in your profile first to generate a portfolio.",

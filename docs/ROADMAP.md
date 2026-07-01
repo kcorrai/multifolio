@@ -54,5 +54,14 @@ Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
   bildirim e-postası iki dilli; auth e-posta şablonu İngilizce. `i18n/`, `messages/`,
   `components/language-toggle.tsx` eklendi. Kod yorumları Türkçe kaldı.
 
+- **Faz 9 — Kredi ekonomisi + landing (Pricing/FAQ)** ✅
+  Pay-as-you-go kredi sistemi canlı: `credits` tablosu + deduct/refund RPC'leri (harcama
+  closure'da kalıcılık; yazım patlarsa kredi iade), yetersiz kredide 402 → locale'e göre
+  çevrilmiş hata + "Kredi al" toast nudge; job-add modalında AI eşleştirme hataları (402 dahil)
+  inline gösterilir, modal açık kalır. USD kullanıcı arayüzünden kaldırıldı. Landing'e kredi
+  paketleri (Starter/Pro/Scale) Pricing bölümü + FAQ eklendi. `main` üzerinde çalışıldı
+  (Vercel auto-deploy). Not: prod migration `0011` (deduct/refund p_amount>0 guard) henüz
+  prod'a uygulanmadı.
+
 - **Faz 6 — İşveren tarafı / iki taraflı pazar** *(çok sonra)*
   İşveren tarafı akışları ve pazar yeri.
