@@ -26,6 +26,7 @@ export const jobMatchResultSchema = z.object({
   score: z.number().int().min(0).max(100),
   strengths: z.array(z.string()).max(5),
   gaps: z.array(z.string()).max(5),
+  requirements: z.array(z.string()).max(7),
   summary: z.string().max(400),
 });
 
