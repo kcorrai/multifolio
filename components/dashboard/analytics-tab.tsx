@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { JOB_STATUSES } from "@/lib/validation/schemas/job";
 import {
   StatCard, TINT_CYAN, ELEVATED, KIND_ICONS,
-  STATUS_DOT, formatUsd, type AnalyticsData, type JobRow,
+  STATUS_DOT, type AnalyticsData, type JobRow,
 } from "./shared";
 import { useDashboard } from "./dashboard-context";
 
@@ -51,10 +51,11 @@ export function AnalyticsTab({
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         <StatCard icon={TrendingUp} tint={TINT_CYAN} label={t("totalSpend")}
-          value={formatUsd(analytics.totalUsd)} sub={t("transactions", { count: analytics.totalCount })} />
-        {Object.entries(analytics.byKind).map(([kind, { count, costUsd }]) => (
+          value={analytics.totalCredits} sub={t("transactions", { count: analytics.totalCount })} />
+        {Object.entries(analytics.byKind).map(([kind, { count, credits: kindCredits }]) => (
           <StatCard key={kind} icon={KIND_ICONS[kind] ?? Zap} tint={TINT_CYAN}
-            label={t.has(`kind.${kind}`) ? t(`kind.${kind}`) : kind} value={count} sub={formatUsd(costUsd)} />
+            label={t.has(`kind.${kind}`) ? t(`kind.${kind}`) : kind} value={count}
+            sub={t("creditsSub", { count: kindCredits })} />
         ))}
       </div>
 
@@ -68,15 +69,15 @@ export function AnalyticsTab({
           </CardHeader>
           <CardContent>
             {(() => {
-              const max = Math.max(...analytics.dailySeries.map((d) => d.costUsd), 0.000001);
+              const max = Math.max(...analytics.dailySeries.map((d) => d.credits), 1);
               return (
                 <div className="flex items-end gap-1 h-32">
-                  {analytics.dailySeries.map(({ date, costUsd }) => (
-                    <div key={date} className="group relative flex-1 min-w-0" title={`${date}: ${formatUsd(costUsd)}`}>
+                  {analytics.dailySeries.map(({ date, credits: dayCredits }) => (
+                    <div key={date} className="group relative flex-1 min-w-0" title={`${date}: ${dayCredits}`}>
                       <div className="w-full rounded-t-sm bg-[#00F0FF]/40 hover:bg-[#00F0FF] transition-colors"
-                        style={{ height: `${Math.max((costUsd / max) * 100, 4)}%` }} />
+                        style={{ height: `${Math.max((dayCredits / max) * 100, 4)}%` }} />
                       <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 hidden group-hover:block text-[10px] bg-foreground text-background rounded px-1.5 py-0.5 whitespace-nowrap z-10">
-                        {formatUsd(costUsd)}
+                        {dayCredits}
                       </span>
                     </div>
                   ))}
