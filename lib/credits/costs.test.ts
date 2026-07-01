@@ -1,0 +1,17 @@
+import { describe, it, expect } from "vitest";
+import { CREDIT_COSTS } from "./costs";
+
+describe("CREDIT_COSTS", () => {
+  it("her aksiyon türü için pozitif tamsayı kredi tanımlar", () => {
+    expect(CREDIT_COSTS.adaptation).toBe(1);
+    expect(CREDIT_COSTS.job_match).toBe(1);
+    expect(CREDIT_COSTS.proposal).toBe(2);
+    expect(CREDIT_COSTS.portfolio_generation).toBe(3);
+  });
+
+  it("usage_events.kind ile birebir anahtar kullanır", () => {
+    expect(Object.keys(CREDIT_COSTS).sort()).toEqual(
+      ["adaptation", "job_match", "portfolio_generation", "proposal"],
+    );
+  });
+});
