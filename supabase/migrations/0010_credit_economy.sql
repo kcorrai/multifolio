@@ -48,6 +48,10 @@ declare
 begin
   update public.credits set balance = balance + p_amount where user_id = p_user
     returning balance into v_balance;
+  -- Kredi satırı yoksa açıkça hata ver (NULL dönmesin).
+  if not found then
+    raise exception 'no_credits_row';
+  end if;
   return v_balance;
 end;
 $$;
