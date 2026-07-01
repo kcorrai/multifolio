@@ -14,7 +14,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `app/page.tsx` — ana sayfa (sunucu): her zaman landing gösterir; oturum açıksa nav'da "Dashboard" butonu.
 - `app/dashboard/layout.tsx` — korumalı dashboard kabuğu (sunucu): auth + paylaşılan veri (email, kredi, harcama, rozet sayıları) çeker → `DashboardShell`'e iletir; oturum yoksa `/login`.
 - `app/dashboard/{page,profile,adapt,portfolio,jobs,analytics,accounts}/page.tsx` — her sekme ayrı route (sunucu): yalnızca kendi veri dilimini çeker → ilgili `*-tab` client bileşenine iletir. `page.tsx` = Genel Bakış (`/dashboard`).
-- `app/login`, `app/auth/{confirm,signout}` — magic-link (e-posta OTP) auth akışı; giriş sonrası `/dashboard`'a yönlendirir.
+- `app/login`, `app/signup`, `app/forgot-password`, `app/reset-password` — e-posta+şifre auth sayfaları (ortak kabuk `components/auth/auth-layout.tsx`). `app/auth/{confirm,verify-email,signout}` — confirm (recovery code exchange), verify-email (doğrulama callback → `app_metadata.email_verified`, service-role), signout. Giriş/kayıt sonrası `/dashboard`.
 - `app/` — sayfalar + `app/api/*/route.ts` uç noktaları. `app/global-error.tsx` kök ErrorBoundary.
   - `app/api/health` — canlılık. `app/api/debug-sentry` — Sentry test (kaldırılabilir).
   - `app/api/profile` — **korumalı uç nokta ŞABLONU** (yeni route'lar bunu örnek alır).
@@ -41,7 +41,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/validation/schemas/proposal.ts` — `proposalCreateSchema` + `ProposalRow` tipi.
 - `lib/validation/schemas/platform-connection.ts` — `platformConnectionUpsertSchema` + `PlatformConnection` tipi.
 - `components/ui/` — shadcn bileşenleri.
-- `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. Sekme bileşenleri: `overview-tab.tsx`, `profile-tab.tsx`, `adapt-tab.tsx`, `portfolio-tab.tsx`, `jobs-tab.tsx`, `analytics-tab.tsx`, `accounts-tab.tsx`.
+- `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. `verify-email-banner.tsx` — dashboard'da ertelenmiş e-posta doğrulama banner'ı + toast. Sekme bileşenleri: `overview-tab.tsx`, `profile-tab.tsx`, `adapt-tab.tsx`, `portfolio-tab.tsx`, `jobs-tab.tsx`, `analytics-tab.tsx`, `accounts-tab.tsx`.
   `components/job-detail-panel.tsx` — seçili iş için 2-sütun sağ panel (durum, AI skor, teklif CTA, notlar).
   `components/proposal-modal.tsx` — platform-spesifik AI teklif üretimi + geçmiş teklifler.
   `components/notification-settings-modal.tsx` — Telegram bağlantı + eşik ayarı.
