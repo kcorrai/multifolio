@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { X, Sparkles, Copy, Check, ChevronDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
-import type { ProposalRow } from "@/lib/validation/schemas/proposal";
+import { pendingRequirements, coverageSummary } from "@/lib/ai/coverage";
+import type { ProposalRow, ProposalCoverageItem } from "@/lib/validation/schemas/proposal";
 
 interface Props {
   jobId: string;
@@ -35,6 +36,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
   const [error, setError] = useState("");
   const [proposals, setProposals] = useState<ProposalRow[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const [coverage, setCoverage] = useState<ProposalCoverageItem[]>([]);
 
   useEffect(() => {
     fetch(`/api/proposal?job_id=${jobId}`)
@@ -44,12 +46,17 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
       .finally(() => setLoadingHistory(false));
   }, [jobId]);
 
-  async function generate() {
+  async function generate(focus?: string[]) {
     setGenerating(true); setError("");
     const res = await fetch("/api/proposal", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ job_id: jobId, platform, job_description: jobDescription }),
+      body: JSON.stringify({
+        job_id: jobId,
+        platform,
+        job_description: jobDescription,
+        ...(focus?.length ? { focus_requirements: focus } : {}),
+      }),
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
@@ -58,6 +65,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
     }
     const newProposal = body.proposal as ProposalRow;
     setGenerated(newProposal.content);
+    setCoverage(newProposal.coverage ?? []);
     setProposals((prev) => [newProposal, ...prev]);
     if (typeof body.cost?.usd === "number") onCostUpdate?.(body.cost.usd);
     setGenerating(false);
@@ -94,7 +102,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
               </select>
               <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             </div>
-            <Button onClick={generate} disabled={generating || !jobDescription} className="gap-2 shrink-0">
+            <Button onClick={() => generate()} disabled={generating || !jobDescription} className="gap-2 shrink-0">
               <Sparkles className="h-3.5 w-3.5" />
               {generating ? "Oluşturuluyor…" : "Oluştur"}
             </Button>
@@ -112,6 +120,45 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                 <CopyBtn text={generated} />
               </div>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{generated}</p>
+              {coverage.length > 0 && (
+                <div className="pt-3 mt-1 border-t border-[#00F0FF]/15 space-y-2">
+                  <p className="text-xs font-semibold text-muted-foreground">
+                    Kapsama — {coverageSummary(coverage).met}/{coverageSummary(coverage).total} karşılandı
+                  </p>
+                  <ul className="space-y-1.5">
+                    {coverage.map((c, i) => (
+                      <li key={i} className="flex items-start gap-2 text-[11px]">
+                        <span
+                          className={
+                            c.status === "met"
+                              ? "text-green-600 dark:text-green-400"
+                              : c.status === "partial"
+                                ? "text-amber-600 dark:text-amber-400"
+                                : "text-red-600 dark:text-red-400"
+                          }
+                        >
+                          {c.status === "met" ? "✓" : c.status === "partial" ? "~" : "✕"}
+                        </span>
+                        <span className="text-muted-foreground">
+                          <span className="font-medium text-foreground">{c.requirement}</span>
+                          {c.note ? ` — ${c.note}` : ""}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  {pendingRequirements(coverage).length > 0 && (
+                    <Button
+                      variant="outline"
+                      onClick={() => generate(pendingRequirements(coverage))}
+                      disabled={generating}
+                      className="w-full gap-2 mt-1"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      {generating ? "Oluşturuluyor…" : "Eksikleri Gider"}
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -129,6 +176,11 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                       <span className="text-xs text-muted-foreground">
                         {PLATFORMS[p.platform as PlatformId]?.label ?? p.platform} ·{" "}
                         {new Date(p.created_at).toLocaleDateString("tr-TR")}
+                        {p.coverage && p.coverage.length > 0 && (
+                          <span className="ml-1.5 text-[10px] text-muted-foreground/70">
+                            · {coverageSummary(p.coverage).met}/{coverageSummary(p.coverage).total} kapsama
+                          </span>
+                        )}
                       </span>
                       <CopyBtn text={p.content} />
                     </div>
