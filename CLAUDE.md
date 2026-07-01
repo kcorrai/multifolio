@@ -64,6 +64,12 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `npm run build` — üretim build'i.
 - `npm run check` — lint + type-check (`tsc --noEmit`). PR/iş bitişinde temiz olmalı.
 
+## Kurulum / sık düşülen tuzaklar (tekrarlanmasın)
+- **Kabuk:** Bu makinede terminal **PowerShell**. Bash sözdizimi (`export`, `curl -X/-H/-d`, `&&` bazı yerlerde) çalışmaz; PowerShell'de `Invoke-RestMethod`/`Invoke-WebRequest` kullan (veya Bash tool'una geç). `curl` PowerShell'de `Invoke-WebRequest` alias'ıdır.
+- **Auth manuel Supabase kurulumu (zorunlu, kodda değil):** Auth → Email → **"Confirm email" KAPALI** olmalı (yeni panelde bu toggle Email modalından kaldırıldı → Management API: `PATCH https://api.supabase.com/v1/projects/{ref}/config/auth` gövde `{"mailer_autoconfirm":true}`, personal access token ile). Redirect URLs'e `/auth/verify-email` + `/reset-password` ekle (localhost + prod).
+- **Auth e-postaları Supabase Custom SMTP (Resend) üzerinden gider** — app'in `lib/notifications/email.ts` Resend API'sinden AYRI. Gönderen (from) adresi **Resend'de doğrulanmış bir alan adı** olmalı; değilse `signInWithOtp`/`resetPasswordForEmail` **"Error sending magic link email" (500)** ile patlar. `onboarding@resend.dev` yalnız Resend hesabının kendi adresine gönderir.
+- **Enumeration koruması:** var olmayan e-postaya `resetPasswordForEmail` 200 döner ve **mail göndermez** → "E-postanı kontrol et" ekranı SMTP'yi test ETMEZ; gerçek SMTP testinde var olan bir kullanıcı kullan.
+
 ## Sert kurallar (üç sütun — pazarlık yok)
 1. **Hata görünürlüğü:** Her API route `withErrorHandler`'dan geçer. Hata sessizce yutulmaz.
    Beklenmeyen hatalar Sentry'ye gider; iç detay istemciye sızmaz.
