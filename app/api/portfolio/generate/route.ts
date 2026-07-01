@@ -29,46 +29,45 @@ export const POST = withErrorHandler(async () => {
   if (!profileData) throw new NotFoundError((await getTranslations("errors"))("profileRequiredPortfolio"));
 
   const portfolioLocale = await getUserLocale();
-  const { result, balance, spent } = await spendCredits(user.id, "portfolio_generation", () =>
-    generatePortfolio(profileData as ProfileInput, portfolioLocale),
-  );
+  const admin = createSupabaseAdminClient();
 
-  // Mevcut portfolyoyu güncelle (yoksa oluştur). Slug: ilk üretimde user id'den türetilir.
+  // Mevcut portfolyoyu güncelle (yoksa oluştur). Slug: ilk üretimde user id'den türetilir (salt-okuma).
   const { data: existing } = await supabase
     .from("portfolios")
     .select("id, slug")
     .eq("user_id", user.id)
     .maybeSingle();
-
   const slug = existing?.slug ?? user.id.slice(0, 8);
 
-  const admin = createSupabaseAdminClient();
+  // AI üretimi + portfolyonun yazımı tek closure'da: yazım patlarsa spendCredits krediyi iade eder.
+  const { result, balance, spent } = await spendCredits(user.id, "portfolio_generation", async () => {
+    const ai = await generatePortfolio(profileData as ProfileInput, portfolioLocale);
+    const { data: portfolio, error: upsertError } = await admin
+      .from("portfolios")
+      .upsert(
+        { user_id: user.id, slug, content: ai.content },
+        { onConflict: "user_id" },
+      )
+      .select("id, slug, published, content, updated_at")
+      .single();
+    if (upsertError) throw upsertError;
+    return { ai, portfolio };
+  });
 
-  const { data: portfolio, error: upsertError } = await admin
-    .from("portfolios")
-    .upsert(
-      { user_id: user.id, slug, content: result.content },
-      { onConflict: "user_id" },
-    )
-    .select("id, slug, published, content, updated_at")
-    .single();
-
-  if (upsertError) throw upsertError;
-
-  // Maliyet kaydı (server-otoritatif, service-role ile).
+  // Maliyet kaydı (analitik — kredi iadesi kapsamı dışında; server-otoritatif, service-role ile).
   const { error: usageError } = await admin.from("usage_events").insert({
     user_id: user.id,
     kind: "portfolio_generation",
-    model: result.model,
-    input_tokens: result.inputTokens,
-    output_tokens: result.outputTokens,
-    cost_usd: result.costUsd,
+    model: result.ai.model,
+    input_tokens: result.ai.inputTokens,
+    output_tokens: result.ai.outputTokens,
+    cost_usd: result.ai.costUsd,
     credits_spent: spent,
   });
   if (usageError) throw usageError;
 
   return NextResponse.json({
-    portfolio,
+    portfolio: result.portfolio,
     credits: { balance, spent },
   });
 });

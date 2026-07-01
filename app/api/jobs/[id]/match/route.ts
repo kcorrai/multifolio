@@ -44,30 +44,31 @@ export const POST = withErrorHandler(async (_req, { params }) => {
 
   const locale = await getUserLocale();
   const jobDescription = jobRes.data.description;
-  const { result: match, balance, spent } = await spendCredits(user.id, "job_match", () =>
-    matchJobToProfile(profileRes.data as ProfileInput, jobDescription, locale),
-  );
+  // AI eşleştirme + ilana yazım tek closure'da: yazım patlarsa spendCredits krediyi iade eder.
+  const { result, balance, spent } = await spendCredits(user.id, "job_match", async () => {
+    const matched = await matchJobToProfile(profileRes.data as ProfileInput, jobDescription, locale);
+    // Sonucu ilana yaz (regular client — RLS update_own politikası yeterli).
+    const { data: updated, error: updateError } = await supabase
+      .from("job_listings")
+      .update({ match_score: matched.result.score, match_result: matched.result })
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .select("id, title, company, platform, status, match_score, match_result, created_at")
+      .single();
+    if (updateError) throw updateError;
+    return { matched, updated };
+  });
+  const { matched, updated } = result;
 
-  // Sonucu ilana yaz (regular client — RLS update_own politikası yeterli).
-  const { data: updated, error: updateError } = await supabase
-    .from("job_listings")
-    .update({ match_score: match.result.score, match_result: match.result })
-    .eq("id", id)
-    .eq("user_id", user.id)
-    .select("id, title, company, platform, status, match_score, match_result, created_at")
-    .single();
-
-  if (updateError) throw updateError;
-
-  // Maliyet kaydı — yalnızca service-role yazabilir (usage_events kuralı).
+  // Maliyet kaydı (analitik — kredi iadesi kapsamı dışında; service-role yazar).
   const admin = createSupabaseAdminClient();
   const { error: usageError } = await admin.from("usage_events").insert({
     user_id: user.id,
     kind: "job_match",
-    model: match.model,
-    input_tokens: match.inputTokens,
-    output_tokens: match.outputTokens,
-    cost_usd: match.costUsd,
+    model: matched.model,
+    input_tokens: matched.inputTokens,
+    output_tokens: matched.outputTokens,
+    cost_usd: matched.costUsd,
     credits_spent: spent,
   });
   if (usageError) throw usageError;
@@ -77,8 +78,8 @@ export const POST = withErrorHandler(async (_req, { params }) => {
     sendMatchNotificationEmail(
       user.email,
       updated.title,
-      match.result.score,
-      match.result.summary,
+      matched.result.score,
+      matched.result.summary,
       locale,
     ).catch(() => {});
   }

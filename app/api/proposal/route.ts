@@ -82,45 +82,45 @@ export const POST = withErrorHandler(async (req) => {
       : undefined;
 
   const proposalLocale = await getUserLocale();
-  const { result, balance, spent } = await spendCredits(user.id, "proposal", () =>
-    generateProposal(
+  // AI üretimi + teklifin kaydı tek closure'da: kayıt patlarsa spendCredits krediyi iade eder
+  // (kredi öde-sonuç kaybolma durumunu önler). usage_events (analitik) dışarıda kalır.
+  const { result, balance, spent } = await spendCredits(user.id, "proposal", async () => {
+    const ai = await generateProposal(
       profileRes.data as ProfileInput,
       input.job_description,
       input.platform,
       { requirements, focusRequirements: input.focus_requirements, locale: proposalLocale },
-    ),
-  );
+    );
+    const { data: saved, error: saveError } = await supabase
+      .from("proposals")
+      .insert({
+        user_id: user.id,
+        job_id: input.job_id,
+        platform: input.platform,
+        content: ai.content,
+        coverage: ai.coverage,
+      })
+      .select("id, job_id, platform, content, coverage, created_at")
+      .single();
+    if (saveError) throw saveError;
+    return { ai, saved };
+  });
 
-  // Teklifi proposals tablosuna kaydet
-  const { data: saved, error: saveError } = await supabase
-    .from("proposals")
-    .insert({
-      user_id: user.id,
-      job_id: input.job_id,
-      platform: input.platform,
-      content: result.content,
-      coverage: result.coverage,
-    })
-    .select("id, job_id, platform, content, coverage, created_at")
-    .single();
-
-  if (saveError) throw saveError;
-
-  // Maliyet kaydı
+  // Maliyet kaydı (analitik — kredi iadesi kapsamı dışında)
   const admin = createSupabaseAdminClient();
   const { error: usageError } = await admin.from("usage_events").insert({
     user_id: user.id,
     kind: "proposal",
-    model: result.model,
-    input_tokens: result.inputTokens,
-    output_tokens: result.outputTokens,
-    cost_usd: result.costUsd,
+    model: result.ai.model,
+    input_tokens: result.ai.inputTokens,
+    output_tokens: result.ai.outputTokens,
+    cost_usd: result.ai.costUsd,
     credits_spent: spent,
   });
   if (usageError) throw usageError;
 
   return NextResponse.json({
-    proposal: saved,
+    proposal: result.saved,
     credits: { balance, spent },
   }, { status: 201 });
 });
