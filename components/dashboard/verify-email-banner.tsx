@@ -53,7 +53,7 @@ export function VerifyEmailBanner({ emailVerified, email }: { emailVerified: boo
               {state === "sending" ? "Gönderiliyor…" : "Doğrulama e-postası gönder"}
             </button>
           )}
-          {state === "error" && <p className="text-xs text-destructive w-full">Gönderilemedi, tekrar dene.</p>}
+          {state === "error" && <p role="alert" className="text-xs text-destructive w-full">Gönderilemedi, tekrar dene.</p>}
         </div>
       )}
 

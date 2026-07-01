@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
           <Input id="email" type="email" required autoFocus autoComplete="email" value={email}
             onChange={(e) => setEmail(e.target.value)} placeholder="sen@ornek.com" className="h-11" />
         </div>
-        {status === "error" && <p className="text-sm text-destructive">{message}</p>}
+        {status === "error" && <p role="alert" className="text-sm text-destructive">{message}</p>}
         <button type="submit" disabled={status === "submitting"}
           className="w-full h-11 rounded-lg font-semibold text-sm cursor-pointer bg-[#00F0FF] hover:bg-[#00d8e8] text-[#080A10] shadow-lg shadow-[#00F0FF]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
           {status === "submitting" ? "Gönderiliyor…" : "Sıfırlama bağlantısı gönder"}

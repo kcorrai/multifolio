@@ -147,7 +147,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                   <Link href="/login">Giriş Yap</Link>
                 </Button>
                 <Button asChild size="sm" className="font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/30">
-                  <Link href="/login">Ücretsiz Başla</Link>
+                  <Link href="/signup">Ücretsiz Başla</Link>
                 </Button>
               </>
             )}
@@ -206,7 +206,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               ) : (
                 <>
                   <Link
-                    href="/login"
+                    href="/signup"
                     className="anim-neon-pulse inline-flex items-center h-12 px-7 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors"
                   >
                     Hemen Başla <ArrowRight className="ml-2 h-4 w-4" />
@@ -379,7 +379,7 @@ function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                 Beta sürecinde ücretsiz. Kredi kartı gerekmez.
               </p>
               <Link
-                href={isLoggedIn ? "/dashboard" : "/login"}
+                href={isLoggedIn ? "/dashboard" : "/signup"}
                 className="anim-neon-pulse inline-flex items-center h-12 px-8 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors mt-2"
               >
                 {isLoggedIn ? "Dashboard'a Git" : "Ücretsiz Başla"} <ArrowRight className="ml-2 h-4 w-4" />

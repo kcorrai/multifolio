@@ -62,7 +62,7 @@ export default function ResetPasswordPage() {
             <Input id="confirm" type="password" required autoComplete="new-password" value={confirm}
               onChange={(e) => setConfirm(e.target.value)} placeholder="••••••••" className="h-11" />
           </div>
-          {status === "error" && <p className="text-sm text-destructive">{message}</p>}
+          {status === "error" && <p role="alert" className="text-sm text-destructive">{message}</p>}
           <button type="submit" disabled={status === "submitting"}
             className="w-full h-11 rounded-lg font-semibold text-sm cursor-pointer bg-[#00F0FF] hover:bg-[#00d8e8] text-[#080A10] shadow-lg shadow-[#00F0FF]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
             {status === "submitting" ? "Güncelleniyor…" : "Şifreyi güncelle"}

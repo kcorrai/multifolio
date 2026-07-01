@@ -50,7 +50,7 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="h-11" />
         </div>
 
-        {status === "error" && <p className="text-sm text-destructive">{message}</p>}
+        {status === "error" && <p role="alert" className="text-sm text-destructive">{message}</p>}
 
         <button type="submit" disabled={status === "submitting"}
           className="w-full h-11 rounded-lg font-semibold text-sm cursor-pointer flex items-center justify-center bg-[#00F0FF] hover:bg-[#00d8e8] active:bg-[#00c8d6] text-[#080A10] shadow-lg shadow-[#00F0FF]/20 hover:shadow-xl hover:shadow-[#00F0FF]/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 px-4">
@@ -62,6 +62,10 @@ export default function LoginPage() {
         <p className="text-sm text-muted-foreground">
           Hesabın yok mu?{" "}
           <Link href="/signup" className="font-semibold text-foreground hover:underline underline-offset-2">Kayıt ol</Link>
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Daha önce e-posta bağlantısıyla mı giriyordun?{" "}
+          <Link href="/forgot-password" className="text-muted-foreground hover:underline underline-offset-2">Şifre belirle</Link>
         </p>
         <Link href="/" className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-3 w-3" />Ana sayfaya dön

@@ -64,7 +64,7 @@ export default function SignupPage() {
             onChange={(e) => setConfirm(e.target.value)} placeholder="••••••••" className="h-11" />
         </div>
 
-        {status === "error" && <p className="text-sm text-destructive">{message}</p>}
+        {status === "error" && <p role="alert" className="text-sm text-destructive">{message}</p>}
 
         <button type="submit" disabled={status === "submitting"}
           className="w-full h-11 rounded-lg font-semibold text-sm cursor-pointer flex items-center justify-center bg-[#00F0FF] hover:bg-[#00d8e8] active:bg-[#00c8d6] text-[#080A10] shadow-lg shadow-[#00F0FF]/20 hover:shadow-xl hover:shadow-[#00F0FF]/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 px-4">
