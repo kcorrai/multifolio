@@ -5,7 +5,8 @@
     "dashboard": "Dashboard",
     "goToDashboard": "Dashboard'a Git",
     "switchToLight": "Açık moda geç",
-    "switchToDark": "Koyu moda geç"
+    "switchToDark": "Koyu moda geç",
+    "metaDescription": "Çoklu platform freelancer kariyer aracı — profilini bir kez gir, her platform için optimize et."
   },
   "landing": {
     "nav": {
@@ -368,5 +369,12 @@
     "skills": "Beceriler",
     "projects": "Projeler",
     "lastUpdated": "Son güncelleme"
+  },
+  "errors": {
+    "profileRequired": "Önce bir profil oluşturmalısın.",
+    "profileRequiredPortfolio": "Portfolyo oluşturmak için önce profil doldurmalısın.",
+    "profileRequiredProposal": "Teklif üretmek için önce profil doldurmalısın.",
+    "profileRequiredMatch": "Eşleştirme için önce profil doldurmalısın.",
+    "jobNotFound": "İlan bulunamadı."
   }
 }

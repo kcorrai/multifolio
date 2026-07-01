@@ -5,7 +5,8 @@
     "dashboard": "Dashboard",
     "goToDashboard": "Go to dashboard",
     "switchToLight": "Switch to light mode",
-    "switchToDark": "Switch to dark mode"
+    "switchToDark": "Switch to dark mode",
+    "metaDescription": "Multi-platform freelancer career tool — enter your profile once, optimize it for every platform."
   },
   "landing": {
     "nav": {
@@ -368,5 +369,12 @@
     "skills": "Skills",
     "projects": "Projects",
     "lastUpdated": "Last updated"
+  },
+  "errors": {
+    "profileRequired": "You need to create a profile first.",
+    "profileRequiredPortfolio": "Fill in your profile first to generate a portfolio.",
+    "profileRequiredProposal": "Fill in your profile first to generate a proposal.",
+    "profileRequiredMatch": "Fill in your profile first to run matching.",
+    "jobNotFound": "Job not found."
   }
 }

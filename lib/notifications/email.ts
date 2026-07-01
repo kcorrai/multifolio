@@ -1,12 +1,28 @@
 import "server-only";
+import type { Locale } from "@/i18n/detect";
 
 const SCORE_THRESHOLD = 70;
+
+// Server-only: i18n context'i yok → inline iki dilli metin sözlüğü.
+const COPY = {
+  en: {
+    eyebrow: "New high match",
+    cta: "Go to dashboard →",
+    subject: (jobTitle: string, score: number) => `🎯 High match: ${jobTitle} — ${score}/100`,
+  },
+  tr: {
+    eyebrow: "Yeni yüksek eşleşme",
+    cta: "Dashboard'a Git →",
+    subject: (jobTitle: string, score: number) => `🎯 Yüksek eşleşme: ${jobTitle} — ${score}/100`,
+  },
+} as const;
 
 export async function sendMatchNotificationEmail(
   to: string,
   jobTitle: string,
   score: number,
   summary: string,
+  locale: Locale = "en",
 ): Promise<void> {
   if (score < SCORE_THRESHOLD) return;
 
@@ -14,13 +30,15 @@ export async function sendMatchNotificationEmail(
   const from = process.env.RESEND_FROM_EMAIL ?? "Multifolio <onboarding@resend.dev>";
   if (!apiKey) return;
 
+  const copy = COPY[locale];
+
   const html = `
     <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#1a1a1a">
       <div style="background:#090A0F;padding:24px 32px;border-radius:12px 12px 0 0">
         <span style="font-size:22px;font-weight:800;color:#00F0FF;letter-spacing:-0.5px">Multifolio</span>
       </div>
       <div style="background:#f9f9f9;padding:32px;border-radius:0 0 12px 12px;border:1px solid #e5e5e5;border-top:none">
-        <p style="margin:0 0 8px;font-size:14px;color:#6b7280">Yeni yüksek eşleşme</p>
+        <p style="margin:0 0 8px;font-size:14px;color:#6b7280">${copy.eyebrow}</p>
         <h2 style="margin:0 0 16px;font-size:20px;font-weight:700">${jobTitle}</h2>
         <div style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:16px 20px;margin-bottom:20px">
           <span style="font-size:32px;font-weight:800;color:#16a34a">${score}</span>
@@ -29,7 +47,7 @@ export async function sendMatchNotificationEmail(
         </div>
         <a href="https://multifolio-ecru.vercel.app/dashboard"
            style="display:inline-block;background:#00F0FF;color:#090A0F;font-weight:700;font-size:14px;padding:12px 24px;border-radius:8px;text-decoration:none">
-          Dashboard&apos;a Git →
+          ${copy.cta}
         </a>
       </div>
     </div>
@@ -45,7 +63,7 @@ export async function sendMatchNotificationEmail(
       body: JSON.stringify({
         from,
         to,
-        subject: `🎯 Yüksek eşleşme: ${jobTitle} — ${score}/100`,
+        subject: copy.subject(jobTitle, score),
         html,
       }),
     });

@@ -46,5 +46,13 @@ Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
   olunca; Telegram planı iptal edildi); analitik genişletme (`applicationStats` — başvuru performansı).
   Dashboard tam sayfa sidebar düzenine geçti (7 tab). `main` üzerinde çalışıldı.
 
+- **Faz 8 — Global i18n (EN varsayılan + TR)** ✅
+  next-intl cookie tabanlı i18n (URL routing yok, Supabase middleware korunur). Tüm UI metni
+  `messages/{en,tr}.json` kataloğuna taşındı; EN/TR dil seçici; ilk ziyaret tarayıcı dilinden
+  algılanır (cookie'de kalıcı). AI çıktı dili (teklif/uyarlama/eşleştirme/portfolyo) UI locale'ine
+  uyar (`lib/ai/language.ts`); sunucu hata mesajları `errors` namespace'inden çevrilir; match
+  bildirim e-postası iki dilli; auth e-posta şablonu İngilizce. `i18n/`, `messages/`,
+  `components/language-toggle.tsx` eklendi. Kod yorumları Türkçe kaldı.
+
 - **Faz 6 — İşveren tarafı / iki taraflı pazar** *(çok sonra)*
   İşveren tarafı akışları ve pazar yeri.

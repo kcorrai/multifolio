@@ -3,6 +3,7 @@
 // hedef platform için Claude ile uyarlar ve gerçek maliyeti server-otoritatif
 // olarak (service-role) usage_events'e kaydeder (harcama takibi).
 import { NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
@@ -31,7 +32,7 @@ export const POST = withErrorHandler(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
     if (error) throw error;
-    if (!data) throw new NotFoundError("Önce bir profil oluşturmalısın.");
+    if (!data) throw new NotFoundError((await getTranslations("errors"))("profileRequired"));
     profile = data as ProfileInput;
   }
 

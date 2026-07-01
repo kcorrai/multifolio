@@ -2,6 +2,7 @@
 // PATCH  /api/jobs/[id] → durum, başlık, şirket veya notları günceller.
 // DELETE /api/jobs/[id] → ilanı siler.
 import { NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { jobUpdateSchema } from "@/lib/validation/schemas/job";
@@ -22,7 +23,7 @@ export const GET = withErrorHandler(async (_req, { params }) => {
     .maybeSingle();
 
   if (error) throw error;
-  if (!data) throw new NotFoundError("İlan bulunamadı.");
+  if (!data) throw new NotFoundError((await getTranslations("errors"))("jobNotFound"));
 
   return NextResponse.json({ job: data });
 });
@@ -47,7 +48,7 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
     .maybeSingle();
 
   if (error) throw error;
-  if (!data) throw new NotFoundError("İlan bulunamadı.");
+  if (!data) throw new NotFoundError((await getTranslations("errors"))("jobNotFound"));
 
   return NextResponse.json({ job: data });
 });
@@ -68,7 +69,7 @@ export const DELETE = withErrorHandler(async (_req, { params }) => {
     .eq("user_id", user.id);
 
   if (error) throw error;
-  if (count === 0) throw new NotFoundError("İlan bulunamadı.");
+  if (count === 0) throw new NotFoundError((await getTranslations("errors"))("jobNotFound"));
 
   return new Response(null, { status: 204 });
 });

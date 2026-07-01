@@ -1,6 +1,7 @@
 // GET  /api/proposal?job_id={id} → o ilana ait teklifleri döner.
 // POST /api/proposal → AI teklifi üretir ve kaydeder.
 import { NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson, parseQuery } from "@/lib/validation";
@@ -64,7 +65,7 @@ export const POST = withErrorHandler(async (req) => {
   ]);
 
   if (profileRes.error) throw profileRes.error;
-  if (!profileRes.data) throw new NotFoundError("Teklif üretmek için önce profil doldurmalısın.");
+  if (!profileRes.data) throw new NotFoundError((await getTranslations("errors"))("profileRequiredProposal"));
   if (jobRes.error) throw jobRes.error;
 
   // Gereksinim önceliği: (1) ilan eşleştirmesinden çıkan requirements (kanonik),

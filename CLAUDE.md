@@ -4,11 +4,12 @@
 **bir kez** girer; sistem her platform (LinkedIn, Upwork, Fiverr, Bionluk, Armut) için
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
+**Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/{en,tr}.json`) — EN varsayılan, TR opsiyonel; sabit string yazma, `useTranslations`/`getTranslations` kullan (yeni anahtar ekleyince iki katalogu da güncelle). **Kod yorumları Türkçe kalır.** AI çıktı dili UI locale'ine uyar.
 Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 7 (Proposal Engine, İş Detay Paneli, Telegram, Analitik).**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
-`@supabase/ssr`) · OpenAI `gpt-4o-mini` (uyarlama motoru) · Sentry · Zod · DOMPurify · Vercel.
+`@supabase/ssr`) · OpenAI `gpt-4o-mini` (uyarlama motoru) · **next-intl (i18n, cookie tabanlı; EN varsayılan + TR)** · Sentry · Zod · DOMPurify · Vercel.
 
 ## Neyin nerede
 - `app/page.tsx` — ana sayfa (sunucu): her zaman landing gösterir; oturum açıksa nav'da "Dashboard" butonu.
@@ -51,6 +52,9 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `components/theme-toggle.tsx` — Sun/Moon toggle butonu (her iki header'da kullanılır).
   `components/platform-logo.tsx` — 5 platform için SVG logo bileşeni (PlatformId → SVG).
   `lib/utils.ts` — `cn()`.
+  `components/language-toggle.tsx` — EN/TR dil seçici (landing nav + dashboard topbar).
+- `i18n/` — next-intl cookie tabanlı i18n (URL routing YOK): `detect.ts` (saf `resolveLocale`, test edilebilir), `locale.ts` (`getUserLocale` — cookie/Accept-Language), `actions.ts` (`setUserLocale` server action), `request.ts` (getRequestConfig). `messages/{en,tr}.json` — çeviri katalogları (**EN varsayılan + TR opsiyonel**; anahtar setleri eşit, `messages/catalog.test.ts` doğrular).
+- `lib/ai/language.ts` — `languageDirective(locale)`: AI üretim prompt'una eklenen dil direktifi (çıktı UI diline uyar). AI route'ları `getUserLocale()` okuyup üretim fonksiyonuna geçirir.
 - `supabase/migrations/` — SQL şema + RLS politikaları (`supabase db push`).
   `0007_proposals.sql` — proposals tablosu; job_listings'e url/notes/budget + awaiting_reply status.
   `0008_notifications.sql` — boş (Telegram sistemi iptal edildi; e-posta Resend API üzerinden).

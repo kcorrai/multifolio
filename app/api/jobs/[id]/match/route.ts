@@ -1,6 +1,7 @@
 // POST /api/jobs/[id]/match → kullanıcının profilini ilanla karşılaştırır,
 // sonucu job_listings'e yazar ve maliyeti usage_events'e kaydeder.
 import { NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -35,10 +36,10 @@ export const POST = withErrorHandler(async (_req, { params }) => {
 
   if (profileRes.error) throw profileRes.error;
   if (!profileRes.data)
-    throw new NotFoundError("Eşleştirme için önce profil doldurmalısın.");
+    throw new NotFoundError((await getTranslations("errors"))("profileRequiredMatch"));
 
   if (jobRes.error) throw jobRes.error;
-  if (!jobRes.data) throw new NotFoundError("İlan bulunamadı.");
+  if (!jobRes.data) throw new NotFoundError((await getTranslations("errors"))("jobNotFound"));
 
   const locale = await getUserLocale();
   const match = await matchJobToProfile(
@@ -77,6 +78,7 @@ export const POST = withErrorHandler(async (_req, { params }) => {
       updated.title,
       match.result.score,
       match.result.summary,
+      locale,
     ).catch(() => {});
   }
 
