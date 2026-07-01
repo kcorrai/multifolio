@@ -4,21 +4,21 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Wallet, Zap, LogOut } from "lucide-react";
+import { Wallet, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
-import { NAV_ITEMS, isNavActive, formatUsd, type AdaptOutput } from "./shared";
+import { NAV_ITEMS, isNavActive, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
 import { VerifyEmailBanner } from "./verify-email-banner";
 import type { PlatformId } from "@/lib/ai/platforms";
 
 export function DashboardShell({
-  userEmail, credits, initialSpendUsd, initialJobsCount, initialConnectionsCount, emailVerified, children,
+  userEmail, credits: initialCredits, initialCreditsUsed, initialJobsCount, initialConnectionsCount, emailVerified, children,
 }: {
   userEmail: string;
   credits: number;
-  initialSpendUsd: number;
+  initialCreditsUsed: number;
   initialJobsCount: number;
   initialConnectionsCount: number;
   emailVerified: boolean;
@@ -26,7 +26,8 @@ export function DashboardShell({
 }) {
   const pathname = usePathname();
   const t = useTranslations("dashboard");
-  const [spend, setSpend] = useState(initialSpendUsd);
+  const [credits, setCredits] = useState(initialCredits);
+  const [creditsUsed, setCreditsUsed] = useState(initialCreditsUsed);
   const [jobsCount, setJobsCount] = useState(initialJobsCount);
   const [connectionsCount, setConnectionsCount] = useState(initialConnectionsCount);
   const [adaptResults, setAdaptResults] = useState<Partial<Record<PlatformId, AdaptOutput>>>({});
@@ -47,8 +48,12 @@ export function DashboardShell({
   return (
     <DashboardContext.Provider
       value={{
-        spend,
-        addSpend: (usd) => setSpend((s) => s + usd),
+        credits,
+        creditsUsed,
+        applyCredits: ({ balance, spent }) => {
+          setCredits(balance);
+          setCreditsUsed((u) => u + spent);
+        },
         jobsCount, setJobsCount,
         connectionsCount, setConnectionsCount,
         adaptResults,
@@ -144,11 +149,6 @@ export function DashboardShell({
             <h1 className="hidden lg:block text-base font-semibold text-foreground">{pageTitle}</h1>
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <div className="hidden lg:flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 px-3 py-1.5 transition-colors hover:border-[#00F0FF]/30 hover:bg-[#00F0FF]/5">
-                <Zap className="h-3 w-3 text-[#00F0FF] shrink-0" />
-                <span className="text-[11px] text-muted-foreground font-medium">AI</span>
-                <span className="text-xs font-bold tabular-nums">{formatUsd(spend)}</span>
-              </div>
               <LanguageToggle />
               <ThemeToggle />
               <form action="/auth/signout" method="post" className="lg:hidden">

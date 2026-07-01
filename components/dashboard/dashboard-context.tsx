@@ -5,9 +5,12 @@ import type { PlatformId } from "@/lib/ai/platforms";
 import type { AdaptOutput } from "./shared";
 
 export interface DashboardCtx {
-  /** Kümülatif AI harcaması (USD) — sekmeler arası canlı. */
-  spend: number;
-  addSpend: (usd: number) => void;
+  /** Canlı kredi bakiyesi — sekmeler arası. */
+  credits: number;
+  /** Canlı toplam kredi tüketimi — sekmeler arası. */
+  creditsUsed: number;
+  /** AI aksiyonu başarıyla bittiğinde sunucu-otoritatif bakiye/harcamayı uygula. */
+  applyCredits: (r: { balance: number; spent: number }) => void;
   /** Sidebar rozetleri — mutasyonlarda canlı güncellenir. */
   jobsCount: number;
   setJobsCount: Dispatch<SetStateAction<number>>;
