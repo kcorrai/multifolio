@@ -3,6 +3,7 @@
 import { Star, Pencil, Sparkles, Target, LayoutDashboard } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
 import { PlatformLogo } from "@/components/platform-logo";
 import type { PlatformId } from "@/lib/ai/platforms";
 
@@ -348,8 +349,9 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
                           bg-indigo-100/60 dark:bg-violet-600/6" />
         </div>
 
-        {/* Theme toggle */}
-        <div className="absolute top-4 right-4 z-10">
+        {/* Language + theme toggle */}
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
         </div>
 
