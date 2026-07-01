@@ -8,7 +8,7 @@ import type { PlatformId } from "@/lib/ai/platforms";
 /** /api/adapt çağrısı + oturum sonuç/harcama state'ini context üzerinden günceller. */
 export function useAdapt() {
   const t = useTranslations("adapt");
-  const { setAdaptResult, applyCredits } = useDashboard();
+  const { setAdaptResult, applyCredits, triggerComingSoon } = useDashboard();
   const [adapting, setAdapting] = useState<PlatformId | null>(null);
   const [error, setError] = useState("");
 
@@ -19,7 +19,12 @@ export function useAdapt() {
       body: JSON.stringify({ platform }),
     });
     const body = await res.json().catch(() => null);
-    if (!res.ok) { setError(body?.error?.message ?? t("adaptFailed")); setAdapting(null); return; }
+    if (!res.ok) {
+      setError(body?.error?.message ?? t("adaptFailed"));
+      // Yetersiz kredi (402) → "Kredi al" nudge'ını göster.
+      if (res.status === 402) triggerComingSoon();
+      setAdapting(null); return;
+    }
     setAdaptResult(platform, body.output);
     if (body.credits) applyCredits(body.credits);
     setAdapting(null);

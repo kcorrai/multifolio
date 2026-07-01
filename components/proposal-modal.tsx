@@ -6,6 +6,7 @@ import { X, Sparkles, Copy, Check, ChevronDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
 import { pendingRequirements, coverageSummary } from "@/lib/ai/coverage";
+import { useDashboard } from "./dashboard/dashboard-context";
 import type { ProposalRow, ProposalCoverageItem } from "@/lib/validation/schemas/proposal";
 
 interface Props {
@@ -33,6 +34,7 @@ function CopyBtn({ text }: { text: string }) {
 export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose, onCreditsUpdate }: Props) {
   const t = useTranslations("proposal");
   const locale = useLocale();
+  const { triggerComingSoon } = useDashboard();
   const validDefault = PLATFORM_IDS.includes(defaultPlatform as PlatformId) ? defaultPlatform as PlatformId : "upwork";
   const [platform, setPlatform] = useState<PlatformId>(validDefault);
   const [generating, setGenerating] = useState(false);
@@ -65,6 +67,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
     const body = await res.json().catch(() => null);
     if (!res.ok) {
       setError(body?.error?.message ?? t("modal.generateError"));
+      if (res.status === 402) triggerComingSoon(); // yetersiz kredi → "Kredi al" nudge
       setGenerating(false); return;
     }
     const newProposal = body.proposal as ProposalRow;

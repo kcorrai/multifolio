@@ -15,7 +15,7 @@ export function PortfolioTab({
   profileSaved: boolean;
   initialPortfolio: InitialPortfolio | null;
 }) {
-  const { applyCredits } = useDashboard();
+  const { applyCredits, triggerComingSoon } = useDashboard();
   const t = useTranslations("portfolio");
   const [portfolio, setPortfolio] = useState<InitialPortfolio | null>(initialPortfolio);
   const [portfolioSlug, setPortfolioSlug] = useState(initialPortfolio?.slug ?? "");
@@ -28,7 +28,11 @@ export function PortfolioTab({
     setGenerating(true); setPortfolioError("");
     const res = await fetch("/api/portfolio/generate", { method: "POST" });
     const body = await res.json().catch(() => null);
-    if (!res.ok) { setPortfolioError(body?.error?.message ?? t("errorGenerate")); setGenerating(false); return; }
+    if (!res.ok) {
+      setPortfolioError(body?.error?.message ?? t("errorGenerate"));
+      if (res.status === 402) triggerComingSoon(); // yetersiz kredi → "Kredi al" nudge
+      setGenerating(false); return;
+    }
     const p = body.portfolio;
     setPortfolio({ slug: p.slug, published: p.published, content: p.content });
     setPortfolioSlug(p.slug);

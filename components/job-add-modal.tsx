@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useDashboard } from "./dashboard/dashboard-context";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 
 interface JobRow {
@@ -25,6 +26,7 @@ const PLATFORM_OPTIONS = ["Upwork", "Fiverr", "Bionluk", "Armut", "LinkedIn", "D
 
 export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }: Props) {
   const t = useTranslations("jobs.add");
+  const { triggerComingSoon } = useDashboard();
   const [title, setTitle] = useState("");
   const [platform, setPlatform] = useState("");
   const [budget, setBudget] = useState("");
@@ -65,6 +67,9 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
       if (matchRes.ok && matchBody?.job) {
         onJobAdded(matchBody.job as JobRow);
         if (matchBody.credits) onCreditsUpdate?.(matchBody.credits);
+      } else if (matchRes.status === 402) {
+        // İlan oluşturuldu ama kredi yetmediği için eşleştirme yapılamadı → "Kredi al" nudge.
+        triggerComingSoon();
       }
     }
 
