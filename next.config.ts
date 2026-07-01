@@ -1,5 +1,8 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -7,7 +10,7 @@ const nextConfig: NextConfig = {
 
 // Sentry sarmalayıcısı: source map yüklemesi yalnızca SENTRY_AUTH_TOKEN
 // tanımlıyken (CI/üretim) gerçekleşir; lokalde sessizce atlanır.
-export default withSentryConfig(nextConfig, {
+export default withSentryConfig(withNextIntl(nextConfig), {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,

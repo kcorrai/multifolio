@@ -1,0 +1,9 @@
+{
+  "common": {
+    "appName": "Multifolio",
+    "language": "Language"
+  },
+  "landing": {
+    "cta": "Get started"
+  }
+}
