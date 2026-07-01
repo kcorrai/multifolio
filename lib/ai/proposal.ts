@@ -1,27 +1,43 @@
 import "server-only";
+import { zodResponseFormat } from "openai/helpers/zod";
 import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
+import { buildRequirementsBlock, buildFocusBlock } from "./coverage";
 import { InternalError } from "@/lib/errors";
 import { PROPOSAL_GUIDANCE, type PlatformId } from "@/lib/ai/platforms";
+import {
+  proposalWithCoverageSchema,
+  type ProposalCoverageItem,
+} from "@/lib/validation/schemas/proposal";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export interface ProposalResult {
   content: string;
+  coverage: ProposalCoverageItem[];
   model: string;
   inputTokens: number;
   outputTokens: number;
   costUsd: number;
 }
 
+export interface GenerateProposalOptions {
+  requirements?: string[];
+  focusRequirements?: string[];
+}
+
 const SYSTEM_PROMPT =
   "Sen bir freelance kariyer danışmanısın. Freelancer'ın profilini ve iş ilanını kullanarak " +
-  "ilgili platform için özgün, etkili bir iş teklifi yazıyorsun. " +
-  "Platformun beklentilerine uy; şablon gibi görünme, doğal ve inandırıcı yaz.";
+  "ilgili platform için özgün, etkili bir iş teklifi yazarsın. Şablon gibi görünme; doğal ve inandırıcı yaz. " +
+  "Ayrıca teklifin ilandaki her gereksinimi ne ölçüde karşıladığını 'coverage' olarak değerlendirirsin. " +
+  "Sana gereksinim listesi verilirse onları kullan; verilmezse ilandan en önemli gereksinimleri (en çok 7) kendin çıkar. " +
+  "Her gereksinim için status: 'met' (teklif açıkça karşılıyor), 'partial' (kısmen/dolaylı), 'missing' (teklifte yok). " +
+  "note kısa bir Türkçe gerekçe olsun.";
 
 export async function generateProposal(
   profile: ProfileInput,
   jobDescription: string,
   platform: PlatformId,
+  opts: GenerateProposalOptions = {},
 ): Promise<ProposalResult> {
   const client = getOpenAIClient();
 
@@ -33,22 +49,25 @@ export async function generateProposal(
     "",
     "İş İlanı:",
     jobDescription,
+    buildRequirementsBlock(opts.requirements),
+    buildFocusBlock(opts.focusRequirements),
     "",
     "Platform Yönergesi:",
     PROPOSAL_GUIDANCE[platform],
   ].join("\n");
 
-  const completion = await client.chat.completions.create({
+  const completion = await client.chat.completions.parse({
     model: AI_MODEL,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userContent },
     ],
-    max_tokens: 700,
+    response_format: zodResponseFormat(proposalWithCoverageSchema, "proposal"),
+    max_tokens: 900,
   });
 
-  const content = completion.choices[0].message.content;
-  if (!content) {
+  const parsed = completion.choices[0].message.parsed;
+  if (!parsed) {
     throw new InternalError("Teklif üretilemedi.", {
       context: { finish_reason: completion.choices[0].finish_reason },
     });
@@ -60,7 +79,8 @@ export async function generateProposal(
   };
 
   return {
-    content,
+    content: parsed.content,
+    coverage: parsed.coverage,
     model: AI_MODEL,
     inputTokens: usage.prompt_tokens,
     outputTokens: usage.completion_tokens,
