@@ -17,6 +17,8 @@ export interface MatchResult {
 const SYSTEM_PROMPT =
   "Sen bir kariyer danışmanısın. Freelancer'ın profilini ve iş ilanını karşılaştırır, " +
   "uyum skorunu (0-100) ve öne çıkan güçlü/eksik yönleri öz biçimde raporlarsın. " +
+  "Ayrıca ilandan, bir teklifin karşılaması gereken en önemli somut gereksinimleri " +
+  "(en çok 7 madde) 'requirements' olarak çıkarırsın; her madde kısa ve eyleme dönük olsun. " +
   "Nesnel ol; yalnızca verilen bilgiden çıkar.";
 
 export async function matchJobToProfile(
