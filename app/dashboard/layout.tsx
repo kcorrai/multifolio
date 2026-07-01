@@ -1,0 +1,31 @@
+import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { DashboardShell } from "@/components/dashboard/shell";
+
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const [creditsRes, usageRes, jobsCountRes, connCountRes] = await Promise.all([
+    supabase.from("credits").select("balance").eq("user_id", user.id).maybeSingle(),
+    supabase.from("usage_events").select("cost_usd").eq("user_id", user.id),
+    supabase.from("job_listings").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    supabase.from("platform_connections").select("platform", { count: "exact", head: true }).eq("user_id", user.id),
+  ]);
+
+  const credits = creditsRes.data?.balance ?? 0;
+  const spend = (usageRes.data ?? []).reduce((sum, r) => sum + Number(r.cost_usd ?? 0), 0);
+
+  return (
+    <DashboardShell
+      userEmail={user.email ?? ""}
+      credits={credits}
+      initialSpendUsd={spend}
+      initialJobsCount={jobsCountRes.count ?? 0}
+      initialConnectionsCount={connCountRes.count ?? 0}
+    >
+      {children}
+    </DashboardShell>
+  );
+}

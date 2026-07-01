@@ -1,0 +1,168 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Plus, Trash2, AlertCircle, Briefcase } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { JobAddModal } from "@/components/job-add-modal";
+import { JobDetailPanel } from "@/components/job-detail-panel";
+import { STATUS_LABELS, STATUS_DOT, scoreColor, scoreBarColor, type JobRow } from "./shared";
+import { useDashboard } from "./dashboard-context";
+
+export function JobsTab({
+  initialJobs, profileSaved,
+}: {
+  initialJobs: JobRow[];
+  profileSaved: boolean;
+}) {
+  const { addSpend, setJobsCount } = useDashboard();
+  const [jobs, setJobs] = useState<JobRow[]>(initialJobs);
+  const [jobAddModalOpen, setJobAddModalOpen] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [jobError, setJobError] = useState("");
+
+  // Sidebar rozetini iş listesiyle senkron tut.
+  useEffect(() => { setJobsCount(jobs.length); }, [jobs.length, setJobsCount]);
+
+  function handleJobAdded(job: JobRow) {
+    setJobs((prev) => {
+      const exists = prev.some((j) => j.id === job.id);
+      if (exists) return prev.map((j) => (j.id === job.id ? job : j));
+      return [job, ...prev];
+    });
+  }
+
+  async function deleteJob(id: string) {
+    setDeletingId(id); setJobError("");
+    const res = await fetch(`/api/jobs/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      setJobError(body?.error?.message ?? "İlan silinemedi."); setDeletingId(null); return;
+    }
+    setJobs((prev) => prev.filter((j) => j.id !== id)); setDeletingId(null);
+  }
+
+  const selectedJob = selectedJobId ? jobs.find((j) => j.id === selectedJobId) ?? null : null;
+  const awaitingCount = jobs.filter((j) => j.status === "awaiting_reply").length;
+  const appliedCount = jobs.filter((j) => j.status === "applied").length;
+  const activeCount = jobs.filter((j) => j.status !== "rejected" && j.status !== "offer").length;
+
+  return (
+    <div className="space-y-4">
+      {/* Stat bar */}
+      {jobs.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          <div className="flex items-center gap-1.5 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/40 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+            Başvurulan · {appliedCount}
+          </div>
+          {awaitingCount > 0 && (
+            <div className="flex items-center gap-1.5 rounded-full bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800/40 px-3 py-1.5 text-xs font-semibold text-cyan-700 dark:text-cyan-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+              Yanıt Bekleniyor · {awaitingCount}
+            </div>
+          )}
+          <div className="flex items-center gap-1.5 rounded-full bg-muted border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+            Aktif · {activeCount}
+          </div>
+        </div>
+      )}
+
+      {/* Add + error */}
+      <div className="flex items-center justify-between">
+        <Button variant="outline" onClick={() => setJobAddModalOpen(true)} className="gap-2">
+          <Plus className="h-4 w-4" />İlan Ekle
+        </Button>
+        {jobError && (
+          <div className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <AlertCircle className="h-4 w-4 shrink-0" />{jobError}
+          </div>
+        )}
+      </div>
+
+      {jobs.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
+          <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
+            <Briefcase className="h-7 w-7 text-muted-foreground/40" />
+          </div>
+          <p className="text-sm font-semibold text-muted-foreground">Henüz ilan yok</p>
+          <p className="text-xs text-muted-foreground/60 mt-1 max-w-xs">
+            &quot;İlan Ekle&quot; ile başla; AI ile eşleştir ve başvurularını takip et.
+          </p>
+        </div>
+      ) : (
+        <div className="grid lg:grid-cols-5 gap-3">
+          {/* Sol: iş listesi */}
+          <div className={`space-y-1.5 ${selectedJob ? "lg:col-span-2" : "lg:col-span-5"}`}>
+            {jobs.map((job) => (
+              <button
+                key={job.id}
+                onClick={() => setSelectedJobId(job.id === selectedJobId ? null : job.id)}
+                className={`w-full text-left rounded-xl border px-3 py-2.5 transition-all cursor-pointer ${
+                  job.id === selectedJobId
+                    ? "border-[#00F0FF]/40 bg-[#00F0FF]/5"
+                    : "border-border hover:border-border/80 hover:bg-muted/40"
+                }`}
+              >
+                <div className="flex items-start gap-2.5">
+                  <div className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${STATUS_DOT[job.status]}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold leading-snug truncate">{job.title}</p>
+                    {(job.company || job.platform) && (
+                      <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                        {[job.company, job.platform].filter(Boolean).join(" · ")}
+                      </p>
+                    )}
+                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">{STATUS_LABELS[job.status]}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {job.match_score !== null && (
+                      <span className={`text-[10px] font-bold rounded-md px-1.5 py-0.5 tabular-nums ${scoreColor(job.match_score)}`}>
+                        {job.match_score}
+                      </span>
+                    )}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); deleteJob(job.id); }}
+                      disabled={deletingId === job.id}
+                      className="text-muted-foreground/30 hover:text-destructive transition-colors cursor-pointer"
+                      title="Sil"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+                {job.match_score !== null && (
+                  <div className="mt-2 ml-4 h-1 rounded-full bg-muted overflow-hidden">
+                    <div className={`h-full rounded-full ${scoreBarColor(job.match_score)}`} style={{ width: `${job.match_score}%` }} />
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Sağ: iş detay paneli */}
+          {selectedJob && (
+            <div className="lg:col-span-3 rounded-2xl border border-border overflow-hidden min-h-[400px]">
+              <JobDetailPanel
+                job={selectedJob}
+                onClose={() => setSelectedJobId(null)}
+                onJobUpdated={(updated) => setJobs((prev) => prev.map((j) => j.id === updated.id ? updated : j))}
+                onCostUpdate={(usd) => addSpend(usd)}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {jobAddModalOpen && (
+        <JobAddModal
+          hasProfile={profileSaved}
+          onClose={() => setJobAddModalOpen(false)}
+          onJobAdded={handleJobAdded}
+          onCostUpdate={(usd) => addSpend(usd)}
+        />
+      )}
+    </div>
+  );
+}
