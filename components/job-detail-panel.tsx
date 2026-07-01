@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import {
   X, ExternalLink, Target, CheckCircle2, AlertCircle,
   Sparkles, FileText, ChevronDown,
@@ -23,11 +24,6 @@ interface JobDetail extends JobRow {
 }
 
 const JOB_STATUSES = ["saved", "applied", "awaiting_reply", "interview", "offer", "rejected"] as const;
-
-const STATUS_LABELS: Record<JobStatus, string> = {
-  saved: "Kaydedildi", applied: "Başvuruldu", awaiting_reply: "Yanıt Bekleniyor",
-  interview: "Görüşme", offer: "Teklif", rejected: "Reddedildi",
-};
 
 const STATUS_CLASSES: Record<JobStatus, string> = {
   saved:          "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
@@ -58,6 +54,8 @@ interface Props {
 }
 
 export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Props) {
+  const t = useTranslations("jobs");
+  const locale = useLocale();
   const [detail, setDetail] = useState<JobDetail | null>(null);
   const [loadedJobId, setLoadedJobId] = useState<string | null>(null);
   const [status, setStatus] = useState<JobStatus>(job.status);
@@ -146,7 +144,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
                 className={`w-full appearance-none rounded-xl px-3 py-2 pr-8 text-xs font-semibold border-0 outline-none cursor-pointer ${STATUS_CLASSES[status]}`}
               >
                 {JOB_STATUSES.map((s) => (
-                  <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                  <option key={s} value={s}>{t(`status.${s}`)}</option>
                 ))}
               </select>
               <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 opacity-60 pointer-events-none" />
@@ -156,13 +154,13 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
             <div className="grid grid-cols-2 gap-2 text-xs">
               {detail?.budget && (
                 <div className="rounded-lg bg-muted/40 px-2.5 py-2">
-                  <p className="text-muted-foreground mb-0.5">Bütçe</p>
+                  <p className="text-muted-foreground mb-0.5">{t("detail.budget")}</p>
                   <p className="font-medium">{detail.budget}</p>
                 </div>
               )}
               <div className="rounded-lg bg-muted/40 px-2.5 py-2">
-                <p className="text-muted-foreground mb-0.5">Eklendi</p>
-                <p className="font-medium">{new Date(job.created_at).toLocaleDateString("tr-TR")}</p>
+                <p className="text-muted-foreground mb-0.5">{t("detail.added")}</p>
+                <p className="font-medium">{new Date(job.created_at).toLocaleDateString(locale)}</p>
               </div>
             </div>
 
@@ -171,7 +169,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                    <Target className="h-3.5 w-3.5" />AI Eşleşme Skoru
+                    <Target className="h-3.5 w-3.5" />{t("detail.matchScore")}
                   </span>
                   <span className={`rounded-lg px-2.5 py-0.5 text-xs font-bold tabular-nums ${scoreColor(matchScore)}`}>
                     {matchScore}/100
@@ -188,7 +186,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
                     {matchResult.strengths.length > 0 && (
                       <div className="space-y-1">
                         <p className="text-[11px] font-semibold text-green-700 dark:text-green-400 flex items-center gap-1">
-                          <CheckCircle2 className="h-3 w-3" />Güçlü
+                          <CheckCircle2 className="h-3 w-3" />{t("detail.strengths")}
                         </p>
                         {matchResult.strengths.map((s, i) => (
                           <p key={i} className="text-[11px] text-muted-foreground">· {s}</p>
@@ -198,7 +196,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
                     {matchResult.gaps.length > 0 && (
                       <div className="space-y-1">
                         <p className="text-[11px] font-semibold text-red-600 dark:text-red-400 flex items-center gap-1">
-                          <AlertCircle className="h-3 w-3" />Eksik
+                          <AlertCircle className="h-3 w-3" />{t("detail.gaps")}
                         </p>
                         {matchResult.gaps.map((g, i) => (
                           <p key={i} className="text-[11px] text-muted-foreground">· {g}</p>
@@ -214,7 +212,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
             {(matchResult?.requirements ?? []).length > 0 && (
               <div className="space-y-1.5">
                 <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                  <Target className="h-3.5 w-3.5" />İlan Gereksinimleri
+                  <Target className="h-3.5 w-3.5" />{t("detail.requirements")}
                 </p>
                 <ul className="space-y-1">
                   {(matchResult?.requirements ?? []).map((r, i) => (
@@ -232,16 +230,16 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
               onClick={() => setShowProposal(true)}
               className="w-full gap-2"
               disabled={!detail?.description}
-              title={!detail?.description ? "İlan metni gerekli" : undefined}
+              title={!detail?.description ? t("detail.descriptionRequired") : undefined}
             >
-              <Sparkles className="h-3.5 w-3.5" />Teklif Oluştur
+              <Sparkles className="h-3.5 w-3.5" />{t("detail.createProposal")}
             </Button>
 
             {/* İlan Metni */}
             {detail?.description && (
               <div className="space-y-1.5">
                 <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                  <FileText className="h-3.5 w-3.5" />İlan Metni
+                  <FileText className="h-3.5 w-3.5" />{t("detail.jobDescription")}
                 </p>
                 <div className="rounded-xl bg-muted/30 border border-border p-3 max-h-48 overflow-y-auto">
                   <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{detail.description}</p>
@@ -258,20 +256,20 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
                 className="flex items-center gap-2 rounded-xl border border-border px-3 py-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               >
                 <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-                İlanda Görüntüle
+                {t("detail.viewListing")}
               </a>
             )}
 
             {/* Notlar */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium text-muted-foreground">Notlar</p>
-                {savingNotes && <span className="text-[10px] text-muted-foreground/60">Kaydediliyor…</span>}
+                <p className="text-xs font-medium text-muted-foreground">{t("detail.notes")}</p>
+                {savingNotes && <span className="text-[10px] text-muted-foreground/60">{t("detail.saving")}</span>}
               </div>
               <Textarea
                 value={notes}
                 onChange={(e) => handleNotesChange(e.target.value)}
-                placeholder="Görüşme notları, önemli detaylar…"
+                placeholder={t("detail.notesPlaceholder")}
                 rows={4}
                 className="resize-none text-xs"
               />

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Sparkles, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { useDashboard } from "./dashboard-context";
 import { useAdapt } from "./use-adapt";
 
 export function AdaptTab({ profileSaved }: { profileSaved: boolean }) {
+  const t = useTranslations("adapt");
   const { adaptResults } = useDashboard();
   const { adapt, adapting, error: adaptError } = useAdapt();
 
@@ -18,7 +20,7 @@ export function AdaptTab({ profileSaved }: { profileSaved: boolean }) {
     <div className="space-y-4">
       {!profileSaved && (
         <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
-          <AlertCircle className="h-4 w-4 shrink-0" />Uyarlamak için önce profilini kaydet.
+          <AlertCircle className="h-4 w-4 shrink-0" />{t("saveProfileFirst")}
         </div>
       )}
       {adaptError && (
@@ -41,7 +43,7 @@ export function AdaptTab({ profileSaved }: { profileSaved: boolean }) {
                     <div>
                       <p className="text-sm font-semibold">{PLATFORMS[id].label}</p>
                       {result && (
-                        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${style.badge}`}>✓ Hazır</span>
+                        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${style.badge}`}>✓ {t("ready")}</span>
                       )}
                     </div>
                   </div>
@@ -49,7 +51,7 @@ export function AdaptTab({ profileSaved }: { profileSaved: boolean }) {
                     onClick={() => adapt(id)} disabled={adapting === id || !profileSaved}
                     className="gap-1.5 h-7 text-xs shrink-0">
                     <Sparkles className="h-3 w-3" />
-                    {adapting === id ? "Uyarlanıyor…" : result ? "Yenile" : "Uyarla"}
+                    {adapting === id ? t("adapting") : result ? t("refresh") : t("adaptAction")}
                   </Button>
                 </div>
               </CardHeader>
@@ -67,7 +69,7 @@ export function AdaptTab({ profileSaved }: { profileSaved: boolean }) {
                 ) : (
                   <div className="rounded-lg bg-muted/50 border border-dashed p-3 text-center">
                     <p className="text-xs text-muted-foreground">
-                      {PLATFORMS[id].label} için optimize metin burada görünecek.
+                      {t("emptyState", { platform: PLATFORMS[id].label })}
                     </p>
                   </div>
                 )}

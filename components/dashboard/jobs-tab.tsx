@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Plus, Trash2, AlertCircle, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { JobAddModal } from "@/components/job-add-modal";
 import { JobDetailPanel } from "@/components/job-detail-panel";
-import { STATUS_LABELS, STATUS_DOT, scoreColor, scoreBarColor, type JobRow } from "./shared";
+import { STATUS_DOT, scoreColor, scoreBarColor, type JobRow } from "./shared";
 import { useDashboard } from "./dashboard-context";
 
 export function JobsTab({
@@ -14,6 +15,7 @@ export function JobsTab({
   initialJobs: JobRow[];
   profileSaved: boolean;
 }) {
+  const t = useTranslations("jobs");
   const { addSpend, setJobsCount } = useDashboard();
   const [jobs, setJobs] = useState<JobRow[]>(initialJobs);
   const [jobAddModalOpen, setJobAddModalOpen] = useState(false);
@@ -37,7 +39,7 @@ export function JobsTab({
     const res = await fetch(`/api/jobs/${id}`, { method: "DELETE" });
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      setJobError(body?.error?.message ?? "İlan silinemedi."); setDeletingId(null); return;
+      setJobError(body?.error?.message ?? t("deleteError")); setDeletingId(null); return;
     }
     setJobs((prev) => prev.filter((j) => j.id !== id)); setDeletingId(null);
   }
@@ -54,17 +56,17 @@ export function JobsTab({
         <div className="flex flex-wrap gap-2">
           <div className="flex items-center gap-1.5 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/40 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300">
             <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            Başvurulan · {appliedCount}
+            {t("statApplied")} · {appliedCount}
           </div>
           {awaitingCount > 0 && (
             <div className="flex items-center gap-1.5 rounded-full bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800/40 px-3 py-1.5 text-xs font-semibold text-cyan-700 dark:text-cyan-300">
               <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-              Yanıt Bekleniyor · {awaitingCount}
+              {t("statAwaiting")} · {awaitingCount}
             </div>
           )}
           <div className="flex items-center gap-1.5 rounded-full bg-muted border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
-            Aktif · {activeCount}
+            {t("statActive")} · {activeCount}
           </div>
         </div>
       )}
@@ -72,7 +74,7 @@ export function JobsTab({
       {/* Add + error */}
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={() => setJobAddModalOpen(true)} className="gap-2">
-          <Plus className="h-4 w-4" />İlan Ekle
+          <Plus className="h-4 w-4" />{t("addJob")}
         </Button>
         {jobError && (
           <div className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -86,9 +88,9 @@ export function JobsTab({
           <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
             <Briefcase className="h-7 w-7 text-muted-foreground/40" />
           </div>
-          <p className="text-sm font-semibold text-muted-foreground">Henüz ilan yok</p>
+          <p className="text-sm font-semibold text-muted-foreground">{t("noJobs")}</p>
           <p className="text-xs text-muted-foreground/60 mt-1 max-w-xs">
-            &quot;İlan Ekle&quot; ile başla; AI ile eşleştir ve başvurularını takip et.
+            {t("emptyHint")}
           </p>
         </div>
       ) : (
@@ -122,7 +124,7 @@ export function JobsTab({
                         {[job.company, job.platform].filter(Boolean).join(" · ")}
                       </p>
                     )}
-                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">{STATUS_LABELS[job.status]}</p>
+                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">{t(`status.${job.status}`)}</p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     {job.match_score !== null && (
@@ -134,7 +136,7 @@ export function JobsTab({
                       onClick={(e) => { e.stopPropagation(); deleteJob(job.id); }}
                       disabled={deletingId === job.id}
                       className="text-muted-foreground/30 hover:text-destructive transition-colors cursor-pointer"
-                      title="Sil"
+                      title={t("delete")}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>

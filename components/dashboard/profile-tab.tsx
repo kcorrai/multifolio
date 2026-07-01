@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Save, CheckCircle2, AlertCircle, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ELEVATED, type InitialProfile } from "./shared";
 
 export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile | null }) {
+  const t = useTranslations("profile");
   const [headline, setHeadline] = useState(initialProfile?.headline ?? "");
   const [summary, setSummary] = useState(initialProfile?.summary ?? "");
   const [skills, setSkills] = useState((initialProfile?.skills ?? []).join(", "));
@@ -28,7 +30,7 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
     });
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      setSaveState("error"); setProfileError(body?.error?.message ?? "Profil kaydedilemedi.");
+      setSaveState("error"); setProfileError(body?.error?.message ?? t("saveError"));
       return;
     }
     setSaveState("saved");
@@ -38,29 +40,29 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
     <div className="grid gap-5 lg:grid-cols-5">
       <Card className={`shadow-sm lg:col-span-3 ${ELEVATED}`}>
         <CardHeader>
-          <CardTitle className="text-base">Çekirdek Profil</CardTitle>
-          <CardDescription>Bu bilgiler tüm platformlara ve portfolyona temel oluşturur.</CardDescription>
+          <CardTitle className="text-base">{t("coreProfileTitle")}</CardTitle>
+          <CardDescription>{t("coreProfileDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
           <div className="space-y-1.5">
-            <Label htmlFor="headline">Başlık</Label>
+            <Label htmlFor="headline">{t("headlineLabel")}</Label>
             <Input id="headline" value={headline}
               onChange={(e) => { setHeadline(e.target.value); setSaveState("idle"); }}
-              placeholder="ör. Senior Frontend Developer · React & TypeScript" />
+              placeholder={t("headlinePlaceholder")} />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="summary">Özet</Label>
+            <Label htmlFor="summary">{t("summaryLabel")}</Label>
             <Textarea id="summary" rows={5} value={summary}
               onChange={(e) => { setSummary(e.target.value); setSaveState("idle"); }}
-              placeholder="Deneyimini, uzmanlığını ve öne çıkan sonuçları kısaca anlat."
+              placeholder={t("summaryPlaceholder")}
               className="resize-none" />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="skills">Beceriler</Label>
+            <Label htmlFor="skills">{t("skillsLabel")}</Label>
             <Input id="skills" value={skills}
               onChange={(e) => { setSkills(e.target.value); setSaveState("idle"); }}
               placeholder="React, TypeScript, Next.js, Node.js" />
-            <p className="text-xs text-muted-foreground">Virgülle ayır.</p>
+            <p className="text-xs text-muted-foreground">{t("skillsHint")}</p>
           </div>
 
           {profileError && (
@@ -72,11 +74,11 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
           <div className="flex items-center gap-3 pt-1">
             <Button onClick={saveProfile} disabled={saveState === "saving"} className="gap-2">
               <Save className="h-4 w-4" />
-              {saveState === "saving" ? "Kaydediliyor…" : "Kaydet"}
+              {saveState === "saving" ? t("saving") : t("save")}
             </Button>
             {profileSaved && (
               <span className="flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400">
-                <CheckCircle2 className="h-4 w-4" /> Kaydedildi
+                <CheckCircle2 className="h-4 w-4" /> {t("saved")}
               </span>
             )}
           </div>
@@ -87,7 +89,7 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
         <Card className={`shadow-sm overflow-hidden ${ELEVATED}`}>
           <div className="h-1.5 bg-gradient-to-r from-[#00F0FF] via-violet-500 to-[#00F0FF]/40" />
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-muted-foreground font-medium uppercase tracking-wide">Önizleme</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground font-medium uppercase tracking-wide">{t("preview")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {headline ? (
@@ -120,13 +122,13 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
 
         <Card className={`shadow-sm ${ELEVATED}`}>
           <CardContent className="pt-4 space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Tamamlanma</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t("completion")}</p>
             <div className="space-y-2">
               {[
-                { label: "Başlık",     done: headline.trim().length > 0 },
-                { label: "Özet",       done: summary.trim().length > 0 },
-                { label: "Beceriler",  done: skills.trim().length > 0 },
-                { label: "Kaydedildi", done: profileSaved },
+                { label: t("headlineLabel"), done: headline.trim().length > 0 },
+                { label: t("summaryLabel"),  done: summary.trim().length > 0 },
+                { label: t("skillsLabel"),   done: skills.trim().length > 0 },
+                { label: t("saved"),         done: profileSaved },
               ].map(({ label, done }) => (
                 <div key={label} className="flex items-center gap-2">
                   <div className={`h-4 w-4 rounded-full flex items-center justify-center shrink-0 ${done ? "bg-green-500" : "bg-muted"}`}>

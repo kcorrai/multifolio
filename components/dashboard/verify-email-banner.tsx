@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { MailCheck, ShieldCheck, X } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export function VerifyEmailBanner({ emailVerified, email }: { emailVerified: boolean; email: string }) {
+  const t = useTranslations("dashboard.verifyEmail");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [toast, setToast] = useState("");
 
@@ -15,14 +17,14 @@ export function VerifyEmailBanner({ emailVerified, email }: { emailVerified: boo
 
     if (!verified && !verifyError) return;
 
-    const msg = verified ? "E-postan doğrulandı ✓" : "Doğrulama başarısız, tekrar dene.";
+    const msg = verified ? t("verifiedToast") : t("verifyFailedToast");
     // URL'i temizle (toast paramlarını kaldır)
     window.history.replaceState(null, "", window.location.pathname);
 
     const t1 = setTimeout(() => setToast(msg), 0);
     const t2 = setTimeout(() => setToast(""), 4000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, []);
+  }, [t]);
 
   async function sendVerification() {
     setState("sending");
@@ -40,20 +42,20 @@ export function VerifyEmailBanner({ emailVerified, email }: { emailVerified: boo
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
           <ShieldCheck className="h-5 w-5 text-amber-500 shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">E-postanı doğrula</p>
+            <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">{t("title")}</p>
             <p className="text-xs text-amber-600/70 dark:text-amber-400/60">
               {state === "sent"
-                ? `${email} adresine doğrulama bağlantısı gönderildi. Gelen kutunu kontrol et.`
-                : "Hesabını güvence altına almak için e-posta adresini doğrula."}
+                ? t("sentBody", { email })
+                : t("description")}
             </p>
           </div>
           {state !== "sent" && (
             <button onClick={sendVerification} disabled={state === "sending"}
               className="shrink-0 rounded-lg bg-amber-500 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-semibold px-3 py-2 transition-colors cursor-pointer">
-              {state === "sending" ? "Gönderiliyor…" : "Doğrulama e-postası gönder"}
+              {state === "sending" ? t("sending") : t("sendButton")}
             </button>
           )}
-          {state === "error" && <p role="alert" className="text-xs text-destructive w-full">Gönderilemedi, tekrar dene.</p>}
+          {state === "error" && <p role="alert" className="text-xs text-destructive w-full">{t("sendError")}</p>}
         </div>
       )}
 

@@ -3,7 +3,9 @@
     "appName": "Multifolio",
     "language": "Dil",
     "dashboard": "Dashboard",
-    "goToDashboard": "Dashboard'a Git"
+    "goToDashboard": "Dashboard'a Git",
+    "switchToLight": "Açık moda geç",
+    "switchToDark": "Koyu moda geç"
   },
   "landing": {
     "nav": {
@@ -69,18 +71,9 @@
     "how": {
       "eyebrow": "Nasıl Çalışır",
       "title": "3 adımda başla.",
-      "step1": {
-        "title": "Profilini gir",
-        "desc": "Başlık, özet ve becerilerini bir kez doldur. Bu temel, her şeyin kaynağı."
-      },
-      "step2": {
-        "title": "Platform seç & uyarla",
-        "desc": "LinkedIn, Upwork veya diğer platformlar için AI'ın optimize metnini üret."
-      },
-      "step3": {
-        "title": "Paylaş & takip et",
-        "desc": "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir."
-      }
+      "step1": { "title": "Profilini gir", "desc": "Başlık, özet ve becerilerini bir kez doldur. Bu temel, her şeyin kaynağı." },
+      "step2": { "title": "Platform seç & uyarla", "desc": "LinkedIn, Upwork veya diğer platformlar için AI'ın optimize metnini üret." },
+      "step3": { "title": "Paylaş & takip et", "desc": "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir." }
     },
     "finalCta": {
       "title": "Freelancer kariyerini bir üst seviyeye taşı.",
@@ -98,5 +91,282 @@
       "skillMatch": "Beceri Eşleşmesi",
       "clientAppeal": "Müşteri Çekiciliği"
     }
+  },
+  "auth": {
+    "login": {
+      "title": "Giriş yap",
+      "subtitle": "Hesabına e-posta ve şifrenle giriş yap.",
+      "forgotPassword": "Şifreni mi unuttun?",
+      "errorInvalid": "E-posta veya şifre hatalı.",
+      "submitting": "Giriş yapılıyor…",
+      "submit": "Giriş yap",
+      "noAccount": "Hesabın yok mu?",
+      "magicLinkPrompt": "Daha önce e-posta bağlantısıyla mı giriyordun?",
+      "setPassword": "Şifre belirle"
+    },
+    "signup": {
+      "title": "Kayıt ol",
+      "subtitle": "Ücretsiz hesabını oluştur, hemen başla.",
+      "errorRegistered": "Bu e-posta zaten kayıtlı.",
+      "errorNoSession": "Kayıt oluşturuldu ama oturum açılamadı. Giriş yapmayı dene.",
+      "confirmLabel": "Şifre (tekrar)",
+      "submitting": "Oluşturuluyor…",
+      "submit": "Hesap oluştur",
+      "hasAccount": "Zaten hesabın var mı?"
+    },
+    "forgot": {
+      "checkTitle": "E-postanı kontrol et",
+      "sentBody": "<b>{email}</b> adresine şifre sıfırlama bağlantısı gönderdik.",
+      "title": "Şifreni sıfırla",
+      "subtitle": "E-postana sıfırlama bağlantısı gönderelim.",
+      "submitting": "Gönderiliyor…",
+      "submit": "Sıfırlama bağlantısı gönder"
+    },
+    "reset": {
+      "loading": "Yükleniyor…",
+      "title": "Yeni şifre belirle",
+      "subtitle": "Hesabın için yeni bir şifre gir.",
+      "done": "Şifren güncellendi. Yönlendiriliyorsun…",
+      "newPasswordLabel": "Yeni şifre",
+      "confirmLabel": "Yeni şifre (tekrar)",
+      "submitting": "Güncelleniyor…",
+      "submit": "Şifreyi güncelle"
+    },
+    "shared": {
+      "emailLabel": "E-posta adresi",
+      "emailPlaceholder": "sen@ornek.com",
+      "passwordLabel": "Şifre",
+      "passwordMin": "Şifre en az 8 karakter olmalı.",
+      "passwordsMismatch": "Şifreler eşleşmiyor.",
+      "passwordMinPlaceholder": "En az 8 karakter",
+      "signUp": "Kayıt ol",
+      "signIn": "Giriş yap",
+      "backHome": "Ana sayfaya dön",
+      "backToLogin": "Giriş'e dön"
+    },
+    "layout": {
+      "feature1": "Profilini bir kez gir, çoklu platform için uyarla",
+      "feature2": "Yapay Zeka ile profesyonel portfolyo oluştur",
+      "feature3": "İş ilanlarına mükemmel uyumu anında gör",
+      "feature4": "Tüm başvurularını tek bir panelden takip et",
+      "betaBadge": "Beta — İlk 100 kullanıcı ücretsiz",
+      "headlinePre": "Freelancer kariyerini ",
+      "headlineHighlight": "tek platformdan",
+      "headlinePost": "yönet.",
+      "supportedPlatforms": "Desteklenen platformlar",
+      "mobileTaglinePre": "Tek profil.",
+      "mobileTaglineHighlight": "5 platform.",
+      "mobileTaglineSub": "Freelancer kariyerini tek yerden yönet."
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Genel Bakış",
+      "profile": "Profil",
+      "adapt": "Platform Uyarlama",
+      "portfolio": "Portfolyo",
+      "jobs": "İlanlar",
+      "analytics": "Analitik",
+      "accounts": "Hesaplar"
+    },
+    "shell": {
+      "credits": "Kredi",
+      "buyCredits": "Satın Al",
+      "logout": "Çıkış Yap",
+      "comingSoonTitle": "Ödeme sistemi yakında!",
+      "comingSoonBody": "Stripe entegrasyonu hazırlanıyor."
+    },
+    "overview": {
+      "welcome": "Multifolio'ya hoş geldin!",
+      "welcomeSub": "3 adımda freelancer profilini kuralım.",
+      "close": "Kapat",
+      "step1Label": "Profil doldur",
+      "step1Desc": "Başlık, özet ve becerileri gir.",
+      "step2Label": "Platform uyarla",
+      "step2Desc": "AI ile 5 platform için optimize et.",
+      "step3Label": "Portfolyo yayınla",
+      "step3Desc": "Herkese açık sayfanı hazırla.",
+      "eyebrow": "Pano",
+      "title": "Genel Bakış",
+      "credits": "Kredi",
+      "buyCredits": "Satın Al",
+      "aiSpend": "AI Harcama",
+      "transactions": "{count} işlem",
+      "platform": "Platform",
+      "platformsAdapted": "platform uyarlandı",
+      "jobs": "İlanlar",
+      "jobsTracked": "ilan takip ediliyor",
+      "platformAdaptation": "Platform Uyarlama",
+      "viewAll": "Tümünü Gör",
+      "ready": "Hazır",
+      "adapt": "Uyarla",
+      "recentJobs": "Son İlanlar",
+      "addJob": "İlan Ekle",
+      "noJobs": "Henüz ilan yok",
+      "noJobsHint": "İlan Ekle ile başlayabilirsin.",
+      "moreJobs": "+{count} ilan daha",
+      "profileIncomplete": "Profil tamamlanmadı",
+      "profileIncompleteDesc": "Başlık, özet ve becerilerini ekleyerek platformlara uyarlamaya başla.",
+      "editProfile": "Profili Düzenle"
+    },
+    "verifyEmail": {
+      "verifiedToast": "E-postan doğrulandı ✓",
+      "verifyFailedToast": "Doğrulama başarısız, tekrar dene.",
+      "title": "E-postanı doğrula",
+      "sentBody": "{email} adresine doğrulama bağlantısı gönderildi. Gelen kutunu kontrol et.",
+      "description": "Hesabını güvence altına almak için e-posta adresini doğrula.",
+      "sending": "Gönderiliyor…",
+      "sendButton": "Doğrulama e-postası gönder",
+      "sendError": "Gönderilemedi, tekrar dene."
+    }
+  },
+  "jobs": {
+    "status": {
+      "saved": "Kaydedildi",
+      "applied": "Başvuruldu",
+      "awaiting_reply": "Yanıt Bekleniyor",
+      "interview": "Görüşme",
+      "offer": "Teklif",
+      "rejected": "Reddedildi"
+    },
+    "deleteError": "İlan silinemedi.",
+    "statApplied": "Başvurulan",
+    "statAwaiting": "Yanıt Bekleniyor",
+    "statActive": "Aktif",
+    "addJob": "İlan Ekle",
+    "noJobs": "Henüz ilan yok",
+    "emptyHint": "\"İlan Ekle\" ile başla; AI ile eşleştir ve başvurularını takip et.",
+    "delete": "Sil",
+    "detail": {
+      "budget": "Bütçe",
+      "added": "Eklendi",
+      "matchScore": "AI Eşleşme Skoru",
+      "strengths": "Güçlü",
+      "gaps": "Eksik",
+      "requirements": "İlan Gereksinimleri",
+      "descriptionRequired": "İlan metni gerekli",
+      "createProposal": "Teklif Oluştur",
+      "jobDescription": "İlan Metni",
+      "viewListing": "İlanda Görüntüle",
+      "notes": "Notlar",
+      "saving": "Kaydediliyor…",
+      "notesPlaceholder": "Görüşme notları, önemli detaylar…"
+    },
+    "add": {
+      "title": "İlan Ekle",
+      "jobTitle": "İlan başlığı",
+      "jobTitlePlaceholder": "ör. Senior React Developer",
+      "platform": "Platform",
+      "select": "Seç…",
+      "other": "Diğer",
+      "budget": "Bütçe",
+      "budgetPlaceholder": "ör. $500–1000",
+      "description": "İlan metni",
+      "aiRequired": "AI eşleştirme için gerekli",
+      "descriptionPlaceholder": "İlanın tam metnini yapıştır…",
+      "url": "İlan URL'si",
+      "createError": "İlan eklenemedi.",
+      "creating": "İlan oluşturuluyor…",
+      "matching": "AI eşleştirme yapılıyor…",
+      "submit": "Analiz Et ve Ekle",
+      "matchingHint": "Profil ve ilan eşleştiriliyor…",
+      "cancel": "İptal"
+    }
+  },
+  "analytics": {
+    "kind": {
+      "adaptation": "Platform Uyarlama",
+      "portfolio_generation": "Portfolyo Üretimi",
+      "job_match": "İlan Eşleştirme",
+      "proposal": "Teklif Üretimi"
+    },
+    "creditBalance": "Kredi Bakiyesi",
+    "creditsLeft": "kredi kaldı",
+    "buyCredits": "Kredi Satın Al",
+    "soon": "Yakında",
+    "totalSpend": "Toplam Harcama",
+    "transactions": "{count} işlem",
+    "dailyTitle": "Son 30 Gün — Günlük AI Harcaması",
+    "noUsage": "Henüz kullanım yok",
+    "noUsageHint": "Uyarlama, portfolyo veya eşleştirme yaptıkça burada görünür.",
+    "applicationPerformance": "Başvuru Performansı"
+  },
+  "proposal": {
+    "modal": {
+      "copy": "Kopyala",
+      "copied": "Kopyalandı",
+      "title": "Teklif Oluştur",
+      "generate": "Oluştur",
+      "generating": "Oluşturuluyor…",
+      "generateError": "Teklif üretilemedi.",
+      "newProposal": "Yeni Teklif — {platform}",
+      "coverageSummary": "Kapsama — {met}/{total} karşılandı",
+      "coverageShort": "{met}/{total} kapsama",
+      "fixGaps": "Eksikleri Gider",
+      "previousProposals": "Önceki teklifler"
+    }
+  },
+  "profile": {
+    "saveError": "Profil kaydedilemedi.",
+    "coreProfileTitle": "Çekirdek Profil",
+    "coreProfileDescription": "Bu bilgiler tüm platformlara ve portfolyona temel oluşturur.",
+    "headlineLabel": "Başlık",
+    "headlinePlaceholder": "ör. Senior Frontend Developer · React & TypeScript",
+    "summaryLabel": "Özet",
+    "summaryPlaceholder": "Deneyimini, uzmanlığını ve öne çıkan sonuçları kısaca anlat.",
+    "skillsLabel": "Beceriler",
+    "skillsHint": "Virgülle ayır.",
+    "saving": "Kaydediliyor…",
+    "save": "Kaydet",
+    "saved": "Kaydedildi",
+    "preview": "Önizleme",
+    "completion": "Tamamlanma"
+  },
+  "adapt": {
+    "saveProfileFirst": "Uyarlamak için önce profilini kaydet.",
+    "ready": "Hazır",
+    "adapting": "Uyarlanıyor…",
+    "refresh": "Yenile",
+    "adaptAction": "Uyarla",
+    "emptyState": "{platform} için optimize metin burada görünecek.",
+    "adaptFailed": "Uyarlama başarısız."
+  },
+  "portfolio": {
+    "title": "Portfolyo Sitesi",
+    "description": "Profilinden herkese açık bir sayfa oluştur ve paylaş.",
+    "saveProfileFirst": "Portfolyo oluşturmak için önce profilini kaydet.",
+    "generating": "Üretiliyor…",
+    "regenerate": "Yeniden Üret",
+    "generate": "Portfolyo Üret",
+    "errorGenerate": "Portfolyo üretilemedi.",
+    "errorSaveSettings": "Ayarlar kaydedilemedi.",
+    "moreSkills": "+{count} daha",
+    "pageAddress": "Sayfa adresi",
+    "slugPlaceholder": "kullanici-adi",
+    "slugHelp": "Küçük harf, rakam, tire. Min 3 karakter.",
+    "public": "Herkese açık",
+    "saving": "Kaydediliyor…",
+    "saveSettings": "Ayarları Kaydet",
+    "viewPage": "Sayfayı görüntüle"
+  },
+  "accounts": {
+    "title": "Platform Hesaplarım",
+    "description": "Her platform için profil URL'ni gir. Gelecekte bu bağlantılar üzerinden profilini import edebileceksin.",
+    "connected": "✓ Bağlı",
+    "notConnected": "Bağlı değil",
+    "saving": "Kaydediliyor…",
+    "saved": "Kaydedildi",
+    "save": "Kaydet",
+    "view": "Görüntüle",
+    "removeConnection": "Bağlantıyı kaldır",
+    "errorSave": "Kaydedilemedi.",
+    "errorDelete": "Silinemedi."
+  },
+  "portfolioPublic": {
+    "notFoundTitle": "Portfolyo bulunamadı",
+    "about": "Hakkında",
+    "skills": "Beceriler",
+    "projects": "Projeler",
+    "lastUpdated": "Son güncelleme"
   }
 }

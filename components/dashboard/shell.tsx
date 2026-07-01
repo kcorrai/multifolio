@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Wallet, Zap, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -24,6 +25,7 @@ export function DashboardShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const t = useTranslations("dashboard");
   const [spend, setSpend] = useState(initialSpendUsd);
   const [jobsCount, setJobsCount] = useState(initialJobsCount);
   const [connectionsCount, setConnectionsCount] = useState(initialConnectionsCount);
@@ -40,7 +42,7 @@ export function DashboardShell({
 
   const userInitial = userEmail?.[0]?.toUpperCase() ?? "?";
   const activeItem = NAV_ITEMS.find((n) => n.href === pathname);
-  const pageTitle = activeItem?.label ?? "Dashboard";
+  const pageTitle = activeItem ? t(`nav.${activeItem.labelKey}`) : "Dashboard";
 
   return (
     <DashboardContext.Provider
@@ -69,7 +71,7 @@ export function DashboardShell({
 
           {/* Nav */}
           <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-            {NAV_ITEMS.map(({ href, label, icon: Icon, badge }) => {
+            {NAV_ITEMS.map(({ href, labelKey, icon: Icon, badge }) => {
               const active = href === pathname;
               const count = badgeCount(badge);
               return (
@@ -86,7 +88,7 @@ export function DashboardShell({
                     active ? "h-5 opacity-100" : "h-0 opacity-0 group-hover:h-3 group-hover:opacity-40"
                   }`} />
                   <Icon className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110" />
-                  <span className="flex-1">{label}</span>
+                  <span className="flex-1">{t(`nav.${labelKey}`)}</span>
                   {count !== undefined && count > 0 && (
                     <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${
                       active ? "bg-[#00F0FF]/20 text-[#00F0FF]" : "bg-muted-foreground/20 text-muted-foreground"
@@ -102,14 +104,14 @@ export function DashboardShell({
             <div className="rounded-xl bg-violet-500/8 dark:bg-violet-500/10 border border-violet-500/15 dark:border-violet-500/20 px-3 py-2.5 flex items-center gap-2.5 transition-colors hover:border-violet-500/35">
               <Wallet className="h-4 w-4 text-violet-400 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] text-muted-foreground font-medium leading-none mb-0.5">Kredi</p>
+                <p className="text-[10px] text-muted-foreground font-medium leading-none mb-0.5">{t("shell.credits")}</p>
                 <p className="text-sm font-bold tabular-nums leading-none">{credits}</p>
               </div>
               <button
                 onClick={triggerComingSoon}
                 className="text-[11px] font-semibold text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
               >
-                Satın Al
+                {t("shell.buyCredits")}
               </button>
             </div>
             <div className="flex items-center gap-2.5 px-1">
@@ -118,7 +120,7 @@ export function DashboardShell({
               </div>
               <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">{userEmail}</span>
               <form action="/auth/signout" method="post">
-                <button type="submit" title="Çıkış Yap" className="text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer">
+                <button type="submit" title={t("shell.logout")} className="text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer">
                   <LogOut className="h-3.5 w-3.5" />
                 </button>
               </form>
@@ -159,7 +161,7 @@ export function DashboardShell({
 
           {/* Mobile tab scroll */}
           <div className="lg:hidden flex overflow-x-auto border-b border-border px-3 py-2 gap-1 shrink-0 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-            {NAV_ITEMS.map(({ href, label, icon: Icon, badge }) => {
+            {NAV_ITEMS.map(({ href, labelKey, icon: Icon, badge }) => {
               const active = href === pathname;
               const count = badgeCount(badge);
               return (
@@ -173,7 +175,7 @@ export function DashboardShell({
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5 shrink-0" />
-                  {label}
+                  {t(`nav.${labelKey}`)}
                   {count !== undefined && count > 0 && (
                     <span className={`rounded-full px-1 text-[9px] font-bold py-0.5 ${
                       active ? "bg-[#00F0FF]/20 text-[#00F0FF]" : "bg-muted-foreground/20 text-muted-foreground"
@@ -200,8 +202,8 @@ export function DashboardShell({
               <Wallet className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground">Ödeme sistemi yakında!</p>
-              <p className="text-xs text-muted-foreground">Stripe entegrasyonu hazırlanıyor.</p>
+              <p className="text-sm font-semibold text-foreground">{t("shell.comingSoonTitle")}</p>
+              <p className="text-xs text-muted-foreground">{t("shell.comingSoonBody")}</p>
             </div>
           </div>
         )}

@@ -24,23 +24,20 @@ export interface AnalyticsData {
 
 export type BadgeKey = "jobs" | "connections";
 
-export const NAV_ITEMS: { href: string; label: string; icon: React.ElementType; badge?: BadgeKey }[] = [
-  { href: "/dashboard",           label: "Genel Bakış",      icon: LayoutDashboard },
-  { href: "/dashboard/profile",   label: "Profil",            icon: User },
-  { href: "/dashboard/adapt",     label: "Platform Uyarlama", icon: Layers },
-  { href: "/dashboard/portfolio", label: "Portfolyo",         icon: Globe },
-  { href: "/dashboard/jobs",      label: "İlanlar",           icon: Briefcase, badge: "jobs" },
-  { href: "/dashboard/analytics", label: "Analitik",          icon: BarChart3 },
-  { href: "/dashboard/accounts",  label: "Hesaplar",          icon: Link2,     badge: "connections" },
+// labelKey → i18n anahtarı (dashboard.nav.<labelKey>), tüketim noktasında t() ile çözülür.
+export const NAV_ITEMS: { href: string; labelKey: string; icon: React.ElementType; badge?: BadgeKey }[] = [
+  { href: "/dashboard",           labelKey: "overview",  icon: LayoutDashboard },
+  { href: "/dashboard/profile",   labelKey: "profile",   icon: User },
+  { href: "/dashboard/adapt",     labelKey: "adapt",     icon: Layers },
+  { href: "/dashboard/portfolio", labelKey: "portfolio", icon: Globe },
+  { href: "/dashboard/jobs",      labelKey: "jobs",      icon: Briefcase, badge: "jobs" },
+  { href: "/dashboard/analytics", labelKey: "analytics", icon: BarChart3 },
+  { href: "/dashboard/accounts",  labelKey: "accounts",  icon: Link2,     badge: "connections" },
 ];
 
 /* ── Constants ──────────────────────────────────────────────────────── */
 
-export const STATUS_LABELS: Record<JobStatus, string> = {
-  saved: "Kaydedildi", applied: "Başvuruldu", awaiting_reply: "Yanıt Bekleniyor",
-  interview: "Görüşme", offer: "Teklif", rejected: "Reddedildi",
-};
-
+// Durum etiketleri i18n'de: jobs.status.<status>. Renk noktaları locale-nötr kalır.
 export const STATUS_DOT: Record<JobStatus, string> = {
   saved: "bg-slate-400", applied: "bg-blue-500", awaiting_reply: "bg-cyan-400",
   interview: "bg-amber-500", offer: "bg-green-500", rejected: "bg-red-500",
@@ -62,13 +59,7 @@ export const PLATFORM_URL_PLACEHOLDERS: Record<PlatformId, string> = {
   armut:    "https://armut.com/kullanici/kullanici-adi",
 };
 
-export const KIND_LABELS: Record<string, string> = {
-  adaptation: "Platform Uyarlama",
-  portfolio_generation: "Portfolyo Üretimi",
-  job_match: "İlan Eşleştirme",
-  proposal: "Teklif Üretimi",
-};
-
+// Tür etiketleri i18n'de: analytics.kind.<kind>. İkonlar locale-nötr.
 export const KIND_ICONS: Record<string, React.ElementType> = {
   adaptation: Layers,
   portfolio_generation: Globe,

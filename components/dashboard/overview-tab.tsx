@@ -6,13 +6,14 @@ import {
   Sparkles, X, Check, CheckCircle2, AlertCircle,
   Wallet, Zap, Layers, Briefcase, ShoppingCart,
 } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlatformLogo } from "@/components/platform-logo";
 import { PLATFORMS, PLATFORM_IDS } from "@/lib/ai/platforms";
 import {
   StatCard, TINT_CYAN, TINT_VIOLET, ELEVATED, PLATFORM_STYLES,
-  STATUS_LABELS, STATUS_DOT, scoreColor, formatUsd, type JobRow,
+  STATUS_DOT, scoreColor, formatUsd, type JobRow,
 } from "./shared";
 import { useDashboard } from "./dashboard-context";
 import { useAdapt } from "./use-adapt";
@@ -26,6 +27,9 @@ export function OverviewTab({
   totalCount: number;
   credits: number;
 }) {
+  const t = useTranslations("dashboard.overview");
+  const ts = useTranslations("jobs");
+  const locale = useLocale();
   const { spend, adaptResults, triggerComingSoon } = useDashboard();
   const { adapt, adapting } = useAdapt();
   const [onboardingDismissed, setOnboardingDismissed] = useState(profileSaved);
@@ -45,23 +49,23 @@ export function OverviewTab({
               <div>
                 <p className="text-sm font-bold text-[#00F0FF] flex items-center gap-1.5">
                   <Sparkles className="h-4 w-4" />
-                  Multifolio&apos;ya hoş geldin!
+                  {t("welcome")}
                 </p>
-                <p className="text-xs text-muted-foreground mt-0.5">3 adımda freelancer profilini kuralım.</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("welcomeSub")}</p>
               </div>
               <button
                 onClick={() => setOnboardingDismissed(true)}
                 className="text-muted-foreground hover:text-foreground transition-colors shrink-0 cursor-pointer"
-                title="Kapat"
+                title={t("close")}
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
             <div className="grid grid-cols-3 gap-3">
               {[
-                { step: 1, label: "Profil doldur",     desc: "Başlık, özet ve becerileri gir.",     href: "/dashboard/profile" },
-                { step: 2, label: "Platform uyarla",   desc: "AI ile 5 platform için optimize et.", href: "/dashboard/adapt" },
-                { step: 3, label: "Portfolyo yayınla", desc: "Herkese açık sayfanı hazırla.",        href: "/dashboard/portfolio" },
+                { step: 1, label: t("step1Label"), desc: t("step1Desc"), href: "/dashboard/profile" },
+                { step: 2, label: t("step2Label"), desc: t("step2Desc"), href: "/dashboard/adapt" },
+                { step: 3, label: t("step3Label"), desc: t("step3Desc"), href: "/dashboard/portfolio" },
               ].map(({ step, label, desc, href }) => {
                 const done = onboardingStep > step;
                 const active = onboardingStep === step;
@@ -96,30 +100,30 @@ export function OverviewTab({
 
       {/* Section title */}
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">Pano</p>
-        <h2 className="text-2xl font-bold tracking-tight mt-1">Genel Bakış</h2>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
+        <h2 className="text-2xl font-bold tracking-tight mt-1">{t("title")}</h2>
         <p className="text-sm text-muted-foreground mt-0.5 capitalize">
-          {new Date().toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          {new Date().toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
       </div>
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard icon={Wallet} tint={TINT_VIOLET} label="Kredi" value={credits}>
+        <StatCard icon={Wallet} tint={TINT_VIOLET} label={t("credits")} value={credits}>
           <button onClick={triggerComingSoon} className="flex items-center gap-1 text-[11px] text-violet-400 hover:text-violet-300 font-medium transition-colors cursor-pointer">
-            <ShoppingCart className="h-3 w-3" />Satın Al
+            <ShoppingCart className="h-3 w-3" />{t("buyCredits")}
           </button>
         </StatCard>
 
-        <StatCard icon={Zap} tint={TINT_CYAN} label="AI Harcama" value={formatUsd(spend)}
-          sub={`${totalCount} işlem`} />
+        <StatCard icon={Zap} tint={TINT_CYAN} label={t("aiSpend")} value={formatUsd(spend)}
+          sub={t("transactions", { count: totalCount })} />
 
-        <StatCard icon={Layers} tint={TINT_CYAN} label="Platform"
+        <StatCard icon={Layers} tint={TINT_CYAN} label={t("platform")}
           value={<>{readyPlatforms}<span className="text-base font-normal text-muted-foreground">/{PLATFORM_IDS.length}</span></>}
-          sub="platform uyarlandı" />
+          sub={t("platformsAdapted")} />
 
-        <StatCard icon={Briefcase} tint={TINT_VIOLET} label="İlanlar" value={jobs.length}
-          sub="ilan takip ediliyor" />
+        <StatCard icon={Briefcase} tint={TINT_VIOLET} label={t("jobs")} value={jobs.length}
+          sub={t("jobsTracked")} />
       </div>
 
       {/* Platform status + Recent jobs */}
@@ -127,9 +131,9 @@ export function OverviewTab({
         <Card className={`shadow-sm ${ELEVATED}`}>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm">Platform Uyarlama</CardTitle>
+              <CardTitle className="text-sm">{t("platformAdaptation")}</CardTitle>
               <Link href="/dashboard/adapt" className="text-xs text-[#00F0FF] hover:underline transition-colors cursor-pointer">
-                Tümünü Gör
+                {t("viewAll")}
               </Link>
             </div>
           </CardHeader>
@@ -145,12 +149,12 @@ export function OverviewTab({
                   <span className="text-sm font-medium flex-1">{PLATFORMS[id].label}</span>
                   {adapted ? (
                     <span className="flex items-center gap-1 text-[11px] text-green-600 dark:text-green-400 font-semibold">
-                      <CheckCircle2 className="h-3.5 w-3.5" />Hazır
+                      <CheckCircle2 className="h-3.5 w-3.5" />{t("ready")}
                     </span>
                   ) : (
                     <Button size="sm" onClick={() => adapt(id)} disabled={adapting === id || !profileSaved} className="h-6 text-[11px] gap-1 px-2.5">
                       <Sparkles className="h-3 w-3" />
-                      {adapting === id ? "..." : "Uyarla"}
+                      {adapting === id ? "..." : t("adapt")}
                     </Button>
                   )}
                 </div>
@@ -162,9 +166,9 @@ export function OverviewTab({
         <Card className={`shadow-sm ${ELEVATED}`}>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm">Son İlanlar</CardTitle>
+              <CardTitle className="text-sm">{t("recentJobs")}</CardTitle>
               <Link href="/dashboard/jobs" className="text-xs text-[#00F0FF] hover:underline transition-colors cursor-pointer">
-                {jobs.length > 0 ? "Tümünü Gör" : "İlan Ekle"}
+                {jobs.length > 0 ? t("viewAll") : t("addJob")}
               </Link>
             </div>
           </CardHeader>
@@ -174,8 +178,8 @@ export function OverviewTab({
                 <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center">
                   <Briefcase className="h-5 w-5 text-muted-foreground/40" />
                 </div>
-                <p className="text-xs text-muted-foreground">Henüz ilan yok</p>
-                <p className="text-[11px] text-muted-foreground/60 max-w-[180px]">İlan Ekle ile başlayabilirsin.</p>
+                <p className="text-xs text-muted-foreground">{t("noJobs")}</p>
+                <p className="text-[11px] text-muted-foreground/60 max-w-[180px]">{t("noJobsHint")}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -185,7 +189,7 @@ export function OverviewTab({
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{job.title}</p>
                       <p className="text-[11px] text-muted-foreground truncate">
-                        {[job.company, STATUS_LABELS[job.status]].filter(Boolean).join(" · ")}
+                        {[job.company, ts(`status.${job.status}`)].filter(Boolean).join(" · ")}
                       </p>
                     </div>
                     {job.match_score !== null && (
@@ -197,7 +201,7 @@ export function OverviewTab({
                 ))}
                 {jobs.length > 4 && (
                   <Link href="/dashboard/jobs" className="block text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                    +{jobs.length - 4} ilan daha
+                    {t("moreJobs", { count: jobs.length - 4 })}
                   </Link>
                 )}
               </div>
@@ -211,13 +215,13 @@ export function OverviewTab({
         <div className="rounded-2xl border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 p-4 flex items-center gap-4">
           <AlertCircle className="h-5 w-5 text-amber-500 shrink-0" />
           <div className="flex-1">
-            <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">Profil tamamlanmadı</p>
+            <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">{t("profileIncomplete")}</p>
             <p className="text-xs text-amber-600/70 dark:text-amber-400/60 mt-0.5">
-              Başlık, özet ve becerilerini ekleyerek platformlara uyarlamaya başla.
+              {t("profileIncompleteDesc")}
             </p>
           </div>
           <Button size="sm" asChild variant="outline" className="shrink-0 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30">
-            <Link href="/dashboard/profile">Profili Düzenle</Link>
+            <Link href="/dashboard/profile">{t("editProfile")}</Link>
           </Button>
         </div>
       )}

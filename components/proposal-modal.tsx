@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { X, Sparkles, Copy, Check, ChevronDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
@@ -16,6 +17,7 @@ interface Props {
 }
 
 function CopyBtn({ text }: { text: string }) {
+  const t = useTranslations("proposal");
   const [copied, setCopied] = useState(false);
   return (
     <button
@@ -23,12 +25,14 @@ function CopyBtn({ text }: { text: string }) {
       className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
     >
       {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
-      {copied ? "Kopyalandı" : "Kopyala"}
+      {copied ? t("modal.copied") : t("modal.copy")}
     </button>
   );
 }
 
 export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose, onCostUpdate }: Props) {
+  const t = useTranslations("proposal");
+  const locale = useLocale();
   const validDefault = PLATFORM_IDS.includes(defaultPlatform as PlatformId) ? defaultPlatform as PlatformId : "upwork";
   const [platform, setPlatform] = useState<PlatformId>(validDefault);
   const [generating, setGenerating] = useState(false);
@@ -60,7 +64,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
-      setError(body?.error?.message ?? "Teklif üretilemedi.");
+      setError(body?.error?.message ?? t("modal.generateError"));
       setGenerating(false); return;
     }
     const newProposal = body.proposal as ProposalRow;
@@ -79,7 +83,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
         <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-[#00F0FF]" />
-            <h2 className="font-semibold text-sm">Teklif Oluştur</h2>
+            <h2 className="font-semibold text-sm">{t("modal.title")}</h2>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
             <X className="h-4 w-4" />
@@ -104,7 +108,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
             </div>
             <Button onClick={() => generate()} disabled={generating || !jobDescription} className="gap-2 shrink-0">
               <Sparkles className="h-3.5 w-3.5" />
-              {generating ? "Oluşturuluyor…" : "Oluştur"}
+              {generating ? t("modal.generating") : t("modal.generate")}
             </Button>
           </div>
 
@@ -116,14 +120,14 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
           {generated && (
             <div className="rounded-xl border border-[#00F0FF]/20 bg-[#00F0FF]/5 p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#00F0FF]">Yeni Teklif — {PLATFORMS[platform].label}</span>
+                <span className="text-xs font-semibold text-[#00F0FF]">{t("modal.newProposal", { platform: PLATFORMS[platform].label })}</span>
                 <CopyBtn text={generated} />
               </div>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{generated}</p>
               {coverage.length > 0 && (
                 <div className="pt-3 mt-1 border-t border-[#00F0FF]/15 space-y-2">
                   <p className="text-xs font-semibold text-muted-foreground">
-                    Kapsama — {coverageSummary(coverage).met}/{coverageSummary(coverage).total} karşılandı
+                    {t("modal.coverageSummary", { met: coverageSummary(coverage).met, total: coverageSummary(coverage).total })}
                   </p>
                   <ul className="space-y-1.5">
                     {coverage.map((c, i) => (
@@ -154,7 +158,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                       className="w-full gap-2 mt-1"
                     >
                       <Sparkles className="h-3.5 w-3.5" />
-                      {generating ? "Oluşturuluyor…" : "Eksikleri Gider"}
+                      {generating ? t("modal.generating") : t("modal.fixGaps")}
                     </Button>
                   )}
                 </div>
@@ -166,7 +170,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
           {!loadingHistory && proposals.filter((p) => p.content !== generated).length > 0 && (
             <div className="space-y-2">
               <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5" />Önceki teklifler
+                <Clock className="h-3.5 w-3.5" />{t("modal.previousProposals")}
               </p>
               {proposals
                 .filter((p) => p.content !== generated)
@@ -175,10 +179,10 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-muted-foreground">
                         {PLATFORMS[p.platform as PlatformId]?.label ?? p.platform} ·{" "}
-                        {new Date(p.created_at).toLocaleDateString("tr-TR")}
+                        {new Date(p.created_at).toLocaleDateString(locale)}
                         {p.coverage && p.coverage.length > 0 && (
                           <span className="ml-1.5 text-[10px] text-muted-foreground/70">
-                            · {coverageSummary(p.coverage).met}/{coverageSummary(p.coverage).total} kapsama
+                            · {t("modal.coverageShort", { met: coverageSummary(p.coverage).met, total: coverageSummary(p.coverage).total })}
                           </span>
                         )}
                       </span>

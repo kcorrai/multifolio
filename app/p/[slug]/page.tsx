@@ -4,6 +4,7 @@
 import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
 
@@ -29,7 +30,10 @@ const fetchPortfolio = cache(async (slug: string) => {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const portfolio = await fetchPortfolio(slug);
-  if (!portfolio) return { title: "Portfolyo bulunamadı" };
+  if (!portfolio) {
+    const t = await getTranslations("portfolioPublic");
+    return { title: t("notFoundTitle") };
+  }
   const { headline, bio } = portfolio.content;
   const description = bio.slice(0, 160);
   return {
@@ -48,6 +52,7 @@ export default async function PortfolioPage({ params }: PageProps) {
   const portfolio = await fetchPortfolio(slug);
   if (!portfolio) notFound();
   const { content, updatedAt } = portfolio;
+  const t = await getTranslations("portfolioPublic");
 
   return (
     <main className="mx-auto max-w-2xl flex-1 p-8">
@@ -58,7 +63,7 @@ export default async function PortfolioPage({ params }: PageProps) {
 
         <section className="space-y-2">
           <h2 className="text-sm font-semibold uppercase tracking-widest text-neutral-500">
-            Hakkında
+            {t("about")}
           </h2>
           <p className="whitespace-pre-wrap leading-relaxed text-neutral-800">{content.bio}</p>
         </section>
@@ -66,7 +71,7 @@ export default async function PortfolioPage({ params }: PageProps) {
         {content.skills.length > 0 && (
           <section className="space-y-3">
             <h2 className="text-sm font-semibold uppercase tracking-widest text-neutral-500">
-              Beceriler
+              {t("skills")}
             </h2>
             <div className="flex flex-wrap gap-2">
               {content.skills.map((skill) => (
@@ -84,7 +89,7 @@ export default async function PortfolioPage({ params }: PageProps) {
         {content.projects.length > 0 && (
           <section className="space-y-4">
             <h2 className="text-sm font-semibold uppercase tracking-widest text-neutral-500">
-              Projeler
+              {t("projects")}
             </h2>
             <div className="space-y-4">
               {content.projects.map((project, i) => (
@@ -109,7 +114,7 @@ export default async function PortfolioPage({ params }: PageProps) {
         )}
 
         <p className="text-xs text-neutral-400">
-          Son güncelleme: {new Date(updatedAt).toLocaleDateString("tr-TR")}
+          {t("lastUpdated")}: {new Date(updatedAt).toLocaleDateString("tr-TR")}
         </p>
       </div>
     </main>

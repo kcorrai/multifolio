@@ -18,17 +18,17 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="tr">
+    <html lang="en">
       <body className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
-        <h1 className="text-xl font-semibold">Bir şeyler ters gitti</h1>
+        <h1 className="text-xl font-semibold">Something went wrong</h1>
         <p className="text-sm text-neutral-500">
-          Hata kaydedildi. Tekrar denemek isterseniz aşağıdaki düğmeyi kullanın.
+          The error has been logged. Use the button below to try again.
         </p>
         <button
           onClick={() => reset()}
           className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
         >
-          Tekrar dene
+          Try again
         </button>
       </body>
     </html>

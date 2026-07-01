@@ -3,7 +3,9 @@
     "appName": "Multifolio",
     "language": "Language",
     "dashboard": "Dashboard",
-    "goToDashboard": "Go to dashboard"
+    "goToDashboard": "Go to dashboard",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
   },
   "landing": {
     "nav": {
@@ -69,18 +71,9 @@
     "how": {
       "eyebrow": "How it works",
       "title": "Start in 3 steps.",
-      "step1": {
-        "title": "Enter your profile",
-        "desc": "Fill in your headline, summary and skills once. This foundation is the source of everything."
-      },
-      "step2": {
-        "title": "Pick a platform & adapt",
-        "desc": "Generate AI-optimized copy for LinkedIn, Upwork or other platforms."
-      },
-      "step3": {
-        "title": "Share & track",
-        "desc": "Publish your portfolio, track your applications, match listings."
-      }
+      "step1": { "title": "Enter your profile", "desc": "Fill in your headline, summary and skills once. This foundation is the source of everything." },
+      "step2": { "title": "Pick a platform & adapt", "desc": "Generate AI-optimized copy for LinkedIn, Upwork or other platforms." },
+      "step3": { "title": "Share & track", "desc": "Publish your portfolio, track your applications, match listings." }
     },
     "finalCta": {
       "title": "Take your freelance career to the next level.",
@@ -98,5 +91,282 @@
       "skillMatch": "Skill match",
       "clientAppeal": "Client appeal"
     }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Sign in to your account with your email and password.",
+      "forgotPassword": "Forgot your password?",
+      "errorInvalid": "Incorrect email or password.",
+      "submitting": "Signing in…",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "magicLinkPrompt": "Used to sign in with an email link before?",
+      "setPassword": "Set a password"
+    },
+    "signup": {
+      "title": "Sign up",
+      "subtitle": "Create your free account and get started right away.",
+      "errorRegistered": "This email is already registered.",
+      "errorNoSession": "Account created but the session couldn't be started. Try signing in.",
+      "confirmLabel": "Password (again)",
+      "submitting": "Creating…",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?"
+    },
+    "forgot": {
+      "checkTitle": "Check your email",
+      "sentBody": "We sent a password reset link to <b>{email}</b>.",
+      "title": "Reset your password",
+      "subtitle": "We'll send a reset link to your email.",
+      "submitting": "Sending…",
+      "submit": "Send reset link"
+    },
+    "reset": {
+      "loading": "Loading…",
+      "title": "Set a new password",
+      "subtitle": "Enter a new password for your account.",
+      "done": "Your password has been updated. Redirecting…",
+      "newPasswordLabel": "New password",
+      "confirmLabel": "New password (again)",
+      "submitting": "Updating…",
+      "submit": "Update password"
+    },
+    "shared": {
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordMin": "Password must be at least 8 characters.",
+      "passwordsMismatch": "Passwords do not match.",
+      "passwordMinPlaceholder": "At least 8 characters",
+      "signUp": "Sign up",
+      "signIn": "Sign in",
+      "backHome": "Back to home",
+      "backToLogin": "Back to sign in"
+    },
+    "layout": {
+      "feature1": "Enter your profile once, adapt it for multiple platforms",
+      "feature2": "Create a professional portfolio with AI",
+      "feature3": "See your perfect fit to job listings instantly",
+      "feature4": "Track all your applications from a single panel",
+      "betaBadge": "Beta — First 100 users free",
+      "headlinePre": "Manage your freelance career ",
+      "headlineHighlight": "from one platform",
+      "headlinePost": ".",
+      "supportedPlatforms": "Supported platforms",
+      "mobileTaglinePre": "One profile.",
+      "mobileTaglineHighlight": "5 platforms.",
+      "mobileTaglineSub": "Manage your freelance career from one place."
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Overview",
+      "profile": "Profile",
+      "adapt": "Platform Adaptation",
+      "portfolio": "Portfolio",
+      "jobs": "Jobs",
+      "analytics": "Analytics",
+      "accounts": "Accounts"
+    },
+    "shell": {
+      "credits": "Credits",
+      "buyCredits": "Buy",
+      "logout": "Sign out",
+      "comingSoonTitle": "Payments coming soon!",
+      "comingSoonBody": "Stripe integration is on the way."
+    },
+    "overview": {
+      "welcome": "Welcome to Multifolio!",
+      "welcomeSub": "Let's set up your freelance profile in 3 steps.",
+      "close": "Close",
+      "step1Label": "Fill in profile",
+      "step1Desc": "Enter your headline, summary and skills.",
+      "step2Label": "Adapt platforms",
+      "step2Desc": "Optimize for 5 platforms with AI.",
+      "step3Label": "Publish portfolio",
+      "step3Desc": "Prepare your public page.",
+      "eyebrow": "Panel",
+      "title": "Overview",
+      "credits": "Credits",
+      "buyCredits": "Buy",
+      "aiSpend": "AI Spend",
+      "transactions": "{count} transactions",
+      "platform": "Platform",
+      "platformsAdapted": "platforms adapted",
+      "jobs": "Jobs",
+      "jobsTracked": "jobs tracked",
+      "platformAdaptation": "Platform Adaptation",
+      "viewAll": "View all",
+      "ready": "Ready",
+      "adapt": "Adapt",
+      "recentJobs": "Recent Jobs",
+      "addJob": "Add Job",
+      "noJobs": "No jobs yet",
+      "noJobsHint": "You can start with Add Job.",
+      "moreJobs": "+{count} more jobs",
+      "profileIncomplete": "Profile incomplete",
+      "profileIncompleteDesc": "Add your headline, summary and skills to start adapting to platforms.",
+      "editProfile": "Edit Profile"
+    },
+    "verifyEmail": {
+      "verifiedToast": "Your email has been verified ✓",
+      "verifyFailedToast": "Verification failed, please try again.",
+      "title": "Verify your email",
+      "sentBody": "A verification link has been sent to {email}. Check your inbox.",
+      "description": "Verify your email address to secure your account.",
+      "sending": "Sending…",
+      "sendButton": "Send verification email",
+      "sendError": "Couldn't send, please try again."
+    }
+  },
+  "jobs": {
+    "status": {
+      "saved": "Saved",
+      "applied": "Applied",
+      "awaiting_reply": "Awaiting Reply",
+      "interview": "Interview",
+      "offer": "Offer",
+      "rejected": "Rejected"
+    },
+    "deleteError": "Could not delete the job.",
+    "statApplied": "Applied",
+    "statAwaiting": "Awaiting Reply",
+    "statActive": "Active",
+    "addJob": "Add Job",
+    "noJobs": "No jobs yet",
+    "emptyHint": "Start with \"Add Job\"; match with AI and track your applications.",
+    "delete": "Delete",
+    "detail": {
+      "budget": "Budget",
+      "added": "Added",
+      "matchScore": "AI Match Score",
+      "strengths": "Strengths",
+      "gaps": "Gaps",
+      "requirements": "Listing Requirements",
+      "descriptionRequired": "Job description required",
+      "createProposal": "Create Proposal",
+      "jobDescription": "Job Description",
+      "viewListing": "View Listing",
+      "notes": "Notes",
+      "saving": "Saving…",
+      "notesPlaceholder": "Interview notes, key details…"
+    },
+    "add": {
+      "title": "Add Job",
+      "jobTitle": "Job title",
+      "jobTitlePlaceholder": "e.g. Senior React Developer",
+      "platform": "Platform",
+      "select": "Select…",
+      "other": "Other",
+      "budget": "Budget",
+      "budgetPlaceholder": "e.g. $500–1000",
+      "description": "Job description",
+      "aiRequired": "Required for AI matching",
+      "descriptionPlaceholder": "Paste the full listing text…",
+      "url": "Listing URL",
+      "createError": "Could not add the job.",
+      "creating": "Creating job…",
+      "matching": "Running AI matching…",
+      "submit": "Analyze & Add",
+      "matchingHint": "Matching profile and listing…",
+      "cancel": "Cancel"
+    }
+  },
+  "analytics": {
+    "kind": {
+      "adaptation": "Platform Adaptation",
+      "portfolio_generation": "Portfolio Generation",
+      "job_match": "Job Matching",
+      "proposal": "Proposal Generation"
+    },
+    "creditBalance": "Credit Balance",
+    "creditsLeft": "credits left",
+    "buyCredits": "Buy Credits",
+    "soon": "Soon",
+    "totalSpend": "Total Spend",
+    "transactions": "{count} transactions",
+    "dailyTitle": "Last 30 Days — Daily AI Spend",
+    "noUsage": "No usage yet",
+    "noUsageHint": "It will appear here as you adapt, generate portfolios or match listings.",
+    "applicationPerformance": "Application Performance"
+  },
+  "proposal": {
+    "modal": {
+      "copy": "Copy",
+      "copied": "Copied",
+      "title": "Create Proposal",
+      "generate": "Generate",
+      "generating": "Generating…",
+      "generateError": "Could not generate proposal.",
+      "newProposal": "New Proposal — {platform}",
+      "coverageSummary": "Coverage — {met}/{total} met",
+      "coverageShort": "{met}/{total} covered",
+      "fixGaps": "Fill Gaps",
+      "previousProposals": "Previous proposals"
+    }
+  },
+  "profile": {
+    "saveError": "Profile could not be saved.",
+    "coreProfileTitle": "Core Profile",
+    "coreProfileDescription": "This information forms the foundation for all platforms and your portfolio.",
+    "headlineLabel": "Headline",
+    "headlinePlaceholder": "e.g. Senior Frontend Developer · React & TypeScript",
+    "summaryLabel": "Summary",
+    "summaryPlaceholder": "Briefly describe your experience, expertise, and standout results.",
+    "skillsLabel": "Skills",
+    "skillsHint": "Separate with commas.",
+    "saving": "Saving…",
+    "save": "Save",
+    "saved": "Saved",
+    "preview": "Preview",
+    "completion": "Completion"
+  },
+  "adapt": {
+    "saveProfileFirst": "Save your profile first to adapt it.",
+    "ready": "Ready",
+    "adapting": "Adapting…",
+    "refresh": "Refresh",
+    "adaptAction": "Adapt",
+    "emptyState": "Optimized text for {platform} will appear here.",
+    "adaptFailed": "Adaptation failed."
+  },
+  "portfolio": {
+    "title": "Portfolio Site",
+    "description": "Create a public page from your profile and share it.",
+    "saveProfileFirst": "Save your profile first to create a portfolio.",
+    "generating": "Generating…",
+    "regenerate": "Regenerate",
+    "generate": "Generate Portfolio",
+    "errorGenerate": "Could not generate portfolio.",
+    "errorSaveSettings": "Could not save settings.",
+    "moreSkills": "+{count} more",
+    "pageAddress": "Page address",
+    "slugPlaceholder": "username",
+    "slugHelp": "Lowercase, numbers, hyphens. Min 3 characters.",
+    "public": "Public",
+    "saving": "Saving…",
+    "saveSettings": "Save Settings",
+    "viewPage": "View page"
+  },
+  "accounts": {
+    "title": "My Platform Accounts",
+    "description": "Enter your profile URL for each platform. In the future you'll be able to import your profile through these connections.",
+    "connected": "✓ Connected",
+    "notConnected": "Not connected",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "save": "Save",
+    "view": "View",
+    "removeConnection": "Remove connection",
+    "errorSave": "Could not save.",
+    "errorDelete": "Could not delete."
+  },
+  "portfolioPublic": {
+    "notFoundTitle": "Portfolio not found",
+    "about": "About",
+    "skills": "Skills",
+    "projects": "Projects",
+    "lastUpdated": "Last updated"
   }
 }

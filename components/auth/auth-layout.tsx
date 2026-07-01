@@ -1,16 +1,17 @@
 "use client";
 
 import { Star, Pencil, Sparkles, Target, LayoutDashboard } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { PlatformLogo } from "@/components/platform-logo";
 import type { PlatformId } from "@/lib/ai/platforms";
 
 /* ─── Static data ─────────────────────────────────────────────── */
 const FEATURES = [
-  { text: "Profilini bir kez gir, çoklu platform için uyarla", Icon: Pencil },
-  { text: "Yapay Zeka ile profesyonel portfolyo oluştur",       Icon: Sparkles },
-  { text: "İş ilanlarına mükemmel uyumu anında gör",            Icon: Target },
-  { text: "Tüm başvurularını tek bir panelden takip et",         Icon: LayoutDashboard },
+  { key: "layout.feature1", Icon: Pencil },
+  { key: "layout.feature2", Icon: Sparkles },
+  { key: "layout.feature3", Icon: Target },
+  { key: "layout.feature4", Icon: LayoutDashboard },
 ];
 
 const PLATFORMS: PlatformId[] = ["linkedin", "upwork", "fiverr", "bionluk", "armut"];
@@ -151,6 +152,7 @@ function SparkleDecor({ className }: { className?: string }) {
 
 /* ─── AuthLayout ──────────────────────────────────────────────── */
 export function AuthLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("auth");
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
 
@@ -218,25 +220,25 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
                 ))}
               </div>
               <span className="text-xs font-semibold text-indigo-700 dark:text-white/65">
-                Beta — İlk 100 kullanıcı ücretsiz
+                {t("layout.betaBadge")}
               </span>
             </div>
 
             {/* Headline — 2 sütun genişliğinde */}
             <h1 className="anim-fade-up anim-d2 text-[3rem] font-extrabold tracking-[-0.005em] leading-[1.12]">
-              <span className="text-slate-900 dark:text-white">Freelancer kariyerini </span>
+              <span className="text-slate-900 dark:text-white">{t("layout.headlinePre")}</span>
               <span className="relative inline-block">
                 <span className="bg-gradient-to-r from-indigo-500 to-violet-500
                                  dark:from-[#00F0FF] dark:to-violet-400
                                  bg-clip-text text-transparent font-black">
-                  tek platformdan
+                  {t("layout.headlineHighlight")}
                 </span>
                 <span className="pointer-events-none absolute -bottom-1 left-0 right-0 h-[2px] rounded-full
                                  bg-gradient-to-r from-indigo-400 to-violet-400
                                  dark:from-[#00F0FF] dark:to-violet-400 opacity-50" />
               </span>
               {" "}
-              <span className="text-slate-900 dark:text-white">yönet.</span>
+              <span className="text-slate-900 dark:text-white">{t("layout.headlinePost")}</span>
             </h1>
           </div>
 
@@ -245,7 +247,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
 
             {/* Sol: 4 özellik */}
             <div className="flex flex-col justify-center space-y-5 anim-fade-up anim-d3">
-              {FEATURES.map(({ text, Icon }, i) => (
+              {FEATURES.map(({ key, Icon }, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <div
                     className="mt-0.5 shrink-0 h-6 w-6 rounded-lg flex items-center justify-center
@@ -256,7 +258,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
                   </div>
                   <span className="text-lg font-medium leading-relaxed
                                    text-slate-600 dark:text-white/65">
-                    {text}
+                    {t(key)}
                   </span>
                 </div>
               ))}
@@ -272,7 +274,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-none text-center space-y-4 anim-fade-up anim-d5 pb-1">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em]
                           text-slate-400 dark:text-white/25">
-              Desteklenen platformlar
+              {t("layout.supportedPlatforms")}
             </p>
             <div className="flex items-center justify-center gap-3">
               {PLATFORMS.map((id) => (
@@ -305,14 +307,14 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
         {/* ── Mobile: compact tagline ── */}
         <div className="relative lg:hidden mt-5 space-y-2">
           <p className="text-2xl font-extrabold leading-tight text-slate-900 dark:text-white">
-            Tek profil.{" "}
+            {t("layout.mobileTaglinePre")}{" "}
             <span className="bg-gradient-to-r from-indigo-500 to-violet-500
                              dark:from-[#00F0FF] dark:to-violet-400 bg-clip-text text-transparent">
-              5 platform.
+              {t("layout.mobileTaglineHighlight")}
             </span>
           </p>
           <p className="text-sm font-medium text-slate-500 dark:text-white/50">
-            Freelancer kariyerini tek yerden yönet.
+            {t("layout.mobileTaglineSub")}
           </p>
         </div>
       </div>

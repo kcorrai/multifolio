@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Save, ExternalLink, Trash2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { useDashboard } from "./dashboard-context";
 
 export function AccountsTab({ initialConnections }: { initialConnections: Record<string, string> }) {
   const { setConnectionsCount } = useDashboard();
+  const t = useTranslations("accounts");
   const [connections, setConnections] = useState<Record<string, string>>(initialConnections);
   const [connectionDraft, setConnectionDraft] = useState<Record<string, string>>(initialConnections);
   const [savingConnection, setSavingConnection] = useState<PlatformId | null>(null);
@@ -30,7 +32,7 @@ export function AccountsTab({ initialConnections }: { initialConnections: Record
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
-      setConnectionError((prev) => ({ ...prev, [platform]: body?.error?.message ?? "Kaydedilemedi." }));
+      setConnectionError((prev) => ({ ...prev, [platform]: body?.error?.message ?? t("errorSave") }));
       setSavingConnection(null); return;
     }
     setConnections((prev) => ({ ...prev, [platform]: url }));
@@ -45,7 +47,7 @@ export function AccountsTab({ initialConnections }: { initialConnections: Record
     });
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      setConnectionError((prev) => ({ ...prev, [platform]: body?.error?.message ?? "Silinemedi." }));
+      setConnectionError((prev) => ({ ...prev, [platform]: body?.error?.message ?? t("errorDelete") }));
       setDeletingConnection(null); return;
     }
     setConnections((prev) => { const n = { ...prev }; delete n[platform]; return n; });
@@ -56,10 +58,9 @@ export function AccountsTab({ initialConnections }: { initialConnections: Record
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-        <p className="text-sm font-semibold">Platform Hesaplarım</p>
+        <p className="text-sm font-semibold">{t("title")}</p>
         <p className="text-xs text-muted-foreground">
-          Her platform için profil URL&apos;ni gir. Gelecekte bu bağlantılar üzerinden
-          profilini import edebileceksin.
+          {t("description")}
         </p>
       </div>
 
@@ -82,10 +83,10 @@ export function AccountsTab({ initialConnections }: { initialConnections: Record
                     <p className="text-sm font-semibold">{PLATFORMS[id].label}</p>
                     {saved ? (
                       <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${style.badge}`}>
-                        ✓ Bağlı
+                        {t("connected")}
                       </span>
                     ) : (
-                      <span className="text-[10px] text-muted-foreground/60">Bağlı değil</span>
+                      <span className="text-[10px] text-muted-foreground/60">{t("notConnected")}</span>
                     )}
                   </div>
                 </div>
@@ -114,7 +115,7 @@ export function AccountsTab({ initialConnections }: { initialConnections: Record
                     className="gap-1.5 h-7 text-xs"
                   >
                     <Save className="h-3 w-3" />
-                    {savingConnection === id ? "Kaydediliyor…" : saved && !isDirty ? "Kaydedildi" : "Kaydet"}
+                    {savingConnection === id ? t("saving") : saved && !isDirty ? t("saved") : t("save")}
                   </Button>
                   {saved && (
                     <>
@@ -124,13 +125,13 @@ export function AccountsTab({ initialConnections }: { initialConnections: Record
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                       >
-                        <ExternalLink className="h-3 w-3" />Görüntüle
+                        <ExternalLink className="h-3 w-3" />{t("view")}
                       </a>
                       <button
                         onClick={() => removeConnection(id)}
                         disabled={deletingConnection === id}
                         className="ml-auto text-muted-foreground/40 hover:text-destructive transition-colors cursor-pointer"
-                        title="Bağlantıyı kaldır"
+                        title={t("removeConnection")}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>

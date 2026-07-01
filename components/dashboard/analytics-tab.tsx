@@ -1,11 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { TrendingUp, BarChart3, Briefcase, Wallet, ShoppingCart, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { JOB_STATUSES } from "@/lib/validation/schemas/job";
 import {
-  StatCard, TINT_CYAN, ELEVATED, KIND_LABELS, KIND_ICONS,
-  STATUS_LABELS, STATUS_DOT, formatUsd, type AnalyticsData, type JobRow,
+  StatCard, TINT_CYAN, ELEVATED, KIND_ICONS,
+  STATUS_DOT, formatUsd, type AnalyticsData, type JobRow,
 } from "./shared";
 import { useDashboard } from "./dashboard-context";
 
@@ -16,6 +17,8 @@ export function AnalyticsTab({
   credits: number;
   jobs: JobRow[];
 }) {
+  const t = useTranslations("analytics");
+  const ts = useTranslations("jobs");
   const { triggerComingSoon } = useDashboard();
 
   return (
@@ -29,9 +32,9 @@ export function AnalyticsTab({
                 <Wallet className="h-5 w-5 text-violet-600 dark:text-violet-400" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground font-medium">Kredi Bakiyesi</p>
+                <p className="text-xs text-muted-foreground font-medium">{t("creditBalance")}</p>
                 <p className="text-3xl font-extrabold tabular-nums">{credits}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">kredi kaldı</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("creditsLeft")}</p>
               </div>
             </div>
             <button
@@ -39,19 +42,19 @@ export function AnalyticsTab({
               className="flex items-center gap-2 rounded-xl border border-violet-200 dark:border-violet-800/60 bg-violet-50 dark:bg-violet-950/40 px-4 py-2.5 text-sm font-semibold text-violet-700 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors cursor-pointer"
             >
               <ShoppingCart className="h-4 w-4" />
-              Kredi Satın Al
-              <span className="rounded-full bg-violet-200 dark:bg-violet-800 px-1.5 py-0.5 text-[10px] font-bold text-violet-700 dark:text-violet-300">Yakında</span>
+              {t("buyCredits")}
+              <span className="rounded-full bg-violet-200 dark:bg-violet-800 px-1.5 py-0.5 text-[10px] font-bold text-violet-700 dark:text-violet-300">{t("soon")}</span>
             </button>
           </div>
         </CardContent>
       </Card>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        <StatCard icon={TrendingUp} tint={TINT_CYAN} label="Toplam Harcama"
-          value={formatUsd(analytics.totalUsd)} sub={`${analytics.totalCount} işlem`} />
+        <StatCard icon={TrendingUp} tint={TINT_CYAN} label={t("totalSpend")}
+          value={formatUsd(analytics.totalUsd)} sub={t("transactions", { count: analytics.totalCount })} />
         {Object.entries(analytics.byKind).map(([kind, { count, costUsd }]) => (
           <StatCard key={kind} icon={KIND_ICONS[kind] ?? Zap} tint={TINT_CYAN}
-            label={KIND_LABELS[kind] ?? kind} value={count} sub={formatUsd(costUsd)} />
+            label={t.has(`kind.${kind}`) ? t(`kind.${kind}`) : kind} value={count} sub={formatUsd(costUsd)} />
         ))}
       </div>
 
@@ -60,7 +63,7 @@ export function AnalyticsTab({
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4 text-[#00F0FF]" />
-              <CardTitle className="text-sm">Son 30 Gün — Günlük AI Harcaması</CardTitle>
+              <CardTitle className="text-sm">{t("dailyTitle")}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
@@ -91,9 +94,9 @@ export function AnalyticsTab({
           <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
             <BarChart3 className="h-7 w-7 text-muted-foreground/40" />
           </div>
-          <p className="text-sm font-semibold text-muted-foreground">Henüz kullanım yok</p>
+          <p className="text-sm font-semibold text-muted-foreground">{t("noUsage")}</p>
           <p className="text-xs text-muted-foreground/60 mt-1">
-            Uyarlama, portfolyo veya eşleştirme yaptıkça burada görünür.
+            {t("noUsageHint")}
           </p>
         </div>
       )}
@@ -109,13 +112,13 @@ export function AnalyticsTab({
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
                 <Briefcase className="h-4 w-4 text-[#00F0FF]" />
-                <CardTitle className="text-sm">Başvuru Performansı</CardTitle>
+                <CardTitle className="text-sm">{t("applicationPerformance")}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-2.5">
               {byStatus.map(({ status, count }) => (
                 <div key={status} className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground w-28 shrink-0">{STATUS_LABELS[status]}</span>
+                  <span className="text-xs text-muted-foreground w-28 shrink-0">{ts(`status.${status}`)}</span>
                   <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
                     <div
                       className={`h-full rounded-full ${STATUS_DOT[status]}`}
