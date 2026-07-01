@@ -13,24 +13,23 @@ import { PlatformLogo } from "@/components/platform-logo";
 import { PLATFORMS, PLATFORM_IDS } from "@/lib/ai/platforms";
 import {
   StatCard, TINT_CYAN, TINT_VIOLET, ELEVATED, PLATFORM_STYLES,
-  STATUS_DOT, scoreColor, formatUsd, type JobRow,
+  STATUS_DOT, scoreColor, type JobRow,
 } from "./shared";
 import { useDashboard } from "./dashboard-context";
 import { useAdapt } from "./use-adapt";
 
 export function OverviewTab({
-  profileSaved, portfolioPublished, jobs, totalCount, credits,
+  profileSaved, portfolioPublished, jobs, totalCount,
 }: {
   profileSaved: boolean;
   portfolioPublished: boolean;
   jobs: JobRow[];
   totalCount: number;
-  credits: number;
 }) {
   const t = useTranslations("dashboard.overview");
   const ts = useTranslations("jobs");
   const locale = useLocale();
-  const { spend, adaptResults, triggerComingSoon } = useDashboard();
+  const { credits, creditsUsed, adaptResults, triggerComingSoon } = useDashboard();
   const { adapt, adapting } = useAdapt();
   const [onboardingDismissed, setOnboardingDismissed] = useState(profileSaved);
 
@@ -115,7 +114,7 @@ export function OverviewTab({
           </button>
         </StatCard>
 
-        <StatCard icon={Zap} tint={TINT_CYAN} label={t("aiSpend")} value={formatUsd(spend)}
+        <StatCard icon={Zap} tint={TINT_CYAN} label={t("creditsUsed")} value={creditsUsed}
           sub={t("transactions", { count: totalCount })} />
 
         <StatCard icon={Layers} tint={TINT_CYAN} label={t("platform")}

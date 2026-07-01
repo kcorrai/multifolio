@@ -15,9 +15,9 @@ export interface JobRow {
   status: JobStatus; match_score: number | null; match_result: JobMatchResult | null; created_at: string;
 }
 export interface AnalyticsData {
-  totalUsd: number; totalCount: number;
-  byKind: Record<string, { count: number; costUsd: number }>;
-  dailySeries: { date: string; costUsd: number }[];
+  totalCredits: number; totalCount: number;
+  byKind: Record<string, { count: number; credits: number }>;
+  dailySeries: { date: string; credits: number }[];
 }
 
 /* ── Navigation ─────────────────────────────────────────────────────── */
@@ -84,10 +84,6 @@ export function scoreBarColor(n: number) {
   if (n >= 70) return "bg-green-500";
   if (n >= 40) return "bg-amber-500";
   return "bg-red-500";
-}
-
-export function formatUsd(n: number) {
-  return `$${n.toFixed(n < 0.01 ? 6 : 4)}`;
 }
 
 /* ── Shared visual tokens ───────────────────────────────────────────── */

@@ -190,7 +190,7 @@
       "title": "Genel Bakış",
       "credits": "Kredi",
       "buyCredits": "Satın Al",
-      "aiSpend": "AI Harcama",
+      "creditsUsed": "Harcanan kredi",
       "transactions": "{count} işlem",
       "platform": "Platform",
       "platformsAdapted": "platform uyarlandı",

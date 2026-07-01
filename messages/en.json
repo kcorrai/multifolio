@@ -190,7 +190,7 @@
       "title": "Overview",
       "credits": "Credits",
       "buyCredits": "Buy",
-      "aiSpend": "AI Spend",
+      "creditsUsed": "Credits used",
       "transactions": "{count} transactions",
       "platform": "Platform",
       "platformsAdapted": "platforms adapted",
