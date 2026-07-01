@@ -49,3 +49,6 @@ next-env.d.ts
 /.playwright-mcp/
 /supabase/.temp/
 /docs/superpowers/
+
+# root-level scratch screenshots (playwright verify, vb.)
+/*.png

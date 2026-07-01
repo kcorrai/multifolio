@@ -5,7 +5,7 @@
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
 **Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/{en,tr}.json`) — EN varsayılan, TR opsiyonel; sabit string yazma, `useTranslations`/`getTranslations` kullan (yeni anahtar ekleyince iki katalogu da güncelle). **Kod yorumları Türkçe kalır.** AI çıktı dili UI locale'ine uyar.
-Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 7 (Proposal Engine, İş Detay Paneli, Telegram, Analitik).**
+Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 8 tamamlandı (Global i18n — EN varsayılan + TR, cookie tabanlı). Sırada: backlog / Faz 6 (iki taraflı pazar).**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
