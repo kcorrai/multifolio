@@ -94,6 +94,24 @@
         "scale": "Yoğun kullanıcılar ve küçük ajanslar için."
       }
     },
+    "faq": {
+      "eyebrow": "SSS",
+      "title": "Merak edilenler",
+      "q": {
+        "credits": "Kredi nedir?",
+        "expire": "Krediler biter mi?",
+        "subscription": "Abonelik var mı?",
+        "platforms": "Hangi platformlar destekleniyor?",
+        "beta": "Başlaması gerçekten ücretsiz mi?"
+      },
+      "a": {
+        "credits": "Krediler AI aksiyonlarında harcadığın birimlerdir. Profil uyarlama veya iş eşleştirme 1 kredi, teklif 2, tam portfolyo 3 kredidir. Harcamadan önce bakiyeni her zaman görürsün.",
+        "expire": "Hayır. Krediler süresizdir — bir kez al, istediğinde kullan. Aylık sıfırlama yok.",
+        "subscription": "Abonelik ve otomatik yenileme yok. Kullandıkça öde: sadece istediğinde kredi yükle.",
+        "platforms": "LinkedIn, Upwork, Fiverr, Bionluk ve Armut — yenileri yolda.",
+        "beta": "Evet. Her yeni hesap 100 ücretsiz krediyle başlar — beş platformu uyarlamaya, portfolyo kurmaya ve birkaç işi eşleştirmeye yeter."
+      }
+    },
     "finalCta": {
       "title": "Freelancer kariyerini bir üst seviyeye taşı.",
       "subtitle": "Beta sürecinde ücretsiz. Kredi kartı gerekmez."

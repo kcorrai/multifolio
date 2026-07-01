@@ -94,6 +94,24 @@
         "scale": "For power users and small agencies running at volume."
       }
     },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions, answered",
+      "q": {
+        "credits": "What are credits?",
+        "expire": "Do credits expire?",
+        "subscription": "Is there a subscription?",
+        "platforms": "Which platforms are supported?",
+        "beta": "Is it really free to start?"
+      },
+      "a": {
+        "credits": "Credits are what you spend on AI actions. Adapting a profile or matching a job costs 1 credit, a proposal 2, a full portfolio 3. You always see your balance before you spend.",
+        "expire": "No. Credits never expire — buy once, use whenever. There's no monthly reset.",
+        "subscription": "No subscription and no auto-renew. It's pay-as-you-go: top up credits only when you want to.",
+        "platforms": "LinkedIn, Upwork, Fiverr, Bionluk and Armut — with more on the way.",
+        "beta": "Yes. Every new account starts with 100 free credits — enough to adapt all five platforms, build a portfolio and match several jobs."
+      }
+    },
     "finalCta": {
       "title": "Take your freelance career to the next level.",
       "subtitle": "Free during beta. No credit card required."
