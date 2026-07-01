@@ -210,6 +210,23 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
               </div>
             )}
 
+            {/* İlan Gereksinimleri */}
+            {(matchResult?.requirements ?? []).length > 0 && (
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                  <Target className="h-3.5 w-3.5" />İlan Gereksinimleri
+                </p>
+                <ul className="space-y-1">
+                  {(matchResult?.requirements ?? []).map((r, i) => (
+                    <li key={i} className="text-[11px] text-muted-foreground flex gap-1.5">
+                      <span className="text-[#00F0FF]">·</span>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Teklif Oluştur CTA */}
             <Button
               onClick={() => setShowProposal(true)}
