@@ -164,11 +164,10 @@
     "nav": {
       "overview": "Overview",
       "profile": "Profile",
-      "adapt": "Platform Adaptation",
+      "platforms": "Platforms",
       "portfolio": "Portfolio",
       "jobs": "Jobs",
-      "analytics": "Analytics",
-      "accounts": "Accounts"
+      "analytics": "Analytics"
     },
     "shell": {
       "credits": "Credits",
@@ -331,6 +330,57 @@
     "adaptAction": "Adapt",
     "emptyState": "Optimized text for {platform} will appear here.",
     "adaptFailed": "Adaptation failed."
+  },
+  "platforms": {
+    "eyebrow": "Workspace",
+    "hubTitle": "Platforms",
+    "hubSubtitle": "Manage each platform's profile, connection, matched jobs and proposals in one place.",
+    "card": {
+      "connected": "Connected",
+      "notConnected": "Not connected",
+      "adapted": "Adapted",
+      "jobsCount": "{count, plural, =0 {No matched jobs} one {# matched job} other {# matched jobs}}",
+      "saveProfileFirst": "Save your profile first to adapt it and match jobs."
+    },
+    "detail": {
+      "back": "All platforms",
+      "profileSection": "Adapted Profile",
+      "profileHint": "AI-optimized profile copy for this platform.",
+      "connectionSection": "Connection",
+      "jobsSection": "Matched Jobs",
+      "noJobs": "No jobs for this platform yet. Add one from the Jobs page.",
+      "proposalsSection": "Proposals",
+      "noProposals": "No proposals for this platform yet.",
+      "proposalJob": "Job",
+      "tipsTitle": "Tips for this platform"
+    },
+    "tips": {
+      "linkedin": [
+        "Lead your headline with your role and a clear value proposition.",
+        "Write the About section in first person; back claims with concrete results.",
+        "Use industry keywords naturally so recruiters find you."
+      ],
+      "upwork": [
+        "Open with the client's problem, then how you solve it.",
+        "Keep it scannable — short paragraphs and clear outcomes.",
+        "Name your specialty precisely (e.g. 'React & Next.js Frontend Developer')."
+      ],
+      "fiverr": [
+        "Frame your profile around a productized, repeatable service.",
+        "Highlight fast delivery and a clear scope of what's included.",
+        "Use benefit-driven language buyers can grasp in seconds."
+      ],
+      "bionluk": [
+        "A personalized proposal beats a generic gig — address the specific need.",
+        "Write in fluent Turkish with a friendly, trustworthy tone.",
+        "Show local references and quick communication."
+      ],
+      "armut": [
+        "Respond fast and be specific about how you'll do the work.",
+        "State pricing and scope clearly to build trust up front.",
+        "Emphasize reliability and past customer satisfaction."
+      ]
+    }
   },
   "portfolio": {
     "title": "Portfolio Site",

@@ -164,11 +164,10 @@
     "nav": {
       "overview": "Genel Bakış",
       "profile": "Profil",
-      "adapt": "Platform Uyarlama",
+      "platforms": "Platformlar",
       "portfolio": "Portfolyo",
       "jobs": "İlanlar",
-      "analytics": "Analitik",
-      "accounts": "Hesaplar"
+      "analytics": "Analitik"
     },
     "shell": {
       "credits": "Kredi",
@@ -331,6 +330,57 @@
     "adaptAction": "Uyarla",
     "emptyState": "{platform} için optimize metin burada görünecek.",
     "adaptFailed": "Uyarlama başarısız."
+  },
+  "platforms": {
+    "eyebrow": "Çalışma Alanı",
+    "hubTitle": "Platformlar",
+    "hubSubtitle": "Her platformun profilini, bağlantısını, eşleşen işlerini ve tekliflerini tek yerden yönet.",
+    "card": {
+      "connected": "Bağlı",
+      "notConnected": "Bağlı değil",
+      "adapted": "Uyarlandı",
+      "jobsCount": "{count, plural, =0 {Eşleşen ilan yok} other {# eşleşen ilan}}",
+      "saveProfileFirst": "Uyarlamak ve ilanlarla eşleştirmek için önce profilini kaydet."
+    },
+    "detail": {
+      "back": "Tüm platformlar",
+      "profileSection": "Uyarlanmış Profil",
+      "profileHint": "Bu platform için AI ile optimize edilmiş profil metni.",
+      "connectionSection": "Bağlantı",
+      "jobsSection": "Eşleşen İlanlar",
+      "noJobs": "Bu platform için henüz ilan yok. İlanlar sayfasından ekleyebilirsin.",
+      "proposalsSection": "Teklifler",
+      "noProposals": "Bu platform için henüz teklif yok.",
+      "proposalJob": "İlan",
+      "tipsTitle": "Bu platform için ipuçları"
+    },
+    "tips": {
+      "linkedin": [
+        "Başlığını rolün ve net bir değer önerinle aç.",
+        "Hakkında bölümünü birinci tekil şahıs yaz; iddiaları somut sonuçlarla destekle.",
+        "Sektör anahtar kelimelerini doğal kullan ki işverenler seni bulsun."
+      ],
+      "upwork": [
+        "Müşterinin sorunuyla başla, sonra nasıl çözdüğünü anlat.",
+        "Taranabilir tut — kısa paragraflar ve net sonuçlar.",
+        "Uzmanlığını net tanımla (ör. 'React & Next.js Frontend Developer')."
+      ],
+      "fiverr": [
+        "Profilini ürünleşmiş, tekrarlanabilir bir hizmet etrafında kur.",
+        "Hızlı teslimatı ve neyin dahil olduğunu net vurgula.",
+        "Alıcının saniyeler içinde anlayacağı fayda odaklı dil kullan."
+      ],
+      "bionluk": [
+        "Kişiselleştirilmiş teklif genel gig'i döver — spesifik ihtiyaca hitap et.",
+        "Akıcı Türkçe, samimi ve güven veren bir tonla yaz.",
+        "Yerel referansları ve hızlı iletişimi göster."
+      ],
+      "armut": [
+        "Hızlı yanıt ver ve işi nasıl yapacağını net anlat.",
+        "Fiyat ve kapsamı baştan net belirterek güven oluştur.",
+        "Güvenilirliği ve geçmiş müşteri memnuniyetini öne çıkar."
+      ]
+    }
   },
   "portfolio": {
     "title": "Portfolyo Sitesi",

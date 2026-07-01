@@ -1,5 +1,5 @@
 import {
-  User, Layers, Globe, Briefcase, Target, Sparkles, BarChart3, Link2, LayoutDashboard,
+  User, Layers, Globe, Briefcase, Target, Sparkles, BarChart3, LayoutDashboard,
 } from "lucide-react";
 import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
@@ -28,12 +28,17 @@ export type BadgeKey = "jobs" | "connections";
 export const NAV_ITEMS: { href: string; labelKey: string; icon: React.ElementType; badge?: BadgeKey }[] = [
   { href: "/dashboard",           labelKey: "overview",  icon: LayoutDashboard },
   { href: "/dashboard/profile",   labelKey: "profile",   icon: User },
-  { href: "/dashboard/adapt",     labelKey: "adapt",     icon: Layers },
+  { href: "/dashboard/platforms", labelKey: "platforms", icon: Layers,     badge: "connections" },
   { href: "/dashboard/portfolio", labelKey: "portfolio", icon: Globe },
   { href: "/dashboard/jobs",      labelKey: "jobs",      icon: Briefcase, badge: "jobs" },
   { href: "/dashboard/analytics", labelKey: "analytics", icon: BarChart3 },
-  { href: "/dashboard/accounts",  labelKey: "accounts",  icon: Link2,     badge: "connections" },
 ];
+
+/** Nav aktif durumu: /dashboard yalnız exact; diğerleri alt-route'ları da kapsar. */
+export function isNavActive(href: string, pathname: string) {
+  if (href === "/dashboard") return pathname === "/dashboard";
+  return pathname === href || pathname.startsWith(href + "/");
+}
 
 /* ── Constants ──────────────────────────────────────────────────────── */
 

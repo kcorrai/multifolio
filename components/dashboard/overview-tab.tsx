@@ -64,7 +64,7 @@ export function OverviewTab({
             <div className="grid grid-cols-3 gap-3">
               {[
                 { step: 1, label: t("step1Label"), desc: t("step1Desc"), href: "/dashboard/profile" },
-                { step: 2, label: t("step2Label"), desc: t("step2Desc"), href: "/dashboard/adapt" },
+                { step: 2, label: t("step2Label"), desc: t("step2Desc"), href: "/dashboard/platforms" },
                 { step: 3, label: t("step3Label"), desc: t("step3Desc"), href: "/dashboard/portfolio" },
               ].map(({ step, label, desc, href }) => {
                 const done = onboardingStep > step;
@@ -132,7 +132,7 @@ export function OverviewTab({
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm">{t("platformAdaptation")}</CardTitle>
-              <Link href="/dashboard/adapt" className="text-xs text-[#00F0FF] hover:underline transition-colors cursor-pointer">
+              <Link href="/dashboard/platforms" className="text-xs text-[#00F0FF] hover:underline transition-colors cursor-pointer">
                 {t("viewAll")}
               </Link>
             </div>

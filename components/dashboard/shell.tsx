@@ -8,7 +8,7 @@ import { Wallet, Zap, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
-import { NAV_ITEMS, formatUsd, type AdaptOutput } from "./shared";
+import { NAV_ITEMS, isNavActive, formatUsd, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
 import { VerifyEmailBanner } from "./verify-email-banner";
 import type { PlatformId } from "@/lib/ai/platforms";
@@ -41,7 +41,7 @@ export function DashboardShell({
     badge === "jobs" ? jobsCount : badge === "connections" ? connectionsCount : undefined;
 
   const userInitial = userEmail?.[0]?.toUpperCase() ?? "?";
-  const activeItem = NAV_ITEMS.find((n) => n.href === pathname);
+  const activeItem = NAV_ITEMS.find((n) => isNavActive(n.href, pathname));
   const pageTitle = activeItem ? t(`nav.${activeItem.labelKey}`) : "Dashboard";
 
   return (
@@ -72,7 +72,7 @@ export function DashboardShell({
           {/* Nav */}
           <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
             {NAV_ITEMS.map(({ href, labelKey, icon: Icon, badge }) => {
-              const active = href === pathname;
+              const active = isNavActive(href, pathname);
               const count = badgeCount(badge);
               return (
                 <Link
@@ -162,7 +162,7 @@ export function DashboardShell({
           {/* Mobile tab scroll */}
           <div className="lg:hidden flex overflow-x-auto border-b border-border px-3 py-2 gap-1 shrink-0 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
             {NAV_ITEMS.map(({ href, labelKey, icon: Icon, badge }) => {
-              const active = href === pathname;
+              const active = isNavActive(href, pathname);
               const count = badgeCount(badge);
               return (
                 <Link
