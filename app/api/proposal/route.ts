@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson, parseQuery } from "@/lib/validation";
-import { proposalCreateSchema } from "@/lib/validation/schemas/proposal";
+import { proposalCreateSchema, type ProposalCoverageItem } from "@/lib/validation/schemas/proposal";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { generateProposal } from "@/lib/ai/proposal";
@@ -39,7 +39,7 @@ export const POST = withErrorHandler(async (req) => {
 
   const input = await parseJson(req, proposalCreateSchema);
 
-  const [profileRes, jobRes] = await Promise.all([
+  const [profileRes, jobRes, lastProposalRes] = await Promise.all([
     supabase
       .from("profiles")
       .select("headline, summary, skills")
@@ -51,13 +51,32 @@ export const POST = withErrorHandler(async (req) => {
       .eq("id", input.job_id)
       .eq("user_id", user.id)
       .maybeSingle(),
+    // No-match yolunda ilk üretimde çıkarılan gereksinimleri geri beslemek için en son teklifin kapsamı.
+    supabase
+      .from("proposals")
+      .select("coverage")
+      .eq("job_id", input.job_id)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   if (profileRes.error) throw profileRes.error;
   if (!profileRes.data) throw new NotFoundError("Teklif üretmek için önce profil doldurmalısın.");
   if (jobRes.error) throw jobRes.error;
 
-  const requirements = (jobRes.data?.match_result as JobMatchResult | null)?.requirements;
+  // Gereksinim önceliği: (1) ilan eşleştirmesinden çıkan requirements (kanonik),
+  // (2) yoksa önceki teklifin coverage'ından çıkan gereksinimler (regenerate'te seti stabil tutar).
+  const matchRequirements = (jobRes.data?.match_result as JobMatchResult | null)?.requirements;
+  const priorRequirements = (lastProposalRes.data?.coverage as ProposalCoverageItem[] | null)
+    ?.map((c) => c.requirement)
+    .filter(Boolean);
+  const requirements = matchRequirements?.length
+    ? matchRequirements
+    : priorRequirements?.length
+      ? priorRequirements
+      : undefined;
 
   const result = await generateProposal(
     profileRes.data as ProfileInput,

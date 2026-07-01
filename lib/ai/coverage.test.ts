@@ -46,7 +46,8 @@ describe("buildFocusBlock", () => {
       "\nÖZELLİKLE şu eksik/kısmi gereksinimleri bu sefer açıkça karşıla:\n- X",
     );
   });
-  it("boş için boş string", () => {
+  it("boş/undefined için boş string", () => {
     expect(buildFocusBlock()).toBe("");
+    expect(buildFocusBlock([])).toBe("");
   });
 });

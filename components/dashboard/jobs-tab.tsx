@@ -96,10 +96,18 @@ export function JobsTab({
           {/* Sol: iş listesi */}
           <div className={`space-y-1.5 ${selectedJob ? "lg:col-span-2" : "lg:col-span-5"}`}>
             {jobs.map((job) => (
-              <button
+              <div
                 key={job.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => setSelectedJobId(job.id === selectedJobId ? null : job.id)}
-                className={`w-full text-left rounded-xl border px-3 py-2.5 transition-all cursor-pointer ${
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedJobId(job.id === selectedJobId ? null : job.id);
+                  }
+                }}
+                className={`w-full text-left rounded-xl border px-3 py-2.5 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40 ${
                   job.id === selectedJobId
                     ? "border-[#00F0FF]/40 bg-[#00F0FF]/5"
                     : "border-border hover:border-border/80 hover:bg-muted/40"
@@ -137,7 +145,7 @@ export function JobsTab({
                     <div className={`h-full rounded-full ${scoreBarColor(job.match_score)}`} style={{ width: `${job.match_score}%` }} />
                   </div>
                 )}
-              </button>
+              </div>
             ))}
           </div>
 
