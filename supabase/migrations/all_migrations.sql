@@ -112,3 +112,7 @@ drop policy if exists "job_listings_update_own" on public.job_listings;
 create policy "job_listings_update_own" on public.job_listings for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
 drop policy if exists "job_listings_delete_own" on public.job_listings;
 create policy "job_listings_delete_own" on public.job_listings for delete using (auth.uid() = user_id);
+
+-- 0009_proposal_coverage.sql
+alter table public.proposals
+  add column if not exists coverage jsonb;
