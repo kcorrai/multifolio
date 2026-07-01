@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -20,19 +22,22 @@ export const metadata: Metadata = {
     "Çoklu platform freelancer kariyer aracı — profilini bir kez gir, her platform için optimize et.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
     <html
-      lang="tr"
+      lang={locale}
       className={`${jakarta.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
