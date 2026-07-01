@@ -63,7 +63,7 @@ export async function generateProposal(
       { role: "user", content: userContent },
     ],
     response_format: zodResponseFormat(proposalWithCoverageSchema, "proposal"),
-    max_tokens: 900,
+    max_tokens: 1600,
   });
 
   const parsed = completion.choices[0].message.parsed;
