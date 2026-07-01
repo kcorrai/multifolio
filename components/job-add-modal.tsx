@@ -18,12 +18,12 @@ interface Props {
   hasProfile: boolean;
   onClose: () => void;
   onJobAdded: (job: JobRow) => void;
-  onCostUpdate?: (usd: number) => void;
+  onCreditsUpdate?: (c: { balance: number; spent: number }) => void;
 }
 
 const PLATFORM_OPTIONS = ["Upwork", "Fiverr", "Bionluk", "Armut", "LinkedIn", "Diğer"];
 
-export function JobAddModal({ hasProfile, onClose, onJobAdded, onCostUpdate }: Props) {
+export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }: Props) {
   const t = useTranslations("jobs.add");
   const [title, setTitle] = useState("");
   const [platform, setPlatform] = useState("");
@@ -64,7 +64,7 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCostUpdate }: P
       const matchBody = await matchRes.json().catch(() => null);
       if (matchRes.ok && matchBody?.job) {
         onJobAdded(matchBody.job as JobRow);
-        if (typeof matchBody.cost?.usd === "number") onCostUpdate?.(matchBody.cost.usd);
+        if (matchBody.credits) onCreditsUpdate?.(matchBody.credits);
       }
     }
 

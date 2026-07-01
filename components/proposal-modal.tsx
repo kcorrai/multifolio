@@ -13,7 +13,7 @@ interface Props {
   jobDescription: string;
   defaultPlatform?: string;
   onClose: () => void;
-  onCostUpdate?: (usd: number) => void;
+  onCreditsUpdate?: (c: { balance: number; spent: number }) => void;
 }
 
 function CopyBtn({ text }: { text: string }) {
@@ -30,7 +30,7 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
-export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose, onCostUpdate }: Props) {
+export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose, onCreditsUpdate }: Props) {
   const t = useTranslations("proposal");
   const locale = useLocale();
   const validDefault = PLATFORM_IDS.includes(defaultPlatform as PlatformId) ? defaultPlatform as PlatformId : "upwork";
@@ -71,7 +71,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
     setGenerated(newProposal.content);
     setCoverage(newProposal.coverage ?? []);
     setProposals((prev) => [newProposal, ...prev]);
-    if (typeof body.cost?.usd === "number") onCostUpdate?.(body.cost.usd);
+    if (body.credits) onCreditsUpdate?.(body.credits);
     setGenerating(false);
   }
 

@@ -15,7 +15,7 @@ export function PortfolioTab({
   profileSaved: boolean;
   initialPortfolio: InitialPortfolio | null;
 }) {
-  const { addSpend } = useDashboard();
+  const { applyCredits } = useDashboard();
   const t = useTranslations("portfolio");
   const [portfolio, setPortfolio] = useState<InitialPortfolio | null>(initialPortfolio);
   const [portfolioSlug, setPortfolioSlug] = useState(initialPortfolio?.slug ?? "");
@@ -33,7 +33,7 @@ export function PortfolioTab({
     setPortfolio({ slug: p.slug, published: p.published, content: p.content });
     setPortfolioSlug(p.slug);
     setPortfolioPublished(p.published);
-    if (typeof body.cost?.usd === "number") addSpend(body.cost.usd);
+    if (body.credits) applyCredits(body.credits);
     setGenerating(false);
   }
 

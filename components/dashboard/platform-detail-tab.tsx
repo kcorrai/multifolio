@@ -36,7 +36,7 @@ export function PlatformDetailTab({
   const tj = useTranslations("jobs");
   const locale = useLocale();
   const style = PLATFORM_STYLES[platform];
-  const { adaptResults, addSpend, setConnectionsCount } = useDashboard();
+  const { adaptResults, applyCredits, setConnectionsCount } = useDashboard();
   const { adapt, adapting, error: adaptError } = useAdapt();
   const adaptResult = adaptResults[platform];
 
@@ -262,7 +262,7 @@ export function PlatformDetailTab({
                   job={selectedJob}
                   onClose={() => setSelectedJobId(null)}
                   onJobUpdated={(updated) => setJobs((prev) => prev.map((j) => j.id === updated.id ? updated : j))}
-                  onCostUpdate={(usd) => addSpend(usd)}
+                  onCreditsUpdate={(c) => applyCredits(c)}
                 />
               </div>
             )}

@@ -50,10 +50,10 @@ interface Props {
   job: JobRow;
   onClose: () => void;
   onJobUpdated: (job: JobRow) => void;
-  onCostUpdate?: (usd: number) => void;
+  onCreditsUpdate?: (c: { balance: number; spent: number }) => void;
 }
 
-export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Props) {
+export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: Props) {
   const t = useTranslations("jobs");
   const locale = useLocale();
   const [detail, setDetail] = useState<JobDetail | null>(null);
@@ -284,7 +284,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCostUpdate }: Pro
           jobDescription={detail.description}
           defaultPlatform={job.platform ?? undefined}
           onClose={() => setShowProposal(false)}
-          onCostUpdate={onCostUpdate}
+          onCreditsUpdate={onCreditsUpdate}
         />
       )}
     </>

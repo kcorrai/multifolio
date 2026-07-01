@@ -16,7 +16,7 @@ export function JobsTab({
   profileSaved: boolean;
 }) {
   const t = useTranslations("jobs");
-  const { addSpend, setJobsCount } = useDashboard();
+  const { applyCredits, setJobsCount } = useDashboard();
   const [jobs, setJobs] = useState<JobRow[]>(initialJobs);
   const [jobAddModalOpen, setJobAddModalOpen] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
@@ -158,7 +158,7 @@ export function JobsTab({
                 job={selectedJob}
                 onClose={() => setSelectedJobId(null)}
                 onJobUpdated={(updated) => setJobs((prev) => prev.map((j) => j.id === updated.id ? updated : j))}
-                onCostUpdate={(usd) => addSpend(usd)}
+                onCreditsUpdate={(c) => applyCredits(c)}
               />
             </div>
           )}
@@ -170,7 +170,7 @@ export function JobsTab({
           hasProfile={profileSaved}
           onClose={() => setJobAddModalOpen(false)}
           onJobAdded={handleJobAdded}
-          onCostUpdate={(usd) => addSpend(usd)}
+          onCreditsUpdate={(c) => applyCredits(c)}
         />
       )}
     </div>
