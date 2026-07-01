@@ -1,5 +1,6 @@
 // Kredi harcama sarmalayıcısı: krediyi ATOMİK düşer (yetersizse işi hiç
 // çalıştırmaz), işi çalıştırır, iş patlarsa krediyi iade eder. Yalnız sunucuda.
+import { getTranslations } from "next-intl/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { InsufficientCreditsError } from "@/lib/errors";
 import { CREDIT_COSTS, type CreditKind } from "./costs";
@@ -18,7 +19,7 @@ export async function spendCredits<T>(
   });
   if (error) {
     if (error.message?.includes("insufficient_credits")) {
-      throw new InsufficientCreditsError();
+      throw new InsufficientCreditsError((await getTranslations("errors"))("insufficientCredits"));
     }
     throw error;
   }

@@ -21,7 +21,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/health` — canlılık. `app/api/debug-sentry` — Sentry test (kaldırılabilir).
   - `app/api/profile` — **korumalı uç nokta ŞABLONU** (yeni route'lar bunu örnek alır).
   - `app/api/adapt` — uyarlama uç noktası (profil → platform metni; maliyeti kaydeder).
-  - `app/api/usage` — kullanıcının kümülatif harcaması (USD).
+  - `app/api/usage` — kullanıcının kümülatif kredi kullanımı (`{ creditsUsed, count }`).
   - `app/api/jobs` — GET (liste) / POST (oluştur) iş ilanı uç noktaları; url/budget/notes alanları desteklenir.
   - `app/api/jobs/[id]` — GET (tam veri) / PATCH (durum/başlık/notlar) / DELETE.
   - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı + Telegram trigger.

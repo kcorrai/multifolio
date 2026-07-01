@@ -323,7 +323,7 @@
     "totalSpend": "Credits spent",
     "creditsSub": "{count} credits",
     "transactions": "{count} transactions",
-    "dailyTitle": "Last 30 Days — Daily AI Spend",
+    "dailyTitle": "Last 30 days — daily credit usage",
     "noUsage": "No usage yet",
     "noUsageHint": "It will appear here as you adapt, generate portfolios or match listings.",
     "applicationPerformance": "Application Performance"

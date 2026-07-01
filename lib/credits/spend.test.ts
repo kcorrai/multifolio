@@ -6,6 +6,11 @@ vi.mock("@/lib/supabase/admin", () => ({
   createSupabaseAdminClient: () => ({ rpc }),
 }));
 
+// next-intl'in sunucu request kapsamı bu birim testte yok; getTranslations'ı mockla.
+vi.mock("next-intl/server", () => ({
+  getTranslations: async () => (key: string) => key,
+}));
+
 import { spendCredits } from "./spend";
 import { InsufficientCreditsError } from "@/lib/errors";
 

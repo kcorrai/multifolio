@@ -323,7 +323,7 @@
     "totalSpend": "Harcanan kredi",
     "creditsSub": "{count} kredi",
     "transactions": "{count} işlem",
-    "dailyTitle": "Son 30 Gün — Günlük AI Harcaması",
+    "dailyTitle": "Son 30 gün — günlük kredi kullanımı",
     "noUsage": "Henüz kullanım yok",
     "noUsageHint": "Uyarlama, portfolyo veya eşleştirme yaptıkça burada görünür.",
     "applicationPerformance": "Başvuru Performansı"
