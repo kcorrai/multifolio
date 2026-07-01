@@ -8,16 +8,18 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NAV_ITEMS, formatUsd, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
+import { VerifyEmailBanner } from "./verify-email-banner";
 import type { PlatformId } from "@/lib/ai/platforms";
 
 export function DashboardShell({
-  userEmail, credits, initialSpendUsd, initialJobsCount, initialConnectionsCount, children,
+  userEmail, credits, initialSpendUsd, initialJobsCount, initialConnectionsCount, emailVerified, children,
 }: {
   userEmail: string;
   credits: number;
   initialSpendUsd: number;
   initialJobsCount: number;
   initialConnectionsCount: number;
+  emailVerified: boolean;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -183,6 +185,7 @@ export function DashboardShell({
           {/* Scrollable content */}
           <main className="flex-1 overflow-y-auto min-h-0">
             <div className="mx-auto max-w-5xl px-4 sm:px-6 py-6">
+              <VerifyEmailBanner emailVerified={emailVerified} email={userEmail} />
               {children}
             </div>
           </main>

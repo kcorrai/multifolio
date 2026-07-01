@@ -16,6 +16,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const credits = creditsRes.data?.balance ?? 0;
   const spend = (usageRes.data ?? []).reduce((sum, r) => sum + Number(r.cost_usd ?? 0), 0);
+  const emailVerified = user.app_metadata?.email_verified === true;
 
   return (
     <DashboardShell
@@ -24,6 +25,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       initialSpendUsd={spend}
       initialJobsCount={jobsCountRes.count ?? 0}
       initialConnectionsCount={connCountRes.count ?? 0}
+      emailVerified={emailVerified}
     >
       {children}
     </DashboardShell>
