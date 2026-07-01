@@ -31,14 +31,15 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/ai/` — uyarlama motoru (sunucu-only): `openai-client.ts` (OpenAI gpt-4o-mini istemcisi),
   `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `PROPOSAL_GUIDANCE`),
   `adapt.ts` (`adaptProfile`), `portfolio.ts` (`generatePortfolio`),
-  `match.ts` (`matchJobToProfile`), `proposal.ts` (`generateProposal`), `pricing.ts` (token → USD).
+  `match.ts` (`matchJobToProfile` + ilandan `requirements` çıkarımı), `proposal.ts` (`generateProposal` — teklif metni + ilan gereksinimlerine karşı kapsama),
+  `coverage.ts` (saf kapsama yardımcıları: pending/summary/prompt blokları), `pricing.ts` (token → USD).
 - `lib/notifications/email.ts` — `sendMatchNotificationEmail` (Resend API, fire-and-forget; skor ≥ 70 olunca kullanıcı e-postasına bildirim).
 - `lib/validation/` — Zod yardımcıları (`parseJson`/`parseQuery`) + `schemas/`.
 - `lib/supabase/` — `server.ts` (RLS'li, varsayılan), `admin.ts` (service-role, RLS bypass — dikkat),
   `client.ts` (tarayıcı), `middleware.ts` (oturum yenileme). Kök `proxy.ts` bunu çağırır.
 - `lib/sanitize.ts` — portfolyo HTML'i için XSS sanitize (render öncesi zorunlu).
-- `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` + `JobStatus` (awaiting_reply dahil).
-- `lib/validation/schemas/proposal.ts` — `proposalCreateSchema` + `ProposalRow` tipi.
+- `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` (artık `requirements` içerir) + `JobStatus` (awaiting_reply dahil).
+- `lib/validation/schemas/proposal.ts` — `proposalCreateSchema`, `proposalWithCoverageSchema` + `ProposalCoverageItem`, `ProposalRow` tipi.
 - `lib/validation/schemas/platform-connection.ts` — `platformConnectionUpsertSchema` + `PlatformConnection` tipi.
 - `components/ui/` — shadcn bileşenleri.
 - `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. `verify-email-banner.tsx` — dashboard'da ertelenmiş e-posta doğrulama banner'ı + toast. Sekme bileşenleri: `overview-tab.tsx`, `profile-tab.tsx`, `adapt-tab.tsx`, `portfolio-tab.tsx`, `jobs-tab.tsx`, `analytics-tab.tsx`, `accounts-tab.tsx`.
@@ -53,6 +54,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `supabase/migrations/` — SQL şema + RLS politikaları (`supabase db push`).
   `0007_proposals.sql` — proposals tablosu; job_listings'e url/notes/budget + awaiting_reply status.
   `0008_notifications.sql` — boş (Telegram sistemi iptal edildi; e-posta Resend API üzerinden).
+  `0009_proposal_coverage.sql` — proposals.coverage kolonu (ilan gereksinimlerine karşı kapsama).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
 - Sentry: `instrumentation*.ts`, `sentry.*.config.ts`, `next.config.ts` (`withSentryConfig`).
@@ -62,7 +64,8 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 ## Komutlar
 - `npm run dev` — geliştirme sunucusu.
 - `npm run build` — üretim build'i.
-- `npm run check` — lint + type-check (`tsc --noEmit`). PR/iş bitişinde temiz olmalı.
+- `npm run test` — vitest birim testleri.
+- `npm run check` — lint + type-check (`tsc --noEmit`) + test (vitest). PR/iş bitişinde temiz olmalı.
 
 ## Kurulum / sık düşülen tuzaklar (tekrarlanmasın)
 - **Kabuk:** Bu makinede terminal **PowerShell**. Bash sözdizimi (`export`, `curl -X/-H/-d`, `&&` bazı yerlerde) çalışmaz; PowerShell'de `Invoke-RestMethod`/`Invoke-WebRequest` kullan (veya Bash tool'una geç). `curl` PowerShell'de `Invoke-WebRequest` alias'ıdır.
