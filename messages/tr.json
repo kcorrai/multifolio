@@ -46,35 +46,35 @@
       "subtitle": "Freelancer olarak ihtiyacın olan tüm araçlar, birbirine bağlı ve otomatik.",
       "adapt": {
         "title": "Platform Uyarlama",
-        "desc": "Profilini bir kez yaz. AI her platform için ayrı optimize eder — tona, dile ve beklentiye göre."
+        "desc": "Deneyimini bir kez gir. AI onu LinkedIn, Upwork, Fiverr, Bionluk ve Armut için ayrı ayrı, her platformun kendi diliyle yeniden yazar."
       },
       "portfolio": {
         "title": "Portfolyo Sitesi",
-        "desc": "/p/kullanici-adin adresinde yayınlanan, SEO'ya uygun kişisel portfolyo sayfası. OG etiketleriyle sosyal paylaşıma hazır."
+        "desc": "Profilinden saniyeler içinde şık bir portfolyo sayfası yayınla — paylaşılabilir link, kod yok, tasarım derdi yok."
       },
       "matching": {
         "title": "İlan Eşleştirme",
-        "desc": "İlanı yapıştır; profilinle karşılaştırır, 0-100 uyum skoru verir, güçlü yönlerini ve eksiklerini listeler."
+        "desc": "Bir ilanı yapıştır; 0-100 uyum skoru, güçlü yönler, eksikler ve ilandan çıkarılan gereksinimlerle birlikte gelir — emeğini yalnızca kazanabileceğin yerlere harca."
       },
       "tracking": {
         "title": "Başvuru Takibi",
-        "desc": "Kaydedildi → Başvuruldu → Görüşme → Teklif pipeline'ı. Tüm başvurularını tek ekrandan yönet."
+        "desc": "Her başvuruyu net bir akışta takip et: kaydedildi, başvuruldu, yanıt bekleniyor, görüşme, teklif, red."
       },
       "ai": {
         "title": "AI ile Üretim",
-        "desc": "GPT-4o mini destekli; structured output ile her seferinde doğru format ve platform diline uygun içerik."
+        "desc": "İlanın gereksinimlerini karşılayan platforma özel teklif metinleri üret, eksik kalanları tek tıkla tamamla."
       },
       "secure": {
         "title": "Güvenli & Hızlı",
-        "desc": "Supabase RLS ile her veri sahibine özel. Pay-as-you-go model: yalnızca kullandığın kadar öde."
+        "desc": "Satır bazlı güvenlik (RLS), sanitize edilmiş çıktı ve yalnızca sunucuda tutulan AI anahtarları. Verin sana ait kalır."
       }
     },
     "how": {
       "eyebrow": "Nasıl Çalışır",
       "title": "3 adımda başla.",
-      "step1": { "title": "Profilini gir", "desc": "Başlık, özet ve becerilerini bir kez doldur. Bu temel, her şeyin kaynağı." },
-      "step2": { "title": "Platform seç & uyarla", "desc": "LinkedIn, Upwork veya diğer platformlar için AI'ın optimize metnini üret." },
-      "step3": { "title": "Paylaş & takip et", "desc": "Portfolyonu yayınla, başvurularını takip et, ilanları eşleştir." }
+      "step1": { "title": "Profilini bir kez gir", "desc": "İşlerini, becerilerini ve sonuçlarını tek seferde ekle — platform başına kopyala-yapıştır yok." },
+      "step2": { "title": "AI uyarlar & kurar", "desc": "Beş platform için optimize metin, üstüne paylaşıma hazır bir portfolyo sitesi al." },
+      "step3": { "title": "Eşleştir, teklif ver, takip et", "desc": "İlanları puanla, uygun teklifler üret ve tüm başvurularını tek yerden takip et." }
     },
     "finalCta": {
       "title": "Freelancer kariyerini bir üst seviyeye taşı.",

@@ -148,9 +148,13 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
 
           <nav className="hidden md:flex items-center gap-7">
-            {[t("nav.features"), t("nav.howItWorks"), t("nav.pricing")].map((item) => (
-              <a key={item} href="#" className="text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
-                {item}
+            {[
+              { label: t("nav.features"),   href: "#features" },
+              { label: t("nav.howItWorks"), href: "#how" },
+              { label: t("nav.pricing"),    href: "#pricing" },
+            ].map(({ label, href }) => (
+              <a key={href} href={href} className="text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
+                {label}
               </a>
             ))}
           </nav>
@@ -350,7 +354,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
       </section>
 
       {/* How it works */}
-      <section className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-[#161923]/40 py-24">
+      <section id="how" className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-[#161923]/40 py-24">
         <div className="mx-auto max-w-6xl px-8">
           <ScrollReveal>
             <div className="text-center space-y-3 mb-14">
@@ -410,6 +414,11 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </div>
             <span className="text-sm font-bold text-slate-500 dark:text-[#94A3B8]/50">Multifolio</span>
           </div>
+          <nav className="hidden sm:flex items-center gap-6">
+            <a href="#features" className="text-xs text-slate-400 dark:text-white/30 hover:text-slate-700 dark:hover:text-white/70 transition-colors font-medium">{t("nav.features")}</a>
+            <a href="#how" className="text-xs text-slate-400 dark:text-white/30 hover:text-slate-700 dark:hover:text-white/70 transition-colors font-medium">{t("nav.howItWorks")}</a>
+            <a href="#pricing" className="text-xs text-slate-400 dark:text-white/30 hover:text-slate-700 dark:hover:text-white/70 transition-colors font-medium">{t("nav.pricing")}</a>
+          </nav>
           <p className="text-xs text-slate-400 dark:text-white/20 font-medium">{t("footer.rights")}</p>
         </div>
       </footer>

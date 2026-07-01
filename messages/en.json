@@ -46,35 +46,35 @@
       "subtitle": "All the tools you need as a freelancer, connected and automated.",
       "adapt": {
         "title": "Platform adaptation",
-        "desc": "Write your profile once. AI optimizes it separately for each platform — tone, language and expectations."
+        "desc": "Enter your experience once. AI rewrites it into a tailored profile for LinkedIn, Upwork, Fiverr, Bionluk and Armut — each in that platform's voice."
       },
       "portfolio": {
         "title": "Portfolio site",
-        "desc": "An SEO-friendly personal portfolio page published at /p/your-username. Ready for social sharing with OG tags."
+        "desc": "Publish a polished portfolio page from your profile in seconds — shareable link, no code, no design work."
       },
       "matching": {
         "title": "Job matching",
-        "desc": "Paste a listing; it compares against your profile, gives a 0–100 match score, and lists your strengths and gaps."
+        "desc": "Paste a job post and get a 0–100 fit score with strengths, gaps and the requirements it extracted — so you only spend effort where you can win."
       },
       "tracking": {
         "title": "Application tracking",
-        "desc": "Saved → Applied → Interview → Offer pipeline. Manage all your applications from one screen."
+        "desc": "Track every application through a clear pipeline: saved, applied, awaiting reply, interview, offer, rejected."
       },
       "ai": {
         "title": "AI generation",
-        "desc": "Powered by GPT-4o mini; structured output delivers the right format and platform-appropriate content every time."
+        "desc": "Generate platform-specific proposals covering the post's requirements, then patch any gaps with one click."
       },
       "secure": {
         "title": "Secure & fast",
-        "desc": "Per-owner isolation with Supabase RLS. Pay-as-you-go model: only pay for what you use."
+        "desc": "Row-level security, sanitized output and server-only AI keys. Your data is yours."
       }
     },
     "how": {
       "eyebrow": "How it works",
       "title": "Start in 3 steps.",
-      "step1": { "title": "Enter your profile", "desc": "Fill in your headline, summary and skills once. This foundation is the source of everything." },
-      "step2": { "title": "Pick a platform & adapt", "desc": "Generate AI-optimized copy for LinkedIn, Upwork or other platforms." },
-      "step3": { "title": "Share & track", "desc": "Publish your portfolio, track your applications, match listings." }
+      "step1": { "title": "Enter your profile once", "desc": "Add your work, skills and results a single time — no per-platform copy-paste." },
+      "step2": { "title": "AI adapts & builds", "desc": "Get optimized text for all five platforms plus a ready-to-share portfolio site." },
+      "step3": { "title": "Match, pitch & track", "desc": "Score job posts, generate proposals that fit, and track every application in one place." }
     },
     "finalCta": {
       "title": "Take your freelance career to the next level.",
