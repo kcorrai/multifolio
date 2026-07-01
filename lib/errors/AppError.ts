@@ -9,6 +9,7 @@ export type ErrorCode =
   | "FORBIDDEN"
   | "NOT_FOUND"
   | "RATE_LIMITED"
+  | "INSUFFICIENT_CREDITS"
   | "INTERNAL_ERROR";
 
 export interface AppErrorOptions {
@@ -74,6 +75,13 @@ export class NotFoundError extends AppError {
 export class RateLimitError extends AppError {
   constructor(message = "Çok fazla istek. Lütfen sonra deneyin.", options?: AppErrorOptions) {
     super("RATE_LIMITED", 429, message, true, options);
+  }
+}
+
+/** 402 — Yetersiz kredi. Mesaj istemciye gösterilir (satın alma yönlendirmesi için). */
+export class InsufficientCreditsError extends AppError {
+  constructor(message = "Yetersiz kredi.", options?: AppErrorOptions) {
+    super("INSUFFICIENT_CREDITS", 402, message, true, options);
   }
 }
 

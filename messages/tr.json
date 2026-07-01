@@ -425,6 +425,7 @@
     "profileRequiredPortfolio": "Portfolyo oluşturmak için önce profil doldurmalısın.",
     "profileRequiredProposal": "Teklif üretmek için önce profil doldurmalısın.",
     "profileRequiredMatch": "Eşleştirme için önce profil doldurmalısın.",
-    "jobNotFound": "İlan bulunamadı."
+    "jobNotFound": "İlan bulunamadı.",
+    "insufficientCredits": "Krediniz bitti. AI özelliklerini kullanmaya devam etmek için kredi alın."
   }
 }

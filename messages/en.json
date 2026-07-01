@@ -425,6 +425,7 @@
     "profileRequiredPortfolio": "Fill in your profile first to generate a portfolio.",
     "profileRequiredProposal": "Fill in your profile first to generate a proposal.",
     "profileRequiredMatch": "Fill in your profile first to run matching.",
-    "jobNotFound": "Job not found."
+    "jobNotFound": "Job not found.",
+    "insufficientCredits": "You're out of credits. Get more to keep using AI features."
   }
 }
