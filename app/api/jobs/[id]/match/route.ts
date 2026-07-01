@@ -7,6 +7,7 @@ import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { matchJobToProfile } from "@/lib/ai/match";
+import { spendCredits } from "@/lib/credits/spend";
 import { sendMatchNotificationEmail } from "@/lib/notifications/email";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
@@ -42,10 +43,9 @@ export const POST = withErrorHandler(async (_req, { params }) => {
   if (!jobRes.data) throw new NotFoundError((await getTranslations("errors"))("jobNotFound"));
 
   const locale = await getUserLocale();
-  const match = await matchJobToProfile(
-    profileRes.data as ProfileInput,
-    jobRes.data.description,
-    locale,
+  const jobDescription = jobRes.data.description;
+  const { result: match, balance, spent } = await spendCredits(user.id, "job_match", () =>
+    matchJobToProfile(profileRes.data as ProfileInput, jobDescription, locale),
   );
 
   // Sonucu ilana yaz (regular client — RLS update_own politikası yeterli).
@@ -68,6 +68,7 @@ export const POST = withErrorHandler(async (_req, { params }) => {
     input_tokens: match.inputTokens,
     output_tokens: match.outputTokens,
     cost_usd: match.costUsd,
+    credits_spent: spent,
   });
   if (usageError) throw usageError;
 
@@ -84,6 +85,6 @@ export const POST = withErrorHandler(async (_req, { params }) => {
 
   return NextResponse.json({
     job: updated,
-    cost: { usd: match.costUsd, inputTokens: match.inputTokens, outputTokens: match.outputTokens },
+    credits: { balance, spent },
   });
 });

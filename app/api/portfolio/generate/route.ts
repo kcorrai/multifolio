@@ -7,6 +7,7 @@ import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { generatePortfolio } from "@/lib/ai/portfolio";
+import { spendCredits } from "@/lib/credits/spend";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export const POST = withErrorHandler(async () => {
@@ -27,7 +28,10 @@ export const POST = withErrorHandler(async () => {
   if (profileError) throw profileError;
   if (!profileData) throw new NotFoundError((await getTranslations("errors"))("profileRequiredPortfolio"));
 
-  const result = await generatePortfolio(profileData as ProfileInput, await getUserLocale());
+  const portfolioLocale = await getUserLocale();
+  const { result, balance, spent } = await spendCredits(user.id, "portfolio_generation", () =>
+    generatePortfolio(profileData as ProfileInput, portfolioLocale),
+  );
 
   // Mevcut portfolyoyu güncelle (yoksa oluştur). Slug: ilk üretimde user id'den türetilir.
   const { data: existing } = await supabase
@@ -59,11 +63,12 @@ export const POST = withErrorHandler(async () => {
     input_tokens: result.inputTokens,
     output_tokens: result.outputTokens,
     cost_usd: result.costUsd,
+    credits_spent: spent,
   });
   if (usageError) throw usageError;
 
   return NextResponse.json({
     portfolio,
-    cost: { usd: result.costUsd, inputTokens: result.inputTokens, outputTokens: result.outputTokens },
+    credits: { balance, spent },
   });
 });

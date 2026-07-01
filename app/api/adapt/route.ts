@@ -11,6 +11,7 @@ import { adaptRequestSchema } from "@/lib/validation/schemas/adapt";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { adaptProfile } from "@/lib/ai/adapt";
+import { spendCredits } from "@/lib/credits/spend";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export const POST = withErrorHandler(async (req) => {
@@ -36,7 +37,10 @@ export const POST = withErrorHandler(async (req) => {
     profile = data as ProfileInput;
   }
 
-  const result = await adaptProfile(profile, input.platform, await getUserLocale());
+  const locale = await getUserLocale();
+  const { result, balance, spent } = await spendCredits(user.id, "adaptation", () =>
+    adaptProfile(profile, input.platform, locale),
+  );
 
   // Maliyeti server-otoritatif kaydet (service-role — RLS yazma politikası yok).
   const admin = createSupabaseAdminClient();
@@ -48,12 +52,13 @@ export const POST = withErrorHandler(async (req) => {
     input_tokens: result.inputTokens,
     output_tokens: result.outputTokens,
     cost_usd: result.costUsd,
+    credits_spent: spent,
   });
   if (insertError) throw insertError;
 
   return NextResponse.json({
     platform: input.platform,
     output: result.output,
-    cost: { usd: result.costUsd, inputTokens: result.inputTokens, outputTokens: result.outputTokens },
+    credits: { balance, spent },
   });
 });

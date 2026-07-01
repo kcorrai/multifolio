@@ -9,6 +9,7 @@ import { proposalCreateSchema, type ProposalCoverageItem } from "@/lib/validatio
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { generateProposal } from "@/lib/ai/proposal";
+import { spendCredits } from "@/lib/credits/spend";
 import { z } from "zod";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
@@ -80,11 +81,14 @@ export const POST = withErrorHandler(async (req) => {
       ? priorRequirements
       : undefined;
 
-  const result = await generateProposal(
-    profileRes.data as ProfileInput,
-    input.job_description,
-    input.platform,
-    { requirements, focusRequirements: input.focus_requirements, locale: await getUserLocale() },
+  const proposalLocale = await getUserLocale();
+  const { result, balance, spent } = await spendCredits(user.id, "proposal", () =>
+    generateProposal(
+      profileRes.data as ProfileInput,
+      input.job_description,
+      input.platform,
+      { requirements, focusRequirements: input.focus_requirements, locale: proposalLocale },
+    ),
   );
 
   // Teklifi proposals tablosuna kaydet
@@ -111,11 +115,12 @@ export const POST = withErrorHandler(async (req) => {
     input_tokens: result.inputTokens,
     output_tokens: result.outputTokens,
     cost_usd: result.costUsd,
+    credits_spent: spent,
   });
   if (usageError) throw usageError;
 
   return NextResponse.json({
     proposal: saved,
-    cost: { usd: result.costUsd, inputTokens: result.inputTokens, outputTokens: result.outputTokens },
+    credits: { balance, spent },
   }, { status: 201 });
 });
