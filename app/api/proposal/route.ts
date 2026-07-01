@@ -9,6 +9,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { generateProposal } from "@/lib/ai/proposal";
 import { z } from "zod";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
+import type { JobMatchResult } from "@/lib/validation/schemas/job";
 
 const jobIdQuerySchema = z.object({ job_id: z.string().uuid() });
 
@@ -21,7 +22,7 @@ export const GET = withErrorHandler(async (req) => {
 
   const { data, error } = await supabase
     .from("proposals")
-    .select("id, job_id, platform, content, created_at")
+    .select("id, job_id, platform, content, coverage, created_at")
     .eq("job_id", job_id)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
@@ -38,19 +39,31 @@ export const POST = withErrorHandler(async (req) => {
 
   const input = await parseJson(req, proposalCreateSchema);
 
-  const profileRes = await supabase
-    .from("profiles")
-    .select("headline, summary, skills")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const [profileRes, jobRes] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("headline, summary, skills")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("job_listings")
+      .select("match_result")
+      .eq("id", input.job_id)
+      .eq("user_id", user.id)
+      .maybeSingle(),
+  ]);
 
   if (profileRes.error) throw profileRes.error;
   if (!profileRes.data) throw new NotFoundError("Teklif üretmek için önce profil doldurmalısın.");
+  if (jobRes.error) throw jobRes.error;
+
+  const requirements = (jobRes.data?.match_result as JobMatchResult | null)?.requirements;
 
   const result = await generateProposal(
     profileRes.data as ProfileInput,
     input.job_description,
     input.platform,
+    { requirements, focusRequirements: input.focus_requirements },
   );
 
   // Teklifi proposals tablosuna kaydet
@@ -61,8 +74,9 @@ export const POST = withErrorHandler(async (req) => {
       job_id: input.job_id,
       platform: input.platform,
       content: result.content,
+      coverage: result.coverage,
     })
-    .select("id, job_id, platform, content, created_at")
+    .select("id, job_id, platform, content, coverage, created_at")
     .single();
 
   if (saveError) throw saveError;
