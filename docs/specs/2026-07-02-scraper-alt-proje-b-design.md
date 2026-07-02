@@ -98,7 +98,7 @@ Ortak: `description` HTML olabilir → mevcut `htmlToText` (`lib/import/text.ts`
 - Sırlar yalnız sunucu + `.env`: `SCRAPER_CRON_SECRET`. Dış API'ler anahtarsız (ücretsiz public).
 - `job_pool`/`scrape_runs` yazımı yalnız service-role (`lib/supabase/admin.ts`), route içinde; istemciye import YOK.
 - Dış cevap Zod ile doğrulanır (normalize öncesi şema kontrolü) — istemci/dış veriye güvenilmez.
-- Çekilen `url` `isSafeExternalUrl` (mevcut) ile süzülür (savunma amaçlı).
+- SSRF yok: çekilen `url` yalnız saklanır + UI'da link olur, sunucu o adrese İSTEK ATMAZ → ek url süzme gereksiz.
 
 ## 10. Test
 - `normalize()` saf → birim test: örnek Remotive/Arbeitnow ham cevap → beklenen PoolJobUpsert (+ HTML→text,
