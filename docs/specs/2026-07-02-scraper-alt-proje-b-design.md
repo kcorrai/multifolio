@@ -1,108 +1,126 @@
-# Alt-proje B — Canlı İlan Çekme (Scraper Worker) — Tasarım Taslağı
+# Alt-proje B — Canlı İlan Çekme (Ücretsiz Remote-İş API'leri) — Tasarım
 
-**Durum:** TASLAK — kullanıcı onayı bekliyor (2 karnın forku aşağıda "Açık kararlar"da).
-**Tarih:** 2026-07-02
-**Kapsam:** `job_pool`'a canlı `source='upwork'` ilanları yazan çekme katmanı. Dashboard (Alt-proje A) değişmez.
+**Durum:** ONAYLANDI (2026-07-02) — implementasyon planına hazır.
+**Kapsam:** `job_pool`'a canlı ilan yazan ücretsiz çekme katmanı. Dashboard (Alt-proje A) DEĞİŞMEZ.
+**Karar:** B yolu — ücretsiz remote-iş API'leri (Remotive + Arbeitnow). Upwork ertelendi (aşağıda §2).
 
 ---
 
-## 1. Neden bu tasarım — uphunt.io araştırması
+## 1. Neden bu tasarım — uphunt.io araştırması (özet)
 
-uphunt'ın pazarlama blogu bilerek muğlak ("sub-minute cadence ile Upwork'ü izleyen yönetilen katman");
-**gerçek mekanizma privacy policy'de sızıyor**, çünkü orada yasal olarak spesifik olmak zorundalar.
-İki mekanizmayı kasıtlı karıştırıyorlar:
+uphunt'ın pazarlama blogu bilerek muğlak; gerçek mekanizma **privacy policy'de** sızıyor. İki mekanizmayı
+kasıtlı karıştırıyorlar: (1) **İlan çekme** = Upwork/LinkedIn public ilanlarını **antidetect browser** ile
+scrape (subprocessor **GoLogin** = kanıt; 3.5M ilan dataset satıyorlar). (2) **Auto-apply** = ayrı, resmi
+**Agency Plus** özelliği (scraping DEĞİL — "no bots" iddiası buradan). Depo MongoDB+Redis, skor OpenAI+Anthropic.
 
-1. **İlan çekme (bizim Alt-proje B).** Privacy policy: *"publicly available job postings from Upwork
-   and LinkedIn"* topluyorlar — yani public ilan sayfalarını **scrape** ediyorlar. Kanıt: subprocessor
-   listesinde **GoLogin** (antidetect browser / yönetilen hesap altyapısı). GoLogin'e yalnızca bot-tespitini
-   aşmak için gerçek tarayıcı oturumu sürdürüyorsan para ödersin. O kadar çok çekmişler ki **3.5M ilanlık
-   dataset**'i ayrı ürün olarak satıyorlar. Depolama **MongoDB + Redis**, skorlama **OpenAI + Anthropic**.
+**Bizim için çıkarım:** Upwork'ü güvenilir çekmek antidetect browser + residential proxy = para ister (uphunt
+bile ödüyor). Ücretsiz + güvenilir + Upwork pratikte yok. Bu yüzden ücretsiz, API-dostu, Cloudflare'siz
+kaynaklardan başlıyoruz.
 
-2. **Auto-apply (ayrı, scraping DEĞİL).** Upwork'ün resmi **Agency Plus** özelliğiyle: profilin ajans üyesi
-   olarak eklenir, teklif meşru ajans panelinden gönderilir. "No bots, no scrapers" iddiası **bu adım için**
-   doğru — çekme için değil. Rahatlatıcı cümle auto-apply'a ait, çekme sessizce bir scraper.
+## 2. Zorlayıcı kısıt & Upwork'ün ertelenmesi
 
-**Çıkarım:** "Scraper kısmı"nın dürüst tarifi → *antidetect headless browser + (büyük olasılıkla) residential
-proxy, Upwork public arama sayfasını sık aralıkla polling, ilan id'siyle dedup, havuza yaz, sonra AI skorla.*
-Bu bizim mevcut `job_pool`'a birebir oturuyor (`source`/`external_id`/`raw` alanları + service-role-only yazım
-zaten var; spec §13 devir kontratı: Alt-proje B yalnız `source='upwork'` satırları upsert eder).
+Upwork'ün kullanılabilir public iş-arama API'si yok; public sayfalar Cloudflare + datacenter-IP bloklama
+arkasında. Bizim yığın **Vercel = datacenter IP** → Upwork bloklar. Bu yüzden Upwork ilk sürümde **kapsam
+dışı**. Yerine ücretsiz JSON API sunan remote-iş panolarından çekiyoruz (düz `fetch`, proxy YOK, sıfır maliyet).
+Upwork sonra ücretsiz-tier scraping API ile düşük frekansta tak-çıkar eklenebilir — adaptör arayüzü buna hazır.
 
-## 2. Zorlayıcı gerçek (mimariyi belirleyen kısıt)
+**Dürüst uyarı:** bu kaynaklar çoğunlukla **remote full-time** iş içerir; freelance/contract alt kümedir
+(Remotive'de `job_type=freelance` filtresiyle daraltılır). Upwork-tarzı gig havuzu birebir değil — bu adım
+"canlı akışı ücretsiz ayağa kaldır + mimariyi kanıtla".
 
-Upwork'ün **kullanılabilir public iş-arama API'si yok** (API partner-gated; agency özelliği başvuru içindir,
-arama değil). Public arama sayfaları Cloudflare + datacenter-IP bloklama + JS render arkasında. **uphunt'ın
-GoLogin + proxy ödemesinin sebebi tam bu.** Bizim yığın **Vercel serverless = datacenter IP**, Upwork hızla
-bloklar. Dolayısıyla scraper **Next.js/Vercel app içinde çalışamaz** — ya 3. parti scraping servisi ya da
-ayrı worker host gerekir.
+## 3. Kaynaklar (ilk sürüm) + kullanım koşulları
 
-## 3. Açık kararlar (kullanıcı onayı bekliyor — önerilen varsayılanlar işaretli)
+| Kaynak | API | Ücret | Kısıt / attribution |
+|---|---|---|---|
+| **Remotive** | `GET https://remotive.com/api/remote-jobs` (opsiyonel `?category=&search=&limit=`) | Ücretsiz JSON | **Günde ≤4 çekim**, kaynağa geri link + kredi zorunlu, 3. parti panolara re-post yasak. Biz `url` ile kaynağa yönlendirip UI'da "via Remotive" kredisi göstererek uyarız. |
+| **Arbeitnow** | `GET https://www.arbeitnow.com/api/job-board-api` (sayfalı: `?page=`) | Ücretsiz açık JSON | Gevşek; kaynağa link ile uyulur. **Alan adları adaptör implementasyonunda gerçek cevapla doğrulanır.** |
 
-- **K1 — Çekme yöntemi:** ✅ *önerilen* **3. parti scraping API** (ör. Apify Upwork actor / BrightData /
-  ScraperAPI). Servis proxy+antidetect'i üstlenir; Vercel Cron sadece API'yi çağırıp normalize eder ve
-  `job_pool`'a upsert eder. En az ops, "platformu basitleştir" ilkesine uyar, sonuç başına ücret.
-  Alternatifler: (B) kendi antidetect scraper'ımız (ayrı host + residential proxy — uphunt yolu, ağır ops,
-  Vercel'de çalışmaz), (C) hafif/legit kaynaklar önce (Upwork'ü atla).
-- **K2 — Platform kapsamı:** ✅ *önerilen* **Sadece Upwork** ilk sürümde (pool şeması hazır, tek sağlam kaynak,
-  devir kontratı `source='upwork'`). Sonra LinkedIn/TR platformları aynı adaptör arayüzüyle eklenir.
+RemoteOK ilk sürümde ATLANDI (bot-UA blokluyor → 403; ilk elemanda sıkı legal notice). Sonra Jobicy / Adzuna
+(TR dahil ülke bazlı) eklenebilir.
 
-> Bu iki karar netleşince implementasyon planına geçilir. Her ikisi de kullanıcının sağlaması gereken
-> **sır/bütçe** gerektirir (scraping API anahtarı + aylık maliyet iştahı) — bu yüzden kod öncesi onay şart.
-
-## 4. Mimari (K1=3.parti API, K2=Upwork varsayımıyla)
+## 4. Mimari
 
 ```
-Vercel Cron (schedule) ──► /api/internal/scrape/upwork  (service-role, korumalı)
-        │                         │
-        │                         ├─ ScrapeSource adaptörü (Upwork): scraping API'yi çağır
-        │                         ├─ normalize(): API cevabı → PoolJobRow ({source,external_id,title,...,raw})
-        │                         ├─ dedup + upsert: job_pool (unique(source,external_id)) service-role
-        │                         └─ usage_events kind='scrape' (adet + maliyet log)
-        ▼
-   job_pool  ◄── Dashboard (Alt-proje A) okur (DEĞİŞMEZ)
+Ücretsiz cron (cron-job.org veya Vercel Cron) ──► POST /api/internal/scrape  (secret header korumalı)
+     │
+     ├─ SOURCES = [remotiveAdapter, arbeitnowAdapter]
+     ├─ her adaptör: fetch() → RawJob[]  →  normalize(raw) → PoolJobUpsert parçası
+     ├─ Zod ile dış cevap doğrulanır (normalize öncesi)
+     ├─ dedup + upsert: job_pool  (onConflict source,external_id)  — service-role (admin.ts)
+     └─ scrape_runs log (source, fetched, upserted, skipped, ms, error?) + Sentry
+             ▼
+        job_pool ◄── Dashboard (Alt-proje A) DEĞİŞMEDEN okur
 ```
 
-- **Adaptör arayüzü** (pluggable): `interface ScrapeSource { id: 'upwork'|'linkedin'|...; fetch(params): Promise<RawJob[]>; normalize(raw): PoolJobRow }`. LinkedIn/TR sonra aynı arayüzle eklenir.
-- **Tetikleyici:** Vercel Cron (`vercel.ts` crons veya route). Sık aralık maliyet-duyarlı: başlangıçta 15–30 dk;
-  "sub-minute" hedefi sonra, maliyet netleşince.
-- **Yetki:** internal route yalnız service-role/secret ile çağrılır (cron header doğrulama); kullanıcıya açık değil.
+**Adaptör arayüzü** (pluggable, saf-test-edilebilir):
+```ts
+interface ScrapeSource {
+  id: string;                                    // 'remotive' | 'arbeitnow'
+  fetch(): Promise<unknown[]>;                   // ham cevap (test'te mock'lanır)
+  normalize(raw: unknown): PoolJobUpsert | null; // geçersizse null (atla)
+}
+```
+`fetch()` (I/O) ve `normalize()` (saf) ayrı → normalize birim-testlenir, fetch mock'lanır.
 
-## 5. Veri akışı & dedup
-- Her çekimde ilanlar `unique(source, external_id)` ile upsert — tekrar eden ilan güncellenir, çoğalmaz.
-- `external_id` = Upwork ilan id'si (API/URL'den). `raw` = ham cevap (ileride yeniden normalize için).
-- `posted_at` API'den; yoksa null (dashboard `nulls last` sıralar).
+## 5. Normalize eşlemesi → `PoolJobRow` (mevcut şema, `lib/validation/schemas/feed.ts`)
+
+Ortak: `description` HTML olabilir → mevcut `htmlToText` (`lib/import/text.ts`) ile düz metne çevrilir.
+`raw` = ham obje (ileride yeniden normalize için). `client_spent` = null (bu kaynaklarda yok).
+
+**Remotive** (alanlar doğrulandı):
+`source='remotive'` · `external_id=String(id)` · `title` · `description=htmlToText(description)` ·
+`url` · `budget=salary||null` · `skills=tags??[]` · `client_country=candidate_required_location||null` ·
+`posted_at=publication_date`.
+
+**Arbeitnow** (beklenen; adaptörde doğrulanır):
+`source='arbeitnow'` · `external_id=slug` · `title` · `description=htmlToText(description)` ·
+`url` · `budget=null` · `skills=tags??[]` · `client_country=location||null` ·
+`posted_at=created_at (unix→ISO)`.
+
+## 6. Dedup & upsert
+- `job_pool` üzerinde `upsert(..., { onConflict: 'source,external_id' })` — tekrar eden ilan güncellenir, çoğalmaz.
+- Batch: geçersiz/normalize edilemeyen satır atlanır + `skipped++`, batch PATLAMAZ (kısmi başarı).
 - Seed satırları (`source='sample'`) prod'da temizlenir: `delete from job_pool where source='sample'`.
 
-## 6. Hata & maliyet görünürlüğü (sert kural 1)
-- Route `withErrorHandler`'dan geçer; scraping API hataları Sentry'ye, iç detay sızmaz.
-- Kısmi başarı: N ilandan biri normalize edilemezse o ilan atlanır + loglanır, batch patlamaz.
-- Maliyet loglama: `usage_events` **kullanıcı-bazlı** (`user_id` zorunlu, RLS select-own) → sistem-geneli scrape
-  run'ı oraya oturmaz. Öneri: hafif `scrape_runs` tablosu (kaynak, çekilen/yeni/atlanan adet, süre, maliyet)
-  ya da ilk sürümde sadece Sentry/console log. Kredi düşmez (sistem gideri).
-- Rate/quota: scraping API kotası aşılırsa route erken çıkar + uyarı loglar (sessiz truncation YOK).
+## 7. Tetikleyici / frekans
+- Route: `POST /api/internal/scrape` — `x-cron-secret` header'ı `SCRAPER_CRON_SECRET` ile eşleşmezse 401.
+- Tetikleyici: **cron-job.org** (ücretsiz, Vercel plan sınırından bağımsız) günde 1–2 kez çağırır. Alternatif
+  Vercel Cron (`vercel.json` crons) — Hobby'de günlük sınır var, cron-job.org daha esnek.
+- Frekans günde ≤2 (Remotive'in ≤4/gün kuralına uyar; bu API'ler zaten kendi cache'liyor).
 
-## 7. Güvenlik (sert kural 2)
-- Scraping API anahtarı yalnız sunucu + `.env` (`SCRAPER_API_KEY`, `SCRAPER_CRON_SECRET`). Asla commit/istemci.
-- `job_pool` yazımı yalnız service-role (`lib/supabase/admin.ts`), route içinde; istemciye import yok.
-- Dış cevap Zod ile doğrulanır (normalize öncesi şema kontrolü).
+## 8. Hata & görünürlük (sert kural 1)
+- Route `withErrorHandler`'dan geçer; dış API hataları Sentry'ye, iç detay istemciye sızmaz.
+- **`scrape_runs` tablosu** (migration `0015`): her koşu için `source, fetched, upserted, skipped, error, ms,
+  created_at`. Sessiz truncation YOK — kotaya takılırsa/atlarsa loglanır. Service-role yazar; admin görünürlük.
+- Bir kaynak patlarsa diğer kaynak devam eder (`Promise.allSettled`).
 
-## 8. Test
-- `normalize()` saf fonksiyon → birim test (örnek ham cevap → beklenen PoolJobRow).
-- Adaptör `fetch()` mock'lanır (gerçek API çağrısı testte yok).
-- Dedup: aynı `external_id` iki kez → tek satır (integration-ish, mock Supabase).
+## 9. Güvenlik (sert kural 2)
+- Sırlar yalnız sunucu + `.env`: `SCRAPER_CRON_SECRET`. Dış API'ler anahtarsız (ücretsiz public).
+- `job_pool`/`scrape_runs` yazımı yalnız service-role (`lib/supabase/admin.ts`), route içinde; istemciye import YOK.
+- Dış cevap Zod ile doğrulanır (normalize öncesi şema kontrolü) — istemci/dış veriye güvenilmez.
+- Çekilen `url` `isSafeExternalUrl` (mevcut) ile süzülür (savunma amaçlı).
 
-## 9. Env değişkenleri (yeni)
-- `SCRAPER_API_KEY` — seçilen scraping servisinin anahtarı.
-- `SCRAPER_CRON_SECRET` — cron route doğrulama sırrı.
-- (opsiyonel) `SCRAPER_UPWORK_QUERY` / feed-türetimli sorgu stratejisi — sonra.
+## 10. Test
+- `normalize()` saf → birim test: örnek Remotive/Arbeitnow ham cevap → beklenen PoolJobUpsert (+ HTML→text,
+  eksik alan → null/skip).
+- Adaptör `fetch()` mock'lanır (testte gerçek ağ yok).
+- Dedup: aynı `(source, external_id)` iki kez → tek satır (upsert davranışı).
+- `npm run check` (lint+tsc+vitest) temiz olmalı.
 
-## 10. YAGNI / kapsam dışı (ilk sürüm)
-- Auto-apply (uphunt'ın Agency Plus'ı) — AYRI, çok sonra; bu spec sadece çekme.
-- Sub-minute cadence — önce 15–30 dk, maliyet kanıtı sonra.
-- LinkedIn/TR platform adaptörleri — arayüz hazır, implementasyon sonra.
-- Kendi proxy/antidetect altyapısı — K1=A ise hiç.
+## 11. Env değişkenleri (yeni)
+- `SCRAPER_CRON_SECRET` — internal scrape route doğrulama sırrı. (`.env.example`'a eklenir.)
 
-## 11. Devir/uyum
-- Alt-proje A dashboard'u sıfır değişiklikle canlıya geçer (kontrat: `job_pool` upsert).
-- `job_pool` mevcut; upsert için migration gerekmez. Tek olası migration: run loglaması için `scrape_runs`
-  tablosu (isteğe bağlı — ilk sürüm Sentry log ile de gidebilir). `usage_events.kind` serbest text (doğrulandı,
-  0002) ama tablo per-user olduğu için scrape run'ına uygun değil — §6'ya bakın.
+## 12. Migration
+- **`0015_scrape_runs.sql`** — `scrape_runs` log tablosu (service-role yazar, RLS: authenticated select opsiyonel/kapalı).
+- `job_pool` upsert için migration GEREKMEZ (0012/0013 yeterli).
+
+## 13. YAGNI / kapsam dışı (ilk sürüm)
+- Upwork / LinkedIn / TR platform çekme — adaptör arayüzü hazır, implementasyon sonra.
+- Auto-apply (uphunt Agency Plus) — çok sonra, ayrı iş.
+- Sub-minute cadence, otomatik toplu AI skorlama — YOK (skor on-demand kalır, kredi ekonomisi korunur).
+- Kendi proxy/antidetect altyapısı — bu yolda hiç gerekmez.
+
+## 14. Devir/uyum
+- Alt-proje A dashboard'u SIFIR değişiklikle canlıya geçer (kontrat: `job_pool` upsert, `unique source+external_id`).
+- `source='remotive'|'arbeitnow'` → `pool-job-row` platform rozeti bilinmeyen kaynak için nötr rozet göstermeli
+  (kontrol edilecek: mevcut rozet map'i bilinmeyen source'ta patlamıyor mu → gerekirse fallback eklenir).
