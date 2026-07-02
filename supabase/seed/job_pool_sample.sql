@@ -1,0 +1,37 @@
+-- Örnek pool ilanları (source='sample'). Prod'da temizlenir.
+-- external_id çakışmasını önlemek için sabit 'sample-N' kullanılır.
+insert into public.job_pool (source, external_id, title, description, url, budget, skills, client_country, posted_at)
+values
+  ('sample','sample-1','React dashboard for SaaS analytics',
+   'We need a senior React/TypeScript developer to build a responsive analytics dashboard with charts, filters and CSV export. Existing REST API. ~3 weeks.',
+   'https://www.upwork.com/jobs/~sample1','$1,500-3,000',
+   array['React','TypeScript','Tailwind','Charts'],'United States', now() - interval '15 minutes'),
+  ('sample','sample-2','Next.js marketing site + CMS',
+   'Build a fast marketing website in Next.js with a headless CMS. SEO, i18n (EN/TR), dark mode. Design in Figma provided.',
+   'https://www.upwork.com/jobs/~sample2','$800-1,500',
+   array['Next.js','SEO','i18n','Figma'],'Germany', now() - interval '1 hour'),
+  ('sample','sample-3','Supabase + Postgres backend for mobile app',
+   'Design Postgres schema, RLS policies and edge functions on Supabase for a fitness app. Auth, storage, realtime.',
+   'https://www.upwork.com/jobs/~sample3','Hourly $40-70',
+   array['Supabase','Postgres','RLS','Auth'],'United Kingdom', now() - interval '3 hours'),
+  ('sample','sample-4','AI proposal generator (OpenAI) integration',
+   'Integrate OpenAI to generate tailored proposals from a user profile and a job description. Node/TS backend.',
+   'https://www.upwork.com/jobs/~sample4','$500-1,000',
+   array['OpenAI','Node.js','TypeScript','API'],'Canada', now() - interval '5 hours'),
+  ('sample','sample-5','Landing page conversion optimization',
+   'Improve conversion on an existing landing page. A/B test hero, pricing and CTA. Tailwind + Framer Motion.',
+   'https://www.upwork.com/jobs/~sample5','$300-600',
+   array['Tailwind','CRO','A/B Testing'],'Australia', now() - interval '8 hours'),
+  ('sample','sample-6','Stripe billing + credits system',
+   'Implement pay-as-you-go credits with Stripe. Webhooks, idempotency, refunds. Postgres ledger.',
+   'https://www.upwork.com/jobs/~sample6','$1,000-2,000',
+   array['Stripe','Postgres','Webhooks','Billing'],'Netherlands', now() - interval '1 day'),
+  ('sample','sample-7','Vue 3 component library',
+   'Build a reusable Vue 3 + TypeScript component library with Storybook and unit tests.',
+   'https://www.upwork.com/jobs/~sample7','$1,200-2,500',
+   array['Vue','TypeScript','Storybook','Testing'],'France', now() - interval '2 days'),
+  ('sample','sample-8','WordPress to Next.js migration',
+   'Migrate a content-heavy WordPress blog to Next.js with ISR. Preserve SEO and redirects.',
+   'https://www.upwork.com/jobs/~sample8','$2,000-4,000',
+   array['Next.js','WordPress','SEO','Migration'],'Sweden', now() - interval '3 days')
+on conflict (source, external_id) do nothing;
