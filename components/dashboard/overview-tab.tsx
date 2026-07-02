@@ -3,44 +3,42 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  Sparkles, X, Check, CheckCircle2, AlertCircle,
-  Wallet, Zap, Layers, Briefcase, ShoppingCart,
+  Sparkles, X, Check, AlertCircle, BarChart3,
+  Wallet, Zap, Briefcase, ShoppingCart,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlatformLogo } from "@/components/platform-logo";
-import { PLATFORMS, PLATFORM_IDS } from "@/lib/ai/platforms";
+import { PLATFORM_IDS } from "@/lib/ai/platforms";
+import { JOB_STATUSES } from "@/lib/validation/schemas/job";
 import {
-  StatCard, TINT_CYAN, TINT_VIOLET, ELEVATED, PLATFORM_STYLES,
-  STATUS_DOT, scoreColor, type JobRow,
+  StatCard, TINT_CYAN, TINT_VIOLET, ELEVATED, KIND_ICONS,
+  STATUS_DOT, scoreColor, type AnalyticsData, type JobRow,
 } from "./shared";
 import { useDashboard } from "./dashboard-context";
-import { useAdapt } from "./use-adapt";
 
 export function OverviewTab({
-  profileSaved, portfolioPublished, jobs, totalCount,
+  profileSaved, jobs, analytics,
 }: {
   profileSaved: boolean;
-  portfolioPublished: boolean;
   jobs: JobRow[];
-  totalCount: number;
+  analytics: AnalyticsData;
 }) {
   const t = useTranslations("dashboard.overview");
+  const ta = useTranslations("analytics");
   const ts = useTranslations("jobs");
   const locale = useLocale();
   const { credits, creditsUsed, adaptResults, triggerComingSoon } = useDashboard();
-  const { adapt, adapting } = useAdapt();
   const [onboardingDismissed, setOnboardingDismissed] = useState(profileSaved);
 
   const readyPlatforms = PLATFORM_IDS.filter((id) => adaptResults[id]).length;
-  const onboardingStep = !profileSaved ? 1 : readyPlatforms === 0 ? 2 : !portfolioPublished ? 3 : 4;
+  const onboardingStep = !profileSaved ? 1 : readyPlatforms === 0 ? 2 : 3;
 
   return (
     <div className="space-y-6">
 
       {/* Onboarding banner */}
-      {!onboardingDismissed && onboardingStep < 4 && (
+      {!onboardingDismissed && onboardingStep < 3 && (
         <div className="relative rounded-2xl border border-[#00F0FF]/20 dark:border-[#00F0FF]/15 bg-[#00F0FF]/5 overflow-hidden">
           <div className="h-0.5 bg-gradient-to-r from-transparent via-[#00F0FF] to-violet-500" />
           <div className="p-5">
@@ -60,11 +58,10 @@ export function OverviewTab({
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {[
                 { step: 1, label: t("step1Label"), desc: t("step1Desc"), href: "/dashboard/import" },
                 { step: 2, label: t("step2Label"), desc: t("step2Desc"), href: "/dashboard/platforms" },
-                { step: 3, label: t("step3Label"), desc: t("step3Desc"), href: "/dashboard/portfolio" },
               ].map(({ step, label, desc, href }) => {
                 const done = onboardingStep > step;
                 const active = onboardingStep === step;
@@ -107,7 +104,7 @@ export function OverviewTab({
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
         <StatCard icon={Wallet} tint={TINT_VIOLET} label={t("credits")} value={credits}>
           <button onClick={triggerComingSoon} className="flex items-center gap-1 text-[11px] text-violet-400 hover:text-violet-300 font-medium transition-colors cursor-pointer">
             <ShoppingCart className="h-3 w-3" />{t("buyCredits")}
@@ -115,53 +112,69 @@ export function OverviewTab({
         </StatCard>
 
         <StatCard icon={Zap} tint={TINT_CYAN} label={t("creditsUsed")} value={creditsUsed}
-          sub={t("transactions", { count: totalCount })} />
-
-        <StatCard icon={Layers} tint={TINT_CYAN} label={t("platform")}
-          value={<>{readyPlatforms}<span className="text-base font-normal text-muted-foreground">/{PLATFORM_IDS.length}</span></>}
-          sub={t("platformsAdapted")} />
+          sub={t("transactions", { count: analytics.totalCount })} />
 
         <StatCard icon={Briefcase} tint={TINT_VIOLET} label={t("jobs")} value={jobs.length}
           sub={t("jobsTracked")} />
       </div>
 
-      {/* Platform status + Recent jobs */}
-      <div className="grid lg:grid-cols-2 gap-5">
+      {/* Tür bazlı kredi kullanımı */}
+      {Object.keys(analytics.byKind).length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {Object.entries(analytics.byKind).map(([kind, { count, credits: kindCredits }]) => (
+            <StatCard key={kind} icon={KIND_ICONS[kind] ?? Zap} tint={TINT_CYAN}
+              label={ta.has(`kind.${kind}`) ? ta(`kind.${kind}`) : kind} value={count}
+              sub={ta("creditsSub", { count: kindCredits })} />
+          ))}
+        </div>
+      )}
+
+      {/* 30 günlük kredi harcaması */}
+      {analytics.dailySeries.length > 0 ? (
         <Card className={`shadow-sm ${ELEVATED}`}>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-sm">{t("platformAdaptation")}</CardTitle>
-              <Link href="/dashboard/platforms" className="text-xs text-[#00F0FF] hover:underline transition-colors cursor-pointer">
-                {t("viewAll")}
-              </Link>
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-[#00F0FF]" />
+              <CardTitle className="text-sm">{ta("dailyTitle")}</CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {PLATFORM_IDS.map((id) => {
-              const adapted = !!adaptResults[id];
-              const pStyle = PLATFORM_STYLES[id];
+          <CardContent>
+            {(() => {
+              const max = Math.max(...analytics.dailySeries.map((d) => d.credits), 1);
               return (
-                <div key={id} className="flex items-center gap-3">
-                  <div className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 ${pStyle.icon}`}>
-                    <PlatformLogo platform={id} size={14} />
-                  </div>
-                  <span className="text-sm font-medium flex-1">{PLATFORMS[id].label}</span>
-                  {adapted ? (
-                    <span className="flex items-center gap-1 text-[11px] text-green-600 dark:text-green-400 font-semibold">
-                      <CheckCircle2 className="h-3.5 w-3.5" />{t("ready")}
-                    </span>
-                  ) : (
-                    <Button size="sm" onClick={() => adapt(id)} disabled={adapting === id || !profileSaved} className="h-6 text-[11px] gap-1 px-2.5">
-                      <Sparkles className="h-3 w-3" />
-                      {adapting === id ? "..." : t("adapt")}
-                    </Button>
-                  )}
+                <div className="flex items-end gap-1 h-32">
+                  {analytics.dailySeries.map(({ date, credits: dayCredits }) => (
+                    <div key={date} className="group relative flex-1 min-w-0" title={`${date}: ${dayCredits}`}>
+                      <div className="w-full rounded-t-sm bg-[#00F0FF]/40 hover:bg-[#00F0FF] transition-colors"
+                        style={{ height: `${Math.max((dayCredits / max) * 100, 4)}%` }} />
+                      <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 hidden group-hover:block text-[10px] bg-foreground text-background rounded px-1.5 py-0.5 whitespace-nowrap z-10">
+                        {dayCredits}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               );
-            })}
+            })()}
+            <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
+              <span>{analytics.dailySeries[0]?.date?.slice(5)}</span>
+              <span>{analytics.dailySeries.at(-1)?.date?.slice(5)}</span>
+            </div>
           </CardContent>
         </Card>
+      ) : (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
+          <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
+            <BarChart3 className="h-7 w-7 text-muted-foreground/40" />
+          </div>
+          <p className="text-sm font-semibold text-muted-foreground">{ta("noUsage")}</p>
+          <p className="text-xs text-muted-foreground/60 mt-1">
+            {ta("noUsageHint")}
+          </p>
+        </div>
+      )}
 
+      {/* Recent jobs + Başvuru performansı */}
+      <div className="grid lg:grid-cols-2 gap-5">
         <Card className={`shadow-sm ${ELEVATED}`}>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -207,6 +220,37 @@ export function OverviewTab({
             )}
           </CardContent>
         </Card>
+
+        {jobs.length > 0 && (() => {
+          const byStatus = JOB_STATUSES
+            .map((s) => ({ status: s, count: jobs.filter((j) => j.status === s).length }))
+            .filter((x) => x.count > 0);
+          const maxCount = Math.max(...byStatus.map((x) => x.count), 1);
+          return (
+            <Card className={`shadow-sm ${ELEVATED}`}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <Briefcase className="h-4 w-4 text-[#00F0FF]" />
+                  <CardTitle className="text-sm">{ta("applicationPerformance")}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2.5">
+                {byStatus.map(({ status, count }) => (
+                  <div key={status} className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground w-28 shrink-0">{ts(`status.${status}`)}</span>
+                    <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${STATUS_DOT[status]}`}
+                        style={{ width: `${(count / maxCount) * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-xs font-bold tabular-nums w-4 text-right">{count}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          );
+        })()}
       </div>
 
       {/* Profile incomplete alert */}

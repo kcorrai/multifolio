@@ -14,7 +14,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 ## Neyin nerede
 - `app/page.tsx` — ana sayfa (sunucu): her zaman landing gösterir; oturum açıksa nav'da "Dashboard" butonu.
 - `app/dashboard/layout.tsx` — korumalı dashboard kabuğu (sunucu): auth + paylaşılan veri (email, kredi, harcama, rozet sayıları) çeker → `DashboardShell`'e iletir; oturum yoksa `/login`.
-- `app/dashboard/{page,profile,portfolio,jobs,analytics}/page.tsx` — her sekme ayrı route (sunucu): yalnızca kendi veri dilimini çeker → ilgili `*-tab` client bileşenine iletir. `page.tsx` = Genel Bakış (`/dashboard`).
+- `app/dashboard/{page,profile,jobs}/page.tsx` — her sekme ayrı route (sunucu): yalnızca kendi veri dilimini çeker → ilgili `*-tab` client bileşenine iletir. `page.tsx` = Genel Bakış (`/dashboard`); eski Analytics içeriği (tür bazlı kullanım + 30 günlük grafik + başvuru performansı) buraya birleştirildi. **Portfolio ve Analytics sekmeleri kaldırıldı** (portfolio yalnız UI — arka uç duruyor).
 - `app/dashboard/import/page.tsx` — onboarding profil içe aktarma wizard'ı (`import-wizard.tsx`): URL/metin/PDF → AI taslak → düzenle → kaydet. Profilsiz kullanıcı Genel Bakış'tan buraya yönlendirilir (yalnız `/dashboard`; diğer sekmeler serbest).
 - `app/dashboard/platforms/{page,[id]}/page.tsx` — platform-bazlı sayfalar (sunucu): `page.tsx` = HUB (5 platform kartı), `[id]/page.tsx` = tek platform detayı (geçersiz id → `notFound()`). Detay 4 bölümü tek yerde toplar: uyarlanmış profil + bağlantı URL'i + platform-filtreli eşleşen işler + platform-filtreli teklif geçmişi/ipuçları. **Eski `adapt`/`accounts` sekmeleri buraya taşındı (kaldırıldı).**
 - `app/login`, `app/signup`, `app/forgot-password`, `app/reset-password` — e-posta+şifre auth sayfaları (ortak kabuk `components/auth/auth-layout.tsx`). `app/auth/{confirm,verify-email,signout}` — confirm (recovery code exchange), verify-email (doğrulama callback → `app_metadata.email_verified`, service-role), signout. Giriş/kayıt sonrası `/dashboard`.
@@ -28,7 +28,6 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/jobs/[id]` — GET (tam veri) / PATCH (durum/başlık/notlar) / DELETE.
   - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı + Telegram trigger.
   - `app/api/proposal` — GET (iş bazlı liste) / POST (AI teklif üretir, proposals'a kaydeder).
-  - `app/api/analytics` — GET: tür bazında özet + 30 günlük harcama + `applicationStats` (başvuru performansı).
   - `app/api/credits` — GET: kullanıcının kredi bakiyesi (`credits` tablosu).
   - `app/api/platform-connections` — GET (liste) / PUT (upsert) / DELETE: platform profil URL'leri.
   - `app/api/feed` — GET: kullanıcının kayıtlı feed'lerine uyan `job_pool` ilanları (+yıldız+cache skor).
@@ -39,7 +38,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `openai-client.ts` (OpenAI gpt-4o-mini istemcisi),
   `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `PROPOSAL_GUIDANCE`),
-  `adapt.ts` (`adaptProfile`), `portfolio.ts` (`generatePortfolio`),
+  `adapt.ts` (`adaptProfile`), `portfolio.ts` (`generatePortfolio` — dashboard UI'si kaldırıldı; `/api/portfolio/*` + herkese açık `/p/[slug]` duruyor),
   `match.ts` (`matchJobToProfile` + ilandan `requirements` çıkarımı), `proposal.ts` (`generateProposal` — teklif metni + ilan gereksinimlerine karşı kapsama),
   `profile-import.ts` (`extractProfile` — serbest metin → profil taslağı),
   `coverage.ts` (saf kapsama yardımcıları: pending/summary/prompt blokları), `pricing.ts` (token → USD).
@@ -56,7 +55,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/import/` — profil içe aktarma saf yardımcıları: `text.ts` (HTML süzme, platform URL tanıma, SSRF koruması), `pdf.ts` (unpdf ile PDF→metin, bellekte — dosya saklanmaz).
 - `lib/scrape/` — Alt-proje B canlı çekme katmanı: `types.ts` (`ScrapeSource` arayüzü + `PoolJobUpsert`), `sources/{remotive,arbeitnow}.ts` (adaptör: `fetch` I/O + saf `normalize`; `htmlToText` ile açıklama düz metne), `run.ts` (`runScrape` orchestrator — geçerlileri `job_pool`'a upsert, kaynak başına koşu özetini `scrape_runs`'a yazar, biri patlarsa diğeri devam). Service-role client'ı parametre alır (import etmez). Ücretsiz remote-iş API'leri; Upwork/proxy YOK.
 - `components/ui/` — shadcn bileşenleri.
-- `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. `verify-email-banner.tsx` — dashboard'da ertelenmiş e-posta doğrulama banner'ı + toast. Sekme bileşenleri: `overview-tab.tsx`, `profile-tab.tsx`, `portfolio-tab.tsx`, `jobs-tab.tsx`, `analytics-tab.tsx`, `platforms-hub-tab.tsx` (platform kartları), `platform-detail-tab.tsx` (tek platform 4-bölüm: uyarla/bağlantı/işler/teklifler+ipuçları; `use-adapt`+`JobDetailPanel` yeniden kullanır).
+- `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. `verify-email-banner.tsx` — dashboard'da ertelenmiş e-posta doğrulama banner'ı + toast. Sekme bileşenleri: `overview-tab.tsx` (stat kartları + tür bazlı kullanım + 30 günlük grafik + son ilanlar + başvuru performansı), `profile-tab.tsx`, `jobs-tab.tsx`, `platforms-hub-tab.tsx` (platform kartları), `platform-detail-tab.tsx` (tek platform 4-bölüm: uyarla/bağlantı/işler/teklifler+ipuçları; `use-adapt`+`JobDetailPanel` yeniden kullanır).
   `components/job-detail-panel.tsx` — seçili iş için 2-sütun sağ panel (durum, AI skor, teklif CTA, notlar).
   `components/proposal-modal.tsx` — platform-spesifik AI teklif üretimi + geçmiş teklifler.
   `components/notification-settings-modal.tsx` — Telegram bağlantı + eşik ayarı.

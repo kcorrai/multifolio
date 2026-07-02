@@ -1,7 +1,6 @@
 import {
-  User, Layers, Globe, Briefcase, Target, Sparkles, BarChart3, LayoutDashboard,
+  User, Layers, Globe, Briefcase, Target, Sparkles, LayoutDashboard,
 } from "lucide-react";
-import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
 
@@ -10,7 +9,6 @@ export type { PoolJob } from "@/lib/validation/schemas/feed";
 /* ── Types ──────────────────────────────────────────────────────────── */
 
 export interface InitialProfile { headline: string; summary: string; skills: string[] }
-export interface InitialPortfolio { slug: string; published: boolean; content: PortfolioContent | null }
 export interface AdaptOutput { headline: string; body: string }
 export interface JobRow {
   id: string; title: string; company: string | null; platform: string | null;
@@ -31,9 +29,7 @@ export const NAV_ITEMS: { href: string; labelKey: string; icon: React.ElementTyp
   { href: "/dashboard",           labelKey: "overview",  icon: LayoutDashboard },
   { href: "/dashboard/profile",   labelKey: "profile",   icon: User },
   { href: "/dashboard/platforms", labelKey: "platforms", icon: Layers,     badge: "connections" },
-  { href: "/dashboard/portfolio", labelKey: "portfolio", icon: Globe },
   { href: "/dashboard/jobs",      labelKey: "jobs",      icon: Briefcase, badge: "jobs" },
-  { href: "/dashboard/analytics", labelKey: "analytics", icon: BarChart3 },
 ];
 
 /** Nav aktif durumu: /dashboard yalnız exact; diğerleri alt-route'ları da kapsar. */
