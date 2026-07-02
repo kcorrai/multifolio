@@ -63,5 +63,11 @@ Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
   (Vercel auto-deploy). Not: prod migration `0011` (deduct/refund p_amount>0 guard) henüz
   prod'a uygulanmadı.
 
+- **Faz 10 — İş Feed Dashboard (Alt-proje A)** ✅
+  uphunt tarzı keşif: `/dashboard/jobs` segmented (Feed/Search/Starred/Applied); paylaşımlı
+  `job_pool` + kullanıcı `job_feeds`/`starred_jobs`/`job_scores` (migration 0012); on-demand
+  AI skorlama (kredi + cache); Upwork deep-link + mevcut pipeline'a apply köprüsü. Seed veriyle
+  çalışır; canlı çekme Alt-proje B'de. `main` üzerinde. Not: migration 0012 henüz prod'a uygulanmadı.
+
 - **Faz 6 — İşveren tarafı / iki taraflı pazar** *(çok sonra)*
   İşveren tarafı akışları ve pazar yeri.

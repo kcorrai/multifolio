@@ -5,7 +5,7 @@
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
 **Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/{en,tr}.json`) — EN varsayılan, TR opsiyonel; sabit string yazma, `useTranslations`/`getTranslations` kullan (yeni anahtar ekleyince iki katalogu da güncelle). **Kod yorumları Türkçe kalır.** AI çıktı dili UI locale'ine uyar.
-Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 8 tamamlandı (Global i18n — EN varsayılan + TR, cookie tabanlı). Sırada: backlog / Faz 6 (iki taraflı pazar).**
+Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 10 tamamlandı (İş Feed Dashboard — Alt-proje A: segmented Feed/Search/Starred/Applied, seed veriyle). Sırada: Alt-proje B (canlı ilan çekme/scraper) / backlog / Faz 6 (iki taraflı pazar). Not: migration 0011 + 0012 prod'a elle uygulanacak.**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
@@ -29,6 +29,10 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/analytics` — GET: tür bazında özet + 30 günlük harcama + `applicationStats` (başvuru performansı).
   - `app/api/credits` — GET: kullanıcının kredi bakiyesi (`credits` tablosu).
   - `app/api/platform-connections` — GET (liste) / PUT (upsert) / DELETE: platform profil URL'leri.
+  - `app/api/feed` — GET: kullanıcının kayıtlı feed'lerine uyan `job_pool` ilanları (+yıldız+cache skor).
+  - `app/api/feed/search` — GET: `job_pool` üzerinde anlık arama.
+  - `app/api/feed/[poolId]/score` — POST: on-demand profil×ilan AI skoru (kredi + `job_scores` cache).
+  - `app/api/feeds` (+`[id]`) — kayıtlı feed CRUD (kullanıcı başına 10 limit). `app/api/starred` — yıldız GET/POST/DELETE.
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `openai-client.ts` (OpenAI gpt-4o-mini istemcisi),
   `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `PROPOSAL_GUIDANCE`),
@@ -43,12 +47,15 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` (artık `requirements` içerir) + `JobStatus` (awaiting_reply dahil).
 - `lib/validation/schemas/proposal.ts` — `proposalCreateSchema`, `proposalWithCoverageSchema` + `ProposalCoverageItem`, `ProposalRow` tipi.
 - `lib/validation/schemas/platform-connection.ts` — `platformConnectionUpsertSchema` + `PlatformConnection` tipi.
+- `lib/validation/schemas/feed.ts` — feed/arama/yıldız Zod şemaları + `PoolJob`/`PoolJobRow`/`JobFeedRow` tipleri.
+- `lib/feed/filter.ts` — saf feed filtre/arama yardımcıları (`extractBudgetFloor`, `matchesFeed`, `searchPool`).
 - `components/ui/` — shadcn bileşenleri.
 - `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. `verify-email-banner.tsx` — dashboard'da ertelenmiş e-posta doğrulama banner'ı + toast. Sekme bileşenleri: `overview-tab.tsx`, `profile-tab.tsx`, `portfolio-tab.tsx`, `jobs-tab.tsx`, `analytics-tab.tsx`, `platforms-hub-tab.tsx` (platform kartları), `platform-detail-tab.tsx` (tek platform 4-bölüm: uyarla/bağlantı/işler/teklifler+ipuçları; `use-adapt`+`JobDetailPanel` yeniden kullanır).
   `components/job-detail-panel.tsx` — seçili iş için 2-sütun sağ panel (durum, AI skor, teklif CTA, notlar).
   `components/proposal-modal.tsx` — platform-spesifik AI teklif üretimi + geçmiş teklifler.
   `components/notification-settings-modal.tsx` — Telegram bağlantı + eşik ayarı.
   `components/job-add-modal.tsx` — hızlı iş ekleme (platform/bütçe/URL) + otomatik AI eşleştirme.
+  `jobs-tab.tsx` artık segmented kabuk (Feed/Search/Starred/Applied, `?view=` senkron); alt görünümler `feed-view.tsx`/`search-view.tsx`/`starred-view.tsx`/`applied-view.tsx` (eski jobs-tab içeriği). Paylaşılan: `pool-job-row.tsx` (satır), `pool-job-panel.tsx` (skor+Upwork deep-link+apply köprüsü), `feed-modal.tsx` (feed oluştur).
   `components/theme-provider.tsx` — next-themes provider (defaultTheme: dark).
   `components/theme-toggle.tsx` — Sun/Moon toggle butonu (her iki header'da kullanılır).
   `components/platform-logo.tsx` — 5 platform için SVG logo bileşeni (PlatformId → SVG).
@@ -60,6 +67,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0007_proposals.sql` — proposals tablosu; job_listings'e url/notes/budget + awaiting_reply status.
   `0008_notifications.sql` — boş (Telegram sistemi iptal edildi; e-posta Resend API üzerinden).
   `0009_proposal_coverage.sql` — proposals.coverage kolonu (ilan gereksinimlerine karşı kapsama).
+  `0012_job_feed.sql` — `job_pool` (paylaşımlı; yalnız service-role yazar) + kullanıcı `job_feeds`/`starred_jobs`/`job_scores` + `job_listings.source_pool_id`. `supabase/seed/job_pool_sample.sql` — örnek pool ilanları (`source='sample'`).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
 - Sentry: `instrumentation*.ts`, `sentry.*.config.ts`, `next.config.ts` (`withSentryConfig`).
