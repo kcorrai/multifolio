@@ -502,6 +502,7 @@
     "score": "Match",
     "postedRelative": "{time} ago",
     "budget": "Budget",
+    "description": "Description",
     "loadMore": "Load more",
     "minShort": "{count}m",
     "hourShort": "{count}h",

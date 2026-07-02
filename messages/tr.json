@@ -502,6 +502,7 @@
     "score": "Uyum",
     "postedRelative": "{time} önce",
     "budget": "Bütçe",
+    "description": "Açıklama",
     "loadMore": "Daha fazla",
     "minShort": "{count}dk",
     "hourShort": "{count}sa",
