@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
@@ -14,15 +14,20 @@ export function SearchView() {
   const { applyCredits } = useDashboard();
   const [q, setQ] = useState("");
   const [jobs, setJobs] = useState<PoolJob[]>([]);
-  const [searched, setSearched] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  async function runSearch(e: React.FormEvent) {
-    e.preventDefault();
-    const res = await fetch(`/api/feed/search?q=${encodeURIComponent(q)}`);
-    const body = await res.json().catch(() => ({ jobs: [] }));
-    setJobs(body.jobs ?? []); setSearched(true); setSelectedId(null);
-  }
+  // Canlı arama: q değişince debounce'lu çek. Boş q = tüm pool (açılışta hepsi).
+  useEffect(() => {
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      fetch(`/api/feed/search${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ""}`)
+        .then((r) => r.json())
+        .then((b) => { if (!cancelled) { setJobs(b.jobs ?? []); setLoaded(true); setSelectedId(null); } })
+        .catch(() => { if (!cancelled) setLoaded(true); });
+    }, 300);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [q]);
 
   async function toggleStar(job: PoolJob) {
     const next = !job.isStarred;
@@ -42,11 +47,11 @@ export function SearchView() {
 
   return (
     <div className="space-y-3">
-      <form onSubmit={runSearch} className="relative">
+      <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("searchPlaceholder")} className="w-full rounded-xl border border-border bg-background pl-10 pr-3 py-2.5 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40" />
-      </form>
-      {searched && jobs.length === 0 && <p className="text-sm text-muted-foreground text-center py-10">{t("searchEmpty")}</p>}
+      </div>
+      {loaded && jobs.length === 0 && <p className="text-sm text-muted-foreground text-center py-10">{t("searchEmpty")}</p>}
       <div className="grid lg:grid-cols-5 gap-3">
         <div className={`space-y-1.5 ${selected ? "lg:col-span-2" : "lg:col-span-5"}`}>
           {jobs.map((job) => (

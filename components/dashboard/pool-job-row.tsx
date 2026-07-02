@@ -3,9 +3,27 @@
 import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
-import { scoreColor, formatRelativeTime } from "./shared";
+import type { PlatformId } from "@/lib/ai/platforms";
+import { PlatformLogo } from "@/components/platform-logo";
+import { scoreColor, formatRelativeTime, PLATFORM_STYLES } from "./shared";
 
 const UNIT_KEY = { minute: "min", hour: "hour", day: "day" } as const;
+
+// job_pool.source herhangi bir platform olabilir; bilinen 5 platformdan biriyse
+// renkli rozet + logo, değilse (ör. "sample") nötr rozet gösterilir.
+function PlatformBadge({ source }: { source: string }) {
+  const known = source in PLATFORM_STYLES ? (source as PlatformId) : null;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold capitalize ${
+        known ? PLATFORM_STYLES[known].badge : "bg-muted text-muted-foreground"
+      }`}
+    >
+      {known && <PlatformLogo platform={known} size={11} />}
+      {source}
+    </span>
+  );
+}
 
 export function PoolJobRow({
   job, onStar, onOpen, selected = false,
@@ -30,11 +48,14 @@ export function PoolJobRow({
     >
       <div className="flex items-start gap-2.5">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold leading-snug truncate">{job.title}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            {job.source && <PlatformBadge source={job.source} />}
+            <p className="text-sm font-semibold leading-snug truncate">{job.title}</p>
+          </div>
           <div className="flex items-center gap-2 mt-1 text-[11px] text-muted-foreground">
-            {job.source && <span className="capitalize">{job.source}</span>}
-            {job.budget && <span>· {job.budget}</span>}
-            {rel && <span>· {t(`${UNIT_KEY[rel.unit]}Short` as string, { count: rel.value })}</span>}
+            {job.budget && <span>{job.budget}</span>}
+            {job.budget && rel && <span>·</span>}
+            {rel && <span>{t(`${UNIT_KEY[rel.unit]}Short` as string, { count: rel.value })}</span>}
           </div>
           {job.skills.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">

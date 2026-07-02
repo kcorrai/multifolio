@@ -48,7 +48,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
       initialJobs={jobs}
       profileSaved={profileSaved}
       initialFeedJobs={initialFeedJobs}
-      hasFeeds={feeds.length > 0}
+      initialFeeds={feeds}
       initialView={initialView}
     />
   );
