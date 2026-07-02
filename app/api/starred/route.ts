@@ -7,7 +7,7 @@ import { parseJson, parseQuery } from "@/lib/validation";
 import { starToggleSchema, type PoolJobRow, type PoolJob } from "@/lib/validation/schemas/feed";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const POOL_COLS = "id, source, external_id, title, description, url, budget, skills, client_country, posted_at, created_at";
+const POOL_COLS = "id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr";
 
 export const GET = withErrorHandler(async () => {
   const supabase = await createSupabaseServerClient();

@@ -39,7 +39,7 @@ export const starToggleSchema = z.object({
 export type FeedCreate = z.infer<typeof feedCreateSchema>;
 export type FeedUpdate = z.infer<typeof feedUpdateSchema>;
 
-// job_pool satırı (DB şekli)
+// job_pool satırı (DB şekli). lang null = başlık çevirisi henüz yapılmadı (cron bekliyor).
 export interface PoolJobRow {
   id: string;
   source: string;
@@ -53,6 +53,9 @@ export interface PoolJobRow {
   client_spent: number | null;
   posted_at: string | null;
   created_at: string;
+  lang: string | null;
+  title_en: string | null;
+  title_tr: string | null;
 }
 
 // job_feeds satırı

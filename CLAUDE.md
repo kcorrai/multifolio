@@ -33,6 +33,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/feed` — GET: kullanıcının kayıtlı feed'lerine uyan `job_pool` ilanları (+yıldız+cache skor).
   - `app/api/feed/search` — GET: `job_pool` üzerinde anlık arama.
   - `app/api/feed/[poolId]/score` — POST: on-demand profil×ilan AI skoru (kredi + `job_scores` cache).
+  - `app/api/feed/[poolId]/translate` — POST: ilan açıklamasını UI diline çevirir (ücretsiz; PAYLAŞIMLI `job_translations` cache; `usage_events kind='job_translate'` + saatlik limit).
   - `app/api/feeds` (+`[id]`) — kayıtlı feed CRUD (kullanıcı başına 10 limit). `app/api/starred` — yıldız GET/POST/DELETE.
   - `app/api/internal/scrape` — POST: dış cron (cron-job.org) `x-cron-secret` ile tetikler; Remotive+Arbeitnow ücretsiz API'lerinden çekip `job_pool`'a upsert (Alt-proje B canlı çekme).
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
@@ -41,6 +42,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `adapt.ts` (`adaptProfile`), `portfolio.ts` (`generatePortfolio` — dashboard UI'si kaldırıldı; `/api/portfolio/*` + herkese açık `/p/[slug]` duruyor),
   `match.ts` (`matchJobToProfile` + ilandan `requirements` çıkarımı), `proposal.ts` (`generateProposal` — teklif metni + ilan gereksinimlerine karşı kapsama),
   `profile-import.ts` (`extractProfile` — serbest metin → profil taslağı),
+  `translate.ts` (`translateJobTitles` batch dil tespiti+EN/TR başlık, `translateJobDescription` on-demand açıklama — ilan çevirisi hibrit: başlık scrape-time, açıklama ilk görüntülemede),
   `coverage.ts` (saf kapsama yardımcıları: pending/summary/prompt blokları), `pricing.ts` (token → USD).
 - `lib/notifications/email.ts` — `sendMatchNotificationEmail` (Resend API, fire-and-forget; skor ≥ 70 olunca kullanıcı e-postasına bildirim).
 - `lib/validation/` — Zod yardımcıları (`parseJson`/`parseQuery`) + `schemas/`.
@@ -53,7 +55,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/validation/schemas/feed.ts` — feed/arama/yıldız Zod şemaları + `PoolJob`/`PoolJobRow`/`JobFeedRow` tipleri.
 - `lib/feed/filter.ts` — saf feed filtre/arama yardımcıları (`extractBudgetFloor`, `matchesFeed`, `searchPool`).
 - `lib/import/` — profil içe aktarma saf yardımcıları: `text.ts` (HTML süzme, platform URL tanıma, SSRF koruması), `pdf.ts` (unpdf ile PDF→metin, bellekte — dosya saklanmaz).
-- `lib/scrape/` — Alt-proje B canlı çekme katmanı: `types.ts` (`ScrapeSource` arayüzü + `PoolJobUpsert`), `sources/{remotive,arbeitnow}.ts` (adaptör: `fetch` I/O + saf `normalize`; `htmlToText` ile açıklama düz metne), `run.ts` (`runScrape` orchestrator — geçerlileri `job_pool`'a upsert, kaynak başına koşu özetini `scrape_runs`'a yazar, biri patlarsa diğeri devam). Service-role client'ı parametre alır (import etmez). Ücretsiz remote-iş API'leri; Upwork/proxy YOK.
+- `lib/scrape/` — Alt-proje B canlı çekme katmanı: `types.ts` (`ScrapeSource` arayüzü + `PoolJobUpsert`), `sources/{remotive,arbeitnow}.ts` (adaptör: `fetch` I/O + saf `normalize`; `htmlToText` ile açıklama düz metne), `run.ts` (`runScrape` orchestrator — geçerlileri `job_pool`'a upsert, kaynak başına koşu özetini `scrape_runs`'a yazar, biri patlarsa diğeri devam), `translate-titles.ts` (`translateNewTitles` — cron sonrası `lang IS NULL` başlıkları chunk'la EN/TR'ye çevirip `job_pool`'a yazar; çevirmen + client parametre, hata izole). Service-role client'ı parametre alır (import etmez). Ücretsiz remote-iş API'leri; Upwork/proxy YOK.
 - `components/ui/` — shadcn bileşenleri.
 - `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. `verify-email-banner.tsx` — dashboard'da ertelenmiş e-posta doğrulama banner'ı + toast. Sekme bileşenleri: `overview-tab.tsx` (stat kartları + tür bazlı kullanım + 30 günlük grafik + son ilanlar + başvuru performansı), `profile-tab.tsx`, `jobs-tab.tsx`, `platforms-hub-tab.tsx` (platform kartları), `platform-detail-tab.tsx` (tek platform 4-bölüm: uyarla/bağlantı/işler/teklifler+ipuçları; `use-adapt`+`JobDetailPanel` yeniden kullanır).
   `components/job-detail-panel.tsx` — seçili iş için 2-sütun sağ panel (durum, AI skor, teklif CTA, notlar).
@@ -76,6 +78,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0013_feed_filters.sql` — `job_feeds`'e exclude_countries/min_hourly_rate/min_fixed_price/min_client_spent/min_score, `job_pool`'a client_spent (lenient filtre: ilanda veri yoksa elemez).
   `0014_adaptations.sql` — `adaptations` (platform başına SON uyarlama, user×platform unique; platform detay + HUB buradan hydrate olur — yenilemede AI çıktısı kaybolmaz).
   `0015_scrape_runs.sql` — `scrape_runs` (Alt-proje B scraper koşu logu: kaynak/çekilen/yeni/atlanan/hata/süre; yalnız service-role yazar).
+  `0016_job_translations.sql` — ilan çevirisi (hibrit): `job_pool`'a lang/title_en/title_tr (scrape-time başlık) + `job_translations` PAYLAŞIMLI on-demand açıklama cache'i (pool×locale unique; yalnız service-role yazar).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
 - Sentry: `instrumentation*.ts`, `sentry.*.config.ts`, `next.config.ts` (`withSentryConfig`).

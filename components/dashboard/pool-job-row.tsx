@@ -1,8 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
+import { poolJobTitle } from "@/lib/feed/filter";
 import type { PlatformId } from "@/lib/ai/platforms";
 import { PlatformLogo } from "@/components/platform-logo";
 import { scoreColor, formatRelativeTime, PLATFORM_STYLES } from "./shared";
@@ -34,6 +35,7 @@ export function PoolJobRow({
   selected?: boolean;
 }) {
   const t = useTranslations("feed");
+  const locale = useLocale();
   const rel = formatRelativeTime(job.posted_at);
 
   return (
@@ -50,7 +52,7 @@ export function PoolJobRow({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             {job.source && <PlatformBadge source={job.source} />}
-            <p className="text-sm font-semibold leading-snug truncate">{job.title}</p>
+            <p className="text-sm font-semibold leading-snug truncate">{poolJobTitle(job, locale)}</p>
           </div>
           <div className="flex items-center gap-2 mt-1 text-[11px] text-muted-foreground">
             {job.budget && <span>{job.budget}</span>}

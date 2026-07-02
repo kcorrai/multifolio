@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { X, Sparkles, ExternalLink, Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { X, Sparkles, ExternalLink, Check, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
+import { poolJobTitle } from "@/lib/feed/filter";
 import { scoreColor, scoreBarColor } from "./shared";
 
 export function PoolJobPanel({
@@ -18,9 +19,36 @@ export function PoolJobPanel({
   onCreditsUpdate: (credits: { balance: number; spent: number }) => void;
 }) {
   const t = useTranslations("feed");
+  const locale = useLocale();
   const [scoring, setScoring] = useState(false);
   const [applied, setApplied] = useState(false);
   const [error, setError] = useState("");
+  // Çeviri durumu tek nesnede; ilan/dil değişince RENDER sırasında sıfırlanır
+  // (effect içinde senkron setState yasak — react-hooks/set-state-in-effect).
+  const [tr, setTr] = useState({ jobId: job.id, locale, text: null as string | null, failed: false, showOriginal: false });
+  if (tr.jobId !== job.id || tr.locale !== locale) {
+    setTr({ jobId: job.id, locale, text: null, failed: false, showOriginal: false });
+  }
+
+  // İlan UI dilinde değilse açıklamayı otomatik çevir (paylaşımlı cache — çoğu
+  // zaman anında döner). Başarısızlıkta sessizce orijinal gösterilir.
+  const needsTranslation = job.lang !== null && job.lang !== locale;
+  const translating = needsTranslation && tr.text === null && !tr.failed;
+  useEffect(() => {
+    if (!needsTranslation) return;
+    let cancelled = false;
+    fetch(`/api/feed/${job.id}/translate`, { method: "POST" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((body) => {
+        if (cancelled) return;
+        const text = typeof body?.description === "string" ? body.description : null;
+        setTr((s) => (s.jobId === job.id && s.locale === locale ? { ...s, text, failed: text === null } : s));
+      })
+      .catch(() => {
+        if (!cancelled) setTr((s) => (s.jobId === job.id && s.locale === locale ? { ...s, failed: true } : s));
+      });
+    return () => { cancelled = true; };
+  }, [job.id, locale, needsTranslation]);
 
   async function analyze() {
     setScoring(true); setError("");
@@ -51,7 +79,7 @@ export function PoolJobPanel({
     <div className="flex flex-col h-full">
       <div className="flex items-start justify-between gap-3 border-b border-border p-4">
         <div className="min-w-0">
-          <h3 className="font-bold leading-snug">{job.title}</h3>
+          <h3 className="font-bold leading-snug">{poolJobTitle(job, locale)}</h3>
           <p className="text-xs text-muted-foreground mt-0.5 capitalize">
             {job.source}{job.budget ? ` · ${job.budget}` : ""}{job.client_country ? ` · ${job.client_country}` : ""}
           </p>
@@ -82,8 +110,26 @@ export function PoolJobPanel({
         )}
 
         <div>
-          <p className="text-xs font-semibold text-muted-foreground mb-1">{t("description")}</p>
-          <p className="text-sm whitespace-pre-wrap break-words">{job.description}</p>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <p className="text-xs font-semibold text-muted-foreground">{t("description")}</p>
+            {translating && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                <Languages className="h-3 w-3" />{t("translating")}
+              </span>
+            )}
+            {tr.text && (
+              <button
+                onClick={() => setTr((s) => ({ ...s, showOriginal: !s.showOriginal }))}
+                className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                <Languages className="h-3 w-3" />
+                {tr.showOriginal ? t("showTranslation") : t("showOriginal")}
+              </button>
+            )}
+          </div>
+          <p className="text-sm whitespace-pre-wrap break-words">
+            {tr.text && !tr.showOriginal ? tr.text : job.description}
+          </p>
         </div>
 
         {error && <p className="text-sm text-destructive">{error}</p>}

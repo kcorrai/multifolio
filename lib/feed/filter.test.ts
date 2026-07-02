@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractBudgetFloor, isHourlyBudget, matchesFeed, searchPool } from "./filter";
+import { extractBudgetFloor, isHourlyBudget, matchesFeed, poolJobTitle, searchPool } from "./filter";
 import type { PoolJobRow } from "@/lib/validation/schemas/feed";
 
 function pool(partial: Partial<PoolJobRow>): PoolJobRow {
@@ -7,7 +7,8 @@ function pool(partial: Partial<PoolJobRow>): PoolJobRow {
     id: "1", source: "sample", external_id: "e1", title: "React dev",
     description: "Build a dashboard", url: null, budget: "$1,500-3,000",
     skills: ["React", "TypeScript"], client_country: "US", client_spent: null,
-    posted_at: null, created_at: "2026-07-01T00:00:00Z", ...partial,
+    posted_at: null, created_at: "2026-07-01T00:00:00Z",
+    lang: null, title_en: null, title_tr: null, ...partial,
   };
 }
 
@@ -69,6 +70,13 @@ describe("matchesFeed", () => {
     expect(matchesFeed(pool({ client_spent: null }), crit({ min_client_spent: 500 }))).toBe(true); // veri yoksa elenmez
   });
 
+  it("keyword çevrilmiş başlıkta da arar (Almanca ilan + İngilizce keyword)", () => {
+    const de = pool({ title: "Vertriebsmitarbeiter (m/w/d)", lang: "de", title_en: "Sales Representative (m/f/d)", title_tr: "Satış Temsilcisi (m/w/d)" });
+    expect(matchesFeed(de, crit({ keywords: ["sales"] }))).toBe(true);
+    expect(matchesFeed(de, crit({ keywords: ["satış"] }))).toBe(true);
+    expect(matchesFeed(de, crit({ keywords: ["muhasebe"] }))).toBe(false);
+  });
+
   it("min_score yalnız CACHE'Lİ skoru olan ilanları eler; skorsuz geçer", () => {
     expect(matchesFeed(pool({}), crit({ min_score: 70 }), 60)).toBe(false);
     expect(matchesFeed(pool({}), crit({ min_score: 70 }), 90)).toBe(true);
@@ -84,6 +92,21 @@ describe("isHourlyBudget", () => {
     expect(isHourlyBudget("$50 per hour")).toBe(true);
     expect(isHourlyBudget("$1,500-3,000")).toBe(false);
     expect(isHourlyBudget(null)).toBe(false);
+  });
+});
+
+describe("poolJobTitle", () => {
+  const de = pool({ title: "Vertriebsmitarbeiter", lang: "de", title_en: "Sales Rep", title_tr: "Satış Temsilcisi" });
+  it("locale'e göre çevrilmiş başlığı seçer", () => {
+    expect(poolJobTitle(de, "en")).toBe("Sales Rep");
+    expect(poolJobTitle(de, "tr")).toBe("Satış Temsilcisi");
+  });
+  it("ilan zaten locale dilindeyse orijinali döner", () => {
+    expect(poolJobTitle(pool({ lang: "en", title_en: "React dev (copy)" }), "en")).toBe("React dev");
+  });
+  it("çeviri yoksa (lang null / boş çeviri) orijinale düşer", () => {
+    expect(poolJobTitle(pool({}), "tr")).toBe("React dev");
+    expect(poolJobTitle(pool({ lang: "de", title_tr: "  " }), "tr")).toBe("React dev");
   });
 });
 

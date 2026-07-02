@@ -306,7 +306,8 @@
       "adaptation": "Platform Uyarlama",
       "portfolio_generation": "Portfolyo Üretimi",
       "job_match": "İlan Eşleştirme",
-      "proposal": "Teklif Üretimi"
+      "proposal": "Teklif Üretimi",
+      "job_translate": "İlan Çevirisi"
     },
     "creditsSub": "{count} kredi",
     "dailyTitle": "Son 30 gün — günlük kredi kullanımı",
@@ -477,6 +478,9 @@
     "minShort": "{count}dk",
     "hourShort": "{count}sa",
     "dayShort": "{count}g",
+    "translating": "Çevriliyor…",
+    "showOriginal": "Orijinali göster",
+    "showTranslation": "Çeviriyi göster",
     "modal": {
       "title": "Feed",
       "nameLabel": "Feed adı",
@@ -542,6 +546,7 @@
     "importFetchFailed": "Sayfayı çekemedik. Bunun yerine profil metnini kopyalayıp yapıştır.",
     "importNoText": "Dosyadan metin okuyamadık. Bunun yerine profil metnini kopyalayıp yapıştır.",
     "importNothingFound": "Bu içerik bir profile benzemiyor. Profil veya CV metnini yapıştır.",
-    "importRateLimited": "Çok fazla içe aktarma denemesi. Bir saat sonra tekrar dene."
+    "importRateLimited": "Çok fazla içe aktarma denemesi. Bir saat sonra tekrar dene.",
+    "translateRateLimited": "Çok fazla çeviri isteği. Bir saat sonra tekrar dene."
   }
 }

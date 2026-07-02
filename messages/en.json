@@ -306,7 +306,8 @@
       "adaptation": "Platform Adaptation",
       "portfolio_generation": "Portfolio Generation",
       "job_match": "Job Matching",
-      "proposal": "Proposal Generation"
+      "proposal": "Proposal Generation",
+      "job_translate": "Job Translation"
     },
     "creditsSub": "{count} credits",
     "dailyTitle": "Last 30 days — daily credit usage",
@@ -477,6 +478,9 @@
     "minShort": "{count}m",
     "hourShort": "{count}h",
     "dayShort": "{count}d",
+    "translating": "Translating…",
+    "showOriginal": "Show original",
+    "showTranslation": "Show translation",
     "modal": {
       "title": "Feed",
       "nameLabel": "Feed name",
@@ -542,6 +546,7 @@
     "importFetchFailed": "We couldn't fetch that page. Copy your profile text and paste it instead.",
     "importNoText": "We couldn't read any text from that file. Copy your profile text and paste it instead.",
     "importNothingFound": "That content doesn't look like a profile. Paste your profile or CV text.",
-    "importRateLimited": "Too many import attempts. Please try again in an hour."
+    "importRateLimited": "Too many import attempts. Please try again in an hour.",
+    "translateRateLimited": "Too many translation requests. Please try again in an hour."
   }
 }

@@ -16,7 +16,7 @@ export const GET = withErrorHandler(async (req) => {
   const { q, platform, minBudget, offset, limit } = parseQuery(new URL(req.url).searchParams, feedSearchQuerySchema);
 
   const [poolRes, starRes, scoreRes] = await Promise.all([
-    supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(POOL_WINDOW),
+    supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(POOL_WINDOW),
     supabase.from("starred_jobs").select("job_pool_id").eq("user_id", user.id),
     supabase.from("job_scores").select("job_pool_id, score, result").eq("user_id", user.id),
   ]);

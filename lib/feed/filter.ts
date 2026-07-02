@@ -65,11 +65,22 @@ export function matchesFeed(pool: PoolJobRow, c: FeedCriteria, score: number | n
   if (c.min_score != null && c.min_score > 0 && score != null && score < c.min_score) return false;
 
   if (c.keywords.length > 0) {
-    const hay = `${pool.title} ${pool.description} ${pool.skills.join(" ")}`.toLowerCase();
+    // Çevrilmiş başlıklar da aranır: İngilizce keyword Almanca ilanı yakalasın.
+    const hay = `${pool.title} ${pool.title_en ?? ""} ${pool.title_tr ?? ""} ${pool.description} ${pool.skills.join(" ")}`.toLowerCase();
     const hit = c.keywords.some((k) => hay.includes(k.toLowerCase()));
     if (!hit) return false;
   }
   return true;
+}
+
+/** UI locale'ine göre gösterilecek başlık; çeviri yoksa orijinale düşer. */
+export function poolJobTitle(
+  pool: Pick<PoolJobRow, "title" | "title_en" | "title_tr" | "lang">,
+  locale: string,
+): string {
+  if (pool.lang === locale) return pool.title;
+  const translated = locale === "tr" ? pool.title_tr : pool.title_en;
+  return translated && translated.trim() ? translated : pool.title;
 }
 
 export interface SearchQuery {
