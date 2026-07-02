@@ -537,6 +537,33 @@
       "delete": "Feed'i sil"
     }
   },
+  "import": {
+    "title": "Profilini saniyeler içinde kur",
+    "subtitle": "Zaten kullandığın bir platformdan içe aktar — Multifolio profilini biz taslaklayalım, sen parlat.",
+    "tabUrl": "Profil URL'i",
+    "tabText": "Metin yapıştır",
+    "tabFile": "CV yükle",
+    "urlLabel": "Herkese açık profil URL'in",
+    "urlPlaceholder": "https://www.upwork.com/freelancers/~...",
+    "urlHint": "Upwork, Fiverr, Bionluk, Armut veya LinkedIn profil linki.",
+    "textLabel": "Profil veya CV metni",
+    "textPlaceholder": "Profil sayfanı aç, tümünü seç, kopyala — buraya yapıştır.",
+    "fileLabel": "PDF dosyası (en çok 5MB)",
+    "fileHint": "İpucu: LinkedIn → profilin → \"PDF olarak kaydet\".",
+    "import": "İçe aktar",
+    "importing": "İçe aktarılıyor…",
+    "draftTitle": "Taslağın hazır — gözden geçir ve kaydet",
+    "headlineLabel": "Başlık",
+    "summaryLabel": "Özet",
+    "skillsLabel": "Beceriler",
+    "addSkill": "Beceri ekle",
+    "removeSkill": "Kaldır",
+    "save": "Profili kaydet",
+    "saving": "Kaydediliyor…",
+    "startOver": "Başka kaynak dene",
+    "skip": "Kendim doldururum",
+    "saveError": "Profil kaydedilemedi."
+  },
   "errors": {
     "profileRequired": "Önce bir profil oluşturmalısın.",
     "profileRequiredPortfolio": "Portfolyo oluşturmak için önce profil doldurmalısın.",

@@ -537,6 +537,33 @@
       "delete": "Delete feed"
     }
   },
+  "import": {
+    "title": "Set up your profile in seconds",
+    "subtitle": "Import from a platform you already use — we'll draft your Multifolio profile, you polish it.",
+    "tabUrl": "Profile URL",
+    "tabText": "Paste text",
+    "tabFile": "Upload CV",
+    "urlLabel": "Your public profile URL",
+    "urlPlaceholder": "https://www.upwork.com/freelancers/~...",
+    "urlHint": "Upwork, Fiverr, Bionluk, Armut or LinkedIn profile link.",
+    "textLabel": "Profile or CV text",
+    "textPlaceholder": "Open your profile page, select all, copy — and paste here.",
+    "fileLabel": "PDF file (max 5MB)",
+    "fileHint": "Tip: LinkedIn → your profile → \"Save as PDF\".",
+    "import": "Import",
+    "importing": "Importing…",
+    "draftTitle": "Here's your draft — review and save",
+    "headlineLabel": "Headline",
+    "summaryLabel": "Summary",
+    "skillsLabel": "Skills",
+    "addSkill": "Add skill",
+    "removeSkill": "Remove",
+    "save": "Save profile",
+    "saving": "Saving…",
+    "startOver": "Try another source",
+    "skip": "I'll fill it in myself",
+    "saveError": "Profile could not be saved."
+  },
   "errors": {
     "profileRequired": "You need to create a profile first.",
     "profileRequiredPortfolio": "Fill in your profile first to generate a portfolio.",

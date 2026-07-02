@@ -62,7 +62,7 @@ export function OverviewTab({
             </div>
             <div className="grid grid-cols-3 gap-3">
               {[
-                { step: 1, label: t("step1Label"), desc: t("step1Desc"), href: "/dashboard/profile" },
+                { step: 1, label: t("step1Label"), desc: t("step1Desc"), href: "/dashboard/import" },
                 { step: 2, label: t("step2Label"), desc: t("step2Desc"), href: "/dashboard/platforms" },
                 { step: 3, label: t("step3Label"), desc: t("step3Desc"), href: "/dashboard/portfolio" },
               ].map(({ step, label, desc, href }) => {

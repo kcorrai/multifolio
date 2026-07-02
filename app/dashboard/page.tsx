@@ -16,6 +16,10 @@ export default async function DashboardPage() {
   ]);
 
   const profileSaved = profileRes.data !== null;
+
+  // Onboarding: profili olmayan kullanıcının ilk işi içe aktarma wizard'ıdır.
+  // Yalnız Genel Bakış yönlendirir — diğer sekmelerde gezinme engellenmez.
+  if (!profileSaved) redirect("/dashboard/import");
   const portfolioPublished = (portfolioRes.data?.published as boolean) ?? false;
   const jobs = (jobsRes.data ?? []) as unknown as JobRow[];
   const totalCount = usageRes.count ?? 0;
