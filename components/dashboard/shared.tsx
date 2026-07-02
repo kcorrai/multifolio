@@ -88,6 +88,20 @@ export function scoreBarColor(n: number) {
   return "bg-red-500";
 }
 
+/** ISO tarihini kaba göreli birime çevirir (i18n metni tüketimde uygulanır). */
+export function formatRelativeTime(
+  iso: string | null,
+  now: Date = new Date(),
+): { value: number; unit: "minute" | "hour" | "day" } | null {
+  if (!iso) return null;
+  const diffMs = now.getTime() - new Date(iso).getTime();
+  const minutes = Math.max(0, Math.floor(diffMs / 60000));
+  if (minutes < 60) return { value: minutes, unit: "minute" };
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return { value: hours, unit: "hour" };
+  return { value: Math.floor(hours / 24), unit: "day" };
+}
+
 /* ── Shared visual tokens ───────────────────────────────────────────── */
 
 /** Yükseltilmiş kart: yumuşak kenar + hover derinlik (rafine görünüm temeli). */
