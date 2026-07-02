@@ -21,7 +21,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `app/` — sayfalar + `app/api/*/route.ts` uç noktaları. `app/global-error.tsx` kök ErrorBoundary.
   - `app/api/health` — canlılık. `app/api/debug-sentry` — Sentry test (kaldırılabilir).
   - `app/api/profile` — **korumalı uç nokta ŞABLONU** (yeni route'lar bunu örnek alır).
-  - `app/api/profile/import` — POST: URL/metin/PDF → AI profil taslağı (ücretsiz — kredi düşmez; saatte 10 limit; `usage_events kind='profile_import'`; platform URL'iyse `platform_connections` upsert).
+  - `app/api/profile/import` — POST: URL/metin/PDF → AI profil taslağı (ücretsiz — kredi düşmez; saatte 10 limit; `usage_events kind='profile_import'`; platform URL'iyse `platform_connections` upsert). **Bionluk URL'i özel yol:** AI yerine yapılandırılmış public API'den doğrudan taslak (`lib/import/bionluk.ts`) + avatar/portfolyo görselleri (yanıtta `bionluk`). Diğer platformlar bot duvarında.
   - `app/api/adapt` — uyarlama uç noktası (profil → platform metni; maliyeti kaydeder; çıktı `adaptations`'a kalıcı upsert edilir — `spendCredits` closure içinde, yazım patlarsa kredi iade).
   - `app/api/usage` — kullanıcının kümülatif kredi kullanımı (`{ creditsUsed, count }`).
   - `app/api/jobs` — GET (liste) / POST (oluştur) iş ilanı uç noktaları; url/budget/notes alanları desteklenir.
@@ -54,7 +54,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/validation/schemas/platform-connection.ts` — `platformConnectionUpsertSchema` + `PlatformConnection` tipi.
 - `lib/validation/schemas/feed.ts` — feed/arama/yıldız Zod şemaları + `PoolJob`/`PoolJobRow`/`JobFeedRow` tipleri.
 - `lib/feed/filter.ts` — saf feed filtre/arama yardımcıları (`extractBudgetFloor`, `matchesFeed`, `searchPool`).
-- `lib/import/` — profil içe aktarma saf yardımcıları: `text.ts` (HTML süzme, platform URL tanıma, SSRF koruması), `pdf.ts` (unpdf ile PDF→metin, bellekte — dosya saklanmaz).
+- `lib/import/` — profil içe aktarma saf yardımcıları: `text.ts` (HTML süzme, platform URL tanıma, SSRF koruması), `pdf.ts` (unpdf ile PDF→metin, bellekte — dosya saklanmaz), `bionluk.ts` (Bionluk public API istemcisi: `parseBionlukUsername` + `speed_init`→`super-token` handshake + `get_public_profile`/`portfolio_get_all` → saf `normalizeBionlukProfile`; foto+bio+skills+portfolyo görselleri; sunucudan çalışır, worker/proxy yok).
 - `lib/scrape/` — Alt-proje B canlı çekme katmanı: `types.ts` (`ScrapeSource` arayüzü + `PoolJobUpsert`), `sources/{remotive,arbeitnow}.ts` (adaptör: `fetch` I/O + saf `normalize`; `htmlToText` ile açıklama düz metne), `run.ts` (`runScrape` orchestrator — geçerlileri `job_pool`'a upsert, kaynak başına koşu özetini `scrape_runs`'a yazar, biri patlarsa diğeri devam), `translate-titles.ts` (`translateNewTitles` — cron sonrası `lang IS NULL` başlıkları chunk'la EN/TR'ye çevirip `job_pool`'a yazar; çevirmen + client parametre, hata izole). Service-role client'ı parametre alır (import etmez). Ücretsiz remote-iş API'leri; Upwork/proxy YOK.
 - `components/ui/` — shadcn bileşenleri.
 - `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. `verify-email-banner.tsx` — dashboard'da ertelenmiş e-posta doğrulama banner'ı + toast. Sekme bileşenleri: `overview-tab.tsx` (stat kartları + tür bazlı kullanım + 30 günlük grafik + son ilanlar + başvuru performansı), `profile-tab.tsx`, `jobs-tab.tsx`, `platforms-hub-tab.tsx` (platform kartları), `platform-detail-tab.tsx` (tek platform 4-bölüm: uyarla/bağlantı/işler/teklifler+ipuçları; `use-adapt`+`JobDetailPanel` yeniden kullanır).
@@ -79,6 +79,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0014_adaptations.sql` — `adaptations` (platform başına SON uyarlama, user×platform unique; platform detay + HUB buradan hydrate olur — yenilemede AI çıktısı kaybolmaz).
   `0015_scrape_runs.sql` — `scrape_runs` (Alt-proje B scraper koşu logu: kaynak/çekilen/yeni/atlanan/hata/süre; yalnız service-role yazar).
   `0016_job_translations.sql` — ilan çevirisi (hibrit): `job_pool`'a lang/title_en/title_tr (scrape-time başlık) + `job_translations` PAYLAŞIMLI on-demand açıklama cache'i (pool×locale unique; yalnız service-role yazar).
+  `0017_profile_media.sql` — `profiles`'a `avatar_url` + `portfolio jsonb` (Bionluk içe aktarmasından foto+portfolyo; dış URL saklanır, Storage'a indirme yok).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
 - Sentry: `instrumentation*.ts`, `sentry.*.config.ts`, `next.config.ts` (`withSentryConfig`).

@@ -3,12 +3,19 @@ import {
 } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
+import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 
 export type { PoolJob } from "@/lib/validation/schemas/feed";
 
 /* ── Types ──────────────────────────────────────────────────────────── */
 
-export interface InitialProfile { headline: string; summary: string; skills: string[] }
+export interface InitialProfile {
+  headline: string;
+  summary: string;
+  skills: string[];
+  avatarUrl: string | null;
+  portfolio: PortfolioItem[];
+}
 export interface AdaptOutput { headline: string; body: string }
 export interface JobRow {
   id: string; title: string; company: string | null; platform: string | null;

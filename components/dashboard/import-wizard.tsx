@@ -10,8 +10,11 @@ import { Sparkles, Link2, ClipboardPaste, FileUp, ArrowRight } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { ChipsInput } from "./chips-input";
 import type { ProfileDraft } from "@/lib/validation/schemas/profile-import";
+import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 
 type Channel = "url" | "text" | "file";
+// Bionluk içe aktarmasında taslakla birlikte gelen görseller (opsiyonel).
+type ImportExtras = { avatarUrl: string | null; portfolio: PortfolioItem[] };
 
 export function ImportWizard() {
   const t = useTranslations("import");
@@ -23,6 +26,7 @@ export function ImportWizard() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [draft, setDraft] = useState<ProfileDraft | null>(null);
+  const [extras, setExtras] = useState<ImportExtras | null>(null);
   const [saving, setSaving] = useState(false);
 
   async function runImport() {
@@ -48,6 +52,7 @@ export function ImportWizard() {
         return;
       }
       setDraft(data.draft as ProfileDraft);
+      setExtras((data.bionluk as ImportExtras | undefined) ?? null);
     } finally {
       setBusy(false);
     }
@@ -58,7 +63,12 @@ export function ImportWizard() {
     setSaving(true); setError("");
     const res = await fetch("/api/profile", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(draft),
+      body: JSON.stringify({
+        ...draft,
+        // Görseller yalnız varsa gönderilir (avatar_url geçerli URL olmalı).
+        ...(extras?.avatarUrl ? { avatar_url: extras.avatarUrl } : {}),
+        ...(extras?.portfolio?.length ? { portfolio: extras.portfolio } : {}),
+      }),
     });
     const data = await res.json().catch(() => null);
     if (!res.ok) { setError(data?.error?.message ?? t("saveError")); setSaving(false); return; }
@@ -79,7 +89,13 @@ export function ImportWizard() {
     return (
       <div className="mx-auto max-w-xl space-y-5">
         <div className="text-center space-y-2">
-          <div className="mx-auto h-12 w-12 rounded-2xl bg-[#00F0FF]/10 flex items-center justify-center"><Sparkles className="h-6 w-6 text-[#00F0FF]" /></div>
+          {extras?.avatarUrl ? (
+            // Bionluk dış görseli — next/image remotePatterns'a gerek kalmasın.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={extras.avatarUrl} alt={t("photoAlt")} className="mx-auto h-16 w-16 rounded-2xl object-cover ring-2 ring-[#00F0FF]/30" />
+          ) : (
+            <div className="mx-auto h-12 w-12 rounded-2xl bg-[#00F0FF]/10 flex items-center justify-center"><Sparkles className="h-6 w-6 text-[#00F0FF]" /></div>
+          )}
           <h1 className="text-xl font-extrabold">{t("draftTitle")}</h1>
         </div>
         <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
@@ -95,9 +111,22 @@ export function ImportWizard() {
             <span className="text-xs font-semibold text-muted-foreground">{t("skillsLabel")}</span>
             <ChipsInput values={draft.skills} onChange={(next) => setDraft({ ...draft, skills: next })} placeholder={t("addSkill")} removeTitle={t("removeSkill")} max={50} />
           </div>
+          {extras && extras.portfolio.length > 0 && (
+            <div className="space-y-1.5">
+              <span className="text-xs font-semibold text-muted-foreground">{t("portfolioLabel", { count: extras.portfolio.length })}</span>
+              <div className="grid grid-cols-4 gap-2">
+                {extras.portfolio.slice(0, 8).map((item, i) =>
+                  item.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img key={i} src={item.imageUrl} alt={item.title} title={item.title} className="aspect-square w-full rounded-lg object-cover border border-border" />
+                  ) : null,
+                )}
+              </div>
+            </div>
+          )}
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex items-center justify-between pt-1">
-            <button onClick={() => { setDraft(null); setError(""); }} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2">{t("startOver")}</button>
+            <button onClick={() => { setDraft(null); setExtras(null); setError(""); }} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2">{t("startOver")}</button>
             <Button onClick={saveDraft} disabled={saving} className="gap-2">{saving ? t("saving") : t("save")}<ArrowRight className="h-4 w-4" /></Button>
           </div>
         </div>

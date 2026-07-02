@@ -346,7 +346,9 @@
     "save": "Kaydet",
     "saved": "Kaydedildi",
     "preview": "Önizleme",
-    "completion": "Tamamlanma"
+    "completion": "Tamamlanma",
+    "photoAlt": "Profil fotoğrafı",
+    "portfolioTitle": "Portfolyo ({count})"
   },
   "adapt": {
     "saveProfileFirst": "Uyarlamak için önce profilini kaydet.",
@@ -524,6 +526,8 @@
     "import": "İçe aktar",
     "importing": "İçe aktarılıyor…",
     "draftTitle": "Taslağın hazır — gözden geçir ve kaydet",
+    "photoAlt": "Profil fotoğrafı",
+    "portfolioLabel": "İçe aktarılan portfolyo ({count})",
     "headlineLabel": "Başlık",
     "summaryLabel": "Özet",
     "skillsLabel": "Beceriler",

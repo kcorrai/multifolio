@@ -346,7 +346,9 @@
     "save": "Save",
     "saved": "Saved",
     "preview": "Preview",
-    "completion": "Completion"
+    "completion": "Completion",
+    "photoAlt": "Profile photo",
+    "portfolioTitle": "Portfolio ({count})"
   },
   "adapt": {
     "saveProfileFirst": "Save your profile first to adapt it.",
@@ -524,6 +526,8 @@
     "import": "Import",
     "importing": "Importing…",
     "draftTitle": "Here's your draft — review and save",
+    "photoAlt": "Profile photo",
+    "portfolioLabel": "Imported portfolio ({count})",
     "headlineLabel": "Headline",
     "summaryLabel": "Summary",
     "skillsLabel": "Skills",

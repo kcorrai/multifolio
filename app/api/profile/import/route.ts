@@ -10,7 +10,8 @@ import { parseJson } from "@/lib/validation";
 import { importRequestSchema } from "@/lib/validation/schemas/profile-import";
 import { htmlToText, detectPlatformFromUrl, isSafeExternalUrl } from "@/lib/import/text";
 import { pdfToText } from "@/lib/import/pdf";
-import { extractProfile } from "@/lib/ai/profile-import";
+import { parseBionlukUsername, fetchBionlukProfile, type BionlukProfile } from "@/lib/import/bionluk";
+import { extractProfile, type ProfileImportResult } from "@/lib/ai/profile-import";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { PlatformId } from "@/lib/ai/platforms";
@@ -37,10 +38,12 @@ export const POST = withErrorHandler(async (req) => {
   if (countError) throw countError;
   if ((count ?? 0) >= HOURLY_LIMIT) throw new RateLimitError(t("importRateLimited"));
 
-  // Kanala göre ham metni topla.
+  // Kanala göre ham metni topla. Bionluk özel yol: yapılandırılmış API'den
+  // doğrudan taslak (AI YOK — ücretsiz, kredisiz, daha doğru + görseller).
   let text = "";
   let platform: PlatformId | null = null;
   let sourceUrl: string | null = null;
+  let bionluk: BionlukProfile | null = null;
   const contentType = req.headers.get("content-type") ?? "";
 
   if (contentType.includes("multipart/form-data")) {
@@ -60,25 +63,40 @@ export const POST = withErrorHandler(async (req) => {
       if (!isSafeExternalUrl(input.url)) throw new ValidationError(t("importFetchFailed"));
       platform = detectPlatformFromUrl(input.url);
       sourceUrl = input.url;
-      let html = "";
-      try {
-        const res = await fetch(input.url, {
-          signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-          headers: { "User-Agent": "Mozilla/5.0 (compatible; MultifolioBot/1.0)", Accept: "text/html" },
-          redirect: "follow",
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        html = await res.text();
-      } catch {
-        throw new ValidationError(t("importFetchFailed"));
+
+      if (platform === "bionluk") {
+        const username = parseBionlukUsername(input.url);
+        if (!username) throw new ValidationError(t("importFetchFailed"));
+        bionluk = await fetchBionlukProfile(username);
+        if (!bionluk) throw new ValidationError(t("importFetchFailed"));
+      } else {
+        // Diğer platformlar: düz fetch + HTML→metin → AI (bot duvarında olabilir).
+        let html = "";
+        try {
+          const res = await fetch(input.url, {
+            signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+            headers: { "User-Agent": "Mozilla/5.0 (compatible; MultifolioBot/1.0)", Accept: "text/html" },
+            redirect: "follow",
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          html = await res.text();
+        } catch {
+          throw new ValidationError(t("importFetchFailed"));
+        }
+        text = htmlToText(html);
+        if (text.length < 80) throw new ValidationError(t("importFetchFailed")); // bot duvarı/boş sayfa
       }
-      text = htmlToText(html);
-      if (text.length < 80) throw new ValidationError(t("importFetchFailed")); // bot duvarı/boş sayfa
     }
   }
 
-  const locale = await getUserLocale();
-  const result = await extractProfile(text, locale);
+  // Taslak: Bionluk yapılandırılmış (AI'sız, maliyetsiz); diğerleri AI çıkarımı.
+  let result: ProfileImportResult;
+  if (bionluk) {
+    result = { draft: bionluk.draft, model: "bionluk-structured", inputTokens: 0, outputTokens: 0, costUsd: 0 };
+  } else {
+    const locale = await getUserLocale();
+    result = await extractProfile(text, locale);
+  }
 
   // Anlamlılık: taslak tamamen boşsa kullanılabilir bir profil yok demektir.
   const d = result.draft;
@@ -109,5 +127,18 @@ export const POST = withErrorHandler(async (req) => {
     if (connError) throw connError;
   }
 
-  return NextResponse.json({ draft: result.draft, platform });
+  // Bionluk'ta yapılandırılmış ekstralar (avatar + portfolyo görselleri) da döner;
+  // taslak inceleme ekranı bunları gösterir/kaydeder (kalıcılaştırma sonraki adım).
+  return NextResponse.json({
+    draft: result.draft,
+    platform,
+    bionluk: bionluk
+      ? {
+          avatarUrl: bionluk.avatarUrl,
+          portfolio: bionluk.portfolio,
+          rating: bionluk.rating,
+          memberSince: bionluk.memberSince,
+        }
+      : undefined,
+  });
 });

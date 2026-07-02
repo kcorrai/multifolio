@@ -16,6 +16,9 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
   const [headline, setHeadline] = useState(initialProfile?.headline ?? "");
   const [summary, setSummary] = useState(initialProfile?.summary ?? "");
   const [skills, setSkills] = useState<string[]>(initialProfile?.skills ?? []);
+  // Görseller içe aktarmadan gelir; burada salt-okunur gösterilir (kaydetme ezmez).
+  const avatarUrl = initialProfile?.avatarUrl ?? null;
+  const portfolio = initialProfile?.portfolio ?? [];
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">(
     initialProfile !== null ? "saved" : "idle",
   );
@@ -98,6 +101,15 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
             <CardTitle className="text-sm text-muted-foreground font-medium uppercase tracking-wide">{t("preview")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {avatarUrl && (
+              // Bionluk dış görseli — next/image remotePatterns'a gerek kalmasın.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={avatarUrl}
+                alt={t("photoAlt")}
+                className="h-16 w-16 rounded-full object-cover ring-2 ring-[#00F0FF]/30"
+              />
+            )}
             {headline ? (
               <p className="font-bold text-foreground leading-snug">{headline}</p>
             ) : (
@@ -125,6 +137,30 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
             </div>
           </CardContent>
         </Card>
+
+        {portfolio.length > 0 && (
+          <Card className={`shadow-sm ${ELEVATED}`}>
+            <CardContent className="pt-4 space-y-2.5">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                {t("portfolioTitle", { count: portfolio.length })}
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {portfolio.slice(0, 9).map((item, i) =>
+                  item.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={i}
+                      src={item.imageUrl}
+                      alt={item.title}
+                      title={item.title}
+                      className="aspect-square w-full rounded-lg object-cover border border-border"
+                    />
+                  ) : null,
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className={`shadow-sm ${ELEVATED}`}>
           <CardContent className="pt-4 space-y-2">
