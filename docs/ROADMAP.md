@@ -67,7 +67,19 @@ Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
   uphunt tarzı keşif: `/dashboard/jobs` segmented (Feed/Search/Starred/Applied); paylaşımlı
   `job_pool` + kullanıcı `job_feeds`/`starred_jobs`/`job_scores` (migration 0012); on-demand
   AI skorlama (kredi + cache); Upwork deep-link + mevcut pipeline'a apply köprüsü. Seed veriyle
-  çalışır; canlı çekme Alt-proje B'de. `main` üzerinde. Not: migration 0012 henüz prod'a uygulanmadı.
+  çalışır; canlı çekme Alt-proje B'de. `main` üzerinde. Migration 0012 + seed prod'a uygulandı (2026-07-02).
+  Devam (2026-07-02): feed filtre genişletmesi — FeedModal'da platform / ülke hariç tutma /
+  min saatlik-sabit ücret / müşteri min harcaması / min skor (migration 0013, prod'da);
+  ortak `ChipsInput` (feed keywords + ülkeler + profil skills).
+
+- **Faz 10.5 — Onboarding Profil İçe Aktarma** ✅ (2026-07-02)
+  "Boş form" yerine "profilini getir": profilsiz kullanıcı `/dashboard/import` wizard'ına
+  düşer (yalnız Genel Bakış yönlendirir — sekme tuzağı yok; "kendim doldururum" kaçışı var).
+  Üç kanal — profil URL'i (düz fetch + HTML süzme; bilinen platformsa `platform_connections`
+  upsert), metin yapıştırma, CV/PDF (unpdf, bellekte — dosya saklanmaz) — tek motora akar:
+  `extractProfile` (gpt-4o-mini) `{headline, summary, skills}` taslağı üretir; kullanıcı
+  düzenleyip mevcut `/api/profile` ile kaydeder. Ücretsiz (kredi düşmez; maliyet
+  `usage_events kind='profile_import'`), saatte 10 limit, SSRF koruması. Migration YOK.
 
 - **Faz 6 — İşveren tarafı / iki taraflı pazar** *(çok sonra)*
   İşveren tarafı akışları ve pazar yeri.
