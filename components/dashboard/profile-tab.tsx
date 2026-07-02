@@ -8,13 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ChipsInput } from "./chips-input";
 import { ELEVATED, type InitialProfile } from "./shared";
 
 export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile | null }) {
   const t = useTranslations("profile");
   const [headline, setHeadline] = useState(initialProfile?.headline ?? "");
   const [summary, setSummary] = useState(initialProfile?.summary ?? "");
-  const [skills, setSkills] = useState((initialProfile?.skills ?? []).join(", "));
+  const [skills, setSkills] = useState<string[]>(initialProfile?.skills ?? []);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">(
     initialProfile !== null ? "saved" : "idle",
   );
@@ -26,7 +27,7 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
     setSaveState("saving"); setProfileError("");
     const res = await fetch("/api/profile", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ headline, summary, skills: skills.split(",").map((s) => s.trim()).filter(Boolean) }),
+      body: JSON.stringify({ headline, summary, skills }),
     });
     if (!res.ok) {
       const body = await res.json().catch(() => null);
@@ -59,9 +60,14 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="skills">{t("skillsLabel")}</Label>
-            <Input id="skills" value={skills}
-              onChange={(e) => { setSkills(e.target.value); setSaveState("idle"); }}
-              placeholder="React, TypeScript, Next.js, Node.js" />
+            <ChipsInput
+              id="skills"
+              values={skills}
+              onChange={(next) => { setSkills(next); setSaveState("idle"); }}
+              placeholder={t("addSkill")}
+              removeTitle={t("removeSkill")}
+              max={30}
+            />
             <p className="text-xs text-muted-foreground">{t("skillsHint")}</p>
           </div>
 
@@ -107,8 +113,8 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
               </div>
             )}
             <div className="flex flex-wrap gap-1.5 pt-1">
-              {skills ? (
-                skills.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 8).map((s) => (
+              {skills.length > 0 ? (
+                skills.slice(0, 8).map((s) => (
                   <span key={s} className="rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[11px] font-medium">{s}</span>
                 ))
               ) : (
@@ -127,7 +133,7 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
               {[
                 { label: t("headlineLabel"), done: headline.trim().length > 0 },
                 { label: t("summaryLabel"),  done: summary.trim().length > 0 },
-                { label: t("skillsLabel"),   done: skills.trim().length > 0 },
+                { label: t("skillsLabel"),   done: skills.length > 0 },
                 { label: t("saved"),         done: profileSaved },
               ].map(({ label, done }) => (
                 <div key={label} className="flex items-center gap-2">

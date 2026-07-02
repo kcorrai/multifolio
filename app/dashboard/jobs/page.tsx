@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { JobsTab } from "@/components/dashboard/jobs-tab";
 import type { JobRow } from "@/components/dashboard/shared";
 import type { PoolJob, PoolJobRow, JobFeedRow } from "@/lib/validation/schemas/feed";
-import { matchesFeed } from "@/lib/feed/filter";
+import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
 
 type View = "feed" | "search" | "starred" | "applied";
 const VIEWS: View[] = ["feed", "search", "starred", "applied"];
@@ -18,8 +18,8 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const [profileRes, jobsRes, feedsRes, poolRes, starRes, scoreRes] = await Promise.all([
     supabase.from("profiles").select("user_id").eq("user_id", user.id).maybeSingle(),
     supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
-    supabase.from("job_feeds").select("id, name, keywords, min_budget, platform, created_at").eq("user_id", user.id),
-    supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, posted_at, created_at").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(200),
+    supabase.from("job_feeds").select("id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, created_at").eq("user_id", user.id),
+    supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(200),
     supabase.from("starred_jobs").select("job_pool_id").eq("user_id", user.id),
     supabase.from("job_scores").select("job_pool_id, score, result").eq("user_id", user.id),
   ]);
@@ -31,9 +31,14 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const starred = new Set((starRes.data ?? []).map((r) => r.job_pool_id as string));
   const scores = new Map((scoreRes.data ?? []).map((r) => [r.job_pool_id as string, r]));
 
+  // min_score cache'li skora göre eler (skorsuz ilan geçer).
   const matched = feeds.length === 0
     ? pool
-    : pool.filter((p) => feeds.some((f) => matchesFeed(p, { keywords: f.keywords, min_budget: f.min_budget, platform: f.platform })));
+    : pool.filter((p) => {
+        const s = scores.get(p.id);
+        const score = s ? (s.score as number) : null;
+        return feeds.some((f) => matchesFeed(p, feedCriteria(f), score));
+      });
 
   const initialFeedJobs: PoolJob[] = matched.slice(0, 25).map((p) => {
     const s = scores.get(p.id);

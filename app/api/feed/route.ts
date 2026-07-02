@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseQuery } from "@/lib/validation";
 import { feedListQuerySchema, type PoolJobRow, type JobFeedRow, type PoolJob } from "@/lib/validation/schemas/feed";
-import { matchesFeed } from "@/lib/feed/filter";
+import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const POOL_WINDOW = 200;
@@ -19,8 +19,8 @@ export const GET = withErrorHandler(async (req) => {
   const { offset, limit } = parseQuery(new URL(req.url).searchParams, feedListQuerySchema);
 
   const [feedsRes, poolRes, starRes, scoreRes] = await Promise.all([
-    supabase.from("job_feeds").select("id, name, keywords, min_budget, platform, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
-    supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, posted_at, created_at").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(POOL_WINDOW),
+    supabase.from("job_feeds").select("id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
+    supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(POOL_WINDOW),
     supabase.from("starred_jobs").select("job_pool_id").eq("user_id", user.id),
     supabase.from("job_scores").select("job_pool_id, score, result").eq("user_id", user.id),
   ]);
@@ -34,9 +34,14 @@ export const GET = withErrorHandler(async (req) => {
   const starred = new Set((starRes.data ?? []).map((r) => r.job_pool_id as string));
   const scores = new Map((scoreRes.data ?? []).map((r) => [r.job_pool_id as string, r]));
 
+  // min_score cache'li skora göre eler (skorsuz ilan geçer) → skor haritası eşleşmeden önce lazım.
   const matched = feeds.length === 0
     ? pool
-    : pool.filter((p) => feeds.some((f) => matchesFeed(p, { keywords: f.keywords, min_budget: f.min_budget, platform: f.platform })));
+    : pool.filter((p) => {
+        const s = scores.get(p.id);
+        const score = s ? (s.score as number) : null;
+        return feeds.some((f) => matchesFeed(p, feedCriteria(f), score));
+      });
 
   const page: PoolJob[] = matched.slice(offset, offset + limit).map((p) => {
     const s = scores.get(p.id);

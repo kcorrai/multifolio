@@ -6,7 +6,7 @@ import { parseJson } from "@/lib/validation";
 import { feedUpdateSchema } from "@/lib/validation/schemas/feed";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const FEED_COLS = "id, name, keywords, min_budget, platform, created_at";
+const FEED_COLS = "id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, created_at";
 
 export const PATCH = withErrorHandler(async (req, { params }) => {
   const { id } = await params as { id: string };
@@ -20,6 +20,11 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
   if (input.keywords !== undefined) patch.keywords = input.keywords;
   if (input.minBudget !== undefined) patch.min_budget = input.minBudget;
   if (input.platform !== undefined) patch.platform = input.platform;
+  if (input.excludeCountries !== undefined) patch.exclude_countries = input.excludeCountries;
+  if (input.minHourlyRate !== undefined) patch.min_hourly_rate = input.minHourlyRate;
+  if (input.minFixedPrice !== undefined) patch.min_fixed_price = input.minFixedPrice;
+  if (input.minClientSpent !== undefined) patch.min_client_spent = input.minClientSpent;
+  if (input.minScore !== undefined) patch.min_score = input.minScore;
 
   const { data, error } = await supabase.from("job_feeds").update(patch).eq("id", id).eq("user_id", user.id).select(FEED_COLS).maybeSingle();
   if (error) throw error;

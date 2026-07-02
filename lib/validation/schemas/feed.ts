@@ -7,6 +7,11 @@ export const feedCreateSchema = z.object({
   keywords: z.array(z.string().trim().min(1).max(40)).max(10).default([]),
   minBudget: z.number().int().min(0).max(1_000_000).optional(),
   platform: z.string().trim().max(60).optional(),
+  excludeCountries: z.array(z.string().trim().min(1).max(60)).max(20).default([]),
+  minHourlyRate: z.number().min(0).max(10_000).optional(),
+  minFixedPrice: z.number().min(0).max(1_000_000).optional(),
+  minClientSpent: z.number().min(0).max(100_000_000).optional(),
+  minScore: z.number().int().min(0).max(100).optional(),
 });
 
 export const feedUpdateSchema = feedCreateSchema.partial();
@@ -45,6 +50,7 @@ export interface PoolJobRow {
   budget: string | null;
   skills: string[];
   client_country: string | null;
+  client_spent: number | null;
   posted_at: string | null;
   created_at: string;
 }
@@ -56,6 +62,11 @@ export interface JobFeedRow {
   keywords: string[];
   min_budget: number | null;
   platform: string | null;
+  exclude_countries: string[];
+  min_hourly_rate: number | null;
+  min_fixed_price: number | null;
+  min_client_spent: number | null;
+  min_score: number | null;
   created_at: string;
 }
 
