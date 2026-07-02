@@ -38,9 +38,18 @@ export const POST = withErrorHandler(async (req) => {
   }
 
   const locale = await getUserLocale();
-  const { result, balance, spent } = await spendCredits(user.id, "adaptation", () =>
-    adaptProfile(profile, input.platform, locale),
-  );
+  const { result, balance, spent } = await spendCredits(user.id, "adaptation", async () => {
+    const r = await adaptProfile(profile, input.platform, locale);
+    // Kalıcılık closure İÇİNDE: yazım patlarsa kredi iade edilir (Faz 9 kuralı).
+    const { error: upsertError } = await supabase
+      .from("adaptations")
+      .upsert(
+        { user_id: user.id, platform: input.platform, headline: r.output.headline, body: r.output.body },
+        { onConflict: "user_id,platform" },
+      );
+    if (upsertError) throw upsertError;
+    return r;
+  });
 
   // Maliyeti server-otoritatif kaydet (service-role — RLS yazma politikası yok).
   const admin = createSupabaseAdminClient();
