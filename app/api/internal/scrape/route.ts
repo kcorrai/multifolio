@@ -8,6 +8,12 @@ import { runScrape } from "@/lib/scrape/run";
 import { remotiveSource } from "@/lib/scrape/sources/remotive";
 import { arbeitnowSource } from "@/lib/scrape/sources/arbeitnow";
 
+// GET: hafif erişilebilirlik yanıtı (cron servisleri URL doğrularken GET/HEAD atar).
+// İŞ YAPMAZ, secret istemez; gerçek çekme yalnız POST + x-cron-secret ile.
+export const GET = withErrorHandler(async () => {
+  return NextResponse.json({ ok: true, hint: "POST with x-cron-secret header to trigger scrape" });
+});
+
 export const POST = withErrorHandler(async (req) => {
   const secret = req.headers.get("x-cron-secret");
   const expected = process.env.SCRAPER_CRON_SECRET;
