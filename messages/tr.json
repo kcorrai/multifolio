@@ -481,12 +481,51 @@
     "ctaSubtitle": "Her yeni hesap 100 kredi alır — beş platformu uyarlamaya ve ilk işlerini eşleştirmeye yeter.",
     "ctaButton": "Ücretsiz başla"
   },
+  "feed": {
+    "tabs": { "feed": "Feed", "search": "Ara", "starred": "Yıldızlı", "applied": "Başvurulan" },
+    "feedEmptyTitle": "Feed'lerinle eşleşen iş yok",
+    "feedEmptyHint": "Keyword ve bütçeyle bir feed oluştur; eşleşen işler burada görünsün.",
+    "noFeedsTitle": "İlk feed'ini oluştur",
+    "noFeedsHint": "Bir aramayı kaydet (keyword, bütçe, platform); eşleşen işler burada çıkar.",
+    "createFeed": "Feed oluştur",
+    "searchPlaceholder": "Keyword ile iş ara…",
+    "searchEmpty": "Bu arama için iş bulunamadı.",
+    "starredEmptyTitle": "Yıldızlı iş yok",
+    "starredEmptyHint": "Feed veya Ara'dan işleri yıldızla; burada saklanır.",
+    "star": "Yıldızla",
+    "unstar": "Yıldızı kaldır",
+    "analyze": "Uyumu analiz et",
+    "analyzing": "Analiz ediliyor…",
+    "openOnPlatform": "Platformda aç",
+    "markApplied": "Başvurdum olarak işaretle",
+    "applied": "Başvuruldu",
+    "score": "Uyum",
+    "postedRelative": "{time} önce",
+    "budget": "Bütçe",
+    "loadMore": "Daha fazla",
+    "minShort": "{count}dk",
+    "hourShort": "{count}sa",
+    "dayShort": "{count}g",
+    "modal": {
+      "title": "Feed",
+      "nameLabel": "Feed adı",
+      "namePlaceholder": "örn. React & Next.js",
+      "keywordsLabel": "Keyword'ler",
+      "keywordsPlaceholder": "react, next.js, typescript",
+      "minBudgetLabel": "Min bütçe (USD)",
+      "platformLabel": "Platform",
+      "save": "Feed'i kaydet",
+      "cancel": "İptal",
+      "delete": "Feed'i sil"
+    }
+  },
   "errors": {
     "profileRequired": "Önce bir profil oluşturmalısın.",
     "profileRequiredPortfolio": "Portfolyo oluşturmak için önce profil doldurmalısın.",
     "profileRequiredProposal": "Teklif üretmek için önce profil doldurmalısın.",
     "profileRequiredMatch": "Eşleştirme için önce profil doldurmalısın.",
     "jobNotFound": "İlan bulunamadı.",
-    "insufficientCredits": "Krediniz bitti. AI özelliklerini kullanmaya devam etmek için kredi alın."
+    "insufficientCredits": "Krediniz bitti. AI özelliklerini kullanmaya devam etmek için kredi alın.",
+    "feedLimitReached": "En fazla 10 kayıtlı feed'e ulaştın."
   }
 }

@@ -481,12 +481,51 @@
     "ctaSubtitle": "Every new account gets 100 credits — enough to adapt all five platforms and match your first jobs.",
     "ctaButton": "Get started free"
   },
+  "feed": {
+    "tabs": { "feed": "Feed", "search": "Search", "starred": "Starred", "applied": "Applied" },
+    "feedEmptyTitle": "No jobs match your feeds yet",
+    "feedEmptyHint": "Create a feed with keywords and budget to start seeing matched jobs.",
+    "noFeedsTitle": "Create your first feed",
+    "noFeedsHint": "Save a search (keywords, budget, platform) and matching jobs show up here.",
+    "createFeed": "Create feed",
+    "searchPlaceholder": "Search jobs by keyword…",
+    "searchEmpty": "No jobs found for this search.",
+    "starredEmptyTitle": "No starred jobs",
+    "starredEmptyHint": "Star jobs from the Feed or Search to save them here.",
+    "star": "Star",
+    "unstar": "Unstar",
+    "analyze": "Analyze match",
+    "analyzing": "Analyzing…",
+    "openOnPlatform": "Open on platform",
+    "markApplied": "Mark as applied",
+    "applied": "Applied",
+    "score": "Match",
+    "postedRelative": "{time} ago",
+    "budget": "Budget",
+    "loadMore": "Load more",
+    "minShort": "{count}m",
+    "hourShort": "{count}h",
+    "dayShort": "{count}d",
+    "modal": {
+      "title": "Feed",
+      "nameLabel": "Feed name",
+      "namePlaceholder": "e.g. React & Next.js",
+      "keywordsLabel": "Keywords",
+      "keywordsPlaceholder": "react, next.js, typescript",
+      "minBudgetLabel": "Min budget (USD)",
+      "platformLabel": "Platform",
+      "save": "Save feed",
+      "cancel": "Cancel",
+      "delete": "Delete feed"
+    }
+  },
   "errors": {
     "profileRequired": "You need to create a profile first.",
     "profileRequiredPortfolio": "Fill in your profile first to generate a portfolio.",
     "profileRequiredProposal": "Fill in your profile first to generate a proposal.",
     "profileRequiredMatch": "Fill in your profile first to run matching.",
     "jobNotFound": "Job not found.",
-    "insufficientCredits": "You're out of credits. Get more to keep using AI features."
+    "insufficientCredits": "You're out of credits. Get more to keep using AI features.",
+    "feedLimitReached": "You've reached the maximum of 10 saved feeds."
   }
 }
