@@ -12,6 +12,7 @@ export const jobCreateSchema = z.object({
   description: z.string().trim().min(10).max(10000),
   url: z.string().url().max(2000).optional(),
   budget: z.string().trim().max(100).optional(),
+  source_pool_id: z.string().uuid().optional(),
 });
 
 export const jobUpdateSchema = z.object({

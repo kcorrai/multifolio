@@ -5,6 +5,8 @@ import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
 
+export type { PoolJob } from "@/lib/validation/schemas/feed";
+
 /* ── Types ──────────────────────────────────────────────────────────── */
 
 export interface InitialProfile { headline: string; summary: string; skills: string[] }
