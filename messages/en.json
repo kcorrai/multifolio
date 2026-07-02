@@ -544,6 +544,10 @@
     "profileRequiredMatch": "Fill in your profile first to run matching.",
     "jobNotFound": "Job not found.",
     "insufficientCredits": "You're out of credits. Get more to keep using AI features.",
-    "feedLimitReached": "You've reached the maximum of 10 saved feeds."
+    "feedLimitReached": "You've reached the maximum of 10 saved feeds.",
+    "importFetchFailed": "We couldn't fetch that page. Copy your profile text and paste it instead.",
+    "importNoText": "We couldn't read any text from that file. Copy your profile text and paste it instead.",
+    "importNothingFound": "That content doesn't look like a profile. Paste your profile or CV text.",
+    "importRateLimited": "Too many import attempts. Please try again in an hour."
   }
 }

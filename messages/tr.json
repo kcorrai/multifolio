@@ -544,6 +544,10 @@
     "profileRequiredMatch": "Eşleştirme için önce profil doldurmalısın.",
     "jobNotFound": "İlan bulunamadı.",
     "insufficientCredits": "Krediniz bitti. AI özelliklerini kullanmaya devam etmek için kredi alın.",
-    "feedLimitReached": "En fazla 10 kayıtlı feed'e ulaştın."
+    "feedLimitReached": "En fazla 10 kayıtlı feed'e ulaştın.",
+    "importFetchFailed": "Sayfayı çekemedik. Bunun yerine profil metnini kopyalayıp yapıştır.",
+    "importNoText": "Dosyadan metin okuyamadık. Bunun yerine profil metnini kopyalayıp yapıştır.",
+    "importNothingFound": "Bu içerik bir profile benzemiyor. Profil veya CV metnini yapıştır.",
+    "importRateLimited": "Çok fazla içe aktarma denemesi. Bir saat sonra tekrar dene."
   }
 }
