@@ -5,16 +5,17 @@ import { useTranslations } from "next-intl";
 import { CheckCircle2, Sparkles, Briefcase, ChevronRight, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PlatformLogo } from "@/components/platform-logo";
-import { PLATFORMS, PLATFORM_IDS } from "@/lib/ai/platforms";
+import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
 import { ELEVATED, PLATFORM_STYLES } from "./shared";
 import { useDashboard } from "./dashboard-context";
 
 export function PlatformsHubTab({
-  profileSaved, connections, jobsByPlatform,
+  profileSaved, connections, jobsByPlatform, initialAdaptedPlatforms,
 }: {
   profileSaved: boolean;
   connections: Record<string, string>;
   jobsByPlatform: Record<string, number>;
+  initialAdaptedPlatforms: PlatformId[];
 }) {
   const t = useTranslations("platforms");
   const { adaptResults } = useDashboard();
@@ -37,7 +38,8 @@ export function PlatformsHubTab({
         {PLATFORM_IDS.map((id) => {
           const style = PLATFORM_STYLES[id];
           const connected = !!connections[id];
-          const adapted = !!adaptResults[id];
+          // Oturum içi taze üretim VEYA DB'deki kalıcı kayıt.
+          const adapted = !!adaptResults[id] || initialAdaptedPlatforms.includes(id);
           const jobCount = jobsByPlatform[id] ?? 0;
           return (
             <Link key={id} href={`/dashboard/platforms/${id}`} className="group block">

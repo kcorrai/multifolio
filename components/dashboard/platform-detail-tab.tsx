@@ -15,20 +15,21 @@ import { PLATFORMS, type PlatformId } from "@/lib/ai/platforms";
 import type { ProposalRow } from "@/lib/validation/schemas/proposal";
 import {
   ELEVATED, PLATFORM_STYLES, PLATFORM_URL_PLACEHOLDERS,
-  STATUS_DOT, scoreColor, scoreBarColor, type JobRow,
+  STATUS_DOT, scoreColor, scoreBarColor, type JobRow, type AdaptOutput,
 } from "./shared";
 import { CopyButton } from "./copy-button";
 import { useDashboard } from "./dashboard-context";
 import { useAdapt } from "./use-adapt";
 
 export function PlatformDetailTab({
-  platform, profileSaved, connectionUrl, jobs: initialJobs, proposals,
+  platform, profileSaved, connectionUrl, jobs: initialJobs, proposals, initialAdaptResult,
 }: {
   platform: PlatformId;
   profileSaved: boolean;
   connectionUrl: string | null;
   jobs: JobRow[];
   proposals: ProposalRow[];
+  initialAdaptResult: AdaptOutput | null;
 }) {
   const t = useTranslations("platforms");
   const ta = useTranslations("adapt");
@@ -38,7 +39,8 @@ export function PlatformDetailTab({
   const style = PLATFORM_STYLES[platform];
   const { adaptResults, applyCredits, setConnectionsCount } = useDashboard();
   const { adapt, adapting, error: adaptError } = useAdapt();
-  const adaptResult = adaptResults[platform];
+  // Oturum içi taze üretim öncelikli; yenilemede DB'deki kalıcı kayıt devralır.
+  const adaptResult = adaptResults[platform] ?? initialAdaptResult ?? undefined;
 
   // ── Bağlantı (tek platform) ──────────────────────────────────────────
   const [saved, setSaved] = useState<string | null>(connectionUrl);

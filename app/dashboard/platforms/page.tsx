@@ -1,16 +1,18 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { PlatformsHubTab } from "@/components/dashboard/platforms-hub-tab";
+import type { PlatformId } from "@/lib/ai/platforms";
 
 export default async function PlatformsPage() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [profileRes, connRes, jobsRes] = await Promise.all([
+  const [profileRes, connRes, jobsRes, adaptRes] = await Promise.all([
     supabase.from("profiles").select("user_id").eq("user_id", user.id).maybeSingle(),
     supabase.from("platform_connections").select("platform, profile_url").eq("user_id", user.id),
     supabase.from("job_listings").select("platform").eq("user_id", user.id),
+    supabase.from("adaptations").select("platform").eq("user_id", user.id),
   ]);
 
   const connections = Object.fromEntries(
@@ -28,6 +30,7 @@ export default async function PlatformsPage() {
       profileSaved={profileRes.data !== null}
       connections={connections}
       jobsByPlatform={jobsByPlatform}
+      initialAdaptedPlatforms={(adaptRes.data ?? []).map((a) => a.platform) as PlatformId[]}
     />
   );
 }
