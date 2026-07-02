@@ -35,6 +35,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/feed/search` — GET: `job_pool` üzerinde anlık arama.
   - `app/api/feed/[poolId]/score` — POST: on-demand profil×ilan AI skoru (kredi + `job_scores` cache).
   - `app/api/feeds` (+`[id]`) — kayıtlı feed CRUD (kullanıcı başına 10 limit). `app/api/starred` — yıldız GET/POST/DELETE.
+  - `app/api/internal/scrape` — POST: dış cron (cron-job.org) `x-cron-secret` ile tetikler; Remotive+Arbeitnow ücretsiz API'lerinden çekip `job_pool`'a upsert (Alt-proje B canlı çekme).
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `openai-client.ts` (OpenAI gpt-4o-mini istemcisi),
   `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `PROPOSAL_GUIDANCE`),
@@ -53,6 +54,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/validation/schemas/feed.ts` — feed/arama/yıldız Zod şemaları + `PoolJob`/`PoolJobRow`/`JobFeedRow` tipleri.
 - `lib/feed/filter.ts` — saf feed filtre/arama yardımcıları (`extractBudgetFloor`, `matchesFeed`, `searchPool`).
 - `lib/import/` — profil içe aktarma saf yardımcıları: `text.ts` (HTML süzme, platform URL tanıma, SSRF koruması), `pdf.ts` (unpdf ile PDF→metin, bellekte — dosya saklanmaz).
+- `lib/scrape/` — Alt-proje B canlı çekme katmanı: `types.ts` (`ScrapeSource` arayüzü + `PoolJobUpsert`), `sources/{remotive,arbeitnow}.ts` (adaptör: `fetch` I/O + saf `normalize`; `htmlToText` ile açıklama düz metne), `run.ts` (`runScrape` orchestrator — geçerlileri `job_pool`'a upsert, kaynak başına koşu özetini `scrape_runs`'a yazar, biri patlarsa diğeri devam). Service-role client'ı parametre alır (import etmez). Ücretsiz remote-iş API'leri; Upwork/proxy YOK.
 - `components/ui/` — shadcn bileşenleri.
 - `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. `verify-email-banner.tsx` — dashboard'da ertelenmiş e-posta doğrulama banner'ı + toast. Sekme bileşenleri: `overview-tab.tsx`, `profile-tab.tsx`, `portfolio-tab.tsx`, `jobs-tab.tsx`, `analytics-tab.tsx`, `platforms-hub-tab.tsx` (platform kartları), `platform-detail-tab.tsx` (tek platform 4-bölüm: uyarla/bağlantı/işler/teklifler+ipuçları; `use-adapt`+`JobDetailPanel` yeniden kullanır).
   `components/job-detail-panel.tsx` — seçili iş için 2-sütun sağ panel (durum, AI skor, teklif CTA, notlar).
@@ -74,6 +76,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0012_job_feed.sql` — `job_pool` (paylaşımlı; yalnız service-role yazar) + kullanıcı `job_feeds`/`starred_jobs`/`job_scores` + `job_listings.source_pool_id`. `supabase/seed/job_pool_sample.sql` — örnek pool ilanları (`source='sample'`).
   `0013_feed_filters.sql` — `job_feeds`'e exclude_countries/min_hourly_rate/min_fixed_price/min_client_spent/min_score, `job_pool`'a client_spent (lenient filtre: ilanda veri yoksa elemez).
   `0014_adaptations.sql` — `adaptations` (platform başına SON uyarlama, user×platform unique; platform detay + HUB buradan hydrate olur — yenilemede AI çıktısı kaybolmaz).
+  `0015_scrape_runs.sql` — `scrape_runs` (Alt-proje B scraper koşu logu: kaynak/çekilen/yeni/atlanan/hata/süre; yalnız service-role yazar).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
 - Sentry: `instrumentation*.ts`, `sentry.*.config.ts`, `next.config.ts` (`withSentryConfig`).

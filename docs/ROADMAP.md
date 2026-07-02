@@ -72,6 +72,16 @@ Faz tabanlı ilerleme. Her faz, bir öncekinin üzerine inşa edilir.
   min saatlik-sabit ücret / müşteri min harcaması / min skor (migration 0013, prod'da);
   ortak `ChipsInput` (feed keywords + ülkeler + profil skills).
 
+- **Faz 10 — Alt-proje B: Canlı İlan Çekme (ücretsiz remote-iş API'leri)** (2026-07-02)
+  uphunt araştırması (privacy policy): çekme = antidetect browser + GoLogin ile public scraping;
+  auto-apply AYRI (Agency Plus). Upwork güvenilir çekmek proxy=para → ERTELENDİ. Yerine ücretsiz JSON
+  API'leri: **Remotive + Arbeitnow**, düz `fetch` (proxy yok, sıfır maliyet, Vercel cron'dan).
+  `lib/scrape/` pluggable adaptör (`ScrapeSource`: `fetch`+saf `normalize`) → `runScrape` orchestrator →
+  `job_pool` upsert (dedup `source+external_id`) + `scrape_runs` koşu logu (migration `0015`).
+  `POST /api/internal/scrape` (`x-cron-secret`=`SCRAPER_CRON_SECRET`) dış cron ile tetiklenir. Dashboard
+  (Alt-proje A) DEĞİŞMEDEN canlıya geçer. Spec/plan: `docs/specs/2026-07-02-scraper-alt-proje-b-design.md`.
+  Kurulum sonrası: cron-job.org günde 1-2 kez; Vercel env; seed temizliği (`source='sample'`).
+
 - **Faz 10.5 — Onboarding Profil İçe Aktarma** ✅ (2026-07-02)
   "Boş form" yerine "profilini getir": profilsiz kullanıcı `/dashboard/import` wizard'ına
   düşer (yalnız Genel Bakış yönlendirir — sekme tuzağı yok; "kendim doldururum" kaçışı var).
