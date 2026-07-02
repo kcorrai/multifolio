@@ -5,7 +5,7 @@
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
 **Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/{en,tr}.json`) — EN varsayılan, TR opsiyonel; sabit string yazma, `useTranslations`/`getTranslations` kullan (yeni anahtar ekleyince iki katalogu da güncelle). **Kod yorumları Türkçe kalır.** AI çıktı dili UI locale'ine uyar.
-Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 10 tamamlandı (İş Feed Dashboard — Alt-proje A: segmented Feed/Search/Starred/Applied, seed veriyle) + feed filtre genişletmesi (platform/ülke/ücret/harcama/skor). Sırada: Alt-proje B (canlı ilan çekme/scraper) / backlog / Faz 6 (iki taraflı pazar). Not: migration 0013 prod'a elle uygulanacak (0011+0012 uygulandı).**
+Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 10 tamamlandı (İş Feed Dashboard — Alt-proje A: segmented Feed/Search/Starred/Applied, seed veriyle) + feed filtre genişletmesi (platform/ülke/ücret/harcama/skor). Sırada: Alt-proje B (canlı ilan çekme/scraper) / backlog / Faz 6 (iki taraflı pazar). Migration'lar 0014 dahil prod'da.**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
@@ -22,7 +22,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/health` — canlılık. `app/api/debug-sentry` — Sentry test (kaldırılabilir).
   - `app/api/profile` — **korumalı uç nokta ŞABLONU** (yeni route'lar bunu örnek alır).
   - `app/api/profile/import` — POST: URL/metin/PDF → AI profil taslağı (ücretsiz — kredi düşmez; saatte 10 limit; `usage_events kind='profile_import'`; platform URL'iyse `platform_connections` upsert).
-  - `app/api/adapt` — uyarlama uç noktası (profil → platform metni; maliyeti kaydeder).
+  - `app/api/adapt` — uyarlama uç noktası (profil → platform metni; maliyeti kaydeder; çıktı `adaptations`'a kalıcı upsert edilir — `spendCredits` closure içinde, yazım patlarsa kredi iade).
   - `app/api/usage` — kullanıcının kümülatif kredi kullanımı (`{ creditsUsed, count }`).
   - `app/api/jobs` — GET (liste) / POST (oluştur) iş ilanı uç noktaları; url/budget/notes alanları desteklenir.
   - `app/api/jobs/[id]` — GET (tam veri) / PATCH (durum/başlık/notlar) / DELETE.
@@ -73,6 +73,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0009_proposal_coverage.sql` — proposals.coverage kolonu (ilan gereksinimlerine karşı kapsama).
   `0012_job_feed.sql` — `job_pool` (paylaşımlı; yalnız service-role yazar) + kullanıcı `job_feeds`/`starred_jobs`/`job_scores` + `job_listings.source_pool_id`. `supabase/seed/job_pool_sample.sql` — örnek pool ilanları (`source='sample'`).
   `0013_feed_filters.sql` — `job_feeds`'e exclude_countries/min_hourly_rate/min_fixed_price/min_client_spent/min_score, `job_pool`'a client_spent (lenient filtre: ilanda veri yoksa elemez).
+  `0014_adaptations.sql` — `adaptations` (platform başına SON uyarlama, user×platform unique; platform detay + HUB buradan hydrate olur — yenilemede AI çıktısı kaybolmaz).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
 - Sentry: `instrumentation*.ts`, `sentry.*.config.ts`, `next.config.ts` (`withSentryConfig`).
