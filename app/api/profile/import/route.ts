@@ -7,7 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, ValidationError, RateLimitError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
-import { importRequestSchema } from "@/lib/validation/schemas/profile-import";
+import { importRequestSchema, type ImportRequest, type ProfileImportMedia } from "@/lib/validation/schemas/profile-import";
 import { htmlToText, detectPlatformFromUrl, isSafeExternalUrl, fetchExternalHtml } from "@/lib/import/text";
 import { pdfToText } from "@/lib/import/pdf";
 import { parseBionlukUsername, fetchBionlukProfile, type BionlukProfile } from "@/lib/import/bionluk";
@@ -46,6 +46,7 @@ export const POST = withErrorHandler(async (req) => {
   let sourceUrl: string | null = null;
   let bionluk: BionlukProfile | null = null;
   let linkedin: LinkedinProfile | null = null;
+  let extensionInput: Extract<ImportRequest, { mode: "extension" }> | null = null;
   const contentType = req.headers.get("content-type") ?? "";
 
   if (contentType.includes("multipart/form-data")) {
@@ -61,6 +62,17 @@ export const POST = withErrorHandler(async (req) => {
     const input = await parseJson(req, importRequestSchema);
     if (input.mode === "text") {
       text = input.text;
+    } else if (input.mode === "extension") {
+      // Eklenti: metin kullanıcının login'li sekmesinden gelir — sunucu fetch'i YOK
+      // (bot duvarı bu sayede aşılır). Bildirilen platform, sourceUrl ile çapraz
+      // doğrulanır ki platform_connections'a uydurma URL yazılamasın.
+      if (detectPlatformFromUrl(input.sourceUrl) !== input.platform) {
+        throw new ValidationError(t("importFetchFailed"));
+      }
+      text = input.text;
+      platform = input.platform;
+      sourceUrl = input.sourceUrl;
+      extensionInput = input;
     } else {
       if (!isSafeExternalUrl(input.url)) throw new ValidationError(t("importFetchFailed"));
       platform = detectPlatformFromUrl(input.url);
@@ -137,12 +149,35 @@ export const POST = withErrorHandler(async (req) => {
 
   // Yapılandırılmış medya (avatar + portfolyo görselleri) — taslak inceleme ekranı
   // gösterir ve kaydederken profile yazar. Bionluk portfolyo verir; LinkedIn yalnız
-  // avatar (public ld+json portfolyo içermez).
-  const media = bionluk
-    ? { avatarUrl: bionluk.avatarUrl, portfolio: bionluk.portfolio }
-    : linkedin
-      ? { avatarUrl: linkedin.avatarUrl, portfolio: [] }
-      : undefined;
+  // avatar (public ld+json portfolyo içermez). Eklenti best-effort görsel URL'leri yollar.
+  let media: ProfileImportMedia | undefined;
+  if (bionluk) {
+    media = { avatarUrl: bionluk.avatarUrl, portfolio: bionluk.portfolio };
+  } else if (linkedin) {
+    media = { avatarUrl: linkedin.avatarUrl, portfolio: [] };
+  } else if (extensionInput) {
+    media = {
+      avatarUrl: extensionInput.avatarUrl ?? null,
+      portfolio: (extensionInput.portfolioImages ?? []).map((u) => ({
+        title: "", description: "", imageUrl: u, category: null,
+      })),
+    };
+    // Eklenti akışında inceleme web'de yapılır: taslak + medya bekleyen-taslak satırına
+    // upsert edilir (kullanıcı başına tek satır, RLS'li istemci); uzantı sonrasında
+    // /dashboard/import?source=extension açar. created_at tazelik penceresi için yenilenir.
+    const { error: draftError } = await supabase.from("profile_import_drafts").upsert(
+      {
+        user_id: user.id,
+        platform: extensionInput.platform,
+        source_url: extensionInput.sourceUrl,
+        draft: result.draft,
+        media,
+        created_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" },
+    );
+    if (draftError) throw draftError;
+  }
 
   return NextResponse.json({ draft: result.draft, platform, media });
 });
