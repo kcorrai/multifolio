@@ -12,6 +12,7 @@ export const feedCreateSchema = z.object({
   minFixedPrice: z.number().min(0).max(1_000_000).optional(),
   minClientSpent: z.number().min(0).max(100_000_000).optional(),
   minScore: z.number().int().min(0).max(100).optional(),
+  notify: z.boolean().default(false),
 });
 
 // Güncellemede alanlar null gönderilerek TEMİZLENEBİLİR (undefined = dokunma).
@@ -25,6 +26,7 @@ export const feedUpdateSchema = z.object({
   minFixedPrice: z.number().min(0).max(1_000_000).nullable().optional(),
   minClientSpent: z.number().min(0).max(100_000_000).nullable().optional(),
   minScore: z.number().int().min(0).max(100).nullable().optional(),
+  notify: z.boolean().optional(),
 });
 
 // Query: liste sayfalama
@@ -81,6 +83,7 @@ export interface JobFeedRow {
   min_fixed_price: number | null;
   min_client_spent: number | null;
   min_score: number | null;
+  notify: boolean;
   created_at: string;
 }
 

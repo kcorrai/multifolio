@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { X, ChevronDown } from "lucide-react";
+import { X, ChevronDown, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { JobFeedRow } from "@/lib/validation/schemas/feed";
@@ -46,6 +46,7 @@ export function FeedModal({
   const [minFixed, setMinFixed] = useState(feed?.min_fixed_price?.toString() ?? initial?.minFixedPrice?.toString() ?? "");
   const [minClientSpent, setMinClientSpent] = useState(feed?.min_client_spent?.toString() ?? initial?.minClientSpent?.toString() ?? "");
   const [minScore, setMinScore] = useState(feed?.min_score ?? 0);
+  const [notify, setNotify] = useState(feed?.notify ?? false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -62,6 +63,7 @@ export function FeedModal({
           minFixedPrice: numOrUndef(minFixed) ?? null,
           minClientSpent: numOrUndef(minClientSpent) ?? null,
           minScore: minScore > 0 ? minScore : null,
+          notify,
         }
       : {
           name: name.trim(),
@@ -72,6 +74,7 @@ export function FeedModal({
           minFixedPrice: numOrUndef(minFixed),
           minClientSpent: numOrUndef(minClientSpent),
           minScore: minScore > 0 ? minScore : undefined,
+          notify,
         };
     const res = await fetch(feed ? `/api/feeds/${feed.id}` : "/api/feeds", {
       method: feed ? "PATCH" : "POST",
@@ -154,6 +157,21 @@ export function FeedModal({
             />
             <p className="text-[11px] text-muted-foreground/70">{t("modal.minScoreHint")}</p>
           </div>
+
+          <label className="flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 p-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={notify}
+              onChange={(e) => setNotify(e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-[#00F0FF] cursor-pointer"
+            />
+            <span>
+              <span className="flex items-center gap-1.5 text-xs font-semibold">
+                <Bell className="h-3.5 w-3.5 text-[#00F0FF]" />{t("modal.notifyLabel")}
+              </span>
+              <span className="block text-[11px] text-muted-foreground/70 mt-0.5">{t("modal.notifyHint")}</span>
+            </span>
+          </label>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
         </div>

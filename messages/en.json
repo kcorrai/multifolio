@@ -525,6 +525,7 @@
     "chipFixed": "≥ ${value} fixed",
     "chipSpent": "client ≥ ${value}",
     "chipScore": "score ≥ {value}",
+    "chipNotify": "email alerts on",
     "time": {
       "all": "All time",
       "hour": "Last hour",
@@ -555,6 +556,8 @@
       "minScoreLabel": "Minimum score",
       "minScoreOff": "Off",
       "minScoreHint": "Only applies to jobs you already scored; unscored jobs stay visible.",
+      "notifyLabel": "Email alerts",
+      "notifyHint": "Get a summary email when new matching jobs arrive (checked twice a day).",
       "save": "Save feed",
       "cancel": "Cancel",
       "delete": "Delete feed"

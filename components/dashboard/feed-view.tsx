@@ -79,6 +79,7 @@ export function FeedView({
         activeFeed.min_fixed_price != null ? t("chipFixed", { value: activeFeed.min_fixed_price }) : null,
         activeFeed.min_client_spent != null ? t("chipSpent", { value: activeFeed.min_client_spent }) : null,
         activeFeed.min_score != null && activeFeed.min_score > 0 ? t("chipScore", { value: activeFeed.min_score }) : null,
+        activeFeed.notify ? t("chipNotify") : null,
       ].filter((c): c is string => c !== null)
     : [];
 

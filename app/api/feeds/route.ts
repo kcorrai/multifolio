@@ -8,7 +8,7 @@ import { feedCreateSchema } from "@/lib/validation/schemas/feed";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const MAX_FEEDS = 10;
-const FEED_COLS = "id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, created_at";
+const FEED_COLS = "id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, created_at";
 
 export const GET = withErrorHandler(async () => {
   const supabase = await createSupabaseServerClient();
@@ -41,6 +41,7 @@ export const POST = withErrorHandler(async (req) => {
     min_fixed_price: input.minFixedPrice ?? null,
     min_client_spent: input.minClientSpent ?? null,
     min_score: input.minScore ?? null,
+    notify: input.notify,
   }).select(FEED_COLS).single();
   if (error) throw error;
   return NextResponse.json({ feed: data }, { status: 201 });

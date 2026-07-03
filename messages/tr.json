@@ -525,6 +525,7 @@
     "chipFixed": "≥ ${value} sabit",
     "chipSpent": "müşteri ≥ ${value}",
     "chipScore": "skor ≥ {value}",
+    "chipNotify": "e-posta bildirimi açık",
     "time": {
       "all": "Tümü",
       "hour": "Son 1 saat",
@@ -555,6 +556,8 @@
       "minScoreLabel": "Minimum skor",
       "minScoreOff": "Kapalı",
       "minScoreHint": "Yalnız skorladığın ilanlara uygulanır; skorsuz ilanlar görünmeye devam eder.",
+      "notifyLabel": "E-posta bildirimi",
+      "notifyHint": "Yeni eşleşen ilanlar geldiğinde özet e-posta al (günde iki kez kontrol edilir).",
       "save": "Feed'i kaydet",
       "cancel": "İptal",
       "delete": "Feed'i sil"
