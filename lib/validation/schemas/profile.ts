@@ -21,8 +21,9 @@ export const profileInputSchema = z.object({
   headline: z.string().trim().min(2).max(120),
   // Kısa özet / bio.
   summary: z.string().trim().min(10).max(2000),
-  // Beceri etiketleri.
-  skills: z.array(z.string().trim().min(1).max(40)).min(1).max(50),
+  // Beceri etiketleri. Boş olabilir: bazı içe aktarma kaynakları (ör. LinkedIn public
+  // ld+json) beceri vermez — kullanıcıyı save'de beceri girmeye zorlamayız (sonra ekler).
+  skills: z.array(z.string().trim().min(1).max(40)).max(50),
   // Profil fotoğrafı + portfolyo (opsiyonel — yoksa mevcut değerler korunur).
   avatar_url: httpUrl(1000).nullable().optional(),
   portfolio: z.array(portfolioItemSchema).max(50).optional(),
