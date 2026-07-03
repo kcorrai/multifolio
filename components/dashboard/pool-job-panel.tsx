@@ -76,7 +76,7 @@ export function PoolJobPanel({
   const result = job.scoreResult;
 
   return (
-    <div className="flex flex-col min-h-0">
+    <div className="flex h-full min-h-0 flex-col">
       <div className="flex items-start justify-between gap-3 border-b border-border p-4">
         <div className="min-w-0">
           <h3 className="font-bold leading-snug">{poolJobTitle(job, locale)}</h3>

@@ -7,6 +7,7 @@ import type { PoolJob } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
 import { PoolJobRow } from "./pool-job-row";
 import { PoolJobPanel } from "./pool-job-panel";
+import { JobSlideOver } from "./job-slide-over";
 import { useDashboard } from "./dashboard-context";
 
 export function StarredView() {
@@ -43,16 +44,14 @@ export function StarredView() {
   }
 
   return (
-    <div className="grid lg:grid-cols-5 gap-3">
-      <div className={`space-y-1.5 ${selected ? "lg:col-span-2" : "lg:col-span-5"}`}>
-        {jobs.map((job) => (
-          <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={unstar} onOpen={(j) => setSelectedId(j.id === selectedId ? null : j.id)} />
-        ))}
-      </div>
+    <div className="space-y-1.5">
+      {jobs.map((job) => (
+        <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={unstar} onOpen={(j) => setSelectedId(j.id)} />
+      ))}
       {selected && (
-        <div className="lg:col-span-3 lg:sticky lg:top-3 lg:self-start flex flex-col max-h-[calc(100vh-5.5rem)] rounded-2xl border border-border overflow-hidden">
+        <JobSlideOver onClose={() => setSelectedId(null)}>
           <PoolJobPanel job={selected} onClose={() => setSelectedId(null)} onScored={onScored} onApplied={() => {}} onCreditsUpdate={(c) => applyCredits(c)} />
-        </div>
+        </JobSlideOver>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/ai/platforms";
+import type { JobFeedRow } from "@/lib/validation/schemas/feed";
 import { ChipsInput } from "./chips-input";
 
 // Sayısal opsiyonel alan: boş string → undefined, aksi halde Number.
@@ -15,32 +16,68 @@ function numOrUndef(v: string): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
-export function FeedModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
+// Aramadan "feed olarak kaydet" için ön-doldurma değerleri.
+export interface FeedPrefill {
+  name?: string;
+  platform?: string;
+  keywords?: string[];
+  excludeCountries?: string[];
+  minHourlyRate?: number;
+  minFixedPrice?: number;
+  minClientSpent?: number;
+}
+
+export function FeedModal({
+  onClose, onSaved, feed, initial,
+}: {
+  onClose: () => void;
+  onSaved: () => void;
+  /** Verilirse düzenleme modu: PATCH /api/feeds/[id]. */
+  feed?: JobFeedRow | null;
+  /** Yeni feed için ön-doldurma (ör. aramadaki filtrelerden). */
+  initial?: FeedPrefill;
+}) {
   const t = useTranslations("feed");
-  const [name, setName] = useState("");
-  const [platform, setPlatform] = useState("");
-  const [keywords, setKeywords] = useState<string[]>([]);
-  const [excludeCountries, setExcludeCountries] = useState<string[]>([]);
-  const [minHourly, setMinHourly] = useState("");
-  const [minFixed, setMinFixed] = useState("");
-  const [minClientSpent, setMinClientSpent] = useState("");
-  const [minScore, setMinScore] = useState(0);
+  const [name, setName] = useState(feed?.name ?? initial?.name ?? "");
+  const [platform, setPlatform] = useState(feed?.platform ?? initial?.platform ?? "");
+  const [keywords, setKeywords] = useState<string[]>(feed?.keywords ?? initial?.keywords ?? []);
+  const [excludeCountries, setExcludeCountries] = useState<string[]>(feed?.exclude_countries ?? initial?.excludeCountries ?? []);
+  const [minHourly, setMinHourly] = useState(feed?.min_hourly_rate?.toString() ?? initial?.minHourlyRate?.toString() ?? "");
+  const [minFixed, setMinFixed] = useState(feed?.min_fixed_price?.toString() ?? initial?.minFixedPrice?.toString() ?? "");
+  const [minClientSpent, setMinClientSpent] = useState(feed?.min_client_spent?.toString() ?? initial?.minClientSpent?.toString() ?? "");
+  const [minScore, setMinScore] = useState(feed?.min_score ?? 0);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
   async function save() {
     setSaving(true); setError("");
-    const body = {
-      name: name.trim(),
-      keywords,
-      platform: platform || undefined,
-      excludeCountries,
-      minHourlyRate: numOrUndef(minHourly),
-      minFixedPrice: numOrUndef(minFixed),
-      minClientSpent: numOrUndef(minClientSpent),
-      minScore: minScore > 0 ? minScore : undefined,
-    };
-    const res = await fetch("/api/feeds", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    // Düzenlemede boş bırakılan alan null gider (temizle); oluşturmada undefined (yok say).
+    const body = feed
+      ? {
+          name: name.trim(),
+          keywords,
+          platform: platform || null,
+          excludeCountries,
+          minHourlyRate: numOrUndef(minHourly) ?? null,
+          minFixedPrice: numOrUndef(minFixed) ?? null,
+          minClientSpent: numOrUndef(minClientSpent) ?? null,
+          minScore: minScore > 0 ? minScore : null,
+        }
+      : {
+          name: name.trim(),
+          keywords,
+          platform: platform || undefined,
+          excludeCountries,
+          minHourlyRate: numOrUndef(minHourly),
+          minFixedPrice: numOrUndef(minFixed),
+          minClientSpent: numOrUndef(minClientSpent),
+          minScore: minScore > 0 ? minScore : undefined,
+        };
+    const res = await fetch(feed ? `/api/feeds/${feed.id}` : "/api/feeds", {
+      method: feed ? "PATCH" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
     const data = await res.json().catch(() => null);
     if (!res.ok) { setError(data?.error?.message ?? "Error"); setSaving(false); return; }
     setSaving(false); onSaved(); onClose();
@@ -52,7 +89,7 @@ export function FeedModal({ onClose, onSaved }: { onClose: () => void; onSaved: 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div className="w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-2xl border border-border bg-card p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between">
-          <h3 className="font-bold">{t("modal.title")}</h3>
+          <h3 className="font-bold">{feed ? t("modal.editTitle") : t("modal.title")}</h3>
           <button onClick={onClose} className="text-muted-foreground/50 hover:text-foreground"><X className="h-4 w-4" /></button>
         </div>
         <div className="space-y-3.5">

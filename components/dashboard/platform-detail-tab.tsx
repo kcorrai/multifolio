@@ -138,8 +138,20 @@ export function PlatformDetailTab({
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{adaptResult.body}</p>
               </div>
             ) : (
-              <div className="rounded-lg bg-muted/50 border border-dashed p-3 text-center">
-                <p className="text-xs text-muted-foreground">{ta("emptyState", { platform: PLATFORMS[platform].label })}</p>
+              <div className="rounded-lg bg-muted/50 border border-dashed p-4 text-center space-y-2.5">
+                <p className="text-xs text-muted-foreground">
+                  {profileSaved ? ta("emptyState", { platform: PLATFORMS[platform].label }) : ta("saveProfileFirst")}
+                </p>
+                {profileSaved ? (
+                  <Button size="sm" onClick={() => adapt(platform)} disabled={adapting === platform} className="gap-1.5 h-7 text-xs">
+                    <Sparkles className="h-3 w-3" />
+                    {adapting === platform ? ta("adapting") : ta("adaptAction")}
+                  </Button>
+                ) : (
+                  <Button asChild size="sm" className="gap-1.5 h-7 text-xs">
+                    <Link href="/dashboard/import">{t("detail.setupProfileCta")}</Link>
+                  </Button>
+                )}
               </div>
             )}
           </CardContent>
@@ -210,8 +222,12 @@ export function PlatformDetailTab({
           <Briefcase className="h-4 w-4 text-muted-foreground" />{t("detail.jobsSection")}
         </h3>
         {jobs.length === 0 ? (
-          <div className="rounded-2xl border border-dashed py-10 text-center">
+          <div className="flex flex-col items-center rounded-2xl border border-dashed px-4 py-10 text-center">
+            <Briefcase className="h-6 w-6 text-muted-foreground/40 mb-2" />
             <p className="text-xs text-muted-foreground">{t("detail.noJobs")}</p>
+            <Button asChild size="sm" variant="outline" className="mt-3 gap-1.5 h-7 text-xs">
+              <Link href="/dashboard/jobs">{t("detail.noJobsCta")}</Link>
+            </Button>
           </div>
         ) : (
           <div className="grid lg:grid-cols-5 gap-3">
@@ -278,8 +294,12 @@ export function PlatformDetailTab({
           <Clock className="h-4 w-4 text-muted-foreground" />{t("detail.proposalsSection")}
         </h3>
         {proposals.length === 0 ? (
-          <div className="rounded-2xl border border-dashed py-10 text-center">
+          <div className="flex flex-col items-center rounded-2xl border border-dashed px-4 py-10 text-center">
+            <Clock className="h-6 w-6 text-muted-foreground/40 mb-2" />
             <p className="text-xs text-muted-foreground">{t("detail.noProposals")}</p>
+            <Button asChild size="sm" variant="outline" className="mt-3 gap-1.5 h-7 text-xs">
+              <Link href="/dashboard/jobs">{t("detail.noJobsCta")}</Link>
+            </Button>
           </div>
         ) : (
           <div className="space-y-2">

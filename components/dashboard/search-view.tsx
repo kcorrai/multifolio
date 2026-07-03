@@ -1,13 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal, ChevronDown, X, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
+import { matchesFeed } from "@/lib/feed/filter";
+import { PLATFORMS } from "@/lib/ai/platforms";
 import { PoolJobRow } from "./pool-job-row";
 import { PoolJobPanel } from "./pool-job-panel";
+import { JobSlideOver } from "./job-slide-over";
+import { FeedModal } from "./feed-modal";
+import { ChipsInput } from "./chips-input";
 import { useDashboard } from "./dashboard-context";
+
+// Yayınlanma zamanı pencereleri (ms). posted_at yoksa ilan ELENMEZ (lenient).
+const TIME_WINDOWS = {
+  hour: 3_600_000,
+  day: 86_400_000,
+  week: 7 * 86_400_000,
+  month: 30 * 86_400_000,
+} as const;
+type TimeKey = "all" | keyof typeof TIME_WINDOWS;
+const TIME_KEYS: TimeKey[] = ["all", "hour", "day", "week", "month"];
+
+// Sayısal opsiyonel alan: boş/geçersiz → null.
+function numOrNull(v: string): number | null {
+  const t = v.trim();
+  if (!t) return null;
+  const n = Number(t);
+  return Number.isFinite(n) ? n : null;
+}
 
 export function SearchView() {
   const t = useTranslations("feed");
@@ -15,19 +39,34 @@ export function SearchView() {
   const [q, setQ] = useState("");
   const [jobs, setJobs] = useState<PoolJob[]>([]);
   const [loaded, setLoaded] = useState(false);
+  // Zaman filtresi referansı: render saf kalsın diye fetch anında sabitlenir.
+  const [loadedAt, setLoadedAt] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  // Canlı arama: q değişince debounce'lu çek. Boş q = tüm pool (açılışta hepsi).
+  // Filtreler: platform sunucuya gider, kalanı istemcide saf matchesFeed ile uygulanır.
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [time, setTime] = useState<TimeKey>("all");
+  const [platform, setPlatform] = useState("");
+  const [excludeCountries, setExcludeCountries] = useState<string[]>([]);
+  const [minSpent, setMinSpent] = useState("");
+  const [minHourly, setMinHourly] = useState("");
+  const [minFixed, setMinFixed] = useState("");
+  const [saveModal, setSaveModal] = useState(false);
+
+  // Canlı arama: q/platform değişince debounce'lu çek. Boş q = tüm pool (açılışta hepsi).
   useEffect(() => {
     let cancelled = false;
     const timer = setTimeout(() => {
-      fetch(`/api/feed/search${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ""}`)
+      const params = new URLSearchParams({ limit: "50" });
+      if (q.trim()) params.set("q", q.trim());
+      if (platform) params.set("platform", platform);
+      fetch(`/api/feed/search?${params.toString()}`)
         .then((r) => r.json())
-        .then((b) => { if (!cancelled) { setJobs(b.jobs ?? []); setLoaded(true); setSelectedId(null); } })
+        .then((b) => { if (!cancelled) { setJobs(b.jobs ?? []); setLoaded(true); setLoadedAt(Date.now()); setSelectedId(null); } })
         .catch(() => { if (!cancelled) setLoaded(true); });
     }, 300);
     return () => { cancelled = true; clearTimeout(timer); };
-  }, [q]);
+  }, [q, platform]);
 
   async function toggleStar(job: PoolJob) {
     const next = !job.isStarred;
@@ -43,7 +82,30 @@ export function SearchView() {
     setJobs((prev) => prev.map((j) => j.id === poolId ? { ...j, score, scoreResult: result } : j));
   }
 
-  const selected = selectedId ? jobs.find((j) => j.id === selectedId) ?? null : null;
+  function clearFilters() {
+    setTime("all"); setPlatform(""); setExcludeCountries([]);
+    setMinSpent(""); setMinHourly(""); setMinFixed("");
+  }
+
+  // İstemci tarafı filtre: ülke/harcama/ücret + zaman penceresi.
+  const visible = useMemo(() => {
+    return jobs.filter((j) => {
+      if (time !== "all" && j.posted_at && loadedAt - new Date(j.posted_at).getTime() > TIME_WINDOWS[time]) return false;
+      return matchesFeed(j, {
+        keywords: [],
+        min_budget: null,
+        platform: null,
+        exclude_countries: excludeCountries,
+        min_hourly_rate: numOrNull(minHourly),
+        min_fixed_price: numOrNull(minFixed),
+        min_client_spent: numOrNull(minSpent),
+      });
+    });
+  }, [jobs, loadedAt, time, excludeCountries, minHourly, minFixed, minSpent]);
+
+  const selected = selectedId ? visible.find((j) => j.id === selectedId) ?? null : null;
+  const activeCount = [platform, excludeCountries.length > 0, minSpent.trim(), minHourly.trim(), minFixed.trim()].filter(Boolean).length;
+  const anyFilter = activeCount > 0 || time !== "all";
 
   return (
     <div className="space-y-3">
@@ -51,19 +113,111 @@ export function SearchView() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("searchPlaceholder")} className="w-full rounded-xl border border-border bg-background pl-10 pr-3 py-2.5 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40" />
       </div>
-      {loaded && jobs.length === 0 && <p className="text-sm text-muted-foreground text-center py-10">{t("searchEmpty")}</p>}
-      <div className="grid lg:grid-cols-5 gap-3">
-        <div className={`space-y-1.5 ${selected ? "lg:col-span-2" : "lg:col-span-5"}`}>
-          {jobs.map((job) => (
-            <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={toggleStar} onOpen={(j) => setSelectedId(j.id === selectedId ? null : j.id)} />
+
+      {/* ── Filtre çubuğu: zaman çipleri + filtre paneli + temizle + feed kaydet ── */}
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5">
+          {TIME_KEYS.map((k) => (
+            <button
+              key={k}
+              onClick={() => setTime(k)}
+              className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors cursor-pointer ${
+                time === k ? "bg-[#00F0FF]/15 text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t(`time.${k}`)}
+            </button>
           ))}
         </div>
-        {selected && (
-          <div className="lg:col-span-3 lg:sticky lg:top-3 lg:self-start flex flex-col max-h-[calc(100vh-5.5rem)] rounded-2xl border border-border overflow-hidden">
-            <PoolJobPanel job={selected} onClose={() => setSelectedId(null)} onScored={onScored} onApplied={() => {}} onCreditsUpdate={(c) => applyCredits(c)} />
-          </div>
+        <button
+          onClick={() => setFiltersOpen((o) => !o)}
+          aria-expanded={filtersOpen}
+          className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+            filtersOpen || activeCount > 0 ? "border-[#00F0FF]/40 bg-[#00F0FF]/10 text-foreground" : "border-border text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <SlidersHorizontal className="h-3.5 w-3.5" />
+          {t("filters")}
+          {activeCount > 0 && <span className="rounded-full bg-[#00F0FF]/20 px-1.5 text-[10px] font-bold tabular-nums">{activeCount}</span>}
+          <ChevronDown className={`h-3.5 w-3.5 transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
+        </button>
+        {anyFilter && (
+          <button onClick={clearFilters} className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+            <X className="h-3.5 w-3.5" />{t("clearFilters")}
+          </button>
         )}
+        <Button variant="outline" size="sm" onClick={() => setSaveModal(true)} className="gap-1.5 ml-auto h-8 text-xs">
+          <Plus className="h-3.5 w-3.5" />{t("saveAsFeed")}
+        </Button>
       </div>
+
+      {filtersOpen && (
+        <div className="rounded-2xl border border-border bg-card p-4 animate-in fade-in-0 slide-in-from-top-1 duration-200 motion-reduce:animate-none">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="space-y-1 sm:col-span-2">
+              <span className="text-xs font-semibold text-muted-foreground">{t("modal.excludeCountriesLabel")}</span>
+              <ChipsInput values={excludeCountries} onChange={setExcludeCountries} placeholder={t("modal.addCountry")} removeTitle={t("modal.removeKeyword")} max={20} />
+            </div>
+            <label className="block space-y-1">
+              <span className="text-xs font-semibold text-muted-foreground">{t("modal.platformLabel")}</span>
+              <div className="relative">
+                <select
+                  value={platform}
+                  onChange={(e) => setPlatform(e.target.value)}
+                  className="w-full appearance-none rounded-lg border border-border bg-background px-3 py-2 pr-8 text-sm cursor-pointer"
+                >
+                  <option value="">{t("modal.allPlatforms")}</option>
+                  {Object.values(PLATFORMS).map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+                </select>
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              </div>
+            </label>
+            <label className="block space-y-1">
+              <span className="text-xs font-semibold text-muted-foreground">{t("modal.minClientSpentLabel")}</span>
+              <input value={minSpent} onChange={(e) => setMinSpent(e.target.value)} inputMode="numeric" placeholder="1000" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm" />
+            </label>
+            <label className="block space-y-1">
+              <span className="text-xs font-semibold text-muted-foreground">{t("modal.minHourlyLabel")}</span>
+              <input value={minHourly} onChange={(e) => setMinHourly(e.target.value)} inputMode="numeric" placeholder="25" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm" />
+            </label>
+            <label className="block space-y-1">
+              <span className="text-xs font-semibold text-muted-foreground">{t("modal.minFixedLabel")}</span>
+              <input value={minFixed} onChange={(e) => setMinFixed(e.target.value)} inputMode="numeric" placeholder="500" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm" />
+            </label>
+          </div>
+        </div>
+      )}
+
+      {loaded && <p className="text-xs text-muted-foreground">{t("resultsCount", { count: visible.length })}</p>}
+      {loaded && visible.length === 0 && <p className="text-sm text-muted-foreground text-center py-10">{t("searchEmpty")}</p>}
+
+      <div className="space-y-1.5">
+        {visible.map((job) => (
+          <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={toggleStar} onOpen={(j) => setSelectedId(j.id)} />
+        ))}
+      </div>
+
+      {selected && (
+        <JobSlideOver onClose={() => setSelectedId(null)}>
+          <PoolJobPanel job={selected} onClose={() => setSelectedId(null)} onScored={onScored} onApplied={() => {}} onCreditsUpdate={(c) => applyCredits(c)} />
+        </JobSlideOver>
+      )}
+
+      {saveModal && (
+        <FeedModal
+          onClose={() => setSaveModal(false)}
+          onSaved={() => {}}
+          initial={{
+            name: q.trim(),
+            keywords: q.trim() ? [q.trim()] : [],
+            platform: platform || undefined,
+            excludeCountries,
+            minHourlyRate: numOrNull(minHourly) ?? undefined,
+            minFixedPrice: numOrNull(minFixed) ?? undefined,
+            minClientSpent: numOrNull(minSpent) ?? undefined,
+          }}
+        />
+      )}
     </div>
   );
 }

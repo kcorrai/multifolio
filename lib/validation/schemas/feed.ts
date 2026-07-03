@@ -14,7 +14,18 @@ export const feedCreateSchema = z.object({
   minScore: z.number().int().min(0).max(100).optional(),
 });
 
-export const feedUpdateSchema = feedCreateSchema.partial();
+// Güncellemede alanlar null gönderilerek TEMİZLENEBİLİR (undefined = dokunma).
+export const feedUpdateSchema = z.object({
+  name: z.string().trim().min(1).max(80).optional(),
+  keywords: z.array(z.string().trim().min(1).max(40)).max(10).optional(),
+  minBudget: z.number().int().min(0).max(1_000_000).nullable().optional(),
+  platform: z.string().trim().max(60).nullable().optional(),
+  excludeCountries: z.array(z.string().trim().min(1).max(60)).max(20).optional(),
+  minHourlyRate: z.number().min(0).max(10_000).nullable().optional(),
+  minFixedPrice: z.number().min(0).max(1_000_000).nullable().optional(),
+  minClientSpent: z.number().min(0).max(100_000_000).nullable().optional(),
+  minScore: z.number().int().min(0).max(100).nullable().optional(),
+});
 
 // Query: liste sayfalama
 export const feedListQuerySchema = z.object({
