@@ -568,6 +568,26 @@
     "skip": "I'll fill it in myself",
     "saveError": "Profile could not be saved."
   },
+  "extensionPrivacy": {
+    "metaTitle": "Extension Privacy Policy — Multifolio",
+    "metaDescription": "Privacy policy for the Multifolio Profile Importer browser extension.",
+    "eyebrow": "Browser extension",
+    "title": "Multifolio Profile Importer — Privacy Policy",
+    "updated": "Last updated: July 3, 2026",
+    "intro": "The Multifolio Profile Importer is a browser extension that lets you import your own freelancer profile (Upwork, Fiverr, LinkedIn) into your Multifolio account with one click. This policy explains exactly what the extension does with data.",
+    "collectedTitle": "What the extension reads",
+    "collectedBody": "The extension only acts when you click its import button on a profile page. At that moment it reads the visible text of the page you are viewing and the URLs of the profile photo and portfolio images. It does not read pages in the background, does not track your browsing, and does not collect passwords, messages, cookies of other sites, or any data from pages other than the one you explicitly import.",
+    "useTitle": "How the data is used",
+    "useBody": "The collected page text and image URLs are sent over HTTPS to your own Multifolio account, where an AI model extracts a profile draft (headline, summary, skills). You review and edit the draft before anything is saved to your profile. Nothing is imported or published without your explicit confirmation.",
+    "sharingTitle": "Sharing and selling",
+    "sharingBody": "We do not sell, rent, or share the data the extension processes with third parties. No advertising or analytics trackers are included in the extension.",
+    "permissionsTitle": "Why the extension needs its permissions",
+    "permissionsBody": "Host access to upwork.com, fiverr.com and linkedin.com is required so the import button can appear on your profile pages. Host access to multifolio-ecru.vercel.app is required to deliver the imported data to your account using your existing login session.",
+    "retentionTitle": "Retention and deletion",
+    "retentionBody": "Imported drafts are stored in your account until you review them (drafts older than one hour are ignored and overwritten by the next import). Saved profile data lives in your Multifolio account and can be edited or deleted by you at any time. Deleting your account removes all of it.",
+    "contactTitle": "Contact",
+    "contactBody": "Questions about this policy: yanlizcakaan@gmail.com"
+  },
   "errors": {
     "profileRequired": "You need to create a profile first.",
     "profileRequiredPortfolio": "Fill in your profile first to generate a portfolio.",

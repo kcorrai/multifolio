@@ -568,6 +568,26 @@
     "skip": "Kendim doldururum",
     "saveError": "Profil kaydedilemedi."
   },
+  "extensionPrivacy": {
+    "metaTitle": "Uzantı Gizlilik Politikası — Multifolio",
+    "metaDescription": "Multifolio Profil Aktarıcı tarayıcı uzantısının gizlilik politikası.",
+    "eyebrow": "Tarayıcı uzantısı",
+    "title": "Multifolio Profil Aktarıcı — Gizlilik Politikası",
+    "updated": "Son güncelleme: 3 Temmuz 2026",
+    "intro": "Multifolio Profil Aktarıcı, kendi freelancer profilini (Upwork, Fiverr, LinkedIn) tek tıkla Multifolio hesabına aktarmanı sağlayan bir tarayıcı uzantısıdır. Bu politika, uzantının verilerle tam olarak ne yaptığını açıklar.",
+    "collectedTitle": "Uzantı neyi okur",
+    "collectedBody": "Uzantı yalnızca bir profil sayfasında aktarma butonuna tıkladığında çalışır. O anda görüntülediğin sayfanın görünür metnini ve profil fotoğrafı ile portfolyo görsellerinin URL'lerini okur. Arka planda sayfa okumaz, gezinmeni takip etmez; şifre, mesaj, başka sitelerin çerezleri veya açıkça aktardığın sayfa dışındaki hiçbir veriyi toplamaz.",
+    "useTitle": "Veri nasıl kullanılır",
+    "useBody": "Toplanan sayfa metni ve görsel URL'leri HTTPS üzerinden kendi Multifolio hesabına gönderilir; bir yapay zekâ modeli buradan profil taslağı (başlık, özet, beceriler) çıkarır. Taslak profiline kaydedilmeden önce inceleyip düzenlersin. Açık onayın olmadan hiçbir şey içe aktarılmaz veya yayımlanmaz.",
+    "sharingTitle": "Paylaşım ve satış",
+    "sharingBody": "Uzantının işlediği verileri üçüncü taraflarla satmayız, kiralamayız, paylaşmayız. Uzantıda reklam veya analitik takipçisi yoktur.",
+    "permissionsTitle": "Uzantı izinleri neden istiyor",
+    "permissionsBody": "upwork.com, fiverr.com ve linkedin.com erişimi, aktarma butonunun profil sayfalarında görünebilmesi için gereklidir. multifolio-ecru.vercel.app erişimi ise aktarılan veriyi mevcut oturumunla hesabına iletmek için gereklidir.",
+    "retentionTitle": "Saklama ve silme",
+    "retentionBody": "Aktarılan taslaklar sen inceleyene kadar hesabında tutulur (bir saatten eski taslaklar yok sayılır ve sonraki aktarma üzerine yazar). Kaydedilen profil verisi Multifolio hesabında yaşar; istediğin zaman düzenleyebilir veya silebilirsin. Hesabını silmek tüm veriyi kaldırır.",
+    "contactTitle": "İletişim",
+    "contactBody": "Bu politikayla ilgili sorular: yanlizcakaan@gmail.com"
+  },
   "errors": {
     "profileRequired": "Önce bir profil oluşturmalısın.",
     "profileRequiredPortfolio": "Portfolyo oluşturmak için önce profil doldurmalısın.",

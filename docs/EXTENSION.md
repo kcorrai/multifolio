@@ -1,7 +1,8 @@
 # Multifolio Tarayıcı Uzantısı (MV3)
 
-Upwork ve Fiverr profil sayfaları sunucudan çekilemiyor (Cloudflare/captcha bot duvarı).
-Uzantı kullanıcının KENDİ login'li tarayıcısında çalışır: profil sayfasının görünür
+Upwork ve Fiverr profil sayfaları sunucudan çekilemiyor (Cloudflare/captcha bot duvarı);
+LinkedIn'in public verisi ise skills içermiyor. Uzantı kullanıcının KENDİ login'li
+tarayıcısında çalışır (v2: Upwork + Fiverr + LinkedIn): profil sayfasının görünür
 metnini + best-effort medya URL'lerini (avatar `og:image`, portfolyo görselleri) toplar
 ve mevcut oturum cookie'leriyle `/api/profile/import`'a (`mode:"extension"`) POST'lar.
 Backend mevcut ÜCRETSİZ AI çıkarım yolunu kullanır (kredi düşmez, saatte 10 limit),
@@ -21,9 +22,18 @@ sekmesini açar ve kullanıcı taslağı wizard'da inceleyip kaydeder (otomatik 
 
 - `src/extract.ts` — SAF yardımcılar (vitest'li): `detectProfilePage` (Upwork
   `/freelancers/~id|slug`, `/fl/slug`; Fiverr kök/`users/` kullanıcı yolu − rezerve
-  yol denylist'i), `clampText(50k)`, `pickImageUrls` (https-only, ≤1000 kar, ≤12).
+  yol denylist'i; LinkedIn `*.linkedin.com/in/{username}`), `clampText(50k)`,
+  `pickImageUrls` (https-only, ≤1000 kar, ≤12).
 - Alan-alan CSS seçici parse bilinçli olarak YOK — DOM değişse de kırılmaz; metni AI çıkarır.
+  LinkedIn'de bunun bonusu: login'li sayfa metni skills bölümünü içerir → AI skills'i de
+  çıkarır (public ld+json yolu veremiyordu).
 - API tabanı build-time gömülür (`--define:__API_BASE__`): `build` → prod, `build:dev` → localhost.
+- **UI dili:** `_locales/{en,tr}/messages.json` + `chrome.i18n` (`src/messages.ts` sarmalayıcı,
+  EN fallback); tarayıcı diline göre otomatik.
+- **Store hazırlığı:** prod build manifest'ten localhost host iznini ÇIKARIR (build.mjs);
+  `npm run package` → prod build + `multifolio-extension.zip` (store'a yüklenecek dosya;
+  PowerShell `Compress-Archive` — Windows). Gizlilik politikası sayfası (store zorunlu):
+  `https://multifolio-ecru.vercel.app/extension/privacy` (`app/extension/privacy/page.tsx`, EN+TR).
 
 ## Komutlar
 
@@ -54,7 +64,8 @@ sürüm öncesi bu liste elle geçilir:
    sağ altta "Import to Multifolio" butonu görünür → tıkla → "Importing…" →
    yeni sekmede wizard taslakla açılır (başlık/özet/beceriler + varsa avatar) +
    "eklentiyle içe aktarıldı" banner'ı → düzenle → kaydet → dashboard profili güncel.
-3. Aynısını Fiverr profilinde (`fiverr.com/<kullanıcı>`) tekrarla.
+3. Aynısını Fiverr (`fiverr.com/<kullanıcı>`) ve LinkedIn (`linkedin.com/in/<kullanıcı>`)
+   profilinde tekrarla; LinkedIn'de taslakta skills'in dolu geldiğini doğrula.
 4. Negatifler: buton `fiverr.com/search/...`, `upwork.com/nx/...`, ilan sayfalarında ÇIKMAZ.
 5. Hata yolları: Multifolio'dan çıkış yap → butona bas → "log in" notu + login sekmesi;
    1 saatte 10 import → 11.'de rate-limit mesajı; Supabase'de `usage_events`
