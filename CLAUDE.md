@@ -30,6 +30,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/proposal` — GET (iş bazlı liste) / POST (AI teklif üretir, proposals'a kaydeder).
   - `app/api/credits` — GET: kullanıcının kredi bakiyesi (`credits` tablosu).
   - `app/api/platform-connections` — GET (liste) / PUT (upsert) / DELETE: platform profil URL'leri.
+  - `app/api/platform-profiles` — POST: bağlı URL'den platform profil verisini çek → `platform_profiles` upsert (ücretsiz; saatte 10, `usage_events kind='platform_sync'`). Yalnız Bionluk+LinkedIn sunucudan; Upwork/Fiverr'ı uzantı akışı doldurur (`profile/import` da `platform_profiles`'a yazar). Platform detay "X Profilin" kartı buradan.
   - `app/api/feed` — GET: kullanıcının kayıtlı feed'lerine uyan `job_pool` ilanları (+yıldız+cache skor).
   - `app/api/feed/search` — GET: `job_pool` üzerinde anlık arama.
   - `app/api/feed/[poolId]/score` — POST: on-demand profil×ilan AI skoru (kredi + `job_scores` cache).
@@ -84,6 +85,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0017_profile_media.sql` — `profiles`'a `avatar_url` + `portfolio jsonb` (Bionluk içe aktarmasından foto+portfolyo; dış URL saklanır, Storage'a indirme yok).
   `0018_profile_import_drafts.sql` — uzantı içe aktarmasının bekleyen taslağı (kullanıcı başına TEK satır, RLS; route yazar, `/dashboard/import?source=extension` okur; 60 dk tazelik).
   `0019_feed_notify.sql` — `job_feeds.notify` (feed başına e-posta bildirimi opt-in; cron scrape sonrası yeni ilan eşleşirse kullanıcı başına tek özet e-posta).
+  `0020_platform_profiles.sql` — `platform_profiles` (kullanıcı×platform ÇEKİLMİŞ profil verisi: headline/summary/skills/avatar/portfolio/fetched_at; sync route + import route yazar, platform detay gösterir).
 - `extension/` — Chrome MV3 tarayıcı uzantısı (Upwork/Fiverr/LinkedIn profil içe aktarma; ayrıntı `docs/EXTENSION.md`): KENDİ package.json/check'i var (kök check'ten hariç — tsconfig/eslint/vitest exclude). `src/extract.ts` saf yardımcılar (test'li), `content.ts` shadow-root buton + metin/medya toplama, `background.ts` cookie'li POST → `/api/profile/import mode:"extension"`. UI dili `_locales/{en,tr}` + `chrome.i18n`. Build: esbuild (`npm run build` prod — manifest'ten localhost izni çıkar / `build:dev` localhost / `package` store zip'i); `dist/` = load-unpacked klasörü. Store gizlilik sayfası: `app/extension/privacy/page.tsx` (`/extension/privacy`, i18n `extensionPrivacy`).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.

@@ -179,5 +179,26 @@ export const POST = withErrorHandler(async (req) => {
     if (draftError) throw draftError;
   }
 
+  // Platform verisi elimizdeyken platform_profiles'a da yaz (platform detay
+  // sayfası "X'teki profilin" kartı buradan hydrate olur). Yalnız gerçek platform
+  // verisi olan yollar: Bionluk/LinkedIn yapılandırılmış çekim + uzantı.
+  if (platform && sourceUrl && (bionluk || linkedin || extensionInput)) {
+    const { error: ppError } = await supabase.from("platform_profiles").upsert(
+      {
+        user_id: user.id,
+        platform,
+        headline: result.draft.headline,
+        summary: result.draft.summary,
+        skills: result.draft.skills,
+        avatar_url: media?.avatarUrl ?? null,
+        portfolio: media?.portfolio ?? [],
+        source_url: sourceUrl,
+        fetched_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id,platform" },
+    );
+    if (ppError) throw ppError;
+  }
+
   return NextResponse.json({ draft: result.draft, platform, media });
 });

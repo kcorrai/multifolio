@@ -4,6 +4,7 @@ import { platformIdSchema } from "@/lib/ai/platforms";
 import { PlatformDetailTab } from "@/components/dashboard/platform-detail-tab";
 import type { JobRow, InitialProfile } from "@/components/dashboard/shared";
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
+import type { PlatformProfileRow } from "@/lib/validation/schemas/platform-profile";
 import type { ProposalRow } from "@/lib/validation/schemas/proposal";
 
 interface PageProps {
@@ -20,12 +21,13 @@ export default async function PlatformDetailPage({ params }: PageProps) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [profileRes, connRes, jobsRes, proposalsRes, adaptRes] = await Promise.all([
+  const [profileRes, connRes, jobsRes, proposalsRes, adaptRes, platformProfileRes] = await Promise.all([
     supabase.from("profiles").select("headline, summary, skills, avatar_url, portfolio").eq("user_id", user.id).maybeSingle(),
     supabase.from("platform_connections").select("profile_url").eq("user_id", user.id).eq("platform", platform).maybeSingle(),
     supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at").eq("user_id", user.id).eq("platform", platform).order("created_at", { ascending: false }),
     supabase.from("proposals").select("id, job_id, platform, content, coverage, created_at").eq("user_id", user.id).eq("platform", platform).order("created_at", { ascending: false }),
     supabase.from("adaptations").select("headline, body").eq("user_id", user.id).eq("platform", platform).maybeSingle(),
+    supabase.from("platform_profiles").select("platform, headline, summary, skills, avatar_url, portfolio, source_url, fetched_at").eq("user_id", user.id).eq("platform", platform).maybeSingle(),
   ]);
 
   const jobs = (jobsRes.data ?? []) as unknown as JobRow[];
@@ -45,6 +47,7 @@ export default async function PlatformDetailPage({ params }: PageProps) {
     <PlatformDetailTab
       platform={platform}
       profile={profile}
+      initialPlatformProfile={(platformProfileRes.data as unknown as PlatformProfileRow | null) ?? null}
       connectionUrl={(connRes.data?.profile_url as string) ?? null}
       jobs={jobs}
       proposals={proposals}

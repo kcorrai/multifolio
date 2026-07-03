@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   ArrowLeft, Sparkles, Save, ExternalLink, Trash2, AlertCircle,
-  Briefcase, Clock, Lightbulb, User, Pencil,
+  Briefcase, Clock, Lightbulb, User, Pencil, Download, RefreshCw, Puzzle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PlatformLogo } from "@/components/platform-logo";
 import { JobDetailPanel } from "@/components/job-detail-panel";
 import { PLATFORMS, type PlatformId } from "@/lib/ai/platforms";
+import type { PlatformProfileRow } from "@/lib/validation/schemas/platform-profile";
 import type { ProposalRow } from "@/lib/validation/schemas/proposal";
 import {
   ELEVATED, PLATFORM_STYLES, PLATFORM_URL_PLACEHOLDERS,
@@ -22,11 +23,17 @@ import { CopyButton } from "./copy-button";
 import { useDashboard } from "./dashboard-context";
 import { useAdapt } from "./use-adapt";
 
+// Sunucudan yapılandırılmış çekim yapılabilen platformlar; kalanı (Upwork/Fiverr)
+// bot duvarı nedeniyle yalnız tarayıcı uzantısıyla dolar. Armut'ta public veri yok.
+const SERVER_FETCHABLE: PlatformId[] = ["bionluk", "linkedin"];
+const EXTENSION_ONLY: PlatformId[] = ["upwork", "fiverr"];
+
 export function PlatformDetailTab({
-  platform, profile, connectionUrl, jobs: initialJobs, proposals, initialAdaptResult,
+  platform, profile, initialPlatformProfile, connectionUrl, jobs: initialJobs, proposals, initialAdaptResult,
 }: {
   platform: PlatformId;
   profile: InitialProfile | null;
+  initialPlatformProfile: PlatformProfileRow | null;
   connectionUrl: string | null;
   jobs: JobRow[];
   proposals: ProposalRow[];
@@ -77,6 +84,25 @@ export function PlatformDetailTab({
     }
     if (saved) setConnectionsCount((c) => Math.max(0, c - 1));
     setSaved(null); setDraft(""); setDeletingConn(false);
+  }
+
+  // ── Platform profil verisi (bağlı URL'den çekim) ─────────────────────
+  const [platformProfile, setPlatformProfile] = useState<PlatformProfileRow | null>(initialPlatformProfile);
+  const [syncing, setSyncing] = useState(false);
+  const [syncError, setSyncError] = useState("");
+  const canFetch = SERVER_FETCHABLE.includes(platform);
+  const isExtensionOnly = EXTENSION_ONLY.includes(platform);
+
+  async function syncPlatformProfile() {
+    setSyncing(true); setSyncError("");
+    const res = await fetch("/api/platform-profiles", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ platform }),
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) { setSyncError(body?.error?.message ?? tc("errorSave")); setSyncing(false); return; }
+    setPlatformProfile(body.profile as PlatformProfileRow);
+    setSyncing(false);
   }
 
   // ── Eşleşen işler (platform-filtreli) ────────────────────────────────
@@ -288,6 +314,113 @@ export function PlatformDetailTab({
           </CardContent>
         </Card>
       </section>
+
+      {/* ── Bölüm: Platformdaki profil verisi ────────────────────────── */}
+      {(canFetch || isExtensionOnly) && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-semibold flex items-center gap-2">
+            <Download className="h-4 w-4 text-muted-foreground" />
+            {t("detail.platformProfileSection", { platform: PLATFORMS[platform].label })}
+          </h3>
+          {syncError && (
+            <div className="flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 shrink-0" />{syncError}
+            </div>
+          )}
+          {platformProfile ? (
+            <Card className={`shadow-sm overflow-hidden ${ELEVATED}`}>
+              <CardContent className="pt-6 space-y-3">
+                <div className="flex items-start gap-3.5">
+                  {platformProfile.avatar_url ? (
+                    // Platformdan gelen dış görsel — next/image remotePatterns'a gerek kalmasın.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={platformProfile.avatar_url}
+                      alt={PLATFORMS[platform].label}
+                      className="h-14 w-14 rounded-full object-cover ring-2 ring-[#00F0FF]/30 shrink-0"
+                    />
+                  ) : (
+                    <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center shrink-0">
+                      <PlatformLogo platform={platform} size={22} />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold leading-snug">{platformProfile.headline}</p>
+                    {platformProfile.summary && (
+                      <p className="text-xs text-muted-foreground leading-relaxed mt-1 line-clamp-4 whitespace-pre-wrap">{platformProfile.summary}</p>
+                    )}
+                  </div>
+                </div>
+                {platformProfile.skills.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {platformProfile.skills.slice(0, 12).map((s) => (
+                      <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{s}</span>
+                    ))}
+                    {platformProfile.skills.length > 12 && (
+                      <span className="text-[11px] text-muted-foreground/60 self-center">+{platformProfile.skills.length - 12}</span>
+                    )}
+                  </div>
+                )}
+                {platformProfile.portfolio.length > 0 && (
+                  <div className="flex gap-2 flex-wrap">
+                    {platformProfile.portfolio.slice(0, 6).map((item, i) =>
+                      item.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          key={i}
+                          src={item.imageUrl}
+                          alt={item.title}
+                          title={item.title}
+                          className="h-14 w-14 rounded-lg object-cover border border-border"
+                        />
+                      ) : null,
+                    )}
+                  </div>
+                )}
+                <div className="flex items-center justify-between gap-2 border-t border-border pt-2.5">
+                  <p className="text-[11px] text-muted-foreground/70">
+                    {t("detail.syncedAt", { date: new Date(platformProfile.fetched_at).toLocaleString(locale) })}
+                  </p>
+                  {canFetch ? (
+                    <Button size="sm" variant="outline" onClick={syncPlatformProfile} disabled={syncing} className="gap-1.5 h-7 text-xs">
+                      <RefreshCw className={`h-3 w-3 ${syncing ? "animate-spin" : ""}`} />
+                      {syncing ? t("detail.syncing") : t("detail.syncRefresh")}
+                    </Button>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/70">
+                      <Puzzle className="h-3 w-3" />{t("detail.syncExtensionUpdated")}
+                    </span>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="flex flex-col items-center rounded-2xl border border-dashed px-4 py-8 text-center">
+              {canFetch ? (
+                <>
+                  <Download className="h-6 w-6 text-muted-foreground/40 mb-2" />
+                  <p className="text-xs text-muted-foreground max-w-sm">
+                    {saved
+                      ? t("detail.syncEmptyHint", { platform: PLATFORMS[platform].label })
+                      : t("detail.syncNoUrlHint")}
+                  </p>
+                  <Button size="sm" onClick={syncPlatformProfile} disabled={!saved || syncing} className="mt-3 gap-1.5 h-7 text-xs">
+                    <Download className="h-3 w-3" />
+                    {syncing ? t("detail.syncing") : t("detail.syncFetch")}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Puzzle className="h-6 w-6 text-muted-foreground/40 mb-2" />
+                  <p className="text-xs text-muted-foreground max-w-sm">
+                    {t("detail.syncExtensionHint", { platform: PLATFORMS[platform].label })}
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* ── Bölüm: Eşleşen işler ─────────────────────────────────────── */}
       <section className="space-y-3">

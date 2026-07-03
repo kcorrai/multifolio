@@ -402,6 +402,15 @@
       "sourceProfileSection": "Profil Verilerin",
       "sourceProfileHint": "Bu veriler her platformda uyarlama, iş eşleştirme ve teklifleri besler.",
       "editProfile": "Profili düzenle",
+      "platformProfileSection": "{platform} Profilin",
+      "syncFetch": "Veriyi çek",
+      "syncRefresh": "Yenile",
+      "syncing": "Çekiliyor…",
+      "syncedAt": "Son çekim: {date}",
+      "syncEmptyHint": "Bağlı URL'den public {platform} profilini (foto, bio, beceriler) çek.",
+      "syncNoUrlHint": "Önce Bağlantı bölümünde profil URL'ini kaydet, sonra veriyi çek.",
+      "syncExtensionHint": "{platform} sunucudan çekime kapalı — profil sayfanı tarayıcıda açıp Multifolio uzantısıyla içe aktar. Veri burada görünür.",
+      "syncExtensionUpdated": "Tarayıcı uzantısıyla güncellenir",
       "noJobs": "Bu platform için henüz ilan yok. İlanlar sayfasından ekleyebilirsin.",
       "noJobsCta": "İş feed'ine git",
       "setupProfileCta": "Profilini içe aktar",
@@ -637,6 +646,8 @@
     "importNoText": "Dosyadan metin okuyamadık. Bunun yerine profil metnini kopyalayıp yapıştır.",
     "importNothingFound": "Bu içerik bir profile benzemiyor. Profil veya CV metnini yapıştır.",
     "importRateLimited": "Çok fazla içe aktarma denemesi. Bir saat sonra tekrar dene.",
-    "translateRateLimited": "Çok fazla çeviri isteği. Bir saat sonra tekrar dene."
+    "translateRateLimited": "Çok fazla çeviri isteği. Bir saat sonra tekrar dene.",
+    "syncNoConnection": "Önce Bağlantı bölümünde profil URL'ini kaydet.",
+    "syncUnsupported": "Bu platform yalnız tarayıcı uzantısıyla içe aktarılabilir."
   }
 }

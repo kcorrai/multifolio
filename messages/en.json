@@ -402,6 +402,15 @@
       "sourceProfileSection": "Your Profile Data",
       "sourceProfileHint": "This data powers adaptation, job matching and proposals on every platform.",
       "editProfile": "Edit profile",
+      "platformProfileSection": "Your {platform} Profile",
+      "syncFetch": "Fetch data",
+      "syncRefresh": "Refresh",
+      "syncing": "Fetching…",
+      "syncedAt": "Last fetched: {date}",
+      "syncEmptyHint": "Pull your public {platform} profile (photo, bio, skills) from the connected URL.",
+      "syncNoUrlHint": "Save your profile URL in the Connection section first, then fetch your data.",
+      "syncExtensionHint": "{platform} blocks server access — open your profile page in the browser and import with the Multifolio extension. The data will appear here.",
+      "syncExtensionUpdated": "Updated via the browser extension",
       "noJobs": "No jobs for this platform yet. Add one from the Jobs page.",
       "noJobsCta": "Browse job feed",
       "setupProfileCta": "Import your profile",
@@ -637,6 +646,8 @@
     "importNoText": "We couldn't read any text from that file. Copy your profile text and paste it instead.",
     "importNothingFound": "That content doesn't look like a profile. Paste your profile or CV text.",
     "importRateLimited": "Too many import attempts. Please try again in an hour.",
-    "translateRateLimited": "Too many translation requests. Please try again in an hour."
+    "translateRateLimited": "Too many translation requests. Please try again in an hour.",
+    "syncNoConnection": "Save your profile URL in the Connection section first.",
+    "syncUnsupported": "This platform can only be imported with the browser extension."
   }
 }
