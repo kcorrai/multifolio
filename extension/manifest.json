@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Multifolio Profile Importer",
-  "version": "0.1.0",
-  "description": "Import your Upwork or Fiverr profile into Multifolio with one click.",
+  "name": "__MSG_extName__",
+  "version": "0.2.0",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -18,7 +19,8 @@
       "matches": [
         "https://www.upwork.com/freelancers/*",
         "https://www.upwork.com/fl/*",
-        "https://www.fiverr.com/*"
+        "https://www.fiverr.com/*",
+        "https://*.linkedin.com/in/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"

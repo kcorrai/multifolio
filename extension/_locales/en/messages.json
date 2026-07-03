@@ -1,0 +1,12 @@
+{
+  "extName": { "message": "Multifolio Profile Importer" },
+  "extDescription": { "message": "Import your Upwork, Fiverr or LinkedIn profile into Multifolio with one click." },
+  "button": { "message": "Import to Multifolio" },
+  "sending": { "message": "Importing…" },
+  "success": { "message": "Draft ready — review it in the Multifolio tab." },
+  "authNeeded": { "message": "Log in to Multifolio first — click to open." },
+  "rateLimited": { "message": "Import limit reached — try again in an hour." },
+  "emptyPage": { "message": "Couldn't read enough profile text on this page." },
+  "genericError": { "message": "Import failed — try again." },
+  "openLogin": { "message": "Open login" }
+}

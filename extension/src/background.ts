@@ -5,7 +5,7 @@ import { IMPORT_ENDPOINT, WIZARD_URL, LOGIN_URL } from "./config";
 
 interface ImportMessage {
   type: "import";
-  platform: "upwork" | "fiverr";
+  platform: "upwork" | "fiverr" | "linkedin";
   sourceUrl: string;
   text: string;
   avatarUrl?: string;

@@ -1,15 +1,25 @@
 // esbuild paketleyici: src/{background,content}.ts → dist/ (iife).
-// --dev: API tabanı localhost'a döner. dist/ tam yüklenebilir uzantıdır
-// (manifest + ikonlar kopyalanır) — chrome://extensions → "Load unpacked" → dist.
+// --dev: API tabanı localhost'a döner ve manifest localhost iznini korur.
+// Prod build'de localhost host_permission manifest'ten ÇIKARILIR (store paketi temiz).
+// dist/ tam yüklenebilir uzantıdır — chrome://extensions → "Load unpacked" → dist.
 import { build } from "esbuild";
-import { cpSync, mkdirSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 const dev = process.argv.includes("--dev");
 const apiBase = dev ? "http://localhost:3000" : "https://multifolio-ecru.vercel.app";
 
 mkdirSync("dist", { recursive: true });
-cpSync("manifest.json", "dist/manifest.json");
+
+const manifest = JSON.parse(readFileSync("manifest.json", "utf8"));
+if (!dev) {
+  manifest.host_permissions = manifest.host_permissions.filter(
+    (p) => !p.includes("localhost"),
+  );
+}
+writeFileSync("dist/manifest.json", JSON.stringify(manifest, null, 2));
+
 cpSync("icons", "dist/icons", { recursive: true });
+cpSync("_locales", "dist/_locales", { recursive: true });
 
 await build({
   entryPoints: ["src/background.ts", "src/content.ts"],

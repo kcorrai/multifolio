@@ -2,7 +2,7 @@
 // görünür metni + best-effort medya URL'lerini toplayıp background'a yollar.
 // Alan-alan CSS seçici parse YOK (bilinçli karar) — metin AI'a, görseller URL olarak.
 import { detectProfilePage, clampText, pickImageUrls } from "./extract";
-import { MSG } from "./messages";
+import { msg } from "./messages";
 
 const platform = detectProfilePage(location.hostname, location.pathname);
 
@@ -85,7 +85,7 @@ function injectButton() {
 
   const btn = document.createElement("button");
   btn.className = "mf-btn";
-  btn.textContent = MSG.button;
+  btn.textContent = msg("button");
   root.appendChild(btn);
 
   const note = document.createElement("div");
@@ -98,7 +98,7 @@ function injectButton() {
     note.textContent = text;
     if (loginLink) {
       const a = document.createElement("a");
-      a.textContent = " Open login";
+      a.textContent = ` ${msg("openLogin")}`;
       a.addEventListener("click", () => chrome.runtime.sendMessage({ type: "openLogin" }));
       note.appendChild(a);
     }
@@ -106,20 +106,20 @@ function injectButton() {
 
   btn.addEventListener("click", () => {
     btn.disabled = true;
-    btn.textContent = MSG.sending;
+    btn.textContent = msg("sending");
     note.hidden = true;
     chrome.runtime.sendMessage(collectPayload(), (res: ImportResponse | undefined) => {
       btn.disabled = false;
-      btn.textContent = MSG.button;
+      btn.textContent = msg("button");
       if (res?.ok) {
-        show(MSG.success);
+        show(msg("success"));
         return;
       }
       switch (res?.reason) {
-        case "auth": show(MSG.authNeeded, true); break;
-        case "rate": show(MSG.rateLimited); break;
-        case "invalid": show(res.message || MSG.emptyPage); break;
-        default: show(MSG.genericError);
+        case "auth": show(msg("authNeeded"), true); break;
+        case "rate": show(msg("rateLimited")); break;
+        case "invalid": show(res.message || msg("emptyPage")); break;
+        default: show(msg("genericError"));
       }
     });
   });

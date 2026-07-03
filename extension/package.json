@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node build.mjs",
     "build:dev": "node build.mjs --dev",
+    "package": "node build.mjs && powershell -NoProfile -Command \"Compress-Archive -Path dist/* -DestinationPath multifolio-extension.zip -Force\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "check": "npm run typecheck && npm run test"

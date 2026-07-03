@@ -1,0 +1,12 @@
+{
+  "extName": { "message": "Multifolio Profil Aktarıcı" },
+  "extDescription": { "message": "Upwork, Fiverr veya LinkedIn profilini tek tıkla Multifolio'ya aktar." },
+  "button": { "message": "Multifolio'ya aktar" },
+  "sending": { "message": "Aktarılıyor…" },
+  "success": { "message": "Taslak hazır — Multifolio sekmesinde incele." },
+  "authNeeded": { "message": "Önce Multifolio'ya giriş yap — açmak için tıkla." },
+  "rateLimited": { "message": "Aktarma limiti doldu — bir saat sonra tekrar dene." },
+  "emptyPage": { "message": "Bu sayfada yeterli profil metni okunamadı." },
+  "genericError": { "message": "Aktarma başarısız — tekrar dene." },
+  "openLogin": { "message": "Girişi aç" }
+}

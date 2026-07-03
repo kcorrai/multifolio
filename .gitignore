@@ -4,6 +4,7 @@
 /node_modules
 /extension/node_modules
 /extension/dist
+/extension/*.zip
 /.pnp
 .pnp.*
 .yarn/*

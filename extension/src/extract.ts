@@ -1,7 +1,7 @@
 // Saf çıkarım yardımcıları — DOM'a dokunmaz, vitest ile test edilir.
 // content.ts bunları tarayıcı bağlamında çağırır.
 
-export type ProfilePlatform = "upwork" | "fiverr";
+export type ProfilePlatform = "upwork" | "fiverr" | "linkedin";
 
 // Fiverr'da kullanıcı adları kök yolda yaşar (fiverr.com/<username>) — profil
 // OLMAYAN bilinen kök yollar burada elenir. Kaçak olursa zararsız: sayfada profil
@@ -36,6 +36,13 @@ export function detectProfilePage(host: string, pathname: string): ProfilePlatfo
     if (!m) return null;
     if (FIVERR_RESERVED.has(m[1].toLowerCase())) return null;
     return "fiverr";
+  }
+
+  // LinkedIn: /in/{username} profil sayfaları (yerel alt alan adları dahil).
+  // Login'li sayfa public ld+json'da olmayan skills bölümünü de metin olarak taşır.
+  if (h === "linkedin.com" || h.endsWith(".linkedin.com")) {
+    if (/^\/in\/[A-Za-z0-9._%-]{2,100}(\/|$)/.test(path)) return "linkedin";
+    return null;
   }
 
   return null;

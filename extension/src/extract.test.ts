@@ -28,9 +28,18 @@ describe("detectProfilePage", () => {
     expect(detectProfilePage("www.fiverr.com", "/janedoe/portfolio")).toBeNull();
     expect(detectProfilePage("www.fiverr.com", "/logo-maker")).toBeNull();
   });
+  it("LinkedIn /in/ profillerini tanır, diğer yolları reddeder", () => {
+    expect(detectProfilePage("www.linkedin.com", "/in/jane-doe")).toBe("linkedin");
+    expect(detectProfilePage("tr.linkedin.com", "/in/jane.doe")).toBe("linkedin");
+    expect(detectProfilePage("www.linkedin.com", "/in/jane-doe/details/skills/")).toBe("linkedin");
+    expect(detectProfilePage("www.linkedin.com", "/feed/")).toBeNull();
+    expect(detectProfilePage("www.linkedin.com", "/jobs/view/123")).toBeNull();
+    expect(detectProfilePage("www.linkedin.com", "/in/")).toBeNull();
+  });
   it("başka hostları reddeder", () => {
     expect(detectProfilePage("www.evil.com", "/freelancers/~0abc123456")).toBeNull();
     expect(detectProfilePage("tr.fiverr.com", "/janedoe")).toBeNull();
+    expect(detectProfilePage("evillinkedin.com", "/in/jane")).toBeNull();
   });
 });
 
