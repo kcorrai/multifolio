@@ -399,6 +399,9 @@
       "profileHint": "AI-optimized profile copy for this platform.",
       "connectionSection": "Connection",
       "jobsSection": "Matched Jobs",
+      "sourceProfileSection": "Your Profile Data",
+      "sourceProfileHint": "This data powers adaptation, job matching and proposals on every platform.",
+      "editProfile": "Edit profile",
       "noJobs": "No jobs for this platform yet. Add one from the Jobs page.",
       "noJobsCta": "Browse job feed",
       "setupProfileCta": "Import your profile",
@@ -526,6 +529,12 @@
     "chipSpent": "client ≥ ${value}",
     "chipScore": "score ≥ {value}",
     "chipNotify": "email alerts on",
+    "settingsPrefilter": "Pre-filter",
+    "settingsScoring": "AI job scoring",
+    "settingsSave": "Save changes",
+    "settingsDiscard": "Discard",
+    "settingsSaved": "Saved",
+    "showLowScores": "Show low scores",
     "time": {
       "all": "All time",
       "hour": "Last hour",
@@ -562,6 +571,9 @@
       "cancel": "Cancel",
       "delete": "Delete feed"
     }
+  },
+  "credits": {
+    "cost": "{count, plural, one {# credit} other {# credits}}"
   },
   "import": {
     "title": "Set up your profile in seconds",

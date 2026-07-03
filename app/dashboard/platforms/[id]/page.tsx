@@ -2,7 +2,8 @@ import { redirect, notFound } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { platformIdSchema } from "@/lib/ai/platforms";
 import { PlatformDetailTab } from "@/components/dashboard/platform-detail-tab";
-import type { JobRow } from "@/components/dashboard/shared";
+import type { JobRow, InitialProfile } from "@/components/dashboard/shared";
+import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import type { ProposalRow } from "@/lib/validation/schemas/proposal";
 
 interface PageProps {
@@ -20,7 +21,7 @@ export default async function PlatformDetailPage({ params }: PageProps) {
   if (!user) redirect("/login");
 
   const [profileRes, connRes, jobsRes, proposalsRes, adaptRes] = await Promise.all([
-    supabase.from("profiles").select("user_id").eq("user_id", user.id).maybeSingle(),
+    supabase.from("profiles").select("headline, summary, skills, avatar_url, portfolio").eq("user_id", user.id).maybeSingle(),
     supabase.from("platform_connections").select("profile_url").eq("user_id", user.id).eq("platform", platform).maybeSingle(),
     supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at").eq("user_id", user.id).eq("platform", platform).order("created_at", { ascending: false }),
     supabase.from("proposals").select("id, job_id, platform, content, coverage, created_at").eq("user_id", user.id).eq("platform", platform).order("created_at", { ascending: false }),
@@ -30,10 +31,20 @@ export default async function PlatformDetailPage({ params }: PageProps) {
   const jobs = (jobsRes.data ?? []) as unknown as JobRow[];
   const proposals = (proposalsRes.data ?? []) as unknown as ProposalRow[];
 
+  const profile: InitialProfile | null = profileRes.data
+    ? {
+        headline: profileRes.data.headline as string,
+        summary: profileRes.data.summary as string,
+        skills: (profileRes.data.skills as string[]) ?? [],
+        avatarUrl: (profileRes.data.avatar_url as string | null) ?? null,
+        portfolio: (profileRes.data.portfolio as PortfolioItem[]) ?? [],
+      }
+    : null;
+
   return (
     <PlatformDetailTab
       platform={platform}
-      profileSaved={profileRes.data !== null}
+      profile={profile}
       connectionUrl={(connRes.data?.profile_url as string) ?? null}
       jobs={jobs}
       proposals={proposals}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { X, Sparkles, ExternalLink, Check, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CreditCost } from "@/components/credit-cost";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
 import { poolJobTitle } from "@/lib/feed/filter";
@@ -106,6 +107,7 @@ export function PoolJobPanel({
         ) : (
           <Button variant="outline" onClick={analyze} disabled={scoring} className="gap-2 w-full">
             <Sparkles className="h-4 w-4" />{scoring ? t("analyzing") : t("analyze")}
+            <CreditCost kind="job_match" />
           </Button>
         )}
 

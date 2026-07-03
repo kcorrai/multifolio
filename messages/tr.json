@@ -399,6 +399,9 @@
       "profileHint": "Bu platform için AI ile optimize edilmiş profil metni.",
       "connectionSection": "Bağlantı",
       "jobsSection": "Eşleşen İlanlar",
+      "sourceProfileSection": "Profil Verilerin",
+      "sourceProfileHint": "Bu veriler her platformda uyarlama, iş eşleştirme ve teklifleri besler.",
+      "editProfile": "Profili düzenle",
       "noJobs": "Bu platform için henüz ilan yok. İlanlar sayfasından ekleyebilirsin.",
       "noJobsCta": "İş feed'ine git",
       "setupProfileCta": "Profilini içe aktar",
@@ -526,6 +529,12 @@
     "chipSpent": "müşteri ≥ ${value}",
     "chipScore": "skor ≥ {value}",
     "chipNotify": "e-posta bildirimi açık",
+    "settingsPrefilter": "Ön filtre",
+    "settingsScoring": "AI skorlama",
+    "settingsSave": "Değişiklikleri kaydet",
+    "settingsDiscard": "Vazgeç",
+    "settingsSaved": "Kaydedildi",
+    "showLowScores": "Düşük skorluları göster",
     "time": {
       "all": "Tümü",
       "hour": "Son 1 saat",
@@ -562,6 +571,9 @@
       "cancel": "İptal",
       "delete": "Feed'i sil"
     }
+  },
+  "credits": {
+    "cost": "{count, plural, one {# kredi} other {# kredi}}"
   },
   "import": {
     "title": "Profilini saniyeler içinde kur",

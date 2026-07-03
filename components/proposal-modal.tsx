@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { X, Sparkles, Copy, Check, ChevronDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CreditCost } from "@/components/credit-cost";
 import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
 import { pendingRequirements, coverageSummary } from "@/lib/ai/coverage";
 import { useDashboard } from "./dashboard/dashboard-context";
@@ -112,6 +113,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
             <Button onClick={() => generate()} disabled={generating || !jobDescription} className="gap-2 shrink-0">
               <Sparkles className="h-3.5 w-3.5" />
               {generating ? t("modal.generating") : t("modal.generate")}
+              <CreditCost kind="proposal" />
             </Button>
           </div>
 
@@ -162,6 +164,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                     >
                       <Sparkles className="h-3.5 w-3.5" />
                       {generating ? t("modal.generating") : t("modal.fixGaps")}
+                      <CreditCost kind="proposal" />
                     </Button>
                   )}
                 </div>

@@ -5,9 +5,10 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   ArrowLeft, Sparkles, Save, ExternalLink, Trash2, AlertCircle,
-  Briefcase, Clock, Lightbulb,
+  Briefcase, Clock, Lightbulb, User, Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CreditCost } from "@/components/credit-cost";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PlatformLogo } from "@/components/platform-logo";
 import { JobDetailPanel } from "@/components/job-detail-panel";
@@ -15,22 +16,23 @@ import { PLATFORMS, type PlatformId } from "@/lib/ai/platforms";
 import type { ProposalRow } from "@/lib/validation/schemas/proposal";
 import {
   ELEVATED, PLATFORM_STYLES, PLATFORM_URL_PLACEHOLDERS,
-  STATUS_DOT, scoreColor, scoreBarColor, type JobRow, type AdaptOutput,
+  STATUS_DOT, scoreColor, scoreBarColor, type JobRow, type AdaptOutput, type InitialProfile,
 } from "./shared";
 import { CopyButton } from "./copy-button";
 import { useDashboard } from "./dashboard-context";
 import { useAdapt } from "./use-adapt";
 
 export function PlatformDetailTab({
-  platform, profileSaved, connectionUrl, jobs: initialJobs, proposals, initialAdaptResult,
+  platform, profile, connectionUrl, jobs: initialJobs, proposals, initialAdaptResult,
 }: {
   platform: PlatformId;
-  profileSaved: boolean;
+  profile: InitialProfile | null;
   connectionUrl: string | null;
   jobs: JobRow[];
   proposals: ProposalRow[];
   initialAdaptResult: AdaptOutput | null;
 }) {
+  const profileSaved = profile !== null;
   const t = useTranslations("platforms");
   const ta = useTranslations("adapt");
   const tc = useTranslations("accounts");
@@ -101,6 +103,75 @@ export function PlatformDetailTab({
         </div>
       </div>
 
+      {/* ── Bölüm: Kaynak profil (kullanıcının verisi) ───────────────── */}
+      {profile && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-semibold flex items-center gap-2">
+            <User className="h-4 w-4 text-muted-foreground" />{t("detail.sourceProfileSection")}
+          </h3>
+          <Card className={`shadow-sm overflow-hidden ${ELEVATED}`}>
+            <CardContent className="pt-6 space-y-3">
+              <div className="flex items-start gap-3.5">
+                {profile.avatarUrl ? (
+                  // İçe aktarmadan gelen dış görsel — next/image remotePatterns'a gerek kalmasın.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={profile.avatarUrl}
+                    alt={t("detail.sourceProfileSection")}
+                    className="h-14 w-14 rounded-full object-cover ring-2 ring-[#00F0FF]/30 shrink-0"
+                  />
+                ) : (
+                  <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center shrink-0">
+                    <User className="h-6 w-6 text-muted-foreground/40" />
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-bold leading-snug">{profile.headline}</p>
+                    <Link
+                      href="/dashboard/profile"
+                      className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                    >
+                      <Pencil className="h-3 w-3" />{t("detail.editProfile")}
+                    </Link>
+                  </div>
+                  {profile.summary && (
+                    <p className="text-xs text-muted-foreground leading-relaxed mt-1 line-clamp-3">{profile.summary}</p>
+                  )}
+                </div>
+              </div>
+              {profile.skills.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {profile.skills.slice(0, 12).map((s) => (
+                    <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{s}</span>
+                  ))}
+                  {profile.skills.length > 12 && (
+                    <span className="text-[11px] text-muted-foreground/60 self-center">+{profile.skills.length - 12}</span>
+                  )}
+                </div>
+              )}
+              {profile.portfolio.length > 0 && (
+                <div className="flex gap-2">
+                  {profile.portfolio.slice(0, 5).map((item, i) =>
+                    item.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={i}
+                        src={item.imageUrl}
+                        alt={item.title}
+                        title={item.title}
+                        className="h-14 w-14 rounded-lg object-cover border border-border"
+                      />
+                    ) : null,
+                  )}
+                </div>
+              )}
+              <p className="text-[11px] text-muted-foreground/70 border-t border-border pt-2.5">{t("detail.sourceProfileHint")}</p>
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
       {/* ── Bölüm: Uyarlanmış profil ─────────────────────────────────── */}
       <section className="space-y-3">
         <h3 className="text-sm font-semibold flex items-center gap-2">
@@ -125,6 +196,7 @@ export function PlatformDetailTab({
                 className="gap-1.5 h-7 text-xs shrink-0">
                 <Sparkles className="h-3 w-3" />
                 {adapting === platform ? ta("adapting") : adaptResult ? ta("refresh") : ta("adaptAction")}
+                <CreditCost kind="adaptation" />
               </Button>
             </div>
           </CardHeader>
@@ -146,6 +218,7 @@ export function PlatformDetailTab({
                   <Button size="sm" onClick={() => adapt(platform)} disabled={adapting === platform} className="gap-1.5 h-7 text-xs">
                     <Sparkles className="h-3 w-3" />
                     {adapting === platform ? ta("adapting") : ta("adaptAction")}
+                    <CreditCost kind="adaptation" />
                   </Button>
                 ) : (
                   <Button asChild size="sm" className="gap-1.5 h-7 text-xs">
