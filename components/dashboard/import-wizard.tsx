@@ -13,7 +13,7 @@ import type { ProfileDraft } from "@/lib/validation/schemas/profile-import";
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 
 type Channel = "url" | "text" | "file";
-// Bionluk içe aktarmasında taslakla birlikte gelen görseller (opsiyonel).
+// Yapılandırılmış içe aktarmada (Bionluk/LinkedIn) taslakla gelen görseller (opsiyonel).
 type ImportExtras = { avatarUrl: string | null; portfolio: PortfolioItem[] };
 
 export function ImportWizard() {
@@ -52,7 +52,7 @@ export function ImportWizard() {
         return;
       }
       setDraft(data.draft as ProfileDraft);
-      setExtras((data.bionluk as ImportExtras | undefined) ?? null);
+      setExtras((data.media as ImportExtras | undefined) ?? null);
     } finally {
       setBusy(false);
     }

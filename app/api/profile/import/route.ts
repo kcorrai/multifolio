@@ -11,6 +11,7 @@ import { importRequestSchema } from "@/lib/validation/schemas/profile-import";
 import { htmlToText, detectPlatformFromUrl, isSafeExternalUrl, fetchExternalHtml } from "@/lib/import/text";
 import { pdfToText } from "@/lib/import/pdf";
 import { parseBionlukUsername, fetchBionlukProfile, type BionlukProfile } from "@/lib/import/bionluk";
+import { parseLinkedinUsername, fetchLinkedinProfile, type LinkedinProfile } from "@/lib/import/linkedin";
 import { extractProfile, type ProfileImportResult } from "@/lib/ai/profile-import";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -38,12 +39,13 @@ export const POST = withErrorHandler(async (req) => {
   if (countError) throw countError;
   if ((count ?? 0) >= HOURLY_LIMIT) throw new RateLimitError(t("importRateLimited"));
 
-  // Kanala göre ham metni topla. Bionluk özel yol: yapılandırılmış API'den
-  // doğrudan taslak (AI YOK — ücretsiz, kredisiz, daha doğru + görseller).
+  // Kanala göre ham metni topla. Bionluk/LinkedIn özel yol: yapılandırılmış public
+  // veriden doğrudan taslak (AI YOK — ücretsiz, kredisiz, daha doğru + foto).
   let text = "";
   let platform: PlatformId | null = null;
   let sourceUrl: string | null = null;
   let bionluk: BionlukProfile | null = null;
+  let linkedin: LinkedinProfile | null = null;
   const contentType = req.headers.get("content-type") ?? "";
 
   if (contentType.includes("multipart/form-data")) {
@@ -69,6 +71,16 @@ export const POST = withErrorHandler(async (req) => {
         if (!username) throw new ValidationError(t("importFetchFailed"));
         bionluk = await fetchBionlukProfile(username);
         if (!bionluk) throw new ValidationError(t("importFetchFailed"));
+      } else if (platform === "linkedin") {
+        // LinkedIn public profil sayfasındaki JSON-LD → yapılandırılmış taslak + foto.
+        const username = parseLinkedinUsername(input.url);
+        if (!username) throw new ValidationError(t("importFetchFailed"));
+        try {
+          linkedin = await fetchLinkedinProfile(username);
+        } catch {
+          throw new ValidationError(t("importFetchFailed"));
+        }
+        if (!linkedin) throw new ValidationError(t("importFetchFailed"));
       } else {
         // Diğer platformlar: SSRF-güvenli fetch (yönlendirmeler elle doğrulanır) → HTML→metin → AI.
         let html = "";
@@ -83,10 +95,12 @@ export const POST = withErrorHandler(async (req) => {
     }
   }
 
-  // Taslak: Bionluk yapılandırılmış (AI'sız, maliyetsiz); diğerleri AI çıkarımı.
+  // Taslak: Bionluk/LinkedIn yapılandırılmış (AI'sız, maliyetsiz); diğerleri AI çıkarımı.
   let result: ProfileImportResult;
   if (bionluk) {
     result = { draft: bionluk.draft, model: "bionluk-structured", inputTokens: 0, outputTokens: 0, costUsd: 0 };
+  } else if (linkedin) {
+    result = { draft: linkedin.draft, model: "linkedin-structured", inputTokens: 0, outputTokens: 0, costUsd: 0 };
   } else {
     const locale = await getUserLocale();
     result = await extractProfile(text, locale);
@@ -121,18 +135,14 @@ export const POST = withErrorHandler(async (req) => {
     if (connError) throw connError;
   }
 
-  // Bionluk'ta yapılandırılmış ekstralar (avatar + portfolyo görselleri) da döner;
-  // taslak inceleme ekranı bunları gösterir/kaydeder (kalıcılaştırma sonraki adım).
-  return NextResponse.json({
-    draft: result.draft,
-    platform,
-    bionluk: bionluk
-      ? {
-          avatarUrl: bionluk.avatarUrl,
-          portfolio: bionluk.portfolio,
-          rating: bionluk.rating,
-          memberSince: bionluk.memberSince,
-        }
-      : undefined,
-  });
+  // Yapılandırılmış medya (avatar + portfolyo görselleri) — taslak inceleme ekranı
+  // gösterir ve kaydederken profile yazar. Bionluk portfolyo verir; LinkedIn yalnız
+  // avatar (public ld+json portfolyo içermez).
+  const media = bionluk
+    ? { avatarUrl: bionluk.avatarUrl, portfolio: bionluk.portfolio }
+    : linkedin
+      ? { avatarUrl: linkedin.avatarUrl, portfolio: [] }
+      : undefined;
+
+  return NextResponse.json({ draft: result.draft, platform, media });
 });
