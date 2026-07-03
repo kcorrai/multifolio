@@ -4,7 +4,7 @@ import { z } from "zod";
 
 // Yalnız http(s) URL kabul eden yardımcı (javascript:/data: gibi şemaları eler —
 // bu URL'ler <img src>/avatar olarak render edildiğinden şema kısıtı savunma katmanı).
-const httpUrl = (max: number) =>
+export const httpUrl = (max: number) =>
   z.string().trim().max(max).refine((u) => /^https?:\/\//i.test(u), "Yalnız http(s) URL.");
 
 // Platform içe aktarmasından gelen tek portfolyo öğesi (görsel + başlık/açıklama).

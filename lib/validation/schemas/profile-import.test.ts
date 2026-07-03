@@ -17,6 +17,45 @@ describe("importRequestSchema", () => {
   });
 });
 
+describe("importRequestSchema — extension modu", () => {
+  const valid = {
+    mode: "extension",
+    platform: "upwork",
+    sourceUrl: "https://www.upwork.com/freelancers/~01ab",
+    text: "x".repeat(200),
+  };
+  it("geçerli eklenti yükünü kabul eder (medya opsiyonel)", () => {
+    expect(importRequestSchema.safeParse(valid).success).toBe(true);
+    expect(
+      importRequestSchema.safeParse({
+        ...valid,
+        avatarUrl: "https://cdn.example.com/a.jpg",
+        portfolioImages: ["https://cdn.example.com/p1.jpg"],
+      }).success,
+    ).toBe(true);
+  });
+  it("yalnız upwork/fiverr platformlarını kabul eder", () => {
+    expect(importRequestSchema.safeParse({ ...valid, platform: "fiverr" }).success).toBe(true);
+    expect(importRequestSchema.safeParse({ ...valid, platform: "linkedin" }).success).toBe(false);
+  });
+  it("80 karakterin altındaki metni reddeder (anlamlılık eşiği)", () => {
+    expect(importRequestSchema.safeParse({ ...valid, text: "x".repeat(79) }).success).toBe(false);
+    expect(importRequestSchema.safeParse({ ...valid, text: "x".repeat(50_001) }).success).toBe(false);
+  });
+  it("http sourceUrl'i reddeder (yalnız https)", () => {
+    expect(importRequestSchema.safeParse({ ...valid, sourceUrl: "http://www.upwork.com/freelancers/~01ab" }).success).toBe(false);
+  });
+  it("http(s) olmayan medya URL'lerini reddeder", () => {
+    expect(importRequestSchema.safeParse({ ...valid, avatarUrl: "javascript:alert(1)" }).success).toBe(false);
+    expect(importRequestSchema.safeParse({ ...valid, portfolioImages: ["data:image/png;base64,x"] }).success).toBe(false);
+  });
+  it("12'den fazla portfolyo görselini reddeder", () => {
+    const urls = Array.from({ length: 13 }, (_, i) => `https://cdn.example.com/p${i}.jpg`);
+    expect(importRequestSchema.safeParse({ ...valid, portfolioImages: urls }).success).toBe(false);
+    expect(importRequestSchema.safeParse({ ...valid, portfolioImages: urls.slice(0, 12) }).success).toBe(true);
+  });
+});
+
 describe("profileDraftSchema", () => {
   it("AI taslağını doğrular; sınır aşımını kırpmaz, reddeder", () => {
     expect(profileDraftSchema.safeParse({ headline: "Dev", summary: "Özet", skills: ["React"] }).success).toBe(true);
