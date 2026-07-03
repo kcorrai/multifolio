@@ -72,9 +72,18 @@
     "how": {
       "eyebrow": "Nasıl Çalışır",
       "title": "3 adımda başla.",
-      "step1": { "title": "Profilini bir kez gir", "desc": "İşlerini, becerilerini ve sonuçlarını tek seferde ekle — platform başına kopyala-yapıştır yok." },
-      "step2": { "title": "AI uyarlar & kurar", "desc": "Beş platform için optimize metin, üstüne paylaşıma hazır bir portfolyo sitesi al." },
-      "step3": { "title": "Eşleştir, teklif ver, takip et", "desc": "İlanları puanla, uygun teklifler üret ve tüm başvurularını tek yerden takip et." }
+      "step1": {
+        "title": "Profilini bir kez gir",
+        "desc": "İşlerini, becerilerini ve sonuçlarını tek seferde ekle — platform başına kopyala-yapıştır yok."
+      },
+      "step2": {
+        "title": "AI uyarlar & kurar",
+        "desc": "Beş platform için optimize metin, üstüne paylaşıma hazır bir portfolyo sitesi al."
+      },
+      "step3": {
+        "title": "Eşleştir, teklif ver, takip et",
+        "desc": "İlanları puanla, uygun teklifler üret ve tüm başvurularını tek yerden takip et."
+      }
     },
     "pricing": {
       "eyebrow": "Fiyatlandırma",
@@ -87,7 +96,11 @@
       "popular": "En popüler",
       "cta": "Başla",
       "creditsLine": "{count} kredi",
-      "plans": { "starter": "Başlangıç", "pro": "Pro", "scale": "Ölçek" },
+      "plans": {
+        "starter": "Başlangıç",
+        "pro": "Pro",
+        "scale": "Ölçek"
+      },
       "desc": {
         "starter": "Denemek için ideal — bir ay boyunca aktif uyarlama, eşleştirme ve teklif.",
         "pro": "Her hafta başvuran aktif freelancer'lar için. Kredi başına en iyi değer.",
@@ -127,6 +140,16 @@
       "platformFit": "Platform Uyumu",
       "skillMatch": "Beceri Eşleşmesi",
       "clientAppeal": "Müşteri Çekiciliği"
+    },
+    "demos": {
+      "adapting": "AI uyarlıyor…",
+      "ready": "Tüm platformlar hazır",
+      "match": "Eşleşme",
+      "applied": "Başvuruldu",
+      "interview": "Görüşme",
+      "offer": "Teklif",
+      "proposal": "İlanınızı okudum — benzer üç React panosu teslim ettim. Sizinkine şöyle yaklaşırdım…",
+      "portfolioUrl": "multifolio.app/p/ahmet"
     }
   },
   "auth": {
@@ -454,7 +477,12 @@
     "ctaButton": "Ücretsiz başla"
   },
   "feed": {
-    "tabs": { "feed": "Feed", "search": "Ara", "starred": "Yıldızlı", "applied": "Başvurulan" },
+    "tabs": {
+      "feed": "Feed",
+      "search": "Ara",
+      "starred": "Yıldızlı",
+      "applied": "Başvurulan"
+    },
     "feedEmptyTitle": "Feed'lerinle eşleşen iş yok",
     "feedEmptyHint": "Keyword ve bütçeyle bir feed oluştur; eşleşen işler burada görünsün.",
     "noFeedsTitle": "İlk feed'ini oluştur",

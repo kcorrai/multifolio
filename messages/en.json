@@ -72,9 +72,18 @@
     "how": {
       "eyebrow": "How it works",
       "title": "Start in 3 steps.",
-      "step1": { "title": "Enter your profile once", "desc": "Add your work, skills and results a single time — no per-platform copy-paste." },
-      "step2": { "title": "AI adapts & builds", "desc": "Get optimized text for all five platforms plus a ready-to-share portfolio site." },
-      "step3": { "title": "Match, pitch & track", "desc": "Score job posts, generate proposals that fit, and track every application in one place." }
+      "step1": {
+        "title": "Enter your profile once",
+        "desc": "Add your work, skills and results a single time — no per-platform copy-paste."
+      },
+      "step2": {
+        "title": "AI adapts & builds",
+        "desc": "Get optimized text for all five platforms plus a ready-to-share portfolio site."
+      },
+      "step3": {
+        "title": "Match, pitch & track",
+        "desc": "Score job posts, generate proposals that fit, and track every application in one place."
+      }
     },
     "pricing": {
       "eyebrow": "Pricing",
@@ -87,7 +96,11 @@
       "popular": "Most popular",
       "cta": "Get started",
       "creditsLine": "{count} credits",
-      "plans": { "starter": "Starter", "pro": "Pro", "scale": "Scale" },
+      "plans": {
+        "starter": "Starter",
+        "pro": "Pro",
+        "scale": "Scale"
+      },
       "desc": {
         "starter": "Great for trying things out — a month of active adapting, matching and proposals.",
         "pro": "For active freelancers applying every week. Best value per credit.",
@@ -127,6 +140,16 @@
       "platformFit": "Platform fit",
       "skillMatch": "Skill match",
       "clientAppeal": "Client appeal"
+    },
+    "demos": {
+      "adapting": "AI is adapting…",
+      "ready": "All platforms ready",
+      "match": "Match",
+      "applied": "Applied",
+      "interview": "Interview",
+      "offer": "Offer",
+      "proposal": "Hi! I read your post — I've shipped three similar React dashboards. Here's how I'd approach yours…",
+      "portfolioUrl": "multifolio.app/p/ahmet"
     }
   },
   "auth": {
@@ -454,7 +477,12 @@
     "ctaButton": "Get started free"
   },
   "feed": {
-    "tabs": { "feed": "Feed", "search": "Search", "starred": "Starred", "applied": "Applied" },
+    "tabs": {
+      "feed": "Feed",
+      "search": "Search",
+      "starred": "Starred",
+      "applied": "Applied"
+    },
     "feedEmptyTitle": "No jobs match your feeds yet",
     "feedEmptyHint": "Create a feed with keywords and budget to start seeing matched jobs.",
     "noFeedsTitle": "Create your first feed",

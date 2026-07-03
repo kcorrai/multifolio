@@ -1,9 +1,10 @@
 import Link from "next/link";
 import {
   Layers, Globe, Briefcase, ArrowRight,
-  CheckCircle2, Target, Sparkles, Star,
+  CheckCircle2, Target, Sparkles, ShieldCheck,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { CountUp } from "@/components/count-up";
 import { PlatformLogo } from "@/components/platform-logo";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { SiteHeader } from "@/components/site-header";
@@ -12,6 +13,8 @@ import { PricingSection } from "@/components/pricing-section";
 import { FaqSection } from "@/components/faq-section";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { PlatformId } from "@/lib/ai/platforms";
+
+const PLATFORMS: PlatformId[] = ["linkedin", "upwork", "fiverr", "bionluk", "armut"];
 
 /* ─── Circular progress ring ────────────────────────────────────── */
 function CircleScore({ score }: { score: number }) {
@@ -27,13 +30,15 @@ function CircleScore({ score }: { score: number }) {
         strokeLinecap="round"
         strokeDasharray={circ}
         strokeDashoffset={offset}
+        className="ring-draw"
+        style={{ "--ring-circ": `${circ}`, "--ring-offset": `${offset}` } as React.CSSProperties}
       />
     </svg>
   );
 }
 
 /* ─── Score bar ─────────────────────────────────────────────────── */
-function ScoreBar({ label, value }: { label: string; value: number }) {
+function ScoreBar({ label, value, delay = 0 }: { label: string; value: number; delay?: number }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
@@ -41,7 +46,14 @@ function ScoreBar({ label, value }: { label: string; value: number }) {
         <span className="text-[11px] font-bold text-slate-700 dark:text-white/80 tabular-nums">{value}</span>
       </div>
       <div className="h-1.5 rounded-full bg-slate-100 dark:bg-white/6 overflow-hidden">
-        <div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: "var(--ring-arc)" }} />
+        <div
+          className="h-full w-full rounded-full bar-fill"
+          style={{
+            "--bar-scale": value / 100,
+            backgroundColor: "var(--ring-arc)",
+            animationDelay: `${delay}ms`,
+          } as React.CSSProperties}
+        />
       </div>
     </div>
   );
@@ -68,8 +80,8 @@ async function ProductMockup() {
                 <p className="text-[11px] text-slate-400 dark:text-white/40">{t("role")}</p>
               </div>
             </div>
-            <span className="text-[10px] font-bold text-indigo-600 dark:text-[#00F0FF] bg-indigo-50 dark:bg-[#00F0FF]/10 border border-indigo-200 dark:border-[#00F0FF]/25 rounded-full px-2.5 py-1">
-              ✦ AI
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-[#00F0FF] bg-indigo-50 dark:bg-[#00F0FF]/10 border border-indigo-200 dark:border-[#00F0FF]/25 rounded-full px-2.5 py-1">
+              <Sparkles className="h-2.5 w-2.5" /> AI
             </span>
           </div>
 
@@ -79,7 +91,7 @@ async function ProductMockup() {
             <div className="relative shrink-0">
               <CircleScore score={87} />
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-[24px] font-extrabold text-slate-900 dark:text-white leading-none">87</span>
+                <CountUp value={87} delay={1100} duration={1600} className="text-[24px] font-extrabold text-slate-900 dark:text-white leading-none" />
                 <span className="text-[8px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--ring-arc)" }}>{t("scoreLabel")}</span>
               </div>
             </div>
@@ -94,16 +106,20 @@ async function ProductMockup() {
           <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
           <div className="px-6 py-5 space-y-3.5">
-            <ScoreBar label={t("platformFit")}  value={92} />
-            <ScoreBar label={t("skillMatch")}   value={88} />
-            <ScoreBar label={t("clientAppeal")} value={76} />
+            <ScoreBar label={t("platformFit")}  value={92} delay={1400} />
+            <ScoreBar label={t("skillMatch")}   value={88} delay={1550} />
+            <ScoreBar label={t("clientAppeal")} value={76} delay={1700} />
           </div>
 
           <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
           <div className="px-6 py-5 flex items-center justify-between">
-            {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
-              <div key={id} className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.04] p-1.5">
+            {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id, i) => (
+              <div
+                key={id}
+                className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.04] p-1.5 logo-pop"
+                style={{ animationDelay: `${2100 + i * 130}ms` }}
+              >
                 <PlatformLogo platform={id} size={16} />
               </div>
             ))}
@@ -121,18 +137,99 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = await getTranslations("landing");
   const tc = await getTranslations("common");
 
-  const features = [
-    { icon: Globe,        title: t("features.portfolio.title"), desc: t("features.portfolio.desc"), accent: "violet", delay: 60  },
-    { icon: Briefcase,    title: t("features.matching.title"),  desc: t("features.matching.desc"),  accent: "cyan",   delay: 120 },
-    { icon: Target,       title: t("features.tracking.title"),  desc: t("features.tracking.desc"),  accent: "violet", delay: 180 },
-    { icon: Sparkles,     title: t("features.ai.title"),        desc: t("features.ai.desc"),        accent: "cyan",   delay: 240 },
-    { icon: CheckCircle2, title: t("features.secure.title"),    desc: t("features.secure.desc"),    accent: "violet", delay: 300 },
-  ];
+  /* Her adımın yanında yaşayan mini demo — .sr-visible görününce oynar */
+  const demoCard = "rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-5 h-44 flex flex-col justify-center";
+  const demoLine = "h-2 rounded-full bg-slate-200 dark:bg-white/12 demo-grow";
 
   const steps = [
-    { step: "01", title: t("how.step1.title"), desc: t("how.step1.desc"), delay: 0   },
-    { step: "02", title: t("how.step2.title"), desc: t("how.step2.desc"), delay: 100 },
-    { step: "03", title: t("how.step3.title"), desc: t("how.step3.desc"), delay: 200 },
+    {
+      step: "01", title: t("how.step1.title"), desc: t("how.step1.desc"), delay: 0,
+      demo: (
+        <div className={demoCard}>
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="h-9 w-9 rounded-full bg-indigo-50 dark:bg-white/10 border border-slate-200 dark:border-white/10 flex items-center justify-center shrink-0">
+              <span className="text-[10px] font-bold text-indigo-600 dark:text-white">AY</span>
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <div className={`${demoLine} w-28`} style={{ animationDelay: "150ms" }} />
+              <div className={`${demoLine} w-20`} style={{ animationDelay: "300ms" }} />
+            </div>
+          </div>
+          <div className="space-y-2 mb-4">
+            <div className={`${demoLine} w-full`} style={{ animationDelay: "450ms" }} />
+            <div className={`${demoLine} w-5/6`}  style={{ animationDelay: "600ms" }} />
+            <div className={`${demoLine} w-4/6`}  style={{ animationDelay: "750ms" }} />
+          </div>
+          <div className="flex gap-1.5">
+            {["React", "Next.js", "UI/UX"].map((skill, i) => (
+              <span
+                key={skill}
+                className="demo-pop rounded-full border border-[#00F0FF]/25 bg-[#00F0FF]/8 px-2 py-0.5 text-[9px] font-bold text-slate-600 dark:text-[#00F0FF]"
+                style={{ animationDelay: `${900 + i * 120}ms` }}
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
+      step: "02", title: t("how.step2.title"), desc: t("how.step2.desc"), delay: 100,
+      demo: (
+        <div className={`${demoCard} gap-3`}>
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-[#00F0FF] anim-sparkle" />
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-white/60">{t("demos.adapting")}</span>
+          </div>
+          <div className="space-y-2.5">
+            <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-white/8 demo-shimmer" />
+            <div className="h-2 w-5/6 rounded-full bg-slate-100 dark:bg-white/8 demo-shimmer" />
+            <div className="h-2 w-4/6 rounded-full bg-slate-100 dark:bg-white/8 demo-shimmer" />
+          </div>
+          <div className="flex items-center justify-between pt-1">
+            {PLATFORMS.map((id, i) => (
+              <div key={id} className="demo-pop rounded-lg border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.04] p-1.5" style={{ animationDelay: `${400 + i * 120}ms` }}>
+                <PlatformLogo platform={id} size={14} />
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
+      step: "03", title: t("how.step3.title"), desc: t("how.step3.desc"), delay: 200,
+      demo: (
+        <div className={`${demoCard} gap-3.5`}>
+          <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] px-3 py-2.5">
+            <div className="space-y-1.5">
+              <div className={`${demoLine} w-24`} style={{ animationDelay: "150ms" }} />
+              <div className={`${demoLine} w-16`} style={{ animationDelay: "300ms" }} />
+            </div>
+            <span className="demo-pop text-lg font-extrabold text-[#00F0FF]" style={{ animationDelay: "500ms" }}>
+              87<span className="text-[9px] font-bold uppercase tracking-wider ml-1 text-slate-400 dark:text-white/40">{t("demos.match")}</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {[t("demos.applied"), t("demos.interview"), t("demos.offer")].map((label, i) => (
+              <span key={label} className="flex items-center gap-1.5">
+                {i > 0 && <ArrowRight className="h-3 w-3 text-slate-300 dark:text-white/20" />}
+                <span
+                  className="demo-pop rounded-full border border-violet-500/25 bg-violet-500/8 px-2 py-0.5 text-[9px] font-bold text-violet-500 dark:text-violet-300"
+                  style={{ animationDelay: `${700 + i * 150}ms` }}
+                >
+                  {label}
+                </span>
+              </span>
+            ))}
+          </div>
+          <div className="demo-pop flex items-center gap-1.5" style={{ animationDelay: "1200ms" }}>
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400" />
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-white/60">{t("demos.ready")}</span>
+          </div>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -150,11 +247,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         <div className="relative mx-auto max-w-6xl px-8 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
             <div className="anim-fade-up anim-d0 inline-flex items-center gap-2 rounded-full border border-[#00F0FF]/25 bg-[#00F0FF]/8 px-3.5 py-1.5">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
+              <Sparkles className="h-3.5 w-3.5 text-[#00F0FF]" />
               <span className="text-xs font-semibold text-slate-600 dark:text-white/70">{t("hero.badge")}</span>
             </div>
 
@@ -232,12 +325,18 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               { value: t("stats.avgScoreValue"),  label: t("stats.avgScore"),  color: "text-violet-400" },
               { value: "GPT-4o",                  label: t("stats.engine"),    color: "text-[#00F0FF]" },
               { value: t("stats.firstAdaptValue"), label: t("stats.firstAdapt"), color: "text-violet-400" },
-            ].map(({ value, label, color }) => (
-              <div key={label} className="text-center space-y-1">
-                <p className={`text-2xl font-extrabold ${color}`}>{value}</p>
-                <p className="text-xs text-slate-400 dark:text-[#94A3B8]/50 font-medium">{label}</p>
-              </div>
-            ))}
+            ].map(({ value, label, color }) => {
+              /* Sayıyla başlayan değerler sayarak gelir ("89%" → 89 + "%"); diğerleri düz metin */
+              const m = value.match(/^(\d+)(.*)$/);
+              return (
+                <div key={label} className="text-center space-y-1">
+                  <p className={`text-2xl font-extrabold ${color} tabular-nums`}>
+                    {m ? <CountUp value={Number(m[1])} suffix={m[2]} duration={1400} /> : value}
+                  </p>
+                  <p className="text-xs text-slate-400 dark:text-[#94A3B8]/50 font-medium">{label}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </ScrollReveal>
@@ -275,41 +374,156 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-3 gap-5">
-          <ScrollReveal delay={0}>
-            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md hover:shadow-[#00F0FF]/5 transition-all">
-              <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
-                <Layers className="h-5 w-5 text-[#00F0FF]" />
+        {/* Bento grid: 2 büyük görsel kart + 4 destek kartı */}
+        <div className="grid md:grid-cols-6 gap-5">
+
+          {/* Uyarlama — büyük kart: bir profil beş platforma dağılır */}
+          <ScrollReveal delay={0} className="md:col-span-4">
+            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md hover:shadow-[#00F0FF]/5 transition-all grid md:grid-cols-2 gap-6 items-center">
+              <div className="space-y-4">
+                <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
+                  <Layers className="h-5 w-5 text-[#00F0FF]" />
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("features.adapt.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">
+                    {t("features.adapt.desc")}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.adapt.title")}</h3>
-                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">
-                  {t("features.adapt.desc")}
-                </p>
-              </div>
-              <div className="flex items-center gap-2 flex-wrap pt-1">
-                {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
-                  <div key={id} className="rounded-lg border border-white/8 bg-white/[0.05] p-1.5">
-                    <PlatformLogo platform={id} size={14} />
-                  </div>
-                ))}
+              <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] p-4 space-y-3">
+                <div className="space-y-2">
+                  <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-white/12 demo-grow" style={{ animationDelay: "150ms" }} />
+                  <div className="h-2 w-4/6 rounded-full bg-slate-200 dark:bg-white/12 demo-grow" style={{ animationDelay: "300ms" }} />
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-px flex-1 bg-gradient-to-r from-[#00F0FF]/50 to-violet-400/50" />
+                  <Sparkles className="h-3.5 w-3.5 text-[#00F0FF]" />
+                  <div className="h-px flex-1 bg-gradient-to-r from-violet-400/50 to-[#00F0FF]/50" />
+                </div>
+                <div className="flex items-center justify-between">
+                  {PLATFORMS.map((id, i) => (
+                    <div key={id} className="demo-pop rounded-lg border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.05] p-1.5" style={{ animationDelay: `${500 + i * 120}ms` }}>
+                      <PlatformLogo platform={id} size={16} />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </ScrollReveal>
 
-          {features.map(({ icon: Icon, title, desc, accent, delay }) => (
-            <ScrollReveal key={title} delay={delay}>
-              <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-violet-500/20 hover:shadow-md transition-all">
-                <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${accent === "cyan" ? "bg-[#00F0FF]/10 border border-[#00F0FF]/20" : "bg-violet-500/10 border border-violet-500/20"}`}>
-                  <Icon className={`h-5 w-5 ${accent === "cyan" ? "text-[#00F0FF]" : "text-violet-400"}`} />
+          {/* Eşleştirme — skor sayacı */}
+          <ScrollReveal delay={80} className="md:col-span-2">
+            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-violet-500/20 hover:shadow-md transition-all">
+              <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
+                <Briefcase className="h-5 w-5 text-[#00F0FF]" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <CountUp value={87} duration={1400} className="text-4xl font-extrabold text-[#00F0FF] tabular-nums" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-white/40">{t("demos.match")}</span>
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.matching.title")}</h3>
+                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.matching.desc")}</p>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* AI teklif — daktilo efekti */}
+          <ScrollReveal delay={0} className="md:col-span-3">
+            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md transition-all">
+              <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                <Sparkles className="h-5 w-5 text-violet-400" />
+              </div>
+              <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] p-3.5">
+                <p className="demo-type text-[12px] text-slate-600 dark:text-white/70 leading-relaxed font-medium">
+                  {t("demos.proposal")}<span className="demo-caret text-[#00F0FF] font-bold">▍</span>
+                </p>
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.ai.title")}</h3>
+                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.ai.desc")}</p>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Takip — pipeline rozetleri */}
+          <ScrollReveal delay={80} className="md:col-span-3">
+            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-violet-500/20 hover:shadow-md transition-all">
+              <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                <Target className="h-5 w-5 text-violet-400" />
+              </div>
+              <div className="space-y-2">
+                {[
+                  { width: "w-32", label: t("demos.applied"),   chip: "border-[#00F0FF]/25 bg-[#00F0FF]/8 text-slate-600 dark:text-[#00F0FF]" },
+                  { width: "w-24", label: t("demos.interview"), chip: "border-violet-500/25 bg-violet-500/8 text-violet-500 dark:text-violet-300" },
+                  { width: "w-28", label: t("demos.offer"),     chip: "border-emerald-500/25 bg-emerald-500/8 text-emerald-600 dark:text-emerald-400" },
+                ].map(({ width, label, chip }, i) => (
+                  <div key={label} className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] px-3 py-2">
+                    <div className={`h-2 ${width} rounded-full bg-slate-200 dark:bg-white/12 demo-grow`} style={{ animationDelay: `${150 + i * 150}ms` }} />
+                    <span className={`demo-pop rounded-full border px-2 py-0.5 text-[9px] font-bold ${chip}`} style={{ animationDelay: `${400 + i * 150}ms` }}>
+                      {label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.tracking.title")}</h3>
+                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.tracking.desc")}</p>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Portfolyo — mini tarayıcı penceresi */}
+          <ScrollReveal delay={0} className="md:col-span-3">
+            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md transition-all">
+              <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                <Globe className="h-5 w-5 text-violet-400" />
+              </div>
+              <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] overflow-hidden">
+                <div className="flex items-center gap-2 border-b border-slate-200 dark:border-white/8 px-3 py-2">
+                  <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-white/15" />
+                  <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-white/15" />
+                  <span className="ml-1 flex-1 rounded-md bg-white dark:bg-white/[0.06] px-2 py-0.5 text-[9px] font-semibold text-slate-400 dark:text-white/40 truncate">
+                    {t("demos.portfolioUrl")}
+                  </span>
                 </div>
-                <div className="space-y-1.5">
-                  <h3 className="font-bold text-slate-900 dark:text-white">{title}</h3>
-                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{desc}</p>
+                <div className="p-3 space-y-2">
+                  <div className="h-2.5 w-24 rounded-full bg-slate-200 dark:bg-white/15 demo-grow" style={{ animationDelay: "200ms" }} />
+                  <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-white/10 demo-grow" style={{ animationDelay: "350ms" }} />
+                  <div className="h-2 w-5/6 rounded-full bg-slate-200 dark:bg-white/10 demo-grow" style={{ animationDelay: "500ms" }} />
                 </div>
               </div>
-            </ScrollReveal>
-          ))}
+              <div className="space-y-1.5">
+                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.portfolio.title")}</h3>
+                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.portfolio.desc")}</p>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Güvenlik */}
+          <ScrollReveal delay={80} className="md:col-span-3">
+            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-violet-500/20 hover:shadow-md transition-all">
+              <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
+                <ShieldCheck className="h-5 w-5 text-[#00F0FF]" />
+              </div>
+              <div className="flex gap-1.5 flex-wrap">
+                {["RLS", "Zod", "DOMPurify"].map((tech, i) => (
+                  <span
+                    key={tech}
+                    className="demo-pop rounded-full border border-emerald-500/25 bg-emerald-500/8 px-2 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400"
+                    style={{ animationDelay: `${200 + i * 120}ms` }}
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.secure.title")}</h3>
+                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.secure.desc")}</p>
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -323,11 +537,14 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </div>
           </ScrollReveal>
           <div className="grid md:grid-cols-3 gap-8">
-            {steps.map(({ step, title, desc, delay }) => (
+            {steps.map(({ step, title, desc, delay, demo }) => (
               <ScrollReveal key={step} delay={delay}>
                 <div className="space-y-4">
-                  <div className="text-5xl font-extrabold text-slate-200 dark:text-white/6 tabular-nums">{step}</div>
-                  <div className="h-px w-12 bg-gradient-to-r from-[#00F0FF] to-violet-400" />
+                  {demo}
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl font-extrabold text-slate-200 dark:text-white/10 tabular-nums">{step}</span>
+                    <div className="h-px flex-1 bg-gradient-to-r from-[#00F0FF]/60 to-transparent" />
+                  </div>
                   <div className="space-y-2">
                     <h3 className="font-bold text-lg">{title}</h3>
                     <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{desc}</p>
