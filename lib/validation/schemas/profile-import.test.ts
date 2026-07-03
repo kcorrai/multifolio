@@ -34,9 +34,10 @@ describe("importRequestSchema — extension modu", () => {
       }).success,
     ).toBe(true);
   });
-  it("yalnız upwork/fiverr platformlarını kabul eder", () => {
+  it("yalnız upwork/fiverr/linkedin platformlarını kabul eder", () => {
     expect(importRequestSchema.safeParse({ ...valid, platform: "fiverr" }).success).toBe(true);
-    expect(importRequestSchema.safeParse({ ...valid, platform: "linkedin" }).success).toBe(false);
+    expect(importRequestSchema.safeParse({ ...valid, platform: "linkedin" }).success).toBe(true);
+    expect(importRequestSchema.safeParse({ ...valid, platform: "bionluk" }).success).toBe(false);
   });
   it("80 karakterin altındaki metni reddeder (anlamlılık eşiği)", () => {
     expect(importRequestSchema.safeParse({ ...valid, text: "x".repeat(79) }).success).toBe(false);

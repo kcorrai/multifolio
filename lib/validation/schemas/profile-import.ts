@@ -15,10 +15,11 @@ export const importRequestSchema = z.discriminatedUnion("mode", [
     text: z.string().trim().min(1).max(IMPORT_TEXT_MAX),
   }),
   // Tarayıcı eklentisi: kullanıcının login'li sekmesinden görünür metin + medya URL'leri.
-  // min(80) = route'un bot-duvarı "anlamlı içerik" eşiğiyle aynı.
+  // min(80) = route'un bot-duvarı "anlamlı içerik" eşiğiyle aynı. linkedin: login'li
+  // sayfa public ld+json'da OLMAYAN skills'i de içerir → AI metinden çıkarır.
   z.object({
     mode: z.literal("extension"),
-    platform: z.enum(["upwork", "fiverr"]),
+    platform: z.enum(["upwork", "fiverr", "linkedin"]),
     sourceUrl: z.string().trim().url().max(2000).refine((u) => /^https:\/\//i.test(u), "Yalnız https"),
     text: z.string().trim().min(80).max(IMPORT_TEXT_MAX),
     avatarUrl: httpUrl(1000).optional(),
