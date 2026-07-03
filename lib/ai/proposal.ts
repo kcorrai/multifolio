@@ -4,6 +4,7 @@ import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { buildRequirementsBlock, buildFocusBlock } from "./coverage";
 import { languageDirective } from "./language";
+import { buildPlatformProfileBlock, type PlatformProfileContext } from "./platform-context";
 import { InternalError } from "@/lib/errors";
 import { PROPOSAL_GUIDANCE, type PlatformId } from "@/lib/ai/platforms";
 import {
@@ -26,6 +27,8 @@ export interface GenerateProposalOptions {
   requirements?: string[];
   focusRequirements?: string[];
   locale?: Locale;
+  /** Kullanıcının hedef platformdan çekilmiş gerçek profili (varsa). */
+  platformProfile?: PlatformProfileContext | null;
 }
 
 const SYSTEM_PROMPT =
@@ -49,6 +52,7 @@ export async function generateProposal(
     `Başlık: ${profile.headline}`,
     `Özet: ${profile.summary}`,
     `Beceriler: ${profile.skills.join(", ")}`,
+    buildPlatformProfileBlock(opts.platformProfile),
     "",
     "İş İlanı:",
     jobDescription,

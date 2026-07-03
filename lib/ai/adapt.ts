@@ -5,6 +5,7 @@ import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { PLATFORMS, type PlatformId } from "./platforms";
 import { computeCostUsd } from "./pricing";
 import { languageDirective } from "./language";
+import { buildPlatformProfileBlock, type PlatformProfileContext } from "./platform-context";
 import { InternalError } from "@/lib/errors";
 import type { Locale } from "@/i18n/detect";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
@@ -33,6 +34,7 @@ export async function adaptProfile(
   profile: ProfileInput,
   platformId: PlatformId,
   locale: Locale = "en",
+  platformProfile: PlatformProfileContext | null = null,
 ): Promise<AdaptResult> {
   const platform = PLATFORMS[platformId];
   const client = getOpenAIClient();
@@ -45,6 +47,7 @@ export async function adaptProfile(
     `- Başlık: ${profile.headline}`,
     `- Özet: ${profile.summary}`,
     `- Beceriler: ${profile.skills.join(", ")}`,
+    buildPlatformProfileBlock(platformProfile),
     languageDirective(locale),
   ].join("\n");
 

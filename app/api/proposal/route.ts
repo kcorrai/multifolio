@@ -42,7 +42,7 @@ export const POST = withErrorHandler(async (req) => {
 
   const input = await parseJson(req, proposalCreateSchema);
 
-  const [profileRes, jobRes, lastProposalRes] = await Promise.all([
+  const [profileRes, jobRes, lastProposalRes, platformProfileRes] = await Promise.all([
     supabase
       .from("profiles")
       .select("headline, summary, skills")
@@ -62,6 +62,13 @@ export const POST = withErrorHandler(async (req) => {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(1)
+      .maybeSingle(),
+    // Hedef platformdan çekilmiş gerçek profil (varsa) prompt'a ek bağlam olarak girer.
+    supabase
+      .from("platform_profiles")
+      .select("headline, summary, skills")
+      .eq("user_id", user.id)
+      .eq("platform", input.platform)
       .maybeSingle(),
   ]);
 
@@ -89,7 +96,12 @@ export const POST = withErrorHandler(async (req) => {
       profileRes.data as ProfileInput,
       input.job_description,
       input.platform,
-      { requirements, focusRequirements: input.focus_requirements, locale: proposalLocale },
+      {
+        requirements,
+        focusRequirements: input.focus_requirements,
+        locale: proposalLocale,
+        platformProfile: platformProfileRes.data as { headline: string; summary: string; skills: string[] } | null,
+      },
     );
     const { data: saved, error: saveError } = await supabase
       .from("proposals")

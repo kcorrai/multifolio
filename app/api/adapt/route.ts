@@ -37,9 +37,21 @@ export const POST = withErrorHandler(async (req) => {
     profile = data as ProfileInput;
   }
 
+  // Platformdan çekilmiş gerçek profil (varsa) prompt'a ek bağlam olarak girer.
+  const { data: platformProfileRow, error: ppError } = await supabase
+    .from("platform_profiles")
+    .select("headline, summary, skills")
+    .eq("user_id", user.id)
+    .eq("platform", input.platform)
+    .maybeSingle();
+  if (ppError) throw ppError;
+
   const locale = await getUserLocale();
   const { result, balance, spent } = await spendCredits(user.id, "adaptation", async () => {
-    const r = await adaptProfile(profile, input.platform, locale);
+    const r = await adaptProfile(
+      profile, input.platform, locale,
+      platformProfileRow as { headline: string; summary: string; skills: string[] } | null,
+    );
     // Kalıcılık closure İÇİNDE: yazım patlarsa kredi iade edilir (Faz 9 kuralı).
     const { error: upsertError } = await supabase
       .from("adaptations")
