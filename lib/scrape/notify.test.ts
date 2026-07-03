@@ -37,6 +37,7 @@ function makeFeed(over: Partial<NotifyFeedRow> = {}): NotifyFeedRow {
     min_client_spent: null,
     min_score: null,
     notify: true,
+    proposal_prompt: null,
     created_at: "2026-07-01T00:00:00Z",
     ...over,
   };

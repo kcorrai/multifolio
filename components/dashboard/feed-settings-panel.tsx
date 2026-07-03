@@ -7,7 +7,7 @@
 // ile remount eder (state tazelenir).
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, Bell, SlidersHorizontal, Sparkles, Check } from "lucide-react";
+import { ChevronDown, Bell, SlidersHorizontal, Sparkles, Check, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { JobFeedRow } from "@/lib/validation/schemas/feed";
@@ -37,6 +37,7 @@ export function FeedSettingsPanel({
   const [minClientSpent, setMinClientSpent] = useState(feed.min_client_spent?.toString() ?? "");
   const [minScore, setMinScore] = useState(feed.min_score ?? 0);
   const [notify, setNotify] = useState(feed.notify);
+  const [proposalPrompt, setProposalPrompt] = useState(feed.proposal_prompt ?? "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -50,7 +51,8 @@ export function FeedSettingsPanel({
     numOrNull(minFixed) !== feed.min_fixed_price ||
     numOrNull(minClientSpent) !== feed.min_client_spent ||
     (minScore > 0 ? minScore : null) !== feed.min_score ||
-    notify !== feed.notify;
+    notify !== feed.notify ||
+    (proposalPrompt.trim() || null) !== feed.proposal_prompt;
 
   function discard() {
     setName(feed.name);
@@ -62,6 +64,7 @@ export function FeedSettingsPanel({
     setMinClientSpent(feed.min_client_spent?.toString() ?? "");
     setMinScore(feed.min_score ?? 0);
     setNotify(feed.notify);
+    setProposalPrompt(feed.proposal_prompt ?? "");
     setError("");
   }
 
@@ -77,6 +80,7 @@ export function FeedSettingsPanel({
       minClientSpent: numOrNull(minClientSpent),
       minScore: minScore > 0 ? minScore : null,
       notify,
+      proposalPrompt: proposalPrompt.trim() ? proposalPrompt.trim() : null,
     };
     const res = await fetch(`/api/feeds/${feed.id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
@@ -173,6 +177,22 @@ export function FeedSettingsPanel({
           <p className="text-[11px] text-muted-foreground/70">{t("modal.minScoreHint")}</p>
         </div>
         <p className="text-[11px] text-muted-foreground/70">{t("modal.notifyHint")}</p>
+      </div>
+
+      {/* ── Teklif yönergesi (feed'e özel AI prompt'u) ───────────────── */}
+      <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+        <h4 className="text-sm font-bold flex items-center gap-2">
+          <FileText className="h-4 w-4 text-[#00F0FF]" />{t("settingsProposalPrompt")}
+        </h4>
+        <textarea
+          value={proposalPrompt}
+          onChange={(e) => setProposalPrompt(e.target.value)}
+          rows={6}
+          maxLength={2000}
+          placeholder={t("settingsProposalPromptPlaceholder")}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono leading-relaxed resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40"
+        />
+        <p className="text-[11px] text-muted-foreground/70">{t("settingsProposalPromptHint")}</p>
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}

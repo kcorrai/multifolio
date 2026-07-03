@@ -11,8 +11,10 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { generateProposal } from "@/lib/ai/proposal";
 import { spendCredits } from "@/lib/credits/spend";
 import { z } from "zod";
+import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
+import type { PoolJobRow, JobFeedRow } from "@/lib/validation/schemas/feed";
 
 const jobIdQuerySchema = z.object({ job_id: z.string().uuid() });
 
@@ -50,7 +52,7 @@ export const POST = withErrorHandler(async (req) => {
       .maybeSingle(),
     supabase
       .from("job_listings")
-      .select("match_result")
+      .select("match_result, source_pool_id")
       .eq("id", input.job_id)
       .eq("user_id", user.id)
       .maybeSingle(),
@@ -88,6 +90,34 @@ export const POST = withErrorHandler(async (req) => {
       ? priorRequirements
       : undefined;
 
+  // İlan bir feed'den geldiyse (source_pool_id) ilana uyan İLK prompt'lu feed'in
+  // teklif yönergesi AI'a eklenir (kullanıcının UpHunt-tarzı özel prompt'u).
+  const sourcePoolId = (jobRes.data?.source_pool_id as string | null) ?? null;
+  let feedPrompt: string | null = null;
+  if (sourcePoolId) {
+    const [poolRes, feedsRes] = await Promise.all([
+      supabase
+        .from("job_pool")
+        .select("id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr")
+        .eq("id", sourcePoolId)
+        .maybeSingle(),
+      supabase
+        .from("job_feeds")
+        .select("id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at")
+        .eq("user_id", user.id)
+        .not("proposal_prompt", "is", null),
+    ]);
+    if (poolRes.error) throw poolRes.error;
+    if (feedsRes.error) throw feedsRes.error;
+    if (poolRes.data) {
+      const pool = poolRes.data as PoolJobRow;
+      const feed = ((feedsRes.data ?? []) as JobFeedRow[]).find(
+        (f) => (f.proposal_prompt ?? "").trim() && matchesFeed(pool, feedCriteria(f), null),
+      );
+      feedPrompt = feed?.proposal_prompt ?? null;
+    }
+  }
+
   const proposalLocale = await getUserLocale();
   // AI üretimi + teklifin kaydı tek closure'da: kayıt patlarsa spendCredits krediyi iade eder
   // (kredi öde-sonuç kaybolma durumunu önler). usage_events (analitik) dışarıda kalır.
@@ -101,6 +131,7 @@ export const POST = withErrorHandler(async (req) => {
         focusRequirements: input.focus_requirements,
         locale: proposalLocale,
         platformProfile: platformProfileRes.data as { headline: string; summary: string; skills: string[] } | null,
+        feedPrompt,
       },
     );
     const { data: saved, error: saveError } = await supabase

@@ -29,6 +29,14 @@ export interface GenerateProposalOptions {
   locale?: Locale;
   /** Kullanıcının hedef platformdan çekilmiş gerçek profili (varsa). */
   platformProfile?: PlatformProfileContext | null;
+  /** İlanın geldiği feed'in kullanıcı tanımlı teklif yönergesi (varsa). */
+  feedPrompt?: string | null;
+}
+
+// Feed'e özel serbest yönerge bloğu (boş/whitespace ise eklenmez).
+function buildFeedPromptBlock(p: string | null | undefined): string {
+  if (!p || !p.trim()) return "";
+  return ["", "Kullanıcının bu feed için tanımladığı teklif yönergesi (uygula):", p.trim()].join("\n");
 }
 
 const SYSTEM_PROMPT =
@@ -61,6 +69,7 @@ export async function generateProposal(
     "",
     "Platform Yönergesi:",
     PROPOSAL_GUIDANCE[platform],
+    buildFeedPromptBlock(opts.feedPrompt),
     languageDirective(opts.locale ?? "en"),
   ].join("\n");
 

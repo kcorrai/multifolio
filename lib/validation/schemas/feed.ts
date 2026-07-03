@@ -13,6 +13,7 @@ export const feedCreateSchema = z.object({
   minClientSpent: z.number().min(0).max(100_000_000).optional(),
   minScore: z.number().int().min(0).max(100).optional(),
   notify: z.boolean().default(false),
+  proposalPrompt: z.string().trim().max(2000).optional(),
 });
 
 // Güncellemede alanlar null gönderilerek TEMİZLENEBİLİR (undefined = dokunma).
@@ -27,6 +28,7 @@ export const feedUpdateSchema = z.object({
   minClientSpent: z.number().min(0).max(100_000_000).nullable().optional(),
   minScore: z.number().int().min(0).max(100).nullable().optional(),
   notify: z.boolean().optional(),
+  proposalPrompt: z.string().trim().max(2000).nullable().optional(),
 });
 
 // Query: liste sayfalama
@@ -84,6 +86,7 @@ export interface JobFeedRow {
   min_client_spent: number | null;
   min_score: number | null;
   notify: boolean;
+  proposal_prompt: string | null;
   created_at: string;
 }
 

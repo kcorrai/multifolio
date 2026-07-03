@@ -545,6 +545,9 @@
     "settingsDiscard": "Vazgeç",
     "settingsSaved": "Kaydedildi",
     "showLowScores": "Düşük skorluları göster",
+    "settingsProposalPrompt": "Teklif yönergesi",
+    "settingsProposalPromptPlaceholder": "örn. 5 yıllık React deneyimimi mutlaka an, 150 kelimeyi geçme, soruyla bitir…",
+    "settingsProposalPromptHint": "Bu feed'den gelen ilanlara teklif üretirken uygulanır. Boş bırakılırsa varsayılan stil kullanılır.",
     "time": {
       "all": "Tümü",
       "hour": "Son 1 saat",

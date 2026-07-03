@@ -545,6 +545,9 @@
     "settingsDiscard": "Discard",
     "settingsSaved": "Saved",
     "showLowScores": "Show low scores",
+    "settingsProposalPrompt": "Proposal prompt",
+    "settingsProposalPromptPlaceholder": "e.g. Always mention my 5 years of React experience, keep it under 150 words, end with a question…",
+    "settingsProposalPromptHint": "Applied when generating proposals for jobs that came from this feed. Leave empty to use the default style.",
     "time": {
       "all": "All time",
       "hour": "Last hour",
