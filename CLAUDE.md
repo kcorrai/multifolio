@@ -5,7 +5,7 @@
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
 **Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/{en,tr}.json`) — EN varsayılan, TR opsiyonel; sabit string yazma, `useTranslations`/`getTranslations` kullan (yeni anahtar ekleyince iki katalogu da güncelle). **Kod yorumları Türkçe kalır.** AI çıktı dili UI locale'ine uyar.
-Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 10 tamamlandı (İş Feed Dashboard — Alt-proje A: segmented Feed/Search/Starred/Applied, seed veriyle) + feed filtre genişletmesi (platform/ülke/ücret/harcama/skor). Sırada: Alt-proje B (canlı ilan çekme/scraper) / backlog / Faz 6 (iki taraflı pazar). Migration'lar 0014 dahil prod'da.**
+Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Faz 10 tamamlandı (İş Feed Dashboard — Alt-proje A: segmented Feed/Search/Starred/Applied, seed veriyle) + feed filtre genişletmesi (platform/ülke/ücret/harcama/skor). Sırada: backlog (AI skor+rubrik, özel domain portfolyo, Iyzico) / Faz 6 (iki taraflı pazar). Migration'lar 0021 dahil prod'da (2026-07-03 doğrulandı).**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
@@ -33,7 +33,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/platform-profiles` — POST: bağlı URL'den platform profil verisini çek → `platform_profiles` upsert (ücretsiz; saatte 10, `usage_events kind='platform_sync'`). Yalnız Bionluk+LinkedIn sunucudan; Upwork/Fiverr'ı uzantı akışı doldurur (`profile/import` da `platform_profiles`'a yazar). Platform detay "X Profilin" kartı buradan.
   - `app/api/feed` — GET: kullanıcının kayıtlı feed'lerine uyan `job_pool` ilanları (+yıldız+cache skor).
   - `app/api/feed/search` — GET: `job_pool` üzerinde anlık arama.
-  - `app/api/feed/[poolId]/score` — POST: on-demand profil×ilan AI skoru (kredi + `job_scores` cache).
+  - `app/api/feed/[poolId]/score` — POST: on-demand profil×ilan AI skoru (kredi + `job_scores` cache; gövde `{force:true}` cache'i bypass edip üzerine yazar — eski rubriksiz skoru rubrikliyle yenileme).
   - `app/api/feed/[poolId]/translate` — POST: ilan açıklamasını UI diline çevirir (ücretsiz; PAYLAŞIMLI `job_translations` cache; `usage_events kind='job_translate'` + saatlik limit).
   - `app/api/feeds` (+`[id]`) — kayıtlı feed CRUD (kullanıcı başına 10 limit). `app/api/starred` — yıldız GET/POST/DELETE.
   - `app/api/internal/scrape` — POST: dış cron (cron-job.org) `x-cron-secret` ile tetikler; Remotive+Arbeitnow ücretsiz API'lerinden çekip `job_pool`'a upsert (Alt-proje B canlı çekme).
@@ -41,7 +41,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/ai/` — uyarlama motoru (sunucu-only): `openai-client.ts` (OpenAI gpt-4o-mini istemcisi),
   `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `PROPOSAL_GUIDANCE`),
   `adapt.ts` (`adaptProfile`), `portfolio.ts` (`generatePortfolio` — dashboard UI'si kaldırıldı; `/api/portfolio/*` + herkese açık `/p/[slug]` duruyor),
-  `match.ts` (`matchJobToProfile` + ilandan `requirements` çıkarımı), `proposal.ts` (`generateProposal` — teklif metni + ilan gereksinimlerine karşı kapsama),
+  `match.ts` (`matchJobToProfile` + ilandan `requirements` çıkarımı; 4 boyutlu rubrik üretir + ilan bağlamı `MatchJobContext` alır), `rubric.ts` (SAF, server-only değil: `RUBRIC_WEIGHTS` %40/30/20/10 + `computeRubricScore` — toplam skor rubrikten deterministik + `rubricVerdict` go/maybe/skip; UI da import eder), `proposal.ts` (`generateProposal` — teklif metni + ilan gereksinimlerine karşı kapsama),
   `profile-import.ts` (`extractProfile` — serbest metin → profil taslağı),
   `translate.ts` (`translateJobTitles` batch dil tespiti+EN/TR başlık, `translateJobDescription` on-demand açıklama — ilan çevirisi hibrit: başlık scrape-time, açıklama ilk görüntülemede),
   `coverage.ts` (saf kapsama yardımcıları: pending/summary/prompt blokları), `pricing.ts` (token → USD).
@@ -50,7 +50,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/supabase/` — `server.ts` (RLS'li, varsayılan), `admin.ts` (service-role, RLS bypass — dikkat),
   `client.ts` (tarayıcı), `middleware.ts` (oturum yenileme). Kök `proxy.ts` bunu çağırır.
 - `lib/sanitize.ts` — portfolyo HTML'i için XSS sanitize (render öncesi zorunlu).
-- `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchResultSchema` (artık `requirements` içerir) + `JobStatus` (awaiting_reply dahil).
+- `lib/validation/schemas/job.ts` — `jobCreateSchema`, `jobUpdateSchema`, `jobMatchAiSchema` (AI üretimi: rubrik zorunlu, skor YOK) + `jobMatchResultSchema` (kayıtlı: rubric/verdict OPTIONAL — eski rubriksiz satırlar geçerli kalır) + `JobStatus` (awaiting_reply dahil).
 - `lib/validation/schemas/proposal.ts` — `proposalCreateSchema`, `proposalWithCoverageSchema` + `ProposalCoverageItem`, `ProposalRow` tipi.
 - `lib/validation/schemas/platform-connection.ts` — `platformConnectionUpsertSchema` + `PlatformConnection` tipi.
 - `lib/validation/schemas/feed.ts` — feed/arama/yıldız Zod şemaları + `PoolJob`/`PoolJobRow`/`JobFeedRow` tipleri.
@@ -59,7 +59,8 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `lib/scrape/` — Alt-proje B canlı çekme katmanı: `types.ts` (`ScrapeSource` arayüzü + `PoolJobUpsert`), `sources/{remotive,arbeitnow}.ts` (adaptör: `fetch` I/O + saf `normalize`; `htmlToText` ile açıklama düz metne), `run.ts` (`runScrape` orchestrator — geçerlileri `job_pool`'a upsert, kaynak başına koşu özetini `scrape_runs`'a yazar, biri patlarsa diğeri devam), `translate-titles.ts` (`translateNewTitles` — cron sonrası `lang IS NULL` başlıkları chunk'la EN/TR'ye çevirip `job_pool`'a yazar; çevirmen + client parametre, hata izole), `notify.ts` (`buildFeedDigests` saf + `notifyFeedMatches` — koşuda yeni eklenen ilanları `notify=true` feed'lerle eşleştirir, kullanıcı başına tek özet e-posta `sendFeedDigestEmail`; hata izole). Service-role client'ı parametre alır (import etmez). Ücretsiz remote-iş API'leri; Upwork/proxy YOK.
 - `components/ui/` — shadcn bileşenleri.
 - `components/dashboard/` — route-bölünmüş dashboard (her sekme ayrı sayfa). `shell.tsx` (sidebar+topbar+mobil nav, `usePathname` aktif durum, `<Link>` navigasyon; toast) `layout.tsx`'ten sarmalar. `dashboard-context.tsx` — oturum state'i (harcama, rozet sayıları, uyarlama sonuçları, "yakında" toast) sekmeler arası paylaşır (`useDashboard`). `shared.tsx` — tipler/sabitler/`StatCard`/helper'lar (sunucu+client ortak). `copy-button.tsx`, `use-adapt.ts`. `verify-email-banner.tsx` — dashboard'da ertelenmiş e-posta doğrulama banner'ı + toast. Sekme bileşenleri: `overview-tab.tsx` (stat kartları + tür bazlı kullanım + 30 günlük grafik + son ilanlar + başvuru performansı), `profile-tab.tsx`, `jobs-tab.tsx`, `platforms-hub-tab.tsx` (platform kartları), `platform-detail-tab.tsx` (tek platform 4-bölüm: uyarla/bağlantı/işler/teklifler+ipuçları; `use-adapt`+`JobDetailPanel` yeniden kullanır).
-  `components/job-detail-panel.tsx` — seçili iş için 2-sütun sağ panel (durum, AI skor, teklif CTA, notlar).
+  `components/dashboard/match-rubric.tsx` — `MatchRubric` (4 boyutlu skor dökümü barları) + `VerdictBadge` (go/maybe/skip rozeti); pool-job-panel + job-detail-panel paylaşır, rubriksiz eski sonuçlarda paneller "rubrikli yeniden analiz" butonu gösterir.
+  `components/job-detail-panel.tsx` — seçili iş için 2-sütun sağ panel (durum, AI skor+rubrik, teklif CTA, notlar).
   `components/proposal-modal.tsx` — platform-spesifik AI teklif üretimi + geçmiş teklifler.
   `components/notification-settings-modal.tsx` — Telegram bağlantı + eşik ayarı.
   `components/job-add-modal.tsx` — hızlı iş ekleme (platform/bütçe/URL) + otomatik AI eşleştirme.

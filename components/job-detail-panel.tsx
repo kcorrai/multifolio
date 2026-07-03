@@ -4,11 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   X, ExternalLink, Target, CheckCircle2, AlertCircle,
-  Sparkles, FileText, ChevronDown,
+  Sparkles, FileText, ChevronDown, RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ProposalModal } from "@/components/proposal-modal";
+import { CreditCost } from "@/components/credit-cost";
+import { MatchRubric, VerdictBadge } from "@/components/dashboard/match-rubric";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 
 interface JobRow {
@@ -55,6 +57,7 @@ interface Props {
 
 export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: Props) {
   const t = useTranslations("jobs");
+  const tRubric = useTranslations("rubric");
   const locale = useLocale();
   const [detail, setDetail] = useState<JobDetail | null>(null);
   const [loadedJobId, setLoadedJobId] = useState<string | null>(null);
@@ -62,6 +65,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
   const [notes, setNotes] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
   const [showProposal, setShowProposal] = useState(false);
+  const [rematching, setRematching] = useState(false);
   const notesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loading = loadedJobId !== job.id;
@@ -91,6 +95,20 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
     });
     const body = await res.json().catch(() => null);
     if (res.ok && body?.job) onJobUpdated(body.job as JobRow);
+  }
+
+  // Rubrik öncesi eşleştirmeyi rubrikli analizle yeniler (match route her çağrıda yeniden üretir; 1 kredi).
+  async function rematch() {
+    setRematching(true);
+    const res = await fetch(`/api/jobs/${job.id}/match`, { method: "POST" });
+    const body = await res.json().catch(() => null);
+    if (res.ok && body?.job) {
+      const updated = body.job as JobRow;
+      onJobUpdated(updated);
+      setDetail((prev) => (prev ? { ...prev, match_score: updated.match_score, match_result: updated.match_result } : prev));
+      if (body.credits) onCreditsUpdate?.(body.credits);
+    }
+    setRematching(false);
   }
 
   function handleNotesChange(value: string) {
@@ -171,8 +189,11 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                   <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                     <Target className="h-3.5 w-3.5" />{t("detail.matchScore")}
                   </span>
-                  <span className={`rounded-lg px-2.5 py-0.5 text-xs font-bold tabular-nums ${scoreColor(matchScore)}`}>
-                    {matchScore}/100
+                  <span className="flex items-center gap-1.5">
+                    {matchResult?.verdict && <VerdictBadge verdict={matchResult.verdict} />}
+                    <span className={`rounded-lg px-2.5 py-0.5 text-xs font-bold tabular-nums ${scoreColor(matchScore)}`}>
+                      {matchScore}/100
+                    </span>
                   </span>
                 </div>
                 <div className="h-1.5 rounded-full bg-muted overflow-hidden">
@@ -180,6 +201,14 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                 </div>
                 {matchResult && (
                   <p className="text-[11px] text-muted-foreground leading-relaxed">{matchResult.summary}</p>
+                )}
+                {matchResult?.rubric && <MatchRubric rubric={matchResult.rubric} />}
+                {matchResult && !matchResult.rubric && (
+                  /* Rubrik öncesi eski sonuç: rubrikli yeniden analiz butonu (1 kredi). */
+                  <Button variant="outline" size="sm" onClick={rematch} disabled={rematching} className="gap-2 w-full">
+                    <RefreshCw className="h-3.5 w-3.5" />{rematching ? tRubric("reanalyzing") : tRubric("reanalyze")}
+                    <CreditCost kind="job_match" />
+                  </Button>
                 )}
                 {matchResult && (matchResult.strengths.length > 0 || matchResult.gaps.length > 0) && (
                   <div className="grid grid-cols-2 gap-2">

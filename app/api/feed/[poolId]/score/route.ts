@@ -17,23 +17,30 @@ import type { ProfileInput } from "@/lib/validation/schemas/profile";
 // yakalanıp mevcut (yarışı kazananın yazdığı) skor döndürülür → kullanıcı 1 kez ücretlenir.
 class ScoreRaceLost extends Error {}
 
-export const POST = withErrorHandler(async (_req, { params }) => {
+export const POST = withErrorHandler(async (req, { params }) => {
   const poolId = parseUuidParam((await params).poolId as string, "poolId");
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new AuthError();
 
+  // force=true → cache bypass + üzerine yaz (eski rubriksiz skoru rubrikliyle yenileme).
+  // Gövde opsiyonel; boş/geçersiz gövde force=false sayılır.
+  const body = await req.json().catch(() => null);
+  const force = body?.force === true;
+
   // Cache kontrol: skor varsa kredi harcamadan döndür.
-  const cachedRes = await supabase.from("job_scores").select("score, result").eq("user_id", user.id).eq("job_pool_id", poolId).maybeSingle();
-  if (cachedRes.error) throw cachedRes.error;
-  if (cachedRes.data) {
-    return NextResponse.json({ score: cachedRes.data.score, result: cachedRes.data.result, credits: null, cached: true });
+  if (!force) {
+    const cachedRes = await supabase.from("job_scores").select("score, result").eq("user_id", user.id).eq("job_pool_id", poolId).maybeSingle();
+    if (cachedRes.error) throw cachedRes.error;
+    if (cachedRes.data) {
+      return NextResponse.json({ score: cachedRes.data.score, result: cachedRes.data.result, credits: null, cached: true });
+    }
   }
 
-  // Profil + pool ilanını çek.
+  // Profil + pool ilanını çek (bağlam alanları rubriğin bütçe/ilan-kalitesi boyutlarını besler).
   const [profileRes, poolRes] = await Promise.all([
     supabase.from("profiles").select("headline, summary, skills").eq("user_id", user.id).maybeSingle(),
-    supabase.from("job_pool").select("description").eq("id", poolId).maybeSingle(),
+    supabase.from("job_pool").select("title, description, budget, skills, client_country, client_spent").eq("id", poolId).maybeSingle(),
   ]);
   if (profileRes.error) throw profileRes.error;
   if (!profileRes.data) throw new NotFoundError((await getTranslations("errors"))("profileRequiredMatch"));
@@ -42,17 +49,29 @@ export const POST = withErrorHandler(async (_req, { params }) => {
 
   const locale = await getUserLocale();
   const admin = createSupabaseAdminClient();
-  const description = poolRes.data.description;
+  const pool = poolRes.data;
+  const jobContext = {
+    title: pool.title as string | null,
+    budget: pool.budget as string | null,
+    skills: pool.skills as string[] | null,
+    clientCountry: pool.client_country as string | null,
+    clientSpent: pool.client_spent as number | null,
+  };
 
   let scored;
   try {
     scored = await spendCredits(user.id, "job_match", async () => {
-      const matched = await matchJobToProfile(profileRes.data as ProfileInput, description, locale);
+      const matched = await matchJobToProfile(profileRes.data as ProfileInput, pool.description, locale, jobContext);
+      const row = { user_id: user.id, job_pool_id: poolId, score: matched.result.score, result: matched.result };
+      if (force) {
+        // Yeniden analiz: mevcut satırın üzerine yaz (yarış senaryosu yok — kullanıcı tetikler).
+        const { error: upsertErr } = await admin.from("job_scores").upsert(row, { onConflict: "user_id,job_pool_id" });
+        if (upsertErr) throw upsertErr;
+        return matched;
+      }
       // İdempotent yazım: ON CONFLICT DO NOTHING (ignoreDuplicates). Satır döndüyse
       // yarışı KAZANDIK; boşsa başka istek zaten yazmış → yarışı KAYBETTİK.
-      const { data: inserted, error: insertErr } = await admin.from("job_scores").insert(
-        { user_id: user.id, job_pool_id: poolId, score: matched.result.score, result: matched.result },
-      ).select("id").maybeSingle();
+      const { data: inserted, error: insertErr } = await admin.from("job_scores").insert(row).select("id").maybeSingle();
       // 23505 (unique_violation) = yarış kaybı; diğer hatalar gerçek hata.
       if (insertErr && insertErr.code !== "23505") throw insertErr;
       if (insertErr || !inserted) throw new ScoreRaceLost();

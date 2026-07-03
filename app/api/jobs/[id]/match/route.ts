@@ -30,7 +30,7 @@ export const POST = withErrorHandler(async (_req, { params }) => {
       .maybeSingle(),
     supabase
       .from("job_listings")
-      .select("description")
+      .select("title, description, budget")
       .eq("id", id)
       .eq("user_id", user.id)
       .maybeSingle(),
@@ -44,10 +44,13 @@ export const POST = withErrorHandler(async (_req, { params }) => {
   if (!jobRes.data) throw new NotFoundError((await getTranslations("errors"))("jobNotFound"));
 
   const locale = await getUserLocale();
-  const jobDescription = jobRes.data.description;
+  const job = jobRes.data;
   // AI eşleştirme + ilana yazım tek closure'da: yazım patlarsa spendCredits krediyi iade eder.
   const { result, balance, spent } = await spendCredits(user.id, "job_match", async () => {
-    const matched = await matchJobToProfile(profileRes.data as ProfileInput, jobDescription, locale);
+    const matched = await matchJobToProfile(profileRes.data as ProfileInput, job.description, locale, {
+      title: job.title as string | null,
+      budget: job.budget as string | null,
+    });
     // Sonucu ilana yaz (regular client — RLS update_own politikası yeterli).
     const { data: updated, error: updateError } = await supabase
       .from("job_listings")

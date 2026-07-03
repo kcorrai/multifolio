@@ -588,6 +588,23 @@
   "credits": {
     "cost": "{count, plural, one {# kredi} other {# kredi}}"
   },
+  "rubric": {
+    "breakdown": "Skor dağılımı",
+    "weight": "%{percent}",
+    "dimensions": {
+      "skill_fit": "Beceri uyumu",
+      "experience_fit": "Deneyim uyumu",
+      "budget_fit": "Bütçe & kapsam",
+      "listing_quality": "İlan kalitesi"
+    },
+    "verdict": {
+      "go": "Teklife değer",
+      "maybe": "Sınırda",
+      "skip": "Atla"
+    },
+    "reanalyze": "Rubrikli yeniden analiz",
+    "reanalyzing": "Analiz ediliyor…"
+  },
   "import": {
     "title": "Profilini saniyeler içinde kur",
     "subtitle": "Zaten kullandığın bir platformdan içe aktar — Multifolio profilini biz taslaklayalım, sen parlat.",

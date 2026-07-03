@@ -588,6 +588,23 @@
   "credits": {
     "cost": "{count, plural, one {# credit} other {# credits}}"
   },
+  "rubric": {
+    "breakdown": "Score breakdown",
+    "weight": "{percent}%",
+    "dimensions": {
+      "skill_fit": "Skill fit",
+      "experience_fit": "Experience fit",
+      "budget_fit": "Budget & scope",
+      "listing_quality": "Listing quality"
+    },
+    "verdict": {
+      "go": "Worth applying",
+      "maybe": "Borderline",
+      "skip": "Skip this one"
+    },
+    "reanalyze": "Re-analyze with rubric",
+    "reanalyzing": "Analyzing…"
+  },
   "import": {
     "title": "Set up your profile in seconds",
     "subtitle": "Import from a platform you already use — we'll draft your Multifolio profile, you polish it.",
