@@ -16,7 +16,15 @@ type Channel = "url" | "text" | "file";
 // Yapılandırılmış içe aktarmada (Bionluk/LinkedIn) taslakla gelen görseller (opsiyonel).
 type ImportExtras = { avatarUrl: string | null; portfolio: PortfolioItem[] };
 
-export function ImportWizard() {
+interface ImportWizardProps {
+  // Tarayıcı eklentisi akışı: sunucu sayfası bekleyen taslağı okuyup buraya geçirir —
+  // wizard doğrudan inceleme ekranında açılır. Normal akışta hepsi boş.
+  initialDraft?: ProfileDraft | null;
+  initialExtras?: ImportExtras | null;
+  initialPlatformLabel?: string | null;
+}
+
+export function ImportWizard({ initialDraft = null, initialExtras = null, initialPlatformLabel = null }: ImportWizardProps = {}) {
   const t = useTranslations("import");
   const router = useRouter();
   const [channel, setChannel] = useState<Channel>("url");
@@ -25,8 +33,11 @@ export function ImportWizard() {
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [draft, setDraft] = useState<ProfileDraft | null>(null);
-  const [extras, setExtras] = useState<ImportExtras | null>(null);
+  const [draft, setDraft] = useState<ProfileDraft | null>(initialDraft);
+  const [extras, setExtras] = useState<ImportExtras | null>(initialExtras);
+  // Kaynak banner'ı yalnız eklentiden gelen taslakta gösterilir; kullanıcı
+  // baştan başlayıp yeni içe aktarma yaparsa kapanır.
+  const [fromExtension, setFromExtension] = useState(!!initialDraft && !!initialPlatformLabel);
   const [saving, setSaving] = useState(false);
 
   async function runImport() {
@@ -53,6 +64,7 @@ export function ImportWizard() {
       }
       setDraft(data.draft as ProfileDraft);
       setExtras((data.media as ImportExtras | undefined) ?? null);
+      setFromExtension(false);
     } finally {
       setBusy(false);
     }
@@ -97,6 +109,11 @@ export function ImportWizard() {
             <div className="mx-auto h-12 w-12 rounded-2xl bg-[#00F0FF]/10 flex items-center justify-center"><Sparkles className="h-6 w-6 text-[#00F0FF]" /></div>
           )}
           <h1 className="text-xl font-extrabold">{t("draftTitle")}</h1>
+          {fromExtension && initialPlatformLabel && (
+            <p className="inline-block rounded-full border border-[#00F0FF]/30 bg-[#00F0FF]/5 px-3 py-1 text-xs text-muted-foreground">
+              {t("extensionSource", { platform: initialPlatformLabel })}
+            </p>
+          )}
         </div>
         <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
           <label className="block space-y-1">
@@ -126,7 +143,7 @@ export function ImportWizard() {
           )}
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex items-center justify-between pt-1">
-            <button onClick={() => { setDraft(null); setExtras(null); setError(""); }} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2">{t("startOver")}</button>
+            <button onClick={() => { setDraft(null); setExtras(null); setError(""); setFromExtension(false); }} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2">{t("startOver")}</button>
             <Button onClick={saveDraft} disabled={saving} className="gap-2">{saving ? t("saving") : t("save")}<ArrowRight className="h-4 w-4" /></Button>
           </div>
         </div>

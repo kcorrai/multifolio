@@ -554,6 +554,7 @@
     "import": "İçe aktar",
     "importing": "İçe aktarılıyor…",
     "draftTitle": "Taslağın hazır — gözden geçir ve kaydet",
+    "extensionSource": "Tarayıcı eklentisiyle {platform} profilinden içe aktarıldı.",
     "photoAlt": "Profil fotoğrafı",
     "portfolioLabel": "İçe aktarılan portfolyo ({count})",
     "headlineLabel": "Başlık",

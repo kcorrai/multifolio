@@ -554,6 +554,7 @@
     "import": "Import",
     "importing": "Importing…",
     "draftTitle": "Here's your draft — review and save",
+    "extensionSource": "Imported from your {platform} profile via the browser extension.",
     "photoAlt": "Profile photo",
     "portfolioLabel": "Imported portfolio ({count})",
     "headlineLabel": "Headline",
