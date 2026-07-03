@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, RateLimitError, withErrorHandler } from "@/lib/errors";
+import { parseUuidParam } from "@/lib/validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { translateJobDescription } from "@/lib/ai/translate";
@@ -14,7 +15,7 @@ import { translateJobDescription } from "@/lib/ai/translate";
 const HOURLY_LIMIT = 30;
 
 export const POST = withErrorHandler(async (_req, { params }) => {
-  const { poolId } = await params as { poolId: string };
+  const poolId = parseUuidParam((await params).poolId as string, "poolId");
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new AuthError();

@@ -8,7 +8,7 @@ import { getUserLocale } from "@/i18n/locale";
 import { AuthError, ValidationError, RateLimitError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { importRequestSchema } from "@/lib/validation/schemas/profile-import";
-import { htmlToText, detectPlatformFromUrl, isSafeExternalUrl } from "@/lib/import/text";
+import { htmlToText, detectPlatformFromUrl, isSafeExternalUrl, fetchExternalHtml } from "@/lib/import/text";
 import { pdfToText } from "@/lib/import/pdf";
 import { parseBionlukUsername, fetchBionlukProfile, type BionlukProfile } from "@/lib/import/bionluk";
 import { extractProfile, type ProfileImportResult } from "@/lib/ai/profile-import";
@@ -70,16 +70,10 @@ export const POST = withErrorHandler(async (req) => {
         bionluk = await fetchBionlukProfile(username);
         if (!bionluk) throw new ValidationError(t("importFetchFailed"));
       } else {
-        // Diğer platformlar: düz fetch + HTML→metin → AI (bot duvarında olabilir).
+        // Diğer platformlar: SSRF-güvenli fetch (yönlendirmeler elle doğrulanır) → HTML→metin → AI.
         let html = "";
         try {
-          const res = await fetch(input.url, {
-            signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-            headers: { "User-Agent": "Mozilla/5.0 (compatible; MultifolioBot/1.0)", Accept: "text/html" },
-            redirect: "follow",
-          });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          html = await res.text();
+          html = await fetchExternalHtml(input.url, { timeoutMs: FETCH_TIMEOUT_MS });
         } catch {
           throw new ValidationError(t("importFetchFailed"));
         }

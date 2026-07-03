@@ -1,8 +1,21 @@
 // Güvenli-by-default girdi doğrulama. SERT KURAL: istemci verisine güvenilmez;
 // her dış girdi (gövde, query, params) bir Zod şemasından geçirilir. Doğrulama
 // başarısızsa ValidationError fırlatılır ve withErrorHandler 400'e çevirir.
-import type { z } from "zod";
+import { z } from "zod";
 import { ValidationError } from "@/lib/errors";
+
+const uuidSchema = z.string().uuid();
+
+/**
+ * Route path parametresini UUID olarak doğrular. Doğrulanmamış bir id doğrudan
+ * `.eq("id", ...)` içine girerse Postgres `22P02` (invalid uuid) fırlatır →
+ * beklenmeyen 500 + Sentry gürültüsü. Bu, onu temiz bir 400'e çevirir.
+ */
+export function parseUuidParam(value: string, field = "id"): string {
+  const result = uuidSchema.safeParse(value);
+  if (!result.success) throw new ValidationError(`${field}: geçersiz kimlik.`);
+  return result.data;
+}
 
 /** İlk Zod sorununu kısa, okunur bir mesaja indirger. */
 function firstIssueMessage(error: z.ZodError): string {

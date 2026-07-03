@@ -4,12 +4,12 @@
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
-import { parseJson } from "@/lib/validation";
+import { parseJson, parseUuidParam } from "@/lib/validation";
 import { jobUpdateSchema } from "@/lib/validation/schemas/job";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const GET = withErrorHandler(async (_req, { params }) => {
-  const { id } = await params as { id: string };
+  const id = parseUuidParam((await params).id as string);
   const supabase = await createSupabaseServerClient();
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -29,7 +29,7 @@ export const GET = withErrorHandler(async (_req, { params }) => {
 });
 
 export const PATCH = withErrorHandler(async (req, { params }) => {
-  const { id } = await params as { id: string };
+  const id = parseUuidParam((await params).id as string);
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -54,7 +54,7 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
 });
 
 export const DELETE = withErrorHandler(async (_req, { params }) => {
-  const { id } = await params as { id: string };
+  const id = parseUuidParam((await params).id as string);
   const supabase = await createSupabaseServerClient();
 
   const {

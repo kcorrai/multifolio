@@ -5,14 +5,20 @@ import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
+import { parseUuidParam } from "@/lib/validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { matchJobToProfile } from "@/lib/ai/match";
 import { spendCredits } from "@/lib/credits/spend";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
+// Eşzamanlı iki skorlama isteği yarıştığında (ikisi de cache'i ıskalayıp kredi
+// düşürünce) İKİNCİ yazan bunu fırlatır: spendCredits krediyi iade eder, dışarıda
+// yakalanıp mevcut (yarışı kazananın yazdığı) skor döndürülür → kullanıcı 1 kez ücretlenir.
+class ScoreRaceLost extends Error {}
+
 export const POST = withErrorHandler(async (_req, { params }) => {
-  const { poolId } = await params as { poolId: string };
+  const poolId = parseUuidParam((await params).poolId as string, "poolId");
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new AuthError();
@@ -38,16 +44,32 @@ export const POST = withErrorHandler(async (_req, { params }) => {
   const admin = createSupabaseAdminClient();
   const description = poolRes.data.description;
 
-  const { result, balance, spent } = await spendCredits(user.id, "job_match", async () => {
-    const matched = await matchJobToProfile(profileRes.data as ProfileInput, description, locale);
-    // Skoru cache'e yaz (service-role: job_scores insert politikası yok).
-    const { error: upsertErr } = await admin.from("job_scores").upsert(
-      { user_id: user.id, job_pool_id: poolId, score: matched.result.score, result: matched.result },
-      { onConflict: "user_id,job_pool_id" },
-    );
-    if (upsertErr) throw upsertErr;
-    return matched;
-  });
+  let scored;
+  try {
+    scored = await spendCredits(user.id, "job_match", async () => {
+      const matched = await matchJobToProfile(profileRes.data as ProfileInput, description, locale);
+      // İdempotent yazım: ON CONFLICT DO NOTHING (ignoreDuplicates). Satır döndüyse
+      // yarışı KAZANDIK; boşsa başka istek zaten yazmış → yarışı KAYBETTİK.
+      const { data: inserted, error: insertErr } = await admin.from("job_scores").insert(
+        { user_id: user.id, job_pool_id: poolId, score: matched.result.score, result: matched.result },
+      ).select("id").maybeSingle();
+      // 23505 (unique_violation) = yarış kaybı; diğer hatalar gerçek hata.
+      if (insertErr && insertErr.code !== "23505") throw insertErr;
+      if (insertErr || !inserted) throw new ScoreRaceLost();
+      return matched;
+    });
+  } catch (err) {
+    if (err instanceof ScoreRaceLost) {
+      // Kredi spendCredits tarafından iade edildi; kazananın yazdığı skoru döndür.
+      const { data: winner } = await supabase.from("job_scores").select("score, result").eq("user_id", user.id).eq("job_pool_id", poolId).maybeSingle();
+      if (winner) {
+        return NextResponse.json({ score: winner.score, result: winner.result, credits: null, cached: true });
+      }
+    }
+    throw err;
+  }
+
+  const { result, balance, spent } = scored;
 
   // Maliyet kaydı (kredi iadesi kapsamı dışında).
   const { error: usageError } = await admin.from("usage_events").insert({

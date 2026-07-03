@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { htmlToText, clampImportText, detectPlatformFromUrl, isSafeExternalUrl } from "./text";
+import { htmlToText, clampImportText, detectPlatformFromUrl, isSafeExternalUrl, isPrivateIp } from "./text";
 
 describe("htmlToText", () => {
   it("script/style söker, tag'leri boşluğa çevirir, whitespace toplar", () => {
@@ -40,5 +40,29 @@ describe("isSafeExternalUrl", () => {
     expect(isSafeExternalUrl("http://192.168.1.8/x")).toBe(false);
     expect(isSafeExternalUrl("http://10.0.0.5/x")).toBe(false);
     expect(isSafeExternalUrl("http://169.254.169.254/meta")).toBe(false);
+  });
+});
+
+describe("isPrivateIp (DNS-rebinding koruması)", () => {
+  it("özel/loopback/link-local IPv4'ü reddeder, public'i geçirir", () => {
+    expect(isPrivateIp("127.0.0.1")).toBe(true);
+    expect(isPrivateIp("10.1.2.3")).toBe(true);
+    expect(isPrivateIp("192.168.0.1")).toBe(true);
+    expect(isPrivateIp("172.16.0.1")).toBe(true);
+    expect(isPrivateIp("172.31.255.255")).toBe(true);
+    expect(isPrivateIp("169.254.169.254")).toBe(true); // cloud metadata
+    expect(isPrivateIp("0.0.0.0")).toBe(true);
+    expect(isPrivateIp("224.0.0.1")).toBe(true); // multicast
+    expect(isPrivateIp("8.8.8.8")).toBe(false);
+    expect(isPrivateIp("172.32.0.1")).toBe(false); // 172.16-31 dışı
+    expect(isPrivateIp("1.2.3.4")).toBe(false);
+  });
+  it("IPv6 loopback/unique-local/link-local ve IPv4-mapped'i reddeder", () => {
+    expect(isPrivateIp("::1")).toBe(true);
+    expect(isPrivateIp("fc00::1")).toBe(true);
+    expect(isPrivateIp("fd12:3456::1")).toBe(true);
+    expect(isPrivateIp("fe80::1")).toBe(true);
+    expect(isPrivateIp("::ffff:169.254.169.254")).toBe(true);
+    expect(isPrivateIp("2606:4700:4700::1111")).toBe(false); // public (Cloudflare)
   });
 });

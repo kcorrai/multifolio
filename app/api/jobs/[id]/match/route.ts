@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
+import { parseUuidParam } from "@/lib/validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { matchJobToProfile } from "@/lib/ai/match";
@@ -12,7 +13,7 @@ import { sendMatchNotificationEmail } from "@/lib/notifications/email";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export const POST = withErrorHandler(async (_req, { params }) => {
-  const { id } = await params as { id: string };
+  const id = parseUuidParam((await params).id as string);
   const supabase = await createSupabaseServerClient();
 
   const {

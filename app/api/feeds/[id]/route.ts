@@ -2,14 +2,14 @@
 // DELETE /api/feeds/[id] → feed sil.
 import { NextResponse } from "next/server";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
-import { parseJson } from "@/lib/validation";
+import { parseJson, parseUuidParam } from "@/lib/validation";
 import { feedUpdateSchema } from "@/lib/validation/schemas/feed";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const FEED_COLS = "id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, created_at";
 
 export const PATCH = withErrorHandler(async (req, { params }) => {
-  const { id } = await params as { id: string };
+  const id = parseUuidParam((await params).id as string);
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new AuthError();
@@ -33,7 +33,7 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
 });
 
 export const DELETE = withErrorHandler(async (_req, { params }) => {
-  const { id } = await params as { id: string };
+  const id = parseUuidParam((await params).id as string);
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new AuthError();
