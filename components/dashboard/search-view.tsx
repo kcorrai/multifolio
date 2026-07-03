@@ -59,7 +59,7 @@ export function SearchView() {
           ))}
         </div>
         {selected && (
-          <div className="lg:col-span-3 rounded-2xl border border-border overflow-hidden min-h-[400px]">
+          <div className="lg:col-span-3 lg:sticky lg:top-3 lg:self-start flex flex-col max-h-[calc(100vh-5.5rem)] rounded-2xl border border-border overflow-hidden">
             <PoolJobPanel job={selected} onClose={() => setSelectedId(null)} onScored={onScored} onApplied={() => {}} onCreditsUpdate={(c) => applyCredits(c)} />
           </div>
         )}
