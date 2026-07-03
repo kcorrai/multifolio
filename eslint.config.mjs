@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Tarayıcı eklentisi kendi paketi — kendi tsconfig/check'i var.
+    "extension/**",
   ]),
 ]);
 
