@@ -411,6 +411,7 @@
       "syncNoUrlHint": "Önce Bağlantı bölümünde profil URL'ini kaydet, sonra veriyi çek.",
       "syncExtensionHint": "{platform} sunucudan çekime kapalı — profil sayfanı tarayıcıda açıp Multifolio uzantısıyla içe aktar. Veri burada görünür.",
       "syncExtensionUpdated": "Tarayıcı uzantısıyla güncellenir",
+      "noPublicData": "{platform} public profil verisi sunmuyor — çekirdek profilin kullanılır.",
       "noJobs": "Bu platform için henüz ilan yok. İlanlar sayfasından ekleyebilirsin.",
       "noJobsCta": "İş feed'ine git",
       "setupProfileCta": "Profilini içe aktar",

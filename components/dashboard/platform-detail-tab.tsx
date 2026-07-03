@@ -115,70 +115,94 @@ export function PlatformDetailTab({
   const tips = t.raw(`tips.${platform}`) as string[];
 
   return (
-    <div className="space-y-6">
-      {/* Başlık + geri */}
-      <div className="space-y-3">
-        <Link href="/dashboard/platforms" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft className="h-3.5 w-3.5" />{t("detail.back")}
-        </Link>
-        <div className="flex items-center gap-3">
-          <div className={`h-11 w-11 rounded-xl flex items-center justify-center ${style.icon}`}>
-            <PlatformLogo platform={platform} size={24} />
-          </div>
-          <h2 className="text-2xl font-bold tracking-tight">{PLATFORMS[platform].label}</h2>
-        </div>
-      </div>
+    <div className="space-y-5">
+      <Link href="/dashboard/platforms" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <ArrowLeft className="h-3.5 w-3.5" />{t("detail.back")}
+      </Link>
 
-      {/* ── Bölüm: Kaynak profil (kullanıcının verisi) ───────────────── */}
-      {profile && (
-        <section className="space-y-3">
-          <h3 className="text-sm font-semibold flex items-center gap-2">
-            <User className="h-4 w-4 text-muted-foreground" />{t("detail.sourceProfileSection")}
-          </h3>
-          <Card className={`shadow-sm overflow-hidden ${ELEVATED}`}>
-            <CardContent className="pt-6 space-y-3">
-              <div className="flex items-start gap-3.5">
-                {profile.avatarUrl ? (
-                  // İçe aktarmadan gelen dış görsel — next/image remotePatterns'a gerek kalmasın.
+      {/* ── HERO: platformdaki public profil verisi (en üstte, büyük) ── */}
+      <section className={`pd-in relative overflow-hidden rounded-3xl border border-border bg-card bg-gradient-to-br ${style.hero}`}>
+        <div className="p-5 sm:p-7 space-y-5">
+          {/* Üst şerit: platform kimliği + bağlantı durumu + yenile */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className={`h-9 w-9 rounded-xl flex items-center justify-center ${style.icon}`}>
+                <PlatformLogo platform={platform} size={20} />
+              </div>
+              <h2 className="text-lg font-bold tracking-tight">{PLATFORMS[platform].label}</h2>
+              {saved ? (
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${style.badge}`}>{tc("connected")}</span>
+              ) : (
+                <span className="text-[10px] text-muted-foreground/60">{tc("notConnected")}</span>
+              )}
+            </div>
+            {platformProfile && (canFetch ? (
+              <Button size="sm" variant="outline" onClick={syncPlatformProfile} disabled={syncing} className="gap-1.5 h-8 text-xs bg-card/70">
+                <RefreshCw className={`h-3.5 w-3.5 ${syncing ? "animate-spin" : ""}`} />
+                {syncing ? t("detail.syncing") : t("detail.syncRefresh")}
+              </Button>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/70">
+                <Puzzle className="h-3.5 w-3.5" />{t("detail.syncExtensionUpdated")}
+              </span>
+            ))}
+          </div>
+
+          {syncError && (
+            <div className="flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 shrink-0" />{syncError}
+            </div>
+          )}
+
+          {platformProfile ? (
+            <>
+              <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
+                {platformProfile.avatar_url ? (
+                  // Platformdan gelen dış görsel — next/image remotePatterns'a gerek kalmasın.
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={profile.avatarUrl}
-                    alt={t("detail.sourceProfileSection")}
-                    className="h-14 w-14 rounded-full object-cover ring-2 ring-[#00F0FF]/30 shrink-0"
+                    src={platformProfile.avatar_url}
+                    alt={PLATFORMS[platform].label}
+                    className={`h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover ring-4 ${style.ring} shadow-xl shrink-0`}
                   />
                 ) : (
-                  <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center shrink-0">
-                    <User className="h-6 w-6 text-muted-foreground/40" />
+                  <div className={`h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-card flex items-center justify-center ring-4 ${style.ring} shrink-0`}>
+                    <PlatformLogo platform={platform} size={34} />
                   </div>
                 )}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-bold leading-snug">{profile.headline}</p>
-                    <Link
-                      href="/dashboard/profile"
-                      className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
-                    >
-                      <Pencil className="h-3 w-3" />{t("detail.editProfile")}
-                    </Link>
-                  </div>
-                  {profile.summary && (
-                    <p className="text-xs text-muted-foreground leading-relaxed mt-1 line-clamp-3">{profile.summary}</p>
+                <div className="min-w-0 flex-1 space-y-2">
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight leading-tight">
+                    {platformProfile.headline}
+                  </h3>
+                  {platformProfile.summary && (
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 max-w-3xl whitespace-pre-wrap">{platformProfile.summary}</p>
                   )}
+                  <p className="text-[11px] text-muted-foreground/70">
+                    {t("detail.syncedAt", { date: new Date(platformProfile.fetched_at).toLocaleString(locale) })}
+                  </p>
                 </div>
               </div>
-              {profile.skills.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {profile.skills.slice(0, 12).map((s) => (
-                    <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{s}</span>
+
+              {platformProfile.skills.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {platformProfile.skills.slice(0, 14).map((s, i) => (
+                    <span
+                      key={s}
+                      className="pd-chip rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-semibold"
+                      style={{ animationDelay: `${120 + i * 45}ms` }}
+                    >
+                      {s}
+                    </span>
                   ))}
-                  {profile.skills.length > 12 && (
-                    <span className="text-[11px] text-muted-foreground/60 self-center">+{profile.skills.length - 12}</span>
+                  {platformProfile.skills.length > 14 && (
+                    <span className="text-xs text-muted-foreground/60 self-center">+{platformProfile.skills.length - 14}</span>
                   )}
                 </div>
               )}
-              {profile.portfolio.length > 0 && (
-                <div className="flex gap-2">
-                  {profile.portfolio.slice(0, 5).map((item, i) =>
+
+              {platformProfile.portfolio.length > 0 && (
+                <div className="flex flex-wrap gap-2.5">
+                  {platformProfile.portfolio.slice(0, 8).map((item, i) =>
                     item.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -186,79 +210,181 @@ export function PlatformDetailTab({
                         src={item.imageUrl}
                         alt={item.title}
                         title={item.title}
-                        className="h-14 w-14 rounded-lg object-cover border border-border"
+                        className="pd-chip h-20 w-20 sm:h-24 sm:w-24 rounded-xl object-cover border border-border transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+                        style={{ animationDelay: `${240 + i * 60}ms` }}
                       />
                     ) : null,
                   )}
                 </div>
               )}
-              <p className="text-[11px] text-muted-foreground/70 border-t border-border pt-2.5">{t("detail.sourceProfileHint")}</p>
+            </>
+          ) : (
+            <div className="flex flex-col items-center py-8 text-center">
+              {canFetch ? (
+                <>
+                  <div className="h-16 w-16 rounded-2xl bg-card/70 border border-border flex items-center justify-center mb-3">
+                    <Download className="h-7 w-7 text-muted-foreground/50" />
+                  </div>
+                  <p className="text-sm text-muted-foreground max-w-md">
+                    {saved
+                      ? t("detail.syncEmptyHint", { platform: PLATFORMS[platform].label })
+                      : t("detail.syncNoUrlHint")}
+                  </p>
+                  <Button onClick={syncPlatformProfile} disabled={!saved || syncing} className="mt-4 gap-2">
+                    <Download className="h-4 w-4" />
+                    {syncing ? t("detail.syncing") : t("detail.syncFetch")}
+                  </Button>
+                </>
+              ) : isExtensionOnly ? (
+                <>
+                  <div className="h-16 w-16 rounded-2xl bg-card/70 border border-border flex items-center justify-center mb-3">
+                    <Puzzle className="h-7 w-7 text-muted-foreground/50" />
+                  </div>
+                  <p className="text-sm text-muted-foreground max-w-md">
+                    {t("detail.syncExtensionHint", { platform: PLATFORMS[platform].label })}
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground max-w-md">
+                  {t("detail.noPublicData", { platform: PLATFORMS[platform].label })}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── Uyarlanmış + Çekirdek profil yan yana ────────────────────── */}
+      <div className={`grid gap-5 ${profile ? "lg:grid-cols-2" : ""}`}>
+        <section className="pd-in space-y-3" style={{ animationDelay: "90ms" }}>
+          <h3 className="text-sm font-semibold flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-[#00F0FF]" />{t("detail.profileSection")}
+          </h3>
+          {!profileSaved && (
+            <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+              <AlertCircle className="h-4 w-4 shrink-0" />{ta("saveProfileFirst")}
+            </div>
+          )}
+          {adaptError && (
+            <div className="flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 shrink-0" />{adaptError}
+            </div>
+          )}
+          <Card className={`shadow-sm overflow-hidden ${ELEVATED} ${style.accent}`}>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm text-muted-foreground">{t("detail.profileHint")}</p>
+                <Button size="sm" variant={adaptResult ? "outline" : "default"}
+                  onClick={() => adapt(platform)} disabled={adapting === platform || !profileSaved}
+                  className="gap-1.5 h-7 text-xs shrink-0">
+                  <Sparkles className="h-3 w-3" />
+                  {adapting === platform ? ta("adapting") : adaptResult ? ta("refresh") : ta("adaptAction")}
+                  <CreditCost kind="adaptation" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {adaptResult ? (
+                <div className="space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-semibold leading-snug">{adaptResult.headline}</p>
+                    <CopyButton text={`${adaptResult.headline}\n\n${adaptResult.body}`} />
+                  </div>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{adaptResult.body}</p>
+                </div>
+              ) : (
+                <div className="rounded-lg bg-muted/50 border border-dashed p-4 text-center space-y-2.5">
+                  <p className="text-xs text-muted-foreground">
+                    {profileSaved ? ta("emptyState", { platform: PLATFORMS[platform].label }) : ta("saveProfileFirst")}
+                  </p>
+                  {profileSaved ? (
+                    <Button size="sm" onClick={() => adapt(platform)} disabled={adapting === platform} className="gap-1.5 h-7 text-xs">
+                      <Sparkles className="h-3 w-3" />
+                      {adapting === platform ? ta("adapting") : ta("adaptAction")}
+                      <CreditCost kind="adaptation" />
+                    </Button>
+                  ) : (
+                    <Button asChild size="sm" className="gap-1.5 h-7 text-xs">
+                      <Link href="/dashboard/import">{t("detail.setupProfileCta")}</Link>
+                    </Button>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </section>
-      )}
 
-      {/* ── Bölüm: Uyarlanmış profil ─────────────────────────────────── */}
-      <section className="space-y-3">
-        <h3 className="text-sm font-semibold flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-[#00F0FF]" />{t("detail.profileSection")}
-        </h3>
-        {!profileSaved && (
-          <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
-            <AlertCircle className="h-4 w-4 shrink-0" />{ta("saveProfileFirst")}
-          </div>
-        )}
-        {adaptError && (
-          <div className="flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
-            <AlertCircle className="h-4 w-4 shrink-0" />{adaptError}
-          </div>
-        )}
-        <Card className={`shadow-sm overflow-hidden ${ELEVATED} ${style.accent}`}>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-sm text-muted-foreground">{t("detail.profileHint")}</p>
-              <Button size="sm" variant={adaptResult ? "outline" : "default"}
-                onClick={() => adapt(platform)} disabled={adapting === platform || !profileSaved}
-                className="gap-1.5 h-7 text-xs shrink-0">
-                <Sparkles className="h-3 w-3" />
-                {adapting === platform ? ta("adapting") : adaptResult ? ta("refresh") : ta("adaptAction")}
-                <CreditCost kind="adaptation" />
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {adaptResult ? (
-              <div className="space-y-2.5">
-                <div className="flex items-start justify-between gap-2">
-                  <p className="text-sm font-semibold leading-snug">{adaptResult.headline}</p>
-                  <CopyButton text={`${adaptResult.headline}\n\n${adaptResult.body}`} />
+        {profile && (
+          <section className="pd-in space-y-3" style={{ animationDelay: "150ms" }}>
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              <User className="h-4 w-4 text-muted-foreground" />{t("detail.sourceProfileSection")}
+            </h3>
+            <Card className={`shadow-sm overflow-hidden ${ELEVATED}`}>
+              <CardContent className="pt-6 space-y-3">
+                <div className="flex items-start gap-3.5">
+                  {profile.avatarUrl ? (
+                    // İçe aktarmadan gelen dış görsel — next/image remotePatterns'a gerek kalmasın.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={profile.avatarUrl}
+                      alt={t("detail.sourceProfileSection")}
+                      className="h-14 w-14 rounded-full object-cover ring-2 ring-[#00F0FF]/30 shrink-0"
+                    />
+                  ) : (
+                    <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center shrink-0">
+                      <User className="h-6 w-6 text-muted-foreground/40" />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-bold leading-snug">{profile.headline}</p>
+                      <Link
+                        href="/dashboard/profile"
+                        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                      >
+                        <Pencil className="h-3 w-3" />{t("detail.editProfile")}
+                      </Link>
+                    </div>
+                    {profile.summary && (
+                      <p className="text-xs text-muted-foreground leading-relaxed mt-1 line-clamp-3">{profile.summary}</p>
+                    )}
+                  </div>
                 </div>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{adaptResult.body}</p>
-              </div>
-            ) : (
-              <div className="rounded-lg bg-muted/50 border border-dashed p-4 text-center space-y-2.5">
-                <p className="text-xs text-muted-foreground">
-                  {profileSaved ? ta("emptyState", { platform: PLATFORMS[platform].label }) : ta("saveProfileFirst")}
-                </p>
-                {profileSaved ? (
-                  <Button size="sm" onClick={() => adapt(platform)} disabled={adapting === platform} className="gap-1.5 h-7 text-xs">
-                    <Sparkles className="h-3 w-3" />
-                    {adapting === platform ? ta("adapting") : ta("adaptAction")}
-                    <CreditCost kind="adaptation" />
-                  </Button>
-                ) : (
-                  <Button asChild size="sm" className="gap-1.5 h-7 text-xs">
-                    <Link href="/dashboard/import">{t("detail.setupProfileCta")}</Link>
-                  </Button>
+                {profile.skills.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {profile.skills.slice(0, 12).map((s) => (
+                      <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{s}</span>
+                    ))}
+                    {profile.skills.length > 12 && (
+                      <span className="text-[11px] text-muted-foreground/60 self-center">+{profile.skills.length - 12}</span>
+                    )}
+                  </div>
                 )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </section>
+                {profile.portfolio.length > 0 && (
+                  <div className="flex gap-2">
+                    {profile.portfolio.slice(0, 5).map((item, i) =>
+                      item.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          key={i}
+                          src={item.imageUrl}
+                          alt={item.title}
+                          title={item.title}
+                          className="h-14 w-14 rounded-lg object-cover border border-border"
+                        />
+                      ) : null,
+                    )}
+                  </div>
+                )}
+                <p className="text-[11px] text-muted-foreground/70 border-t border-border pt-2.5">{t("detail.sourceProfileHint")}</p>
+              </CardContent>
+            </Card>
+          </section>
+        )}
+      </div>
 
       {/* ── Bölüm: Bağlantı ──────────────────────────────────────────── */}
-      <section className="space-y-3">
+      <section className="pd-in space-y-3" style={{ animationDelay: "210ms" }}>
         <h3 className="text-sm font-semibold flex items-center gap-2">
           <ExternalLink className="h-4 w-4 text-muted-foreground" />{t("detail.connectionSection")}
         </h3>
@@ -315,115 +441,8 @@ export function PlatformDetailTab({
         </Card>
       </section>
 
-      {/* ── Bölüm: Platformdaki profil verisi ────────────────────────── */}
-      {(canFetch || isExtensionOnly) && (
-        <section className="space-y-3">
-          <h3 className="text-sm font-semibold flex items-center gap-2">
-            <Download className="h-4 w-4 text-muted-foreground" />
-            {t("detail.platformProfileSection", { platform: PLATFORMS[platform].label })}
-          </h3>
-          {syncError && (
-            <div className="flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4 shrink-0" />{syncError}
-            </div>
-          )}
-          {platformProfile ? (
-            <Card className={`shadow-sm overflow-hidden ${ELEVATED}`}>
-              <CardContent className="pt-6 space-y-3">
-                <div className="flex items-start gap-3.5">
-                  {platformProfile.avatar_url ? (
-                    // Platformdan gelen dış görsel — next/image remotePatterns'a gerek kalmasın.
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={platformProfile.avatar_url}
-                      alt={PLATFORMS[platform].label}
-                      className="h-14 w-14 rounded-full object-cover ring-2 ring-[#00F0FF]/30 shrink-0"
-                    />
-                  ) : (
-                    <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center shrink-0">
-                      <PlatformLogo platform={platform} size={22} />
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <p className="font-bold leading-snug">{platformProfile.headline}</p>
-                    {platformProfile.summary && (
-                      <p className="text-xs text-muted-foreground leading-relaxed mt-1 line-clamp-4 whitespace-pre-wrap">{platformProfile.summary}</p>
-                    )}
-                  </div>
-                </div>
-                {platformProfile.skills.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {platformProfile.skills.slice(0, 12).map((s) => (
-                      <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{s}</span>
-                    ))}
-                    {platformProfile.skills.length > 12 && (
-                      <span className="text-[11px] text-muted-foreground/60 self-center">+{platformProfile.skills.length - 12}</span>
-                    )}
-                  </div>
-                )}
-                {platformProfile.portfolio.length > 0 && (
-                  <div className="flex gap-2 flex-wrap">
-                    {platformProfile.portfolio.slice(0, 6).map((item, i) =>
-                      item.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          key={i}
-                          src={item.imageUrl}
-                          alt={item.title}
-                          title={item.title}
-                          className="h-14 w-14 rounded-lg object-cover border border-border"
-                        />
-                      ) : null,
-                    )}
-                  </div>
-                )}
-                <div className="flex items-center justify-between gap-2 border-t border-border pt-2.5">
-                  <p className="text-[11px] text-muted-foreground/70">
-                    {t("detail.syncedAt", { date: new Date(platformProfile.fetched_at).toLocaleString(locale) })}
-                  </p>
-                  {canFetch ? (
-                    <Button size="sm" variant="outline" onClick={syncPlatformProfile} disabled={syncing} className="gap-1.5 h-7 text-xs">
-                      <RefreshCw className={`h-3 w-3 ${syncing ? "animate-spin" : ""}`} />
-                      {syncing ? t("detail.syncing") : t("detail.syncRefresh")}
-                    </Button>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/70">
-                      <Puzzle className="h-3 w-3" />{t("detail.syncExtensionUpdated")}
-                    </span>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="flex flex-col items-center rounded-2xl border border-dashed px-4 py-8 text-center">
-              {canFetch ? (
-                <>
-                  <Download className="h-6 w-6 text-muted-foreground/40 mb-2" />
-                  <p className="text-xs text-muted-foreground max-w-sm">
-                    {saved
-                      ? t("detail.syncEmptyHint", { platform: PLATFORMS[platform].label })
-                      : t("detail.syncNoUrlHint")}
-                  </p>
-                  <Button size="sm" onClick={syncPlatformProfile} disabled={!saved || syncing} className="mt-3 gap-1.5 h-7 text-xs">
-                    <Download className="h-3 w-3" />
-                    {syncing ? t("detail.syncing") : t("detail.syncFetch")}
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Puzzle className="h-6 w-6 text-muted-foreground/40 mb-2" />
-                  <p className="text-xs text-muted-foreground max-w-sm">
-                    {t("detail.syncExtensionHint", { platform: PLATFORMS[platform].label })}
-                  </p>
-                </>
-              )}
-            </div>
-          )}
-        </section>
-      )}
-
       {/* ── Bölüm: Eşleşen işler ─────────────────────────────────────── */}
-      <section className="space-y-3">
+      <section className="pd-in space-y-3" style={{ animationDelay: "270ms" }}>
         <h3 className="text-sm font-semibold flex items-center gap-2">
           <Briefcase className="h-4 w-4 text-muted-foreground" />{t("detail.jobsSection")}
         </h3>
@@ -495,7 +514,7 @@ export function PlatformDetailTab({
       </section>
 
       {/* ── Bölüm: Teklif geçmişi + ipuçları ─────────────────────────── */}
-      <section className="space-y-3">
+      <section className="pd-in space-y-3" style={{ animationDelay: "330ms" }}>
         <h3 className="text-sm font-semibold flex items-center gap-2">
           <Clock className="h-4 w-4 text-muted-foreground" />{t("detail.proposalsSection")}
         </h3>

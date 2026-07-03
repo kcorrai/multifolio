@@ -53,12 +53,12 @@ export const STATUS_DOT: Record<JobStatus, string> = {
   interview: "bg-amber-500", offer: "bg-green-500", rejected: "bg-red-500",
 };
 
-export const PLATFORM_STYLES: Record<PlatformId, { accent: string; icon: string; badge: string }> = {
-  linkedin: { accent: "border-t-4 border-t-blue-500",    icon: "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400",       badge: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"     },
-  upwork:   { accent: "border-t-4 border-t-green-500",   icon: "bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400",    badge: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300"  },
-  fiverr:   { accent: "border-t-4 border-t-emerald-500", icon: "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400", badge: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" },
-  bionluk:  { accent: "border-t-4 border-t-violet-500",  icon: "bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400", badge: "bg-violet-50 text-violet-700 dark:bg-violet-950 dark:text-violet-300" },
-  armut:    { accent: "border-t-4 border-t-orange-500",  icon: "bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400", badge: "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300" },
+export const PLATFORM_STYLES: Record<PlatformId, { accent: string; icon: string; badge: string; hero: string; ring: string }> = {
+  linkedin: { accent: "border-t-4 border-t-blue-500",    icon: "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400",       badge: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300",     hero: "from-blue-500/20 via-blue-500/[0.06] to-transparent",       ring: "ring-blue-500/50"    },
+  upwork:   { accent: "border-t-4 border-t-green-500",   icon: "bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400",    badge: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",  hero: "from-green-500/20 via-green-500/[0.06] to-transparent",     ring: "ring-green-500/50"   },
+  fiverr:   { accent: "border-t-4 border-t-emerald-500", icon: "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400", badge: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", hero: "from-emerald-500/20 via-emerald-500/[0.06] to-transparent", ring: "ring-emerald-500/50" },
+  bionluk:  { accent: "border-t-4 border-t-violet-500",  icon: "bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400", badge: "bg-violet-50 text-violet-700 dark:bg-violet-950 dark:text-violet-300", hero: "from-violet-500/20 via-violet-500/[0.06] to-transparent",   ring: "ring-violet-500/50"  },
+  armut:    { accent: "border-t-4 border-t-orange-500",  icon: "bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400", badge: "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300", hero: "from-orange-500/20 via-orange-500/[0.06] to-transparent",   ring: "ring-orange-500/50"  },
 };
 
 export const PLATFORM_URL_PLACEHOLDERS: Record<PlatformId, string> = {

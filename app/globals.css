@@ -333,6 +333,23 @@
 @keyframes caretBlink { 50% { opacity: 0; } }
 .demo-caret { animation: caretBlink 1s step-end infinite; }
 
+/* ─── Platform detay: hero + bölüm giriş animasyonları ─────────── */
+/* .pd-in bölümlere mount'ta aşağıdan-yukarı giriş verir (inline
+   animation-delay ile kademelendirilir); .pd-chip beceri çipleri ve
+   portfolyo görselleri için daha kısa, hafif ölçekli giriştir.
+   Hareket azaltma tercihi aşağıdaki global blokla otomatik kapanır. */
+@keyframes pdIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.pd-in { animation: pdIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+
+@keyframes pdChipIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.95); }
+  to   { opacity: 1; transform: none; }
+}
+.pd-chip { animation: pdChipIn 0.35s ease-out backwards; }
+
 /* ─── Erişilebilirlik: hareket azaltma tercihi ────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
