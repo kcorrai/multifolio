@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Sparkles, X, Check, AlertCircle, BarChart3,
-  Wallet, Zap, Briefcase, ShoppingCart,
+  Wallet, Zap, Briefcase, ShoppingCart, ArrowRight,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -98,6 +98,27 @@ export function OverviewTab({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Sıradaki adım: kurulmuş ama henüz iş takip etmeyen kullanıcıyı çekirdek
+          aksiyona (iş feed'i) yönlendirir. Onboarding banner'ı profilsizde göründüğü
+          için burada çakışma yok (bu yalnız profileSaved'da). */}
+      {profileSaved && jobs.length === 0 && (
+        <Link
+          href="/dashboard/jobs"
+          className="group flex items-center gap-4 rounded-2xl border border-[#00F0FF]/25 bg-[#00F0FF]/5 p-5 hover:border-[#00F0FF]/40 transition-colors"
+        >
+          <div className="h-11 w-11 shrink-0 rounded-xl bg-[#00F0FF]/10 flex items-center justify-center">
+            <Briefcase className="h-5 w-5 text-[#00F0FF]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold">{t("nextStepTitle")}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("nextStepBody")}</p>
+          </div>
+          <span className="shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold text-[#00F0FF]">
+            {t("nextStepCta")}<ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </span>
+        </Link>
       )}
 
       {/* Section title */}
