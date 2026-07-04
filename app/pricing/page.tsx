@@ -31,6 +31,7 @@ export default async function PricingPage() {
   const isLoggedIn = !!user;
 
   const t = await getTranslations("pricingPage");
+  const tc = await getTranslations("common");
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
@@ -114,7 +115,7 @@ export default async function PricingPage() {
                 href={isLoggedIn ? "/dashboard" : "/signup"}
                 className="anim-neon-pulse inline-flex items-center h-12 px-8 rounded-xl text-base font-bold bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8] transition-colors mt-2"
               >
-                {t("ctaButton")} <ArrowRight className="ml-2 h-4 w-4" />
+                {isLoggedIn ? tc("goToDashboard") : t("ctaButton")} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
           </div>

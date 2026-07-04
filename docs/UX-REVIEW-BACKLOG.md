@@ -31,7 +31,13 @@
 
 - [x] **Kredi → değer eşlemesi** (2026-07-04, `01fa26b`): pricing kartlarına "≈ N uyarlama veya N teklif" eklendi.
 
-- [ ] **Header auth durumu tutarsız / şüpheli** — kod yolu tüm sayfalarda aynı; muhtemelen Next `<Link>` prefetch/router-cache staleness. Elle oturum-expiry testi gerekli (bu turda yapılmadı).
+- [x] **Header auth durumu tutarsız / şüpheli** — ✅ CANLI E2E İLE DOĞRULANDI (2026-07-04, Playwright):
+  logged-out `/`+`/pricing` cache ısıtıldı → login (`router.push`+`router.refresh`) → geri tuşuyla
+  cache'lenmiş sayfaya dönüldü → header + sayfa CTA'ları TAZE logged-in ("Dashboard") render edildi.
+  **Staleness bug'ı YOK**: `router.refresh()` router cache'i doğru geçersiz kılıyor; server render'lar her
+  zaman tutarlı. Logout = native form POST = tam yenileme = daima doğru. BONUS FIX: `/pricing` alt CTA +
+  plan kartı CTA'ları login iken href=`/dashboard` iken label statik "Ücretsiz başla" gösteriyordu →
+  `isLoggedIn ? common.goToDashboard : ...` (landing finalCta deseni; `pricing-section.tsx` + `pricing/page.tsx`).
 
 - [x] **Geliştirici jargonu** (2026-07-04, `01fa26b`): RLS/Zod/DOMPurify rozetleri → "Şifreli/Sana özel/Varsayılan gizli"; secure açıklaması da fayda diline.
 

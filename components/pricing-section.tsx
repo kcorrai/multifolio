@@ -15,6 +15,7 @@ const plans = [
 /* ─── Paylaşılan fiyatlandırma bölümü (landing + /pricing) ───────── */
 export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = await getTranslations("landing");
+  const tc = await getTranslations("common");
   const locale = await getLocale();
   const currency: "usd" | "try" = locale === "tr" ? "try" : "usd";
 
@@ -78,7 +79,7 @@ export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: bool
                   ? "bg-[#00F0FF] text-[#090A0F] hover:bg-[#00d8e8]"
                   : "border border-violet-500/40 text-violet-400 hover:bg-violet-500/10"}`}
               >
-                {t("pricing.cta")}
+                {isLoggedIn ? tc("goToDashboard") : t("pricing.cta")}
               </Link>
             </div>
           </ScrollReveal>
