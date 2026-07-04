@@ -697,6 +697,8 @@
     "importNoText": "Dosyadan metin okuyamadık. Bunun yerine profil metnini kopyalayıp yapıştır.",
     "importNothingFound": "Bu içerik bir profile benzemiyor. Profil veya CV metnini yapıştır.",
     "importRateLimited": "Çok fazla içe aktarma denemesi. Bir saat sonra tekrar dene.",
+    "analyzeRateLimited": "Çok fazla analiz denemesi. Bir saat sonra tekrar dene — ya da daha yüksek limit için kayıt ol.",
+    "analyzeNoContent": "Bu girdiden bir profil okuyamadık. Profil metnini yapıştırmayı dene.",
     "translateRateLimited": "Çok fazla çeviri isteği. Bir saat sonra tekrar dene.",
     "syncNoConnection": "Önce Bağlantı bölümünde profil URL'ini kaydet.",
     "syncUnsupported": "Bu platform yalnız tarayıcı uzantısıyla içe aktarılabilir."

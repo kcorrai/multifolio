@@ -697,6 +697,8 @@
     "importNoText": "We couldn't read any text from that file. Copy your profile text and paste it instead.",
     "importNothingFound": "That content doesn't look like a profile. Paste your profile or CV text.",
     "importRateLimited": "Too many import attempts. Please try again in an hour.",
+    "analyzeRateLimited": "Too many analyses. Please try again in an hour — or sign up for a higher limit.",
+    "analyzeNoContent": "We couldn't read a profile from that input. Try pasting your profile text instead.",
     "translateRateLimited": "Too many translation requests. Please try again in an hour.",
     "syncNoConnection": "Save your profile URL in the Connection section first.",
     "syncUnsupported": "This platform can only be imported with the browser extension."
