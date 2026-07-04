@@ -276,6 +276,22 @@
       "body": "{credits, plural, =0 {Hiç kredin kalmadı} one {# kredin kaldı} other {# kredin kaldı}} — AI aksiyonları kredi ister.",
       "cta": "Kredi al",
       "dismiss": "Kapat"
+    },
+    "profileStrength": {
+      "title": "Profil gücü",
+      "percent": "%{percent}",
+      "complete": "Profilin tamam — harika iş!",
+      "hint": "Tam profiller çok daha fazla fark edilir. Şu adımları tamamla:",
+      "items": {
+        "headline": "Daha güçlü bir başlık yaz",
+        "summary": "Özetini genişlet",
+        "skills": "En az 5 beceri ekle",
+        "avatar": "Profil fotoğrafı ekle (içe aktar)",
+        "portfolio": "Portfolyo öğesi ekle (içe aktar)",
+        "platformConnected": "Bir platform bağla",
+        "platformDataFetched": "Platform verini çek",
+        "adapted": "Profilini bir platforma uyarla"
+      }
     }
   },
   "jobs": {

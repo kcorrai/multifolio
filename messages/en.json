@@ -276,6 +276,22 @@
       "body": "{credits, plural, =0 {No credits left} one {# credit left} other {# credits left}} — AI actions need credits.",
       "cta": "Buy credits",
       "dismiss": "Dismiss"
+    },
+    "profileStrength": {
+      "title": "Profile strength",
+      "percent": "{percent}%",
+      "complete": "Your profile is complete — great work!",
+      "hint": "Complete profiles get noticed far more often. Finish these steps:",
+      "items": {
+        "headline": "Write a stronger headline",
+        "summary": "Expand your summary",
+        "skills": "Add at least 5 skills",
+        "avatar": "Add a profile photo (import)",
+        "portfolio": "Add portfolio items (import)",
+        "platformConnected": "Connect a platform",
+        "platformDataFetched": "Fetch your platform data",
+        "adapted": "Adapt your profile for a platform"
+      }
     }
   },
   "jobs": {

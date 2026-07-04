@@ -16,13 +16,16 @@ import {
   STATUS_DOT, scoreColor, type AnalyticsData, type JobRow,
 } from "./shared";
 import { useDashboard } from "./dashboard-context";
+import { ProfileStrengthCard } from "./profile-strength-card";
+import type { ProfileStrengthResult } from "@/lib/profile-strength";
 
 export function OverviewTab({
-  profileSaved, jobs, analytics,
+  profileSaved, jobs, analytics, strength,
 }: {
   profileSaved: boolean;
   jobs: JobRow[];
   analytics: AnalyticsData;
+  strength: ProfileStrengthResult;
 }) {
   const t = useTranslations("dashboard.overview");
   const ta = useTranslations("analytics");
@@ -118,6 +121,9 @@ export function OverviewTab({
         <StatCard icon={Briefcase} tint={TINT_VIOLET} label={t("jobs")} value={jobs.length}
           sub={t("jobsTracked")} />
       </div>
+
+      {/* Profil gücü: kalıcı checklist kartı (onboarding banner'ından bağımsız) */}
+      <ProfileStrengthCard strength={strength} />
 
       {/* Tür bazlı kredi kullanımı */}
       {Object.keys(analytics.byKind).length > 0 && (
