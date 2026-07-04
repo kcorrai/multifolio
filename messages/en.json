@@ -15,6 +15,7 @@
       "features": "Features",
       "howItWorks": "How it works",
       "analyze": "Free profile check",
+      "earnings": "Earnings calculator",
       "pricing": "Pricing"
     },
     "cta": {
@@ -747,6 +748,41 @@
     "retentionBody": "Imported drafts are stored in your account until you review them (drafts older than one hour are ignored and overwritten by the next import). Saved profile data lives in your Multifolio account and can be edited or deleted by you at any time. Deleting your account removes all of it.",
     "contactTitle": "Contact",
     "contactBody": "Questions about this policy: yanlizcakaan@gmail.com"
+  },
+  "earnings": {
+    "metaTitle": "Freelance Net Earnings Calculator — Multifolio",
+    "metaDescription": "How much do you actually take home? Calculate your net freelance income after platform fees, transfer costs and taxes — Upwork, Fiverr, Bionluk.",
+    "heroEyebrow": "Free tool",
+    "heroTitle": "How much do you actually take home?",
+    "heroSubtitle": "Enter a gross amount and see what's left after platform commission, transfer fees and tax — instantly, no sign-up.",
+    "platform": "Platform",
+    "platformCustom": "Custom",
+    "gross": "Gross amount",
+    "currency": "Currency",
+    "platformFee": "Platform commission (%)",
+    "transferMethod": "Payout method",
+    "method": {
+      "payoneer": "Payoneer",
+      "wise": "Wise",
+      "bank": "Bank transfer",
+      "none": "None / other"
+    },
+    "transferPct": "Transfer fee (%)",
+    "transferFixed": "Fixed fee",
+    "tax": "Tax rate (%)",
+    "taxHint": "Simplified estimate on the remaining amount — pick 0 if you handle tax separately (e.g. young entrepreneur exemption).",
+    "fxRate": "USD → TRY rate (optional)",
+    "fxPlaceholder": "e.g. 40.5",
+    "resultTitle": "Your net take-home",
+    "netPct": "{pct}% of gross stays with you",
+    "rows": {
+      "gross": "Gross",
+      "platformFee": "Platform commission",
+      "transferFee": "Transfer fees",
+      "tax": "Tax",
+      "net": "Net"
+    },
+    "disclaimer": "All rates are editable estimates and can change over time; this is not tax or financial advice. Check current platform and bank fees before deciding."
   },
   "errors": {
     "profileRequired": "You need to create a profile first.",

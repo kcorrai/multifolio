@@ -5,7 +5,7 @@
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
 **Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/{en,tr}.json`) — EN varsayılan, TR opsiyonel; sabit string yazma, `useTranslations`/`getTranslations` kullan (yeni anahtar ekleyince iki katalogu da güncelle). **Kod yorumları Türkçe kalır.** AI çıktı dili UI locale'ine uyar.
-Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Dalga 2 tamamlandı (ücretsiz /analyze aracı + referral kredi programı + profil gücü skoru — 2026-07-04; Dalga 1 aynı gün: sayfalama, exclude keywords, risk rozeti, RemoteOK, iki dilli digest, düşük kredi banner'ı). Sırada: backlog Tier 2 (haftalık özet e-postası, follow-up hatırlatıcı, EN teklifin TR karşılığı, net kazanç hesaplayıcı, portfolyo UI geri getirme) / Iyzico. Migration'lar 0024 dahil.**
+Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Dalga 3 tamamlandı (Tier 2 — haftalık özet e-postası, follow-up hatırlatıcı + AI takip mesajı, platform dilinde teklif + TR karşılığı toggle, /earnings net kazanç hesaplayıcı — 2026-07-04). Sırada: Tier 2 kalanlar (hesap sağlığı taraması, portfolyo UI geri getirme) / Iyzico. Migration'lar 0026 dahil (0025-0026 prod push bekliyor); haftalık digest cron'u (cron-job.org) kurulacak.**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
@@ -43,6 +43,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/internal/scrape` — POST: dış cron (cron-job.org) `x-cron-secret` ile tetikler; Remotive+Arbeitnow ücretsiz API'lerinden çekip `job_pool`'a upsert (Alt-proje B canlı çekme).
   - `app/api/internal/weekly-digest` — POST: dış cron (haftada 1, AYNI `x-cron-secret`) tetikler; son 7 günün kullanıcı aktivitesi + feed eşleşmelerini kullanıcı başına tek özet e-postada gönderir (motor `lib/digest/weekly.ts`, opt-out `user_settings.weekly_digest`).
   - `app/api/settings` — GET/PATCH: kullanıcı ayarları (`user_settings`; satır yoksa varsayılan `weeklyDigest:true`). Toggle UI: `components/dashboard/weekly-digest-toggle.tsx` (Overview altında).
+- `app/earnings/page.tsx` — HERKESE AÇIK net kazanç hesaplayıcı ("Elime net ne geçer?", SEO aracı — /analyze deseni): tamamen istemcide, AI/API/kredi yok. Saf çekirdek `lib/earnings/calculator.ts` (`computeNetEarnings` + varsayılan oran sabitleri), form `components/earnings/earnings-calculator.tsx`. Landing nav'da bağlantı.
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `openai-client.ts` (OpenAI gpt-4o-mini istemcisi),
   `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `PROPOSAL_GUIDANCE`),

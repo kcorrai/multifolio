@@ -15,6 +15,7 @@
       "features": "Özellikler",
       "howItWorks": "Nasıl Çalışır",
       "analyze": "Ücretsiz Profil Analizi",
+      "earnings": "Net Kazanç Hesaplayıcı",
       "pricing": "Fiyat"
     },
     "cta": {
@@ -747,6 +748,41 @@
     "retentionBody": "Aktarılan taslaklar sen inceleyene kadar hesabında tutulur (bir saatten eski taslaklar yok sayılır ve sonraki aktarma üzerine yazar). Kaydedilen profil verisi Multifolio hesabında yaşar; istediğin zaman düzenleyebilir veya silebilirsin. Hesabını silmek tüm veriyi kaldırır.",
     "contactTitle": "İletişim",
     "contactBody": "Bu politikayla ilgili sorular: yanlizcakaan@gmail.com"
+  },
+  "earnings": {
+    "metaTitle": "Freelance Net Kazanç Hesaplayıcı — Multifolio",
+    "metaDescription": "Elime net ne geçer? Platform komisyonu, transfer ücreti ve vergi sonrası net freelance kazancını hesapla — Upwork, Fiverr, Bionluk.",
+    "heroEyebrow": "Ücretsiz araç",
+    "heroTitle": "Elime net ne geçer?",
+    "heroSubtitle": "Brüt tutarı gir; platform komisyonu, transfer kesintisi ve vergi sonrası kalanı anında gör — kayıt gerekmez.",
+    "platform": "Platform",
+    "platformCustom": "Özel",
+    "gross": "Brüt tutar",
+    "currency": "Para birimi",
+    "platformFee": "Platform komisyonu (%)",
+    "transferMethod": "Para çekme yöntemi",
+    "method": {
+      "payoneer": "Payoneer",
+      "wise": "Wise",
+      "bank": "Banka havalesi",
+      "none": "Yok / diğer"
+    },
+    "transferPct": "Transfer kesintisi (%)",
+    "transferFixed": "Sabit ücret",
+    "tax": "Vergi oranı (%)",
+    "taxHint": "Kalan tutar üzerinden basitleştirilmiş tahmin — vergini ayrı yönetiyorsan (ör. genç girişimci istisnası) 0 seç.",
+    "fxRate": "USD → TRY kuru (opsiyonel)",
+    "fxPlaceholder": "ör. 40,5",
+    "resultTitle": "Eline net geçen",
+    "netPct": "Brütün %{pct}'i sende kalıyor",
+    "rows": {
+      "gross": "Brüt",
+      "platformFee": "Platform komisyonu",
+      "transferFee": "Transfer kesintisi",
+      "tax": "Vergi",
+      "net": "Net"
+    },
+    "disclaimer": "Tüm oranlar düzenlenebilir tahminlerdir ve zamanla değişebilir; bu bir vergi/finans danışmanlığı değildir. Karar vermeden önce güncel platform ve banka ücretlerini kontrol et."
   },
   "errors": {
     "profileRequired": "Önce bir profil oluşturmalısın.",
