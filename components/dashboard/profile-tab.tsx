@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Save, CheckCircle2, AlertCircle, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { ELEVATED, type InitialProfile } from "./shared";
 
 export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile | null }) {
   const t = useTranslations("profile");
+  const router = useRouter();
   const [headline, setHeadline] = useState(initialProfile?.headline ?? "");
   const [summary, setSummary] = useState(initialProfile?.summary ?? "");
   const [skills, setSkills] = useState<string[]>(initialProfile?.skills ?? []);
@@ -32,12 +34,15 @@ export function ProfileTab({ initialProfile }: { initialProfile: InitialProfile 
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ headline, summary, skills }),
     });
+    const body = await res.json().catch(() => null);
     if (!res.ok) {
-      const body = await res.json().catch(() => null);
       setSaveState("error"); setProfileError(body?.error?.message ?? t("saveError"));
       return;
     }
     setSaveState("saved");
+    // İlk profil kaydında referral bonusu verilmiş olabilir → sunucu-taraflı
+    // kredi bakiyesi (layout) tazelensin.
+    if (body?.referralBonus === true) router.refresh();
   }
 
   return (

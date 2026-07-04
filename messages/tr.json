@@ -278,6 +278,11 @@
       "cta": "Kredi al",
       "dismiss": "Kapat"
     },
+    "referral": {
+      "title": "Davet et, kredi kazan",
+      "body": "Linkini paylaş — arkadaşın ilk profilini kaydettiğinde ikiniz de {bonus} kredi kazanırsınız.",
+      "stats": "{invited, plural, =0 {Henüz davet yok} one {# davet} other {# davet}} · {credits} kredi kazanıldı"
+    },
     "profileStrength": {
       "title": "Profil gücü",
       "percent": "%{percent}",

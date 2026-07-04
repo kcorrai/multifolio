@@ -5,10 +5,46 @@
 //   3) auth + RLS        → getUser() ile kimlik; DB erişimi RLS politikalarıyla
 //                          (auth.uid() = user_id) sahibe sınırlı, parametreli sorgu.
 import { NextResponse } from "next/server";
+import type { User } from "@supabase/supabase-js";
 import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { profileInputSchema } from "@/lib/validation/schemas/profile";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
+const REFERRAL_BONUS = 20;
+
+// Referral aktivasyon tetiği: kayıtta ?ref= ile gelen kullanıcı İLK profilini
+// kaydettiğinde iki tarafa da bonus verilir. referrals.referred_id UNIQUE =
+// idempotency (tekrar kayıtta bonus verilmez). Hata İZOLE — profil kaydı
+// asla patlamaz; log Sentry/console'a düşer, sessiz yutulmaz.
+async function maybeGrantReferralBonus(user: User): Promise<boolean> {
+  const referredByCode = (user.user_metadata as { referred_by_code?: unknown })?.referred_by_code;
+  if (typeof referredByCode !== "string" || !referredByCode.trim()) return false; // çoğunluk yolu: sorgusuz çık
+
+  try {
+    const admin = createSupabaseAdminClient();
+    const { data: existing } = await admin
+      .from("referrals").select("id").eq("referred_id", user.id).maybeSingle();
+    if (existing) return false;
+
+    const { data: codeRow } = await admin
+      .from("referral_codes").select("user_id").eq("code", referredByCode.trim()).maybeSingle();
+    if (!codeRow || codeRow.user_id === user.id) return false; // geçersiz kod / self-referral
+
+    const { error: refError } = await admin
+      .from("referrals")
+      .insert({ referrer_id: codeRow.user_id, referred_id: user.id, credited: true });
+    if (refError) return false; // yarışta unique ihlali vb. — bonus verilmez, kayıt etkilenmez
+
+    await admin.rpc("grant_credits", { p_user: codeRow.user_id, p_amount: REFERRAL_BONUS, p_reason: "referral" });
+    await admin.rpc("grant_credits", { p_user: user.id, p_amount: REFERRAL_BONUS, p_reason: "referral" });
+    return true;
+  } catch (err) {
+    console.error("referral bonus verilemedi", { userId: user.id, err });
+    return false;
+  }
+}
 
 // GET /api/profile → oturum sahibinin profilini döner (yoksa null).
 export const GET = withErrorHandler(async () => {
@@ -62,5 +98,8 @@ export const POST = withErrorHandler(async (req) => {
 
   if (error) throw error;
 
-  return NextResponse.json({ profile: data }, { status: 200 });
+  // Referral bonusu ancak profil kaydı BAŞARILI olduktan sonra denenir.
+  const referralBonus = await maybeGrantReferralBonus(user);
+
+  return NextResponse.json({ profile: data, referralBonus }, { status: 200 });
 });

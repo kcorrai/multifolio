@@ -278,6 +278,11 @@
       "cta": "Buy credits",
       "dismiss": "Dismiss"
     },
+    "referral": {
+      "title": "Invite & earn credits",
+      "body": "Share your link — you both get {bonus} credits when your friend saves their first profile.",
+      "stats": "{invited, plural, =0 {No invites yet} one {# invite} other {# invites}} · {credits} credits earned"
+    },
     "profileStrength": {
       "title": "Profile strength",
       "percent": "{percent}%",

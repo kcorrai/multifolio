@@ -17,6 +17,7 @@ import {
 } from "./shared";
 import { useDashboard } from "./dashboard-context";
 import { ProfileStrengthCard } from "./profile-strength-card";
+import { ReferralCard } from "./referral-card";
 import type { ProfileStrengthResult } from "@/lib/profile-strength";
 
 export function OverviewTab({
@@ -122,8 +123,11 @@ export function OverviewTab({
           sub={t("jobsTracked")} />
       </div>
 
-      {/* Profil gücü: kalıcı checklist kartı (onboarding banner'ından bağımsız) */}
-      <ProfileStrengthCard strength={strength} />
+      {/* Profil gücü + davet: kalıcı kartlar (onboarding banner'ından bağımsız) */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ProfileStrengthCard strength={strength} />
+        <ReferralCard />
+      </div>
 
       {/* Tür bazlı kredi kullanımı */}
       {Object.keys(analytics.byKind).length > 0 && (
