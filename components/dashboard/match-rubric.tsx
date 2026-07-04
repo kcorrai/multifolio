@@ -1,9 +1,9 @@
 "use client";
 
-// Şeffaf skor rubriği: karar rozeti + 4 boyutun ağırlıklı bar dökümü.
+// Şeffaf skor rubriği: karar rozeti + 4 boyutun ağırlıklı bar dökümü + risk uyarıları.
 // PoolJobPanel (feed slide-over) ve JobDetailPanel (iş takibi) paylaşır.
 import { useTranslations } from "next-intl";
-import { ThumbsUp, Scale, ThumbsDown } from "lucide-react";
+import { ThumbsUp, Scale, ThumbsDown, AlertTriangle } from "lucide-react";
 import type { JobMatchRubric, MatchVerdict, RubricKey } from "@/lib/validation/schemas/job";
 import { RUBRIC_KEYS } from "@/lib/validation/schemas/job";
 import { RUBRIC_WEIGHTS } from "@/lib/ai/rubric";
@@ -29,6 +29,26 @@ export function VerdictBadge({ verdict }: { verdict: MatchVerdict }) {
       <Icon className="h-3.5 w-3.5" />
       {t(`verdict.${verdict}`)}
     </span>
+  );
+}
+
+/** Sahte/riskli ilan sinyalleri — skoru etkilemez, yalnız uyarı çipleri. Boşsa render etmez. */
+export function RiskBadges({ risks }: { risks: string[] }) {
+  const t = useTranslations("rubric");
+  if (risks.length === 0) return null;
+  return (
+    <div className="space-y-1.5">
+      <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-300">
+        <AlertTriangle className="h-3.5 w-3.5" />{t("risksTitle")}
+      </p>
+      <ul className="space-y-1">
+        {risks.map((risk, i) => (
+          <li key={i} className="rounded-md bg-amber-50 px-2 py-1 text-[11px] leading-snug text-amber-700 ring-1 ring-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:ring-amber-800">
+            {risk}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

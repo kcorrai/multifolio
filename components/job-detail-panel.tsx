@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ProposalModal } from "@/components/proposal-modal";
 import { CreditCost } from "@/components/credit-cost";
-import { MatchRubric, VerdictBadge } from "@/components/dashboard/match-rubric";
+import { MatchRubric, VerdictBadge, RiskBadges } from "@/components/dashboard/match-rubric";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 
 interface JobRow {
@@ -202,6 +202,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                 {matchResult && (
                   <p className="text-[11px] text-muted-foreground leading-relaxed">{matchResult.summary}</p>
                 )}
+                {matchResult?.risks && <RiskBadges risks={matchResult.risks} />}
                 {matchResult?.rubric && <MatchRubric rubric={matchResult.rubric} />}
                 {matchResult && !matchResult.rubric && (
                   /* Rubrik öncesi eski sonuç: rubrikli yeniden analiz butonu (1 kredi). */

@@ -9,7 +9,7 @@ import type { PoolJob } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
 import { poolJobTitle } from "@/lib/feed/filter";
 import { scoreColor, scoreBarColor } from "./shared";
-import { MatchRubric, VerdictBadge } from "./match-rubric";
+import { MatchRubric, VerdictBadge, RiskBadges } from "./match-rubric";
 
 export function PoolJobPanel({
   job, onClose, onScored, onApplied, onCreditsUpdate,
@@ -105,6 +105,7 @@ export function PoolJobPanel({
               <div className={`h-full rounded-full ${scoreBarColor(job.score)}`} style={{ width: `${job.score}%` }} />
             </div>
             {result.summary && <p className="text-sm text-muted-foreground leading-relaxed">{result.summary}</p>}
+            {result.risks && <RiskBadges risks={result.risks} />}
             {result.rubric && <MatchRubric rubric={result.rubric} />}
             {result.strengths.length > 0 && (
               <ul className="text-xs text-muted-foreground list-disc pl-4 space-y-0.5">

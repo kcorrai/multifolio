@@ -37,7 +37,12 @@ const SYSTEM_PROMPT =
   "Toplam skoru SEN HESAPLAMAZSIN; sistem rubrikten türetir. " +
   "Ayrıca öne çıkan güçlü/eksik yönleri öz biçimde raporlar ve ilandan, bir teklifin karşılaması " +
   "gereken en önemli somut gereksinimleri (en çok 7 madde) 'requirements' olarak çıkarırsın; " +
-  "her madde kısa ve eyleme dönük olsun. Nesnel ol; yalnızca verilen bilgiden çıkar.";
+  "her madde kısa ve eyleme dönük olsun. Nesnel ol; yalnızca verilen bilgiden çıkar.\n" +
+  "Son olarak ilanı dolandırıcılık/risk sinyalleri için tararsın ve bulduklarını 'risks' dizisinde " +
+  "(en çok 3 kısa madde) raporlarsın: platform dışına iletişim daveti (Telegram/WhatsApp/e-posta), " +
+  "freelancer'dan ödeme/depozito/yazılım satın alma talebi, kişisel/finansal veri talebi, " +
+  "gerçekdışı bütçe veya vaat, aşırı belirsiz kapsam + acele baskısı. " +
+  "Sinyal yoksa 'risks' BOŞ dizi olsun; zorlama, yalnız somut sinyal raporla.";
 
 // İlan bağlam satırları — yalnız dolu alanlar eklenir.
 function buildJobContextLines(context: MatchJobContext): string[] {

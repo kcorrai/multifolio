@@ -593,6 +593,7 @@
   },
   "rubric": {
     "breakdown": "Score breakdown",
+    "risksTitle": "Risk signals",
     "weight": "{percent}%",
     "dimensions": {
       "skill_fit": "Skill fit",

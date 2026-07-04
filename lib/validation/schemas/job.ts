@@ -44,20 +44,23 @@ export type MatchVerdict = (typeof MATCH_VERDICTS)[number];
 
 // AI üretim şeması (structured output): toplam skor ve verdict YOK — sunucu
 // rubrikten deterministik türetir (şeffaflık: skor = ağırlıklı rubrik toplamı).
+// risks: sahte/riskli ilan sinyalleri (sinyal yoksa boş dizi) — skoru ETKİLEMEZ, yalnız uyarı rozeti.
 export const jobMatchAiSchema = z.object({
   rubric: jobMatchRubricSchema,
   strengths: z.array(z.string()).max(5),
   gaps: z.array(z.string()).max(5),
   requirements: z.array(z.string()).max(7),
+  risks: z.array(z.string().max(200)).max(3),
   summary: z.string().max(400),
 });
 
 // Kayıtlı eşleştirme sonucu — lib/ai/match.ts ve /api/jobs/[id]/match tarafından paylaşılır.
-// rubric/verdict optional: rubrik öncesi cache'lenmiş job_scores/match_result satırları bunlarsız.
+// rubric/verdict/risks optional: önceki sürümlerde cache'lenmiş job_scores/match_result satırları bunlarsız.
 export const jobMatchResultSchema = jobMatchAiSchema.extend({
   score: z.number().int().min(0).max(100),
   rubric: jobMatchRubricSchema.optional(),
   verdict: z.enum(MATCH_VERDICTS).optional(),
+  risks: z.array(z.string().max(200)).max(3).optional(),
 });
 
 export type JobCreate = z.infer<typeof jobCreateSchema>;

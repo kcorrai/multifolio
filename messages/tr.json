@@ -593,6 +593,7 @@
   },
   "rubric": {
     "breakdown": "Skor dağılımı",
+    "risksTitle": "Risk sinyalleri",
     "weight": "%{percent}",
     "dimensions": {
       "skill_fit": "Beceri uyumu",
