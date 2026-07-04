@@ -27,8 +27,7 @@
 ## P1 — Orta (dönüşümü zayıflatan)
 
 - [ ] **Fiyatlar USD, hedef kitle TR**
-  - Nerede: `components/pricing-section.tsx` ($9/$29/$69).
-  - Kabul: TRY toggle veya "≈ ₺X" gösterimi (`/earnings`'teki para birimi deseni örnek).
+  - ✅ TAMAMLANDI (2026-07-04, `3b50efe`): locale bazlı — TR kullanıcı ₺349/₺1.149/₺2.749, yabancı $9/$29/$69 (ayrı belirlenmiş fiyatlar, canlı kur değil).
 
 - [x] **Kredi → değer eşlemesi** (2026-07-04, `01fa26b`): pricing kartlarına "≈ N uyarlama veya N teklif" eklendi.
 
