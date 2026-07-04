@@ -1,18 +1,22 @@
 import Link from "next/link";
 import { CheckCircle2, Clock } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
-// Kredi paketleri (pay-as-you-go): abonelik yok, kredi tükendikçe satın alınır
+// Kredi paketleri (pay-as-you-go): abonelik yok, kredi tükendikçe satın alınır.
+// Fiyat locale'e göre: TR kullanıcı TL, yabancı kullanıcı USD görür (ayrı belirlenmiş
+// fiyatlar; canlı kur DEĞİL — ödeme henüz yok, satın alma açılınca netleşir).
 const plans = [
-  { key: "starter", credits: 100,  price: "$9",  featured: false },
-  { key: "pro",     credits: 500,  price: "$29", featured: true  },
-  { key: "scale",   credits: 1500, price: "$69", featured: false },
+  { key: "starter", credits: 100,  usd: "$9",  try: "₺349",   featured: false },
+  { key: "pro",     credits: 500,  usd: "$29", try: "₺1.149", featured: true  },
+  { key: "scale",   credits: 1500, usd: "$69", try: "₺2.749", featured: false },
 ] as const;
 
 /* ─── Paylaşılan fiyatlandırma bölümü (landing + /pricing) ───────── */
 export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = await getTranslations("landing");
+  const locale = await getLocale();
+  const currency: "usd" | "try" = locale === "tr" ? "try" : "usd";
 
   return (
     <section id="pricing" className="mx-auto max-w-6xl px-8 py-24">
@@ -40,7 +44,10 @@ export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: bool
       </div>
 
       <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
-        {plans.map(({ key, credits, price, featured }, i) => (
+        {plans.map((plan, i) => {
+          const { key, credits, featured } = plan;
+          const price = plan[currency];
+          return (
           <ScrollReveal key={key} delay={i * 80}>
             <div className={`relative h-full rounded-2xl border p-6 flex flex-col ${featured
               ? "border-[#00F0FF]/40 bg-white dark:bg-[#161923] shadow-lg shadow-[#00F0FF]/10"
@@ -75,7 +82,8 @@ export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: bool
               </Link>
             </div>
           </ScrollReveal>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
