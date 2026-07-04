@@ -10,6 +10,7 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PricingSection } from "@/components/pricing-section";
+import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaqSection } from "@/components/faq-section";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { PlatformId } from "@/lib/ai/platforms";
@@ -555,6 +556,9 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
         </div>
       </section>
+
+      {/* Sosyal kanıt */}
+      <TestimonialsSection />
 
       {/* Pricing */}
       <PricingSection isLoggedIn={isLoggedIn} />

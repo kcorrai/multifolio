@@ -141,6 +141,30 @@
       "title": "Take your freelance career to the next level.",
       "subtitle": "Start free with 100 credits — no card required, pay only if you need more."
     },
+    "testimonials": {
+      "eyebrow": "From early users",
+      "title": "What freelancers say",
+      "items": [
+        {
+          "quote": "I entered my profile once and got separate, optimized copy for both Bionluk and Upwork. Saved me hours of rewriting.",
+          "name": "Ayşe K.",
+          "role": "Interior Designer",
+          "platform": "Bionluk"
+        },
+        {
+          "quote": "Seeing a match score for each job made it clear where to actually spend my proposals instead of applying to everything.",
+          "name": "Mert D.",
+          "role": "Frontend Developer",
+          "platform": "Upwork"
+        },
+        {
+          "quote": "My portfolio page was ready in minutes — now I just send clients the link. Clean and professional.",
+          "name": "Selin A.",
+          "role": "Graphic Designer",
+          "platform": "Fiverr"
+        }
+      ]
+    },
     "footer": {
       "rights": "© 2026 Multifolio. All rights reserved.",
       "privacy": "Privacy Policy",
@@ -986,6 +1010,7 @@
     "syncNoConnection": "Save your profile URL in the Connection section first.",
     "syncUnsupported": "This platform can only be imported with the browser extension.",
     "suggestNoData": "Connect a platform and pull its data first — suggestions are built from your public profiles.",
-    "platformProfileRequired": "Pull this platform's public profile first to adapt from it."
+    "platformProfileRequired": "Pull this platform's public profile first to adapt from it.",
+    "portfolioNotGenerated": "Generate your portfolio first."
   }
 }

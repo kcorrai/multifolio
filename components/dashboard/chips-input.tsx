@@ -45,7 +45,7 @@ export function ChipsInput({
           placeholder={placeholder}
           className="flex-1 min-w-0 rounded-lg border border-border bg-background px-3 py-2 text-sm"
         />
-        <Button type="button" variant="outline" size="icon" onClick={add} disabled={!draft.trim() || values.length >= max} className="shrink-0">
+        <Button type="button" variant="outline" size="icon" onClick={add} disabled={!draft.trim() || values.length >= max} className="shrink-0" aria-label={placeholder}>
           <Plus className="h-4 w-4" />
         </Button>
       </div>
