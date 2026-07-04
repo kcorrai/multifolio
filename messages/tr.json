@@ -375,7 +375,8 @@
       "proposal": "Teklif Üretimi",
       "job_translate": "İlan Çevirisi",
       "followup": "Takip Mesajı",
-      "proposal_translate": "Teklif Çevirisi"
+      "proposal_translate": "Teklif Çevirisi",
+      "profile_suggest": "Profil Önerisi"
     },
     "creditsSub": "{count} kredi",
     "dailyTitle": "Son 30 gün — günlük kredi kullanımı",
@@ -421,7 +422,27 @@
     "preview": "Önizleme",
     "completion": "Tamamlanma",
     "photoAlt": "Profil fotoğrafı",
-    "portfolioTitle": "Portfolyo ({count})"
+    "portfolioTitle": "Portfolyo ({count})",
+    "identityEyebrow": "Profesyonel kimliğin",
+    "identityUntitled": "Kimliğini tanımlamak için bir başlık ekle",
+    "connectedCount": "{count, plural, one {# bağlı kaynak} other {# bağlı kaynak}}",
+    "aiTitle": "AI önerileri",
+    "aiDesc": "Public profillerinden optimize bir başlık, özet ve beceri seti üret.",
+    "aiGenerate": "Profillerimden öner",
+    "aiRegenerate": "Yeniden öner",
+    "aiGenerating": "Profillerin analiz ediliyor…",
+    "aiNeedsData": "Öneri almak için bir platform bağlayıp verisini çek.",
+    "aiConnectCta": "Platform bağla",
+    "aiApply": "Uygula",
+    "aiApplied": "Uygulandı",
+    "aiApplyAll": "Tümünü uygula",
+    "free": "Ücretsiz",
+    "connectedTitle": "Bağlı public profiller",
+    "connectedDesc": "Bağladığın platform hesaplarından çekildi.",
+    "connectedEmpty": "Henüz public profil çekilmedi.",
+    "connectedSkills": "{count, plural, one {# beceri} other {# beceri}}",
+    "connectedUpdated": "{date} güncellendi",
+    "viewSource": "Kaynağı gör"
   },
   "adapt": {
     "saveProfileFirst": "Uyarlamak için önce profilini kaydet.",
@@ -801,6 +822,7 @@
     "analyzeNoContent": "Bu girdiden bir profil okuyamadık. Profil metnini yapıştırmayı dene.",
     "translateRateLimited": "Çok fazla çeviri isteği. Bir saat sonra tekrar dene.",
     "syncNoConnection": "Önce Bağlantı bölümünde profil URL'ini kaydet.",
-    "syncUnsupported": "Bu platform yalnız tarayıcı uzantısıyla içe aktarılabilir."
+    "syncUnsupported": "Bu platform yalnız tarayıcı uzantısıyla içe aktarılabilir.",
+    "suggestNoData": "Önce bir platform bağlayıp verisini çek — öneriler public profillerinden üretilir."
   }
 }

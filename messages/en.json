@@ -375,7 +375,8 @@
       "proposal": "Proposal Generation",
       "job_translate": "Job Translation",
       "followup": "Follow-up Message",
-      "proposal_translate": "Proposal Translation"
+      "proposal_translate": "Proposal Translation",
+      "profile_suggest": "Profile Suggestion"
     },
     "creditsSub": "{count} credits",
     "dailyTitle": "Last 30 days — daily credit usage",
@@ -421,7 +422,27 @@
     "preview": "Preview",
     "completion": "Completion",
     "photoAlt": "Profile photo",
-    "portfolioTitle": "Portfolio ({count})"
+    "portfolioTitle": "Portfolio ({count})",
+    "identityEyebrow": "Your professional identity",
+    "identityUntitled": "Add a headline to define your identity",
+    "connectedCount": "{count, plural, one {# connected source} other {# connected sources}}",
+    "aiTitle": "AI suggestions",
+    "aiDesc": "Build an optimized headline, summary and skills from your public profiles.",
+    "aiGenerate": "Suggest from my profiles",
+    "aiRegenerate": "Suggest again",
+    "aiGenerating": "Analyzing your profiles…",
+    "aiNeedsData": "Connect a platform and pull its data to get suggestions.",
+    "aiConnectCta": "Connect a platform",
+    "aiApply": "Apply",
+    "aiApplied": "Applied",
+    "aiApplyAll": "Apply all",
+    "free": "Free",
+    "connectedTitle": "Connected public profiles",
+    "connectedDesc": "Pulled from your linked platform accounts.",
+    "connectedEmpty": "No public profiles pulled yet.",
+    "connectedSkills": "{count, plural, one {# skill} other {# skills}}",
+    "connectedUpdated": "Updated {date}",
+    "viewSource": "View source"
   },
   "adapt": {
     "saveProfileFirst": "Save your profile first to adapt it.",
@@ -801,6 +822,7 @@
     "analyzeNoContent": "We couldn't read a profile from that input. Try pasting your profile text instead.",
     "translateRateLimited": "Too many translation requests. Please try again in an hour.",
     "syncNoConnection": "Save your profile URL in the Connection section first.",
-    "syncUnsupported": "This platform can only be imported with the browser extension."
+    "syncUnsupported": "This platform can only be imported with the browser extension.",
+    "suggestNoData": "Connect a platform and pull its data first — suggestions are built from your public profiles."
   }
 }

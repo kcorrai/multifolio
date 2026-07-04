@@ -1,5 +1,5 @@
 import {
-  User, Layers, Globe, Briefcase, Target, Sparkles, LayoutDashboard, Languages, BellRing,
+  User, Layers, Globe, Briefcase, Target, Sparkles, LayoutDashboard, Languages, BellRing, Wand2,
 } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
@@ -17,6 +17,16 @@ export interface InitialProfile {
   portfolio: PortfolioItem[];
 }
 export interface AdaptOutput { headline: string; body: string }
+/** Profil sayfasında gösterilen, bir platformdan çekilmiş public profil özeti. */
+export interface ConnectedProfile {
+  platform: PlatformId;
+  headline: string;
+  summary: string;
+  skills: string[];
+  avatarUrl: string | null;
+  sourceUrl: string | null;
+  fetchedAt: string;
+}
 export interface JobRow {
   id: string; title: string; company: string | null; platform: string | null;
   status: JobStatus; match_score: number | null; match_result: JobMatchResult | null; created_at: string;
@@ -78,6 +88,7 @@ export const KIND_ICONS: Record<string, React.ElementType> = {
   job_translate: Languages,
   followup: BellRing,
   proposal_translate: Languages,
+  profile_suggest: Wand2,
 };
 
 /* ── Helpers ────────────────────────────────────────────────────────── */
