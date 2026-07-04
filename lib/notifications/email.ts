@@ -89,7 +89,8 @@ export async function sendMatchNotificationEmail(
 const DIGEST_MAX_JOBS = 6;
 
 /** Feed özet e-postası: cron koşusunda kullanıcının bildirimli feed'leriyle
- *  eşleşen yeni ilanlar. Cron bağlamında UI locale bilinmez → ürün varsayılanı EN. */
+ *  eşleşen yeni ilanlar. Cron bağlamında UI locale bilinmez (dil tercihi
+ *  cookie'de, DB'de yok) → metinler İKİ DİLLİ (EN + TR birlikte). */
 export async function sendFeedDigestEmail(
   to: string,
   feedNames: string[],
@@ -122,13 +123,13 @@ export async function sendFeedDigestEmail(
         <span style="font-size:22px;font-weight:800;color:#00F0FF;letter-spacing:-0.5px">Multifolio</span>
       </div>
       <div style="background:#f9f9f9;padding:32px;border-radius:0 0 12px 12px;border:1px solid #e5e5e5;border-top:none">
-        <p style="margin:0 0 8px;font-size:14px;color:#6b7280">New matches for your feeds</p>
+        <p style="margin:0 0 8px;font-size:14px;color:#6b7280">New matches for your feeds · Feed'lerine yeni eşleşmeler</p>
         <h2 style="margin:0 0 16px;font-size:18px;font-weight:700">${safeFeeds}</h2>
         ${rows}
-        ${rest > 0 ? `<p style="margin:4px 0 16px;font-size:13px;color:#6b7280">+${rest} more matching job${rest === 1 ? "" : "s"}</p>` : ""}
+        ${rest > 0 ? `<p style="margin:4px 0 16px;font-size:13px;color:#6b7280">+${rest} more · +${rest} ilan daha</p>` : ""}
         <a href="https://multifolio-ecru.vercel.app/dashboard/jobs?view=feed"
            style="display:inline-block;background:#00F0FF;color:#090A0F;font-weight:700;font-size:14px;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:8px">
-          Open your feed →
+          Open your feed · Feed'ini aç →
         </a>
       </div>
     </div>
@@ -144,7 +145,7 @@ export async function sendFeedDigestEmail(
       body: JSON.stringify({
         from,
         to,
-        subject: `🔔 ${jobs.length} new job${jobs.length === 1 ? "" : "s"} match your feeds`,
+        subject: `🔔 ${jobs.length} new job${jobs.length === 1 ? "" : "s"} · ${jobs.length} yeni ilan feed'lerinle eşleşti`,
         html,
       }),
     });
