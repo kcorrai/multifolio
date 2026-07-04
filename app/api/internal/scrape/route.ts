@@ -13,6 +13,7 @@ import { translateJobTitles } from "@/lib/ai/translate";
 import { sendFeedDigestEmail } from "@/lib/notifications/email";
 import { remotiveSource } from "@/lib/scrape/sources/remotive";
 import { arbeitnowSource } from "@/lib/scrape/sources/arbeitnow";
+import { remoteOkSource } from "@/lib/scrape/sources/remoteok";
 
 // GET: hafif erişilebilirlik yanıtı (cron servisleri URL doğrularken GET/HEAD atar).
 // İŞ YAPMAZ, secret istemez; gerçek çekme yalnız POST + x-cron-secret ile.
@@ -39,7 +40,7 @@ export const POST = withErrorHandler(async (req) => {
   // Koşu başlangıcı: bildirim adımı yalnız bu andan sonra INSERT edilen
   // (created_at >= startedAt) pool satırlarını "yeni" sayar.
   const startedAt = new Date().toISOString();
-  const results = await runScrape(admin, [remotiveSource, arbeitnowSource]);
+  const results = await runScrape(admin, [remotiveSource, arbeitnowSource, remoteOkSource]);
   const titles = await translateNewTitles(admin, translateJobTitles);
   const notifications = await notifyFeedMatches(admin, sendFeedDigestEmail, startedAt);
   return NextResponse.json({ ok: true, results, titles, notifications });
