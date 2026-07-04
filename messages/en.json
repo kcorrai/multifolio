@@ -139,7 +139,7 @@
     },
     "finalCta": {
       "title": "Take your freelance career to the next level.",
-      "subtitle": "Free during beta. No credit card required."
+      "subtitle": "Start free with 100 credits — no card required, pay only if you need more."
     },
     "footer": {
       "rights": "© 2026 Multifolio. All rights reserved.",
@@ -284,7 +284,8 @@
       "description": "Verify your email address to secure your account.",
       "sending": "Sending…",
       "sendButton": "Send verification email",
-      "sendError": "Couldn't send, please try again."
+      "sendError": "Couldn't send, please try again.",
+      "dismiss": "Dismiss"
     },
     "lowCredits": {
       "title": "You're running low on credits",

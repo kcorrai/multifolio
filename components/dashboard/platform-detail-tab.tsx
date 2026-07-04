@@ -297,13 +297,9 @@ export function PlatformDetailTab({
                   <p className="text-xs text-muted-foreground">
                     {profileSaved ? ta("emptyState", { platform: PLATFORMS[platform].label }) : ta("saveProfileFirst")}
                   </p>
-                  {profileSaved ? (
-                    <Button size="sm" onClick={() => adapt(platform)} disabled={adapting === platform} className="gap-1.5 h-7 text-xs">
-                      <Sparkles className="h-3 w-3" />
-                      {adapting === platform ? ta("adapting") : ta("adaptAction")}
-                      <CreditCost kind="adaptation" />
-                    </Button>
-                  ) : (
+                  {/* profileSaved'da Uyarla CTA'sı zaten başlıkta — burada tekrar edilmez.
+                      Profilsizde başlık butonu disabled → "profil kur" CTA'sı burada. */}
+                  {!profileSaved && (
                     <Button asChild size="sm" className="gap-1.5 h-7 text-xs">
                       <Link href="/dashboard/import">{t("detail.setupProfileCta")}</Link>
                     </Button>

@@ -139,7 +139,7 @@
     },
     "finalCta": {
       "title": "Freelancer kariyerini bir üst seviyeye taşı.",
-      "subtitle": "Beta sürecinde ücretsiz. Kredi kartı gerekmez."
+      "subtitle": "100 ücretsiz krediyle başla — kart gerekmez, yalnız daha fazlası gerekirse öde."
     },
     "footer": {
       "rights": "© 2026 Multifolio. Tüm hakları saklıdır.",
@@ -284,7 +284,8 @@
       "description": "Hesabını güvence altına almak için e-posta adresini doğrula.",
       "sending": "Gönderiliyor…",
       "sendButton": "Doğrulama e-postası gönder",
-      "sendError": "Gönderilemedi, tekrar dene."
+      "sendError": "Gönderilemedi, tekrar dene.",
+      "dismiss": "Kapat"
     },
     "lowCredits": {
       "title": "Kredin azalıyor",

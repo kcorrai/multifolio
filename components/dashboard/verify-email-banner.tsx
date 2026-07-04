@@ -9,6 +9,9 @@ export function VerifyEmailBanner({ emailVerified, email }: { emailVerified: boo
   const t = useTranslations("dashboard.verifyEmail");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [toast, setToast] = useState("");
+  // Oturum-içi kapat: shell tab'lar arası kalıcı (client nav) → bir kez kapatınca
+  // tüm sekmelerde gizli kalır (tam yenilemede tekrar — doğrulama önemli).
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
@@ -38,7 +41,7 @@ export function VerifyEmailBanner({ emailVerified, email }: { emailVerified: boo
 
   return (
     <>
-      {!emailVerified && (
+      {!emailVerified && !dismissed && (
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
           <ShieldCheck className="h-5 w-5 text-amber-500 shrink-0" />
           <div className="flex-1 min-w-0">
@@ -55,6 +58,10 @@ export function VerifyEmailBanner({ emailVerified, email }: { emailVerified: boo
               {state === "sending" ? t("sending") : t("sendButton")}
             </button>
           )}
+          <button onClick={() => setDismissed(true)} title={t("dismiss")} aria-label={t("dismiss")}
+            className="shrink-0 text-amber-500/60 hover:text-amber-700 dark:hover:text-amber-300 transition-colors cursor-pointer">
+            <X className="h-4 w-4" />
+          </button>
           {state === "error" && <p role="alert" className="text-xs text-destructive w-full">{t("sendError")}</p>}
         </div>
       )}
