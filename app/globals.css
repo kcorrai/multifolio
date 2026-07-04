@@ -134,6 +134,18 @@
   }
 }
 
+/* ─── Ekrana göre orantılı ölçek (responsive "zoom") ──────────────
+   Tailwind rem tabanlı → kök yazı boyutunu ekran genişliğine göre
+   büyütmek TÜM arayüzü (yazı + boşluk + genişlik) orantılı büyütür;
+   tarayıcı zoom'unun güvenli, responsive karşılığı. Küçük/laptop
+   ekranlar 16px'te sabit kalır (taşma yok), geniş monitörlerde arayüz
+   kademeli ferahlar. Not: media-query rem'leri tarayıcı varsayılan
+   16px'ine göre ölçülür → Tailwind breakpoint'leri KAYMAZ. Kullanıcı
+   zoom'u bu ölçeğin üzerine yine çalışır. */
+@media (min-width: 1536px) {
+  html { font-size: clamp(16px, calc(4px + 0.78vw), 26px); }
+}
+
 /* ─── Landing page animations ─────────────────────────────────── */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(28px); }
