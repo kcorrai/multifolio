@@ -20,6 +20,7 @@ import {
   STATUS_DOT, scoreColor, scoreBarColor, type JobRow, type AdaptOutput, type InitialProfile,
 } from "./shared";
 import { CopyButton } from "./copy-button";
+import { HealthWarnings } from "./health-warnings";
 import { useDashboard } from "./dashboard-context";
 import { useAdapt } from "./use-adapt";
 
@@ -291,6 +292,7 @@ export function PlatformDetailTab({
                     <CopyButton text={`${adaptResult.headline}\n\n${adaptResult.body}`} />
                   </div>
                   <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{adaptResult.body}</p>
+                  <HealthWarnings text={`${adaptResult.headline}\n${adaptResult.body}`} platform={platform} />
                 </div>
               ) : (
                 <div className="rounded-lg bg-muted/50 border border-dashed p-4 text-center space-y-2.5">

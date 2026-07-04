@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
 import { PLATFORMS, PLATFORM_IDS, PLATFORM_LANGUAGE, type PlatformId } from "@/lib/ai/platforms";
 import { pendingRequirements, coverageSummary } from "@/lib/ai/coverage";
+import { HealthWarnings } from "./dashboard/health-warnings";
 import { useDashboard } from "./dashboard/dashboard-context";
 import type { ProposalRow, ProposalCoverageItem } from "@/lib/validation/schemas/proposal";
 
@@ -181,6 +182,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                 <CopyBtn text={generated} />
               </div>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{generated}</p>
+              <HealthWarnings text={generated} platform={platform} />
               {generatedId && <TranslationBlock key={generatedId} proposalId={generatedId} platform={platform} />}
               {coverage.length > 0 && (
                 <div className="pt-3 mt-1 border-t border-[#00F0FF]/15 space-y-2">
@@ -248,6 +250,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                       <CopyBtn text={p.content} />
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed line-clamp-4 whitespace-pre-wrap">{p.content}</p>
+                    <HealthWarnings text={p.content} platform={p.platform as PlatformId} />
                     <TranslationBlock proposalId={p.id} platform={p.platform} />
                   </div>
                 ))}

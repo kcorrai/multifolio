@@ -474,6 +474,17 @@
     "emptyState": "{platform} için optimize metin burada görünecek.",
     "adaptFailed": "Uyarlama başarısız."
   },
+  "health": {
+    "title": "Hesap sağlığı kontrolü",
+    "items": {
+      "email": "E-posta adresi — pazaryerleri müşteriyi platform dışına çıkarmayı yasaklar; iletişim paylaşımı hesap kapatma riski taşır.",
+      "phone": "Telefon numarası — aynı platform-dışı iletişim riski.",
+      "messaging": "Mesajlaşma uygulaması (WhatsApp/Telegram/Skype) — platform dışı iletişim yasaktır.",
+      "payment": "Platform dışı ödeme — komisyon atlatma en ağır ihlallerden, sık ban sebebidir.",
+      "external_link": "Dış bağlantı — bazı platformlar profil/teklifte linki kısıtlar; göndermeden gözden geçir."
+    },
+    "footnote": "Bu bir uyarıdır, engelleme değil — metni yine kopyalayabilirsin. Kurallar platforma göre değişir."
+  },
   "platforms": {
     "eyebrow": "Çalışma Alanı",
     "hubTitle": "Platformlar",

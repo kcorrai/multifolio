@@ -474,6 +474,17 @@
     "emptyState": "Optimized text for {platform} will appear here.",
     "adaptFailed": "Adaptation failed."
   },
+  "health": {
+    "title": "Account safety check",
+    "items": {
+      "email": "Email address — marketplaces ban taking clients off-platform; sharing contact info risks account suspension.",
+      "phone": "Phone number — same off-platform contact risk.",
+      "messaging": "Messaging app (WhatsApp/Telegram/Skype) — off-platform contact is prohibited.",
+      "payment": "Off-platform payment — bypassing platform fees is one of the most serious violations and a common ban reason.",
+      "external_link": "External link — some platforms restrict links in profiles/proposals; review before sending."
+    },
+    "footnote": "This is a heads-up, not a block — you can still copy the text. Rules vary by platform."
+  },
   "platforms": {
     "eyebrow": "Workspace",
     "hubTitle": "Platforms",
