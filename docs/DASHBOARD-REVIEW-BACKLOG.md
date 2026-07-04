@@ -44,11 +44,7 @@
 
 - [x] **Ham event etiketi** (2026-07-04, `01fa26b`): profile_import/platform_sync/public_analyze i18n `analytics.kind`'a eklendi.
 
-- [ ] **Onboarding sonrası "şimdi ne yapayım" yönü zayıf**
-  - Gözlem: profil kaydedilince Genel Bakış'a düşüyor; checklist var ama net "sıradaki adım"
-    akışı (feed'e git / ilk uyarlamanı yap) belirgin değil. Boş hesapta 30-gün grafik /
-    başvuru performansı bölümleri de boş.
-  - Kabul: onboarding sonrası birincil sonraki-adım CTA'sı; boş durumlar anlamlı placeholder.
+- [x] **Onboarding sonrası next-step CTA** (2026-07-04, `06ee062`): profileSaved && jobs=0'da çekirdek aksiyona ("İlanlara göz at" → feed) yönlendiren tek CTA + "Kurulum ilerlemesi" kartının linkli checklist'i (P0-3). Boş durumlar zaten linkli.
 
 ## P2 — Küçük / cila
 

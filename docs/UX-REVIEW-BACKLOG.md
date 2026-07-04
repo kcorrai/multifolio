@@ -42,7 +42,7 @@
 - [x] **Footer nav** (UX P0 turunda, `b0f6149`): footer iki katmanlı yeniden yapıldı — earnings + yasal linkler eklendi, mobilde de görünür.
 - [x] **Fiverr logosu** (2026-07-04, `01fa26b`): wordmark → letter-mark (yeşil kare + beyaz "fi"), Bionluk/Armut deseniyle tutarlı.
 - [x] **finalCta mesajı** (2026-07-04, `f54bb61`): "Beta sürecinde ücretsiz" → "100 ücretsiz krediyle başla — daha fazlası gerekirse öde" (pricing ile hizalı).
-- [ ] **Sosyal kanıt yok** — 3-4 gerçek testimonial (beta için opsiyonel).
+- [~] **Sosyal kanıt yok** — GERÇEK beta kullanıcı sözü gerekir; sahte testimonial eklenmez (dark pattern). Beta'da gerçek referans toplandıkça eklenecek.
 - [x] **Analyze otomatik kaydırma** (2026-07-04, `01fa26b`): sonuç gelince `scrollIntoView` (reduced-motion'a saygılı `scroll-mt-24`).
 
 ## Güçlü yönler (koru)
