@@ -3,7 +3,7 @@
 // upsert eder, ardından çevrilmemiş başlıkları EN/TR'ye çevirir (hata izole —
 // çeviri patlasa da scrape sonucu döner). withErrorHandler'dan geçer; service-role yalnız burada.
 import { timingSafeEqual } from "node:crypto";
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { AuthError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { runScrape } from "@/lib/scrape/run";
@@ -14,6 +14,10 @@ import { sendFeedDigestEmail } from "@/lib/notifications/email";
 import { remotiveSource } from "@/lib/scrape/sources/remotive";
 import { arbeitnowSource } from "@/lib/scrape/sources/arbeitnow";
 import { remoteOkSource } from "@/lib/scrape/sources/remoteok";
+
+// Arka plan (çeviri+bildirim) adımı için tavan; Fluid Compute yanıttan sonra
+// after() işini bu süreye kadar sürdürür (AI başlık çevirisi ~50sn sürebilir).
+export const maxDuration = 300;
 
 // GET: hafif erişilebilirlik yanıtı (cron servisleri URL doğrularken GET/HEAD atar).
 // İŞ YAPMAZ, secret istemez; gerçek çekme yalnız POST + x-cron-secret ile.
@@ -41,7 +45,15 @@ export const POST = withErrorHandler(async (req) => {
   // (created_at >= startedAt) pool satırlarını "yeni" sayar.
   const startedAt = new Date().toISOString();
   const results = await runScrape(admin, [remotiveSource, arbeitnowSource, remoteOkSource]);
-  const titles = await translateNewTitles(admin, translateJobTitles);
-  const notifications = await notifyFeedMatches(admin, sendFeedDigestEmail, startedAt);
-  return NextResponse.json({ ok: true, results, titles, notifications });
+
+  // Çeviri (AI, ~50sn) + bildirim adımları cron-job.org'un ~30sn HTTP zaman
+  // aşımını aşıyordu → koşu "Failed (timeout)" görünüyordu (iş aslında bitiyordu).
+  // Yanıttan SONRA arka planda çalışır (Fluid Compute waitUntil): cron hızlı 200
+  // alır, çeviri/bildirim maxDuration'a kadar sürer. İçeride hata izole (loglar döner).
+  after(async () => {
+    await translateNewTitles(admin, translateJobTitles);
+    await notifyFeedMatches(admin, sendFeedDigestEmail, startedAt);
+  });
+
+  return NextResponse.json({ ok: true, results });
 });
