@@ -268,6 +268,12 @@
       "sending": "Sending…",
       "sendButton": "Send verification email",
       "sendError": "Couldn't send, please try again."
+    },
+    "lowCredits": {
+      "title": "You're running low on credits",
+      "body": "{credits, plural, =0 {No credits left} one {# credit left} other {# credits left}} — AI actions need credits.",
+      "cta": "Buy credits",
+      "dismiss": "Dismiss"
     }
   },
   "jobs": {

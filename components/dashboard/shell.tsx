@@ -11,6 +11,7 @@ import { LanguageToggle } from "@/components/language-toggle";
 import { NAV_ITEMS, isNavActive, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
 import { VerifyEmailBanner } from "./verify-email-banner";
+import { LowCreditsBanner } from "./low-credits-banner";
 import type { PlatformId } from "@/lib/ai/platforms";
 
 export function DashboardShell({
@@ -190,6 +191,7 @@ export function DashboardShell({
           <main className="flex-1 overflow-y-auto min-h-0">
             <div className="mx-auto max-w-5xl px-4 sm:px-6 py-6">
               <VerifyEmailBanner emailVerified={emailVerified} email={userEmail} />
+              <LowCreditsBanner />
               {children}
             </div>
           </main>
