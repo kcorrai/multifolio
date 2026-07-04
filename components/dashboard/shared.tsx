@@ -77,6 +77,7 @@ export const KIND_ICONS: Record<string, React.ElementType> = {
   proposal: Sparkles,
   job_translate: Languages,
   followup: BellRing,
+  proposal_translate: Languages,
 };
 
 /* ── Helpers ────────────────────────────────────────────────────────── */

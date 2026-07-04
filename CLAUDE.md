@@ -28,7 +28,8 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/jobs/[id]` — GET (tam veri) / PATCH (durum/başlık/notlar) / DELETE.
   - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı + Telegram trigger.
   - `app/api/jobs/[id]/followup` — POST: AI takip mesajı (1 kredi; kalıcı DEĞİL — kullanıcı kopyalar). Hatırlatma eşiği `lib/followup.ts` (saf, `followUpDays` — status_changed_at→updated_at fallback); üretim `lib/ai/followup.ts`. UI: job-detail-panel'de amber banner (applied/awaiting_reply + ≥5 gün).
-  - `app/api/proposal` — GET (iş bazlı liste) / POST (AI teklif üretir, proposals'a kaydeder).
+  - `app/api/proposal` — GET (iş bazlı liste) / POST (AI teklif üretir, proposals'a kaydeder). **Teklif içeriği PLATFORM dilinde** (`PLATFORM_LANGUAGE`: upwork/fiverr/linkedin=EN, bionluk/armut=TR; coverage notları UI dilinde — `proposalLanguageDirective`).
+  - `app/api/proposal/[id]/translate` — POST: teklif metnini UI diline çevirir (ücretsiz; cache yok, saatte 30 `usage_events kind='proposal_translate'`). UI: proposal-modal'da `TranslationBlock` toggle (teklif dili ≠ UI dili ise).
   - `app/api/credits` — GET: kullanıcının kredi bakiyesi (`credits` tablosu).
   - `app/api/analyze` — POST: HERKESE AÇIK ücretsiz profil analizi (auth opsiyonel; kayıtsız 5/saat IP-hash `public_analyses`, girişli 10/saat `usage_events kind='public_analyze'`; teaser SUNUCUDA kesilir — kayıtsıza `full:null`). Motor `lib/ai/profile-analyze.ts` + saf skor `lib/analyze/{score,ip-hash}.ts`. Sayfa: `/analyze` (`components/analyze/analyze-form.tsx`).
   - `app/api/referral` — GET: kullanıcının davet kodu (yoksa service-role üretir) + istatistik. Ödül tetiği `app/api/profile` POST'ta (`maybeGrantReferralBonus` — İLK profil kaydında iki tarafa +20, `referrals.referred_id` UNIQUE idempotency). Signup `?ref=` → `user_metadata.referred_by_code` (`app/signup/signup-form.tsx`, Suspense'li).

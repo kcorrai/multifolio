@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { X, Sparkles, Copy, Check, ChevronDown, Clock } from "lucide-react";
+import { X, Sparkles, Copy, Check, ChevronDown, Clock, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
-import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
+import { PLATFORMS, PLATFORM_IDS, PLATFORM_LANGUAGE, type PlatformId } from "@/lib/ai/platforms";
 import { pendingRequirements, coverageSummary } from "@/lib/ai/coverage";
 import { useDashboard } from "./dashboard/dashboard-context";
 import type { ProposalRow, ProposalCoverageItem } from "@/lib/validation/schemas/proposal";
@@ -32,6 +32,56 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
+// Teklif dili UI dilinden farklıysa (TR kullanıcı × EN platform) on-demand
+// çeviri toggle'ı: ücretsiz, POST /api/proposal/[id]/translate; sonuç state'te
+// tutulur (tekrar tıklamada API'ye gidilmez). Çeviri yalnız KONTROL içindir —
+// platforma orijinal metin gönderilir.
+function TranslationBlock({ proposalId, platform }: { proposalId: string; platform: string }) {
+  const t = useTranslations("proposal");
+  const locale = useLocale();
+  const [text, setText] = useState("");
+  const [show, setShow] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  const contentLang = PLATFORM_LANGUAGE[platform as PlatformId] ?? "en";
+  if (contentLang === locale) return null;
+
+  async function toggle() {
+    if (text) { setShow((s) => !s); return; }
+    setBusy(true); setError("");
+    const res = await fetch(`/api/proposal/${proposalId}/translate`, { method: "POST" });
+    const body = await res.json().catch(() => null);
+    if (res.ok && body?.content) {
+      setText(body.content as string);
+      setShow(true);
+    } else {
+      setError(body?.error?.message ?? t("modal.translateError"));
+    }
+    setBusy(false);
+  }
+
+  return (
+    <div className="space-y-1.5">
+      <button
+        onClick={toggle}
+        disabled={busy}
+        className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer disabled:opacity-60"
+      >
+        <Languages className="h-3 w-3" />
+        {busy ? t("modal.translating") : show ? t("modal.hideTranslation") : t("modal.showTranslation")}
+      </button>
+      {error && <p className="text-[11px] text-red-600 dark:text-red-400">{error}</p>}
+      {show && text && (
+        <div className="rounded-lg border border-border bg-muted/40 p-2.5 space-y-1">
+          <p className="text-xs leading-relaxed whitespace-pre-wrap">{text}</p>
+          <p className="text-[10px] text-muted-foreground/70">{t("modal.translationNote")}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose, onCreditsUpdate }: Props) {
   const t = useTranslations("proposal");
   const locale = useLocale();
@@ -40,6 +90,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
   const [platform, setPlatform] = useState<PlatformId>(validDefault);
   const [generating, setGenerating] = useState(false);
   const [generated, setGenerated] = useState("");
+  const [generatedId, setGeneratedId] = useState("");
   const [error, setError] = useState("");
   const [proposals, setProposals] = useState<ProposalRow[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
@@ -73,6 +124,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
     }
     const newProposal = body.proposal as ProposalRow;
     setGenerated(newProposal.content);
+    setGeneratedId(newProposal.id);
     setCoverage(newProposal.coverage ?? []);
     setProposals((prev) => [newProposal, ...prev]);
     if (body.credits) onCreditsUpdate?.(body.credits);
@@ -129,6 +181,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                 <CopyBtn text={generated} />
               </div>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{generated}</p>
+              {generatedId && <TranslationBlock key={generatedId} proposalId={generatedId} platform={platform} />}
               {coverage.length > 0 && (
                 <div className="pt-3 mt-1 border-t border-[#00F0FF]/15 space-y-2">
                   <p className="text-xs font-semibold text-muted-foreground">
@@ -195,6 +248,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                       <CopyBtn text={p.content} />
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed line-clamp-4 whitespace-pre-wrap">{p.content}</p>
+                    <TranslationBlock proposalId={p.id} platform={p.platform} />
                   </div>
                 ))}
             </div>

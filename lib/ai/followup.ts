@@ -5,7 +5,7 @@ import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
-import { PROPOSAL_GUIDANCE, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
+import { PROPOSAL_GUIDANCE, PLATFORM_IDS, PLATFORM_LANGUAGE, type PlatformId } from "@/lib/ai/platforms";
 import type { Locale } from "@/i18n/detect";
 
 // Takip mesajı üretimi (Dalga 3): başvurudan X gün sonra platform içi
@@ -47,6 +47,11 @@ export async function generateFollowUp(opts: GenerateFollowUpOptions): Promise<F
     ? PROPOSAL_GUIDANCE[opts.platform as PlatformId]
     : null;
 
+  // Mesaj müşteriye gider → dil platformun dili (bilinen platformsa); değilse UI dili.
+  const messageLocale = PLATFORM_IDS.includes(opts.platform as PlatformId)
+    ? PLATFORM_LANGUAGE[opts.platform as PlatformId]
+    : (opts.locale ?? "en");
+
   const userContent = [
     `İş İlanı Başlığı: ${opts.jobTitle}`,
     opts.platform ? `Platform: ${opts.platform}` : "",
@@ -55,7 +60,7 @@ export async function generateFollowUp(opts: GenerateFollowUpOptions): Promise<F
     opts.jobDescription ? ["", "İlan Açıklaması:", opts.jobDescription].join("\n") : "",
     opts.lastProposal ? ["", "Gönderilen Teklif (tekrarlama, yalnız bağlam):", opts.lastProposal].join("\n") : "",
     platformGuidance ? ["", "Platform Yönergesi (ton için):", platformGuidance].join("\n") : "",
-    languageDirective(opts.locale ?? "en"),
+    languageDirective(messageLocale),
   ].filter(Boolean).join("\n");
 
   const completion = await client.chat.completions.parse({

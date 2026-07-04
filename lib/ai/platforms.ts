@@ -71,6 +71,16 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
 
 export const PLATFORM_IDS = Object.keys(PLATFORMS) as PlatformId[];
 
+// Platformun MÜŞTERİYE GİDEN metin dili (teklif içeriği bu dilde üretilir —
+// UI locale'inden bağımsız; global platformlarda teklif İngilizce olmalı).
+export const PLATFORM_LANGUAGE: Record<PlatformId, "en" | "tr"> = {
+  linkedin: "en",
+  upwork: "en",
+  fiverr: "en",
+  bionluk: "tr",
+  armut: "tr",
+};
+
 // Her platform için iş teklifi (proposal) yönergesi.
 export const PROPOSAL_GUIDANCE: Record<PlatformId, string> = {
   linkedin: "LinkedIn InMail veya bağlantı isteği mesajı olarak yaz. " +

@@ -3,10 +3,10 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { buildRequirementsBlock, buildFocusBlock } from "./coverage";
-import { languageDirective } from "./language";
+import { proposalLanguageDirective } from "./language";
 import { buildPlatformProfileBlock, type PlatformProfileContext } from "./platform-context";
 import { InternalError } from "@/lib/errors";
-import { PROPOSAL_GUIDANCE, type PlatformId } from "@/lib/ai/platforms";
+import { PROPOSAL_GUIDANCE, PLATFORM_LANGUAGE, type PlatformId } from "@/lib/ai/platforms";
 import {
   proposalWithCoverageSchema,
   type ProposalCoverageItem,
@@ -70,7 +70,8 @@ export async function generateProposal(
     "Platform Yönergesi:",
     PROPOSAL_GUIDANCE[platform],
     buildFeedPromptBlock(opts.feedPrompt),
-    languageDirective(opts.locale ?? "en"),
+    // content = platform dili (Upwork/Fiverr/LinkedIn → EN), coverage notları = UI dili.
+    proposalLanguageDirective(PLATFORM_LANGUAGE[platform], opts.locale ?? "en"),
   ].join("\n");
 
   const completion = await client.chat.completions.parse({

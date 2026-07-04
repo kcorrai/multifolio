@@ -8,3 +8,15 @@ export function languageDirective(locale: Locale): string {
     ? "\nÖNEMLİ: Tüm çıktıyı (metin ve tüm alanlar) Türkçe yaz."
     : "\nIMPORTANT: Write all output (text and all fields) in English.";
 }
+
+const LANG_NAME: Record<Locale, string> = { en: "İngilizce", tr: "Türkçe" };
+
+// Teklif direktifi: müşteriye giden 'content' PLATFORM dilinde, kullanıcının
+// okuduğu coverage notları UI dilinde (TR kullanıcı Upwork için EN teklif alır
+// ama değerlendirmeyi kendi dilinde okur).
+export function proposalLanguageDirective(contentLang: Locale, noteLocale: Locale): string {
+  return (
+    `\nÖNEMLİ: 'content' alanını ${LANG_NAME[contentLang]} yaz — teklifin gönderileceği platformun dili budur. ` +
+    `'coverage' içindeki note alanlarını ${LANG_NAME[noteLocale]} yaz.`
+  );
+}

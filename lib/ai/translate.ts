@@ -87,6 +87,50 @@ const DESCRIPTION_SYSTEM_PROMPT =
   "çevirirsin. Paragraf/satır yapısını ve maddeleme düzenini koru. Şirket/ürün adlarını " +
   "ve teknoloji terimlerini çevirme. Yorum ekleme, özetleme — yalnızca çeviriyi döndür.";
 
+/* ── Teklif çevirisi (on-demand) ────────────────────────────────────── */
+
+const PROPOSAL_TRANSLATE_SYSTEM_PROMPT =
+  "Sen bir çevirmensin. Sana bir freelance iş teklifi (veya takip mesajı) verilir; " +
+  "onu istenen dile çevirirsin. Tonu ve paragraf yapısını koru. Şirket/ürün adlarını " +
+  "ve teknoloji terimlerini çevirme. Yorum ekleme — yalnızca çeviriyi döndür.";
+
+/** Teklif metnini hedef dile çevirir (TR kullanıcının EN teklifi anlaması için). */
+export async function translateProposalContent(
+  text: string,
+  target: Locale,
+): Promise<{ translated: string } & AiUsage> {
+  const client = getOpenAIClient();
+  const targetName = target === "tr" ? "Türkçe" : "İngilizce";
+
+  const completion = await client.chat.completions.create({
+    model: AI_MODEL,
+    messages: [
+      { role: "system", content: PROPOSAL_TRANSLATE_SYSTEM_PROMPT },
+      { role: "user", content: `Hedef dil: ${targetName}\n\n${text.slice(0, DESCRIPTION_MAX_CHARS)}` },
+    ],
+  });
+
+  const translated = completion.choices[0]?.message?.content?.trim();
+  if (!translated) {
+    throw new InternalError("Teklif çevirisi boş döndü.", {
+      context: { finish_reason: completion.choices[0]?.finish_reason },
+    });
+  }
+
+  const usage = {
+    prompt_tokens: completion.usage?.prompt_tokens ?? 0,
+    completion_tokens: completion.usage?.completion_tokens ?? 0,
+  };
+
+  return {
+    translated,
+    model: AI_MODEL,
+    inputTokens: usage.prompt_tokens,
+    outputTokens: usage.completion_tokens,
+    costUsd: computeCostUsd(AI_MODEL, usage),
+  };
+}
+
 /** Tek ilan açıklamasını hedef dile çevirir; düz metin döner. */
 export async function translateJobDescription(
   text: string,
