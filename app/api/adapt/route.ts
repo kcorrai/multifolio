@@ -22,21 +22,10 @@ export const POST = withErrorHandler(async (req) => {
   if (!user) throw new AuthError();
 
   const input = await parseJson(req, adaptRequestSchema);
+  const source = input.source ?? "both";
+  const errors = await getTranslations("errors");
 
-  // Profil: gövdede verildiyse onu kullan; aksi halde RLS'li sorguyla kayıtlıyı çek.
-  let profile: ProfileInput | undefined = input.profile;
-  if (!profile) {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("headline, summary, skills")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    if (error) throw error;
-    if (!data) throw new NotFoundError((await getTranslations("errors"))("profileRequired"));
-    profile = data as ProfileInput;
-  }
-
-  // Platformdan çekilmiş gerçek profil (varsa) prompt'a ek bağlam olarak girer.
+  // Platformdan çekilmiş gerçek profil (kaynak "platform"/"both" için gerekli/bağlam).
   const { data: platformProfileRow, error: ppError } = await supabase
     .from("platform_profiles")
     .select("headline, summary, skills")
@@ -44,12 +33,42 @@ export const POST = withErrorHandler(async (req) => {
     .eq("platform", input.platform)
     .maybeSingle();
   if (ppError) throw ppError;
+  const platformProfile = platformProfileRow as
+    | { headline: string; summary: string; skills: string[] }
+    | null;
+
+  // Çekirdek profil: gövdede verildiyse onu kullan; aksi halde RLS'li sorguyla çek.
+  async function loadCoreProfile(): Promise<ProfileInput> {
+    if (input.profile) return input.profile;
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("headline, summary, skills")
+      .eq("user_id", user!.id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) throw new NotFoundError(errors("profileRequired"));
+    return data as ProfileInput;
+  }
+
+  // Kaynağa göre uyarlamaya girecek profil + ek platform bağlamı belirlenir.
+  let profile: ProfileInput;
+  let platformContext: { headline: string; summary: string; skills: string[] } | null;
+  if (source === "platform") {
+    // Yalnız platform profili: çekilmiş veri şart; çekirdek profil gerekmez.
+    if (!platformProfile) throw new NotFoundError(errors("platformProfileRequired"));
+    profile = platformProfile;
+    platformContext = null;
+  } else if (source === "core") {
+    profile = await loadCoreProfile();
+    platformContext = null;
+  } else {
+    // "both": çekirdek profil + platform profili bağlam olarak.
+    profile = await loadCoreProfile();
+    platformContext = platformProfile;
+  }
 
   const { result, balance, spent } = await spendCredits(user.id, "adaptation", async () => {
-    const r = await adaptProfile(
-      profile, input.platform,
-      platformProfileRow as { headline: string; summary: string; skills: string[] } | null,
-    );
+    const r = await adaptProfile(profile, input.platform, platformContext);
     // Kalıcılık closure İÇİNDE: yazım patlarsa kredi iade edilir (Faz 9 kuralı).
     const { error: upsertError } = await supabase
       .from("adaptations")

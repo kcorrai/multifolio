@@ -518,6 +518,12 @@
       "noJobs": "No jobs for this platform yet. Add one from the Jobs page.",
       "noJobsCta": "Browse job feed",
       "setupProfileCta": "Import your profile",
+      "showAll": "Show full profile data",
+      "showLess": "Show less",
+      "sourceLabel": "Generate from:",
+      "source_both": "{platform} + your profile",
+      "source_platform": "{platform} only",
+      "source_core": "Core profile only",
       "proposalsSection": "Proposals",
       "noProposals": "No proposals for this platform yet.",
       "proposalJob": "Job",
@@ -964,6 +970,7 @@
     "translateRateLimited": "Too many translation requests. Please try again in an hour.",
     "syncNoConnection": "Save your profile URL in the Connection section first.",
     "syncUnsupported": "This platform can only be imported with the browser extension.",
-    "suggestNoData": "Connect a platform and pull its data first — suggestions are built from your public profiles."
+    "suggestNoData": "Connect a platform and pull its data first — suggestions are built from your public profiles.",
+    "platformProfileRequired": "Pull this platform's public profile first to adapt from it."
   }
 }

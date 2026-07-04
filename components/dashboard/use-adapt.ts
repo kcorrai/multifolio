@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useDashboard } from "./dashboard-context";
 import type { PlatformId } from "@/lib/ai/platforms";
+import type { AdaptSource } from "@/lib/validation/schemas/adapt";
 
 /** /api/adapt çağrısı + oturum sonuç/harcama state'ini context üzerinden günceller. */
 export function useAdapt() {
@@ -12,11 +13,11 @@ export function useAdapt() {
   const [adapting, setAdapting] = useState<PlatformId | null>(null);
   const [error, setError] = useState("");
 
-  async function adapt(platform: PlatformId) {
+  async function adapt(platform: PlatformId, source: AdaptSource = "both") {
     setAdapting(platform); setError("");
     const res = await fetch("/api/adapt", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ platform }),
+      body: JSON.stringify({ platform, source }),
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) {

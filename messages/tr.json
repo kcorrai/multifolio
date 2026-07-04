@@ -518,6 +518,12 @@
       "noJobs": "Bu platform için henüz ilan yok. İlanlar sayfasından ekleyebilirsin.",
       "noJobsCta": "İş feed'ine git",
       "setupProfileCta": "Profilini içe aktar",
+      "showAll": "Tüm profil verisini gör",
+      "showLess": "Daha az göster",
+      "sourceLabel": "Şundan üret:",
+      "source_both": "{platform} + profilin",
+      "source_platform": "Yalnız {platform}",
+      "source_core": "Yalnız çekirdek profil",
       "proposalsSection": "Teklifler",
       "noProposals": "Bu platform için henüz teklif yok.",
       "proposalJob": "İlan",
@@ -964,6 +970,7 @@
     "translateRateLimited": "Çok fazla çeviri isteği. Bir saat sonra tekrar dene.",
     "syncNoConnection": "Önce Bağlantı bölümünde profil URL'ini kaydet.",
     "syncUnsupported": "Bu platform yalnız tarayıcı uzantısıyla içe aktarılabilir.",
-    "suggestNoData": "Önce bir platform bağlayıp verisini çek — öneriler public profillerinden üretilir."
+    "suggestNoData": "Önce bir platform bağlayıp verisini çek — öneriler public profillerinden üretilir.",
+    "platformProfileRequired": "Bu platformdan uyarlamak için önce public profilini çek."
   }
 }

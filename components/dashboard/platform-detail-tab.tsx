@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   ArrowLeft, Sparkles, Save, ExternalLink, Trash2, AlertCircle,
-  Briefcase, Clock, Lightbulb, User, Pencil, Download, RefreshCw, Puzzle,
+  Briefcase, Clock, Lightbulb, User, Pencil, Download, RefreshCw, Puzzle, ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PlatformLogo } from "@/components/platform-logo";
 import { JobDetailPanel } from "@/components/job-detail-panel";
 import { PLATFORMS, type PlatformId } from "@/lib/ai/platforms";
+import type { AdaptSource } from "@/lib/validation/schemas/adapt";
 import type { PlatformProfileRow } from "@/lib/validation/schemas/platform-profile";
 import type { ProposalRow } from "@/lib/validation/schemas/proposal";
 import {
@@ -93,6 +94,22 @@ export function PlatformDetailTab({
   const [syncError, setSyncError] = useState("");
   const canFetch = SERVER_FETCHABLE.includes(platform);
   const isExtensionOnly = EXTENSION_ONLY.includes(platform);
+
+  // Hero'da tüm public veriyi göster/gizle (özet + tüm skills/portfolyo).
+  const [heroExpanded, setHeroExpanded] = useState(false);
+
+  // ── Uyarlama kaynağı seçimi (çekirdek / platform / ikisi) ────────────
+  // Seçenekler mevcut veriye göre: platform verisi çekilmişse platform/both,
+  // çekirdek profil kayıtlıysa core/both açık. İkisi de yoksa uyarlama disabled.
+  const hasPlatformData = !!platformProfile;
+  const sourceOptions: AdaptSource[] = [
+    ...(hasPlatformData && profileSaved ? (["both"] as AdaptSource[]) : []),
+    ...(hasPlatformData ? (["platform"] as AdaptSource[]) : []),
+    ...(profileSaved ? (["core"] as AdaptSource[]) : []),
+  ];
+  const [source, setSource] = useState<AdaptSource>("both");
+  const effectiveSource: AdaptSource | null =
+    (sourceOptions.includes(source) ? source : sourceOptions[0]) ?? null;
 
   async function syncPlatformProfile() {
     setSyncing(true); setSyncError("");
@@ -176,8 +193,25 @@ export function PlatformDetailTab({
                     {platformProfile.headline}
                   </h3>
                   {platformProfile.summary && (
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 max-w-3xl whitespace-pre-wrap">{platformProfile.summary}</p>
+                    <p className={`text-sm text-muted-foreground leading-relaxed max-w-3xl whitespace-pre-wrap ${heroExpanded ? "" : "line-clamp-3"}`}>
+                      {platformProfile.summary}
+                    </p>
                   )}
+                  {(() => {
+                    const hasMore =
+                      (platformProfile.summary?.length ?? 0) > 180 ||
+                      platformProfile.skills.length > 14 ||
+                      platformProfile.portfolio.length > 8;
+                    return hasMore ? (
+                      <button
+                        onClick={() => setHeroExpanded((v) => !v)}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-[#00F0FF] hover:underline cursor-pointer"
+                      >
+                        {heroExpanded ? t("detail.showLess") : t("detail.showAll")}
+                        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${heroExpanded ? "rotate-180" : ""}`} />
+                      </button>
+                    ) : null;
+                  })()}
                   <p className="text-[11px] text-muted-foreground/70">
                     {t("detail.syncedAt", { date: new Date(platformProfile.fetched_at).toLocaleString(locale) })}
                   </p>
@@ -186,7 +220,7 @@ export function PlatformDetailTab({
 
               {platformProfile.skills.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {platformProfile.skills.slice(0, 14).map((s, i) => (
+                  {(heroExpanded ? platformProfile.skills : platformProfile.skills.slice(0, 14)).map((s, i) => (
                     <span
                       key={s}
                       className="pd-chip rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-semibold"
@@ -195,7 +229,7 @@ export function PlatformDetailTab({
                       {s}
                     </span>
                   ))}
-                  {platformProfile.skills.length > 14 && (
+                  {!heroExpanded && platformProfile.skills.length > 14 && (
                     <span className="text-xs text-muted-foreground/60 self-center">+{platformProfile.skills.length - 14}</span>
                   )}
                 </div>
@@ -203,7 +237,7 @@ export function PlatformDetailTab({
 
               {platformProfile.portfolio.length > 0 && (
                 <div className="flex flex-wrap gap-2.5">
-                  {platformProfile.portfolio.slice(0, 8).map((item, i) =>
+                  {(heroExpanded ? platformProfile.portfolio : platformProfile.portfolio.slice(0, 8)).map((item, i) =>
                     item.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -261,7 +295,7 @@ export function PlatformDetailTab({
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-[#00F0FF]" />{t("detail.profileSection")}
           </h3>
-          {!profileSaved && (
+          {!profileSaved && !hasPlatformData && (
             <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
               <AlertCircle className="h-4 w-4 shrink-0" />{ta("saveProfileFirst")}
             </div>
@@ -272,17 +306,39 @@ export function PlatformDetailTab({
             </div>
           )}
           <Card className={`shadow-sm overflow-hidden ${ELEVATED} ${style.accent}`}>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-3 space-y-2.5">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-sm text-muted-foreground">{t("detail.profileHint")}</p>
                 <Button size="sm" variant={adaptResult ? "outline" : "default"}
-                  onClick={() => adapt(platform)} disabled={adapting === platform || !profileSaved}
+                  onClick={() => effectiveSource && adapt(platform, effectiveSource)}
+                  disabled={adapting === platform || !effectiveSource}
                   className="gap-1.5 h-7 text-xs shrink-0">
                   <Sparkles className="h-3 w-3" />
                   {adapting === platform ? ta("adapting") : adaptResult ? ta("refresh") : ta("adaptAction")}
                   <CreditCost kind="adaptation" />
                 </Button>
               </div>
+              {/* Kaynak seçici: uyarlama neyden üretilsin (çekirdek / platform / ikisi). */}
+              {sourceOptions.length > 1 && (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[11px] text-muted-foreground shrink-0">{t("detail.sourceLabel")}</span>
+                  <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5">
+                    {sourceOptions.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => setSource(opt)}
+                        className={`rounded-md px-2 py-0.5 text-[11px] font-medium transition-colors cursor-pointer ${
+                          effectiveSource === opt
+                            ? "bg-background text-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {t(`detail.source_${opt}`, { platform: PLATFORMS[platform].label })}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardHeader>
             <CardContent>
               {adaptResult ? (
@@ -297,11 +353,11 @@ export function PlatformDetailTab({
               ) : (
                 <div className="rounded-lg bg-muted/50 border border-dashed p-4 text-center space-y-2.5">
                   <p className="text-xs text-muted-foreground">
-                    {profileSaved ? ta("emptyState", { platform: PLATFORMS[platform].label }) : ta("saveProfileFirst")}
+                    {effectiveSource ? ta("emptyState", { platform: PLATFORMS[platform].label }) : ta("saveProfileFirst")}
                   </p>
-                  {/* profileSaved'da Uyarla CTA'sı zaten başlıkta — burada tekrar edilmez.
-                      Profilsizde başlık butonu disabled → "profil kur" CTA'sı burada. */}
-                  {!profileSaved && (
+                  {/* Uyarlanabilir kaynak varken (çekirdek veya platform) CTA başlıkta.
+                      Hiç kaynak yoksa "profil kur" CTA'sı burada. */}
+                  {!effectiveSource && (
                     <Button asChild size="sm" className="gap-1.5 h-7 text-xs">
                       <Link href="/dashboard/import">{t("detail.setupProfileCta")}</Link>
                     </Button>
