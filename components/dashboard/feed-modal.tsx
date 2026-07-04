@@ -21,6 +21,7 @@ export interface FeedPrefill {
   name?: string;
   platform?: string;
   keywords?: string[];
+  excludeKeywords?: string[];
   excludeCountries?: string[];
   minHourlyRate?: number;
   minFixedPrice?: number;
@@ -41,6 +42,7 @@ export function FeedModal({
   const [name, setName] = useState(feed?.name ?? initial?.name ?? "");
   const [platform, setPlatform] = useState(feed?.platform ?? initial?.platform ?? "");
   const [keywords, setKeywords] = useState<string[]>(feed?.keywords ?? initial?.keywords ?? []);
+  const [excludeKeywords, setExcludeKeywords] = useState<string[]>(feed?.exclude_keywords ?? initial?.excludeKeywords ?? []);
   const [excludeCountries, setExcludeCountries] = useState<string[]>(feed?.exclude_countries ?? initial?.excludeCountries ?? []);
   const [minHourly, setMinHourly] = useState(feed?.min_hourly_rate?.toString() ?? initial?.minHourlyRate?.toString() ?? "");
   const [minFixed, setMinFixed] = useState(feed?.min_fixed_price?.toString() ?? initial?.minFixedPrice?.toString() ?? "");
@@ -57,6 +59,7 @@ export function FeedModal({
       ? {
           name: name.trim(),
           keywords,
+          excludeKeywords,
           platform: platform || null,
           excludeCountries,
           minHourlyRate: numOrUndef(minHourly) ?? null,
@@ -68,6 +71,7 @@ export function FeedModal({
       : {
           name: name.trim(),
           keywords,
+          excludeKeywords,
           platform: platform || undefined,
           excludeCountries,
           minHourlyRate: numOrUndef(minHourly),
@@ -120,6 +124,12 @@ export function FeedModal({
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.keywordsLabel")}</span>
             <ChipsInput values={keywords} onChange={setKeywords} placeholder={t("modal.addKeyword")} removeTitle={t("modal.removeKeyword")} max={10} />
             <p className="text-[11px] text-muted-foreground/70">{t("modal.keywordsHint")}</p>
+          </div>
+
+          <div className="space-y-1.5">
+            <span className="text-xs font-semibold text-muted-foreground">{t("modal.excludeKeywordsLabel")}</span>
+            <ChipsInput values={excludeKeywords} onChange={setExcludeKeywords} placeholder={t("modal.addExcludeKeyword")} removeTitle={t("modal.removeKeyword")} max={20} />
+            <p className="text-[11px] text-muted-foreground/70">{t("modal.excludeKeywordsHint")}</p>
           </div>
 
           <div className="space-y-1.5">

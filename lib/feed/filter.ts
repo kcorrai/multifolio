@@ -6,6 +6,7 @@ import type { PoolJobRow, JobFeedRow } from "@/lib/validation/schemas/feed";
 
 export interface FeedCriteria {
   keywords: string[];
+  exclude_keywords?: string[];
   min_budget: number | null;
   platform: string | null;
   exclude_countries?: string[];
@@ -19,6 +20,7 @@ export interface FeedCriteria {
 export function feedCriteria(f: JobFeedRow): FeedCriteria {
   return {
     keywords: f.keywords,
+    exclude_keywords: f.exclude_keywords ?? [],
     min_budget: f.min_budget,
     platform: f.platform,
     exclude_countries: f.exclude_countries ?? [],
@@ -64,11 +66,11 @@ export function matchesFeed(pool: PoolJobRow, c: FeedCriteria, score: number | n
 
   if (c.min_score != null && c.min_score > 0 && score != null && score < c.min_score) return false;
 
-  if (c.keywords.length > 0) {
+  if (c.keywords.length > 0 || (c.exclude_keywords && c.exclude_keywords.length > 0)) {
     // Çevrilmiş başlıklar da aranır: İngilizce keyword Almanca ilanı yakalasın.
     const hay = `${pool.title} ${pool.title_en ?? ""} ${pool.title_tr ?? ""} ${pool.description} ${pool.skills.join(" ")}`.toLowerCase();
-    const hit = c.keywords.some((k) => hay.includes(k.toLowerCase()));
-    if (!hit) return false;
+    if (c.exclude_keywords && c.exclude_keywords.some((k) => hay.includes(k.toLowerCase()))) return false;
+    if (c.keywords.length > 0 && !c.keywords.some((k) => hay.includes(k.toLowerCase()))) return false;
   }
   return true;
 }

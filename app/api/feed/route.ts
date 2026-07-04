@@ -19,7 +19,7 @@ export const GET = withErrorHandler(async (req) => {
   const { offset, limit } = parseQuery(new URL(req.url).searchParams, feedListQuerySchema);
 
   const [feedsRes, poolRes, starRes, scoreRes] = await Promise.all([
-    supabase.from("job_feeds").select("id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
+    supabase.from("job_feeds").select("id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
     supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(POOL_WINDOW),
     supabase.from("starred_jobs").select("job_pool_id").eq("user_id", user.id),
     supabase.from("job_scores").select("job_pool_id, score, result").eq("user_id", user.id),

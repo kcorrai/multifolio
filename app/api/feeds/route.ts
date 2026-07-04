@@ -8,7 +8,7 @@ import { feedCreateSchema } from "@/lib/validation/schemas/feed";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const MAX_FEEDS = 10;
-const FEED_COLS = "id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at";
+const FEED_COLS = "id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at";
 
 export const GET = withErrorHandler(async () => {
   const supabase = await createSupabaseServerClient();
@@ -35,6 +35,7 @@ export const POST = withErrorHandler(async (req) => {
 
   const { data, error } = await supabase.from("job_feeds").insert({
     user_id: user.id, name: input.name, keywords: input.keywords,
+    exclude_keywords: input.excludeKeywords,
     min_budget: input.minBudget ?? null, platform: input.platform ?? null,
     exclude_countries: input.excludeCountries,
     min_hourly_rate: input.minHourlyRate ?? null,

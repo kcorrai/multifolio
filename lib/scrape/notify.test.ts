@@ -29,6 +29,7 @@ function makeFeed(over: Partial<NotifyFeedRow> = {}): NotifyFeedRow {
     user_id: "u1",
     name: "React",
     keywords: [],
+    exclude_keywords: [],
     min_budget: null,
     platform: null,
     exclude_countries: [],

@@ -51,6 +51,20 @@ describe("matchesFeed", () => {
     expect(matchesFeed(pool({ client_country: null }), crit({ exclude_countries: ["Pakistan"] }))).toBe(true);
   });
 
+  it("exclude_keywords title/description/skills'te geçerse eler (case-insensitive)", () => {
+    expect(matchesFeed(pool({}), crit({ exclude_keywords: ["REACT"] }))).toBe(false);
+    expect(matchesFeed(pool({ description: "WordPress theme work" }), crit({ exclude_keywords: ["wordpress"] }))).toBe(false);
+    expect(matchesFeed(pool({}), crit({ exclude_keywords: ["wordpress"] }))).toBe(true);
+  });
+  it("exclude_keywords çevrilmiş başlıkta da arar; pozitif keyword'den önce uygulanır", () => {
+    expect(matchesFeed(pool({ title_en: "Senior WordPress developer" }), crit({ exclude_keywords: ["wordpress"] }))).toBe(false);
+    // Pozitif keyword eşleşse bile exclude öncelikli eler.
+    expect(matchesFeed(pool({}), crit({ keywords: ["react"], exclude_keywords: ["dashboard"] }))).toBe(false);
+  });
+  it("exclude_keywords boşsa hiçbir şeyi elemez", () => {
+    expect(matchesFeed(pool({}), crit({ exclude_keywords: [] }))).toBe(true);
+  });
+
   it("min_hourly_rate yalnız saatlik ilanlara uygulanır", () => {
     expect(matchesFeed(pool({ budget: "Hourly $40-70" }), crit({ min_hourly_rate: 50 }))).toBe(false);
     expect(matchesFeed(pool({ budget: "Hourly $40-70" }), crit({ min_hourly_rate: 30 }))).toBe(true);

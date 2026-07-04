@@ -6,7 +6,7 @@ import { parseJson, parseUuidParam } from "@/lib/validation";
 import { feedUpdateSchema } from "@/lib/validation/schemas/feed";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const FEED_COLS = "id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at";
+const FEED_COLS = "id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at";
 
 export const PATCH = withErrorHandler(async (req, { params }) => {
   const id = parseUuidParam((await params).id as string);
@@ -18,6 +18,7 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
   const patch: Record<string, unknown> = {};
   if (input.name !== undefined) patch.name = input.name;
   if (input.keywords !== undefined) patch.keywords = input.keywords;
+  if (input.excludeKeywords !== undefined) patch.exclude_keywords = input.excludeKeywords;
   if (input.minBudget !== undefined) patch.min_budget = input.minBudget;
   if (input.platform !== undefined) patch.platform = input.platform;
   if (input.excludeCountries !== undefined) patch.exclude_countries = input.excludeCountries;

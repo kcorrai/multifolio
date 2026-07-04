@@ -5,6 +5,7 @@ import type { JobMatchResult } from "./job";
 export const feedCreateSchema = z.object({
   name: z.string().trim().min(1).max(80),
   keywords: z.array(z.string().trim().min(1).max(40)).max(10).default([]),
+  excludeKeywords: z.array(z.string().trim().min(1).max(60)).max(20).default([]),
   minBudget: z.number().int().min(0).max(1_000_000).optional(),
   platform: z.string().trim().max(60).optional(),
   excludeCountries: z.array(z.string().trim().min(1).max(60)).max(20).default([]),
@@ -20,6 +21,7 @@ export const feedCreateSchema = z.object({
 export const feedUpdateSchema = z.object({
   name: z.string().trim().min(1).max(80).optional(),
   keywords: z.array(z.string().trim().min(1).max(40)).max(10).optional(),
+  excludeKeywords: z.array(z.string().trim().min(1).max(60)).max(20).optional(),
   minBudget: z.number().int().min(0).max(1_000_000).nullable().optional(),
   platform: z.string().trim().max(60).nullable().optional(),
   excludeCountries: z.array(z.string().trim().min(1).max(60)).max(20).optional(),
@@ -78,6 +80,7 @@ export interface JobFeedRow {
   id: string;
   name: string;
   keywords: string[];
+  exclude_keywords: string[];
   min_budget: number | null;
   platform: string | null;
   exclude_countries: string[];

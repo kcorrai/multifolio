@@ -103,7 +103,7 @@ export const POST = withErrorHandler(async (req) => {
         .maybeSingle(),
       supabase
         .from("job_feeds")
-        .select("id, name, keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at")
+        .select("id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at")
         .eq("user_id", user.id)
         .not("proposal_prompt", "is", null),
     ]);
