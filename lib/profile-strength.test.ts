@@ -17,14 +17,23 @@ function full(over: Partial<ProfileStrengthInput> = {}): ProfileStrengthInput {
 }
 
 describe("computeProfileStrength", () => {
-  it("tüm maddeler tamamsa 100 döner", () => {
+  it("6 çekirdek madde tamamsa 100 döner (bonus %'yi etkilemez)", () => {
     const r = computeProfileStrength(full());
     expect(r.percent).toBe(100);
+    expect(r.items).toHaveLength(6);
     expect(r.items.every((i) => i.done)).toBe(true);
-    expect(r.items).toHaveLength(8);
+    expect(r.bonus).toHaveLength(2);
+    expect(r.bonus.every((b) => b.done)).toBe(true);
   });
 
-  it("hepsi boş/null ise 0 döner (savunmacı normalize)", () => {
+  it("avatar/portfolyo eksik olsa da (bonus) %100 ULAŞILABİLİR — manuel kullanıcı tavanı yok", () => {
+    const r = computeProfileStrength(full({ avatarUrl: null, portfolioCount: 0 }));
+    expect(r.percent).toBe(100); // çekirdek 6/6, bonus %'ye girmez
+    expect(r.bonus.find((b) => b.key === "avatar")?.done).toBe(false);
+    expect(r.bonus.find((b) => b.key === "portfolio")?.done).toBe(false);
+  });
+
+  it("hepsi boş/null ise 0 döner", () => {
     const r = computeProfileStrength({
       headline: null, summary: null, skills: null, avatarUrl: null,
       portfolioCount: null, connectionsCount: null, platformProfilesCount: null, adaptationsCount: null,
@@ -33,11 +42,11 @@ describe("computeProfileStrength", () => {
     expect(r.items.every((i) => !i.done)).toBe(true);
   });
 
-  it("eşikler: kısa headline (<20) ve kısa summary (<80) geçmez", () => {
+  it("eşikler: kısa headline (<20) ve kısa summary (<80) geçmez → 4/6 = 67", () => {
     const r = computeProfileStrength(full({ headline: "React dev", summary: "Too short." }));
     expect(r.items.find((i) => i.key === "headline")?.done).toBe(false);
     expect(r.items.find((i) => i.key === "summary")?.done).toBe(false);
-    expect(r.percent).toBe(75); // 6/8
+    expect(r.percent).toBe(67); // 4/6 = 66.7 → 67
   });
 
   it("skills eşiği 5'tir; 4 beceri geçmez", () => {
@@ -45,24 +54,24 @@ describe("computeProfileStrength", () => {
     expect(r.items.find((i) => i.key === "skills")?.done).toBe(false);
   });
 
-  it("kısmi tamamlama yüzdesi doğru yuvarlanır (3/8 → 38)", () => {
+  it("taze manuel kullanıcı (yalnız profil alanları) 3/6 = 50 (kırmızı değil)", () => {
     const r = computeProfileStrength(full({
       avatarUrl: null, portfolioCount: 0, connectionsCount: 0, platformProfilesCount: 0, adaptationsCount: 0,
     }));
-    expect(r.percent).toBe(38); // 3/8 = 37.5 → 38
+    expect(r.percent).toBe(50); // 3/6
   });
 
-  it("href hedefleri sabittir (profil alanları /profile, medya /import, platform adımları /platforms)", () => {
-    const hrefs = Object.fromEntries(computeProfileStrength(full()).items.map((i) => [i.key, i.href]));
-    expect(hrefs).toEqual({
+  it("href hedefleri: çekirdek profil/platform, bonus /import", () => {
+    const r = computeProfileStrength(full());
+    const coreHrefs = Object.fromEntries(r.items.map((i) => [i.key, i.href]));
+    expect(coreHrefs).toEqual({
       headline: "/dashboard/profile",
       summary: "/dashboard/profile",
       skills: "/dashboard/profile",
-      avatar: "/dashboard/import",
-      portfolio: "/dashboard/import",
       platformConnected: "/dashboard/platforms",
       platformDataFetched: "/dashboard/platforms",
       adapted: "/dashboard/platforms",
     });
+    expect(r.bonus.map((b) => b.href)).toEqual(["/dashboard/import", "/dashboard/import"]);
   });
 });

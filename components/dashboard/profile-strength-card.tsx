@@ -57,6 +57,25 @@ export function ProfileStrengthCard({ strength }: { strength: ProfileStrengthRes
           </ul>
         </>
       )}
+
+      {/* Opsiyonel bonus (yüzdeye girmez; içe aktarmadan gelir) — çelişki yaratmasın diye "opsiyonel" etiketli. */}
+      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <span className="text-[11px] text-muted-foreground/70">{t("bonusLabel")}</span>
+        {strength.bonus.map((b) => (
+          <Link
+            key={b.key}
+            href={b.href}
+            className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium transition-colors ${
+              b.done
+                ? "border-green-500/30 bg-green-500/10 text-green-600 dark:text-green-400"
+                : "border-border text-muted-foreground hover:text-foreground hover:border-[#00F0FF]/30"
+            }`}
+          >
+            {b.done && <Check className="h-3 w-3" />}
+            {t(`items.${b.key}`)}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

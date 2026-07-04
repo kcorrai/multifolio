@@ -4,7 +4,11 @@ import { z } from "zod";
 import { htmlToText } from "@/lib/import/text";
 import type { PoolJobUpsert, ScrapeSource } from "@/lib/scrape/types";
 
-const REMOTIVE_URL = "https://remotive.com/api/remote-jobs?limit=100";
+// Kitleye (freelance yazılım + tasarım) uygun kategoriler — filtresiz firehose
+// yerine yalnız alakalı ilanlar çekilir (feed alaka düzeltmesi, Dashboard P0-1).
+const REMOTIVE_CATEGORIES = ["software-dev", "design"] as const;
+const remotiveUrl = (category: string) =>
+  `https://remotive.com/api/remote-jobs?category=${category}&limit=100`;
 
 // Remotive tek ilan şeması (yalnız kullandığımız alanlar; fazlası yok sayılır).
 const remotiveJobSchema = z.object({
@@ -37,11 +41,17 @@ export function normalizeRemotive(raw: unknown): PoolJobUpsert | null {
   };
 }
 
-async function fetchRemotive(): Promise<unknown[]> {
-  const res = await fetch(REMOTIVE_URL, { headers: { accept: "application/json" } });
-  if (!res.ok) throw new Error(`Remotive HTTP ${res.status}`);
+async function fetchOne(category: string): Promise<unknown[]> {
+  const res = await fetch(remotiveUrl(category), { headers: { accept: "application/json" } });
+  if (!res.ok) throw new Error(`Remotive HTTP ${res.status} (${category})`);
   const data = (await res.json()) as { jobs?: unknown[] };
   return Array.isArray(data.jobs) ? data.jobs : [];
+}
+
+async function fetchRemotive(): Promise<unknown[]> {
+  // Kategori bazlı çekimler birleşir; dedup upsert'te (source+external_id) zaten yapılır.
+  const batches = await Promise.all(REMOTIVE_CATEGORIES.map(fetchOne));
+  return batches.flat();
 }
 
 export const remotiveSource: ScrapeSource = {

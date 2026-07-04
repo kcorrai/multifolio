@@ -98,4 +98,7 @@ export interface PoolJob extends PoolJobRow {
   isStarred: boolean;
   score: number | null;
   scoreResult: JobMatchResult | null;
+  // Profil × ilan ücretsiz alaka skoru (0-100, saf hesap; sunucuda eklenir).
+  // Profil skill'i yoksa null (sinyal yok → sıralama/eleme uygulanmaz).
+  relevance: number | null;
 }

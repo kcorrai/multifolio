@@ -4,6 +4,7 @@ import { JobsTab } from "@/components/dashboard/jobs-tab";
 import type { JobRow } from "@/components/dashboard/shared";
 import type { PoolJob, PoolJobRow, JobFeedRow } from "@/lib/validation/schemas/feed";
 import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
+import { jobRelevance, orderDefaultFeed, type RelevanceProfile } from "@/lib/feed/relevance";
 
 type View = "feed" | "search" | "starred" | "applied";
 const VIEWS: View[] = ["feed", "search", "starred", "applied"];
@@ -16,7 +17,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const { view: viewParam } = await searchParams;
 
   const [profileRes, jobsRes, feedsRes, poolRes, starRes, scoreRes] = await Promise.all([
-    supabase.from("profiles").select("user_id").eq("user_id", user.id).maybeSingle(),
+    supabase.from("profiles").select("user_id, headline, skills").eq("user_id", user.id).maybeSingle(),
     supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
     supabase.from("job_feeds").select("id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at").eq("user_id", user.id),
     supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(200),
@@ -30,10 +31,14 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const pool = (poolRes.data ?? []) as PoolJobRow[];
   const starred = new Set((starRes.data ?? []).map((r) => r.job_pool_id as string));
   const scores = new Map((scoreRes.data ?? []).map((r) => [r.job_pool_id as string, r]));
+  const relProfile: RelevanceProfile = {
+    headline: (profileRes.data?.headline as string | undefined) ?? null,
+    skills: (profileRes.data?.skills as string[] | undefined) ?? null,
+  };
 
-  // min_score cache'li skora göre eler (skorsuz ilan geçer).
+  // Feedsiz varsayılan görünüm profil alakasına göre sıralanır/elenir (route ile aynı).
   const matched = feeds.length === 0
-    ? pool
+    ? orderDefaultFeed(pool, relProfile)
     : pool.filter((p) => {
         const s = scores.get(p.id);
         const score = s ? (s.score as number) : null;
@@ -42,7 +47,13 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
 
   const initialFeedJobs: PoolJob[] = matched.slice(0, 25).map((p) => {
     const s = scores.get(p.id);
-    return { ...p, isStarred: starred.has(p.id), score: s ? (s.score as number) : null, scoreResult: s ? s.result : null };
+    return {
+      ...p,
+      isStarred: starred.has(p.id),
+      score: s ? (s.score as number) : null,
+      scoreResult: s ? s.result : null,
+      relevance: jobRelevance(relProfile, p),
+    };
   });
 
   const requested = (viewParam && VIEWS.includes(viewParam as View)) ? (viewParam as View) : null;

@@ -298,10 +298,11 @@
       "hint": "Başvuruların, tekliflerin ve yeni feed eşleşmelerin haftalık özeti."
     },
     "profileStrength": {
-      "title": "Profil gücü",
+      "title": "Kurulum ilerlemesi",
       "percent": "%{percent}",
-      "complete": "Profilin tamam — harika iş!",
+      "complete": "Kurulum tamam — harika iş!",
       "hint": "Tam profiller çok daha fazla fark edilir. Şu adımları tamamla:",
+      "bonusLabel": "Opsiyonel:",
       "items": {
         "headline": "Daha güçlü bir başlık yaz",
         "summary": "Özetini genişlet",
@@ -429,7 +430,7 @@
     "save": "Kaydet",
     "saved": "Kaydedildi",
     "preview": "Önizleme",
-    "completion": "Tamamlanma",
+    "completion": "Çekirdek profil",
     "photoAlt": "Profil fotoğrafı",
     "portfolioTitle": "Portfolyo ({count})",
     "identityEyebrow": "Profesyonel kimliğin",
@@ -650,6 +651,9 @@
     "unstar": "Yıldızı kaldır",
     "analyze": "Uyumu analiz et",
     "analyzing": "Analiz ediliyor…",
+    "relevanceLabel": "Profil uyumu",
+    "lowRelevanceWarn": "Bu ilan profiline pek uymuyor görünüyor. Yine de analiz edilsin mi?",
+    "analyzeAnyway": "Yine de analiz et",
     "openOnPlatform": "Platformda aç",
     "markApplied": "Başvurdum olarak işaretle",
     "applied": "Başvuruldu",

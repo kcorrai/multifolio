@@ -7,6 +7,7 @@ import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseQuery } from "@/lib/validation";
 import { feedListQuerySchema, type PoolJobRow, type JobFeedRow, type PoolJob } from "@/lib/validation/schemas/feed";
 import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
+import { jobRelevance, orderDefaultFeed, type RelevanceProfile } from "@/lib/feed/relevance";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const POOL_WINDOW = 200;
@@ -18,7 +19,8 @@ export const GET = withErrorHandler(async (req) => {
 
   const { offset, limit } = parseQuery(new URL(req.url).searchParams, feedListQuerySchema);
 
-  const [feedsRes, poolRes, starRes, scoreRes] = await Promise.all([
+  const [profileRes, feedsRes, poolRes, starRes, scoreRes] = await Promise.all([
+    supabase.from("profiles").select("headline, skills").eq("user_id", user.id).maybeSingle(),
     supabase.from("job_feeds").select("id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
     supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(POOL_WINDOW),
     supabase.from("starred_jobs").select("job_pool_id").eq("user_id", user.id),
@@ -33,10 +35,12 @@ export const GET = withErrorHandler(async (req) => {
   const pool = (poolRes.data ?? []) as PoolJobRow[];
   const starred = new Set((starRes.data ?? []).map((r) => r.job_pool_id as string));
   const scores = new Map((scoreRes.data ?? []).map((r) => [r.job_pool_id as string, r]));
+  const relProfile: RelevanceProfile = { headline: profileRes.data?.headline ?? null, skills: profileRes.data?.skills ?? null };
 
-  // min_score cache'li skora göre eler (skorsuz ilan geçer) → skor haritası eşleşmeden önce lazım.
+  // Feedsiz varsayılan görünüm profil alakasına göre sıralanır/elenir; kayıtlı
+  // feed'de kullanıcının kendi kriterleri (matchesFeed) geçerli, sıra korunur.
   const matched = feeds.length === 0
-    ? pool
+    ? orderDefaultFeed(pool, relProfile)
     : pool.filter((p) => {
         const s = scores.get(p.id);
         const score = s ? (s.score as number) : null;
@@ -45,7 +49,13 @@ export const GET = withErrorHandler(async (req) => {
 
   const page: PoolJob[] = matched.slice(offset, offset + limit).map((p) => {
     const s = scores.get(p.id);
-    return { ...p, isStarred: starred.has(p.id), score: s ? (s.score as number) : null, scoreResult: s ? s.result : null };
+    return {
+      ...p,
+      isStarred: starred.has(p.id),
+      score: s ? (s.score as number) : null,
+      scoreResult: s ? s.result : null,
+      relevance: jobRelevance(relProfile, p),
+    };
   });
 
   return NextResponse.json({ jobs: page, total: matched.length, hasFeeds: feeds.length > 0 });

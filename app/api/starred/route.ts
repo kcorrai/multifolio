@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseJson, parseQuery } from "@/lib/validation";
 import { starToggleSchema, type PoolJobRow, type PoolJob } from "@/lib/validation/schemas/feed";
+import { jobRelevance, type RelevanceProfile } from "@/lib/feed/relevance";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const POOL_COLS = "id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr";
@@ -20,7 +21,8 @@ export const GET = withErrorHandler(async () => {
   const ids = (stars ?? []).map((s) => s.job_pool_id as string);
   if (ids.length === 0) return NextResponse.json({ jobs: [] });
 
-  const [poolRes, scoreRes] = await Promise.all([
+  const [profileRes, poolRes, scoreRes] = await Promise.all([
+    supabase.from("profiles").select("headline, skills").eq("user_id", user.id).maybeSingle(),
     supabase.from("job_pool").select(POOL_COLS).in("id", ids),
     supabase.from("job_scores").select("job_pool_id, score, result").eq("user_id", user.id).in("job_pool_id", ids),
   ]);
@@ -29,11 +31,18 @@ export const GET = withErrorHandler(async () => {
 
   const scores = new Map((scoreRes.data ?? []).map((r) => [r.job_pool_id as string, r]));
   const byId = new Map(((poolRes.data as PoolJobRow[]) ?? []).map((p) => [p.id, p]));
+  const relProfile: RelevanceProfile = { headline: profileRes.data?.headline ?? null, skills: profileRes.data?.skills ?? null };
 
   // Yıldız sırasını koru.
   const jobs: PoolJob[] = ids.map((id) => byId.get(id)).filter((p): p is PoolJobRow => Boolean(p)).map((p) => {
     const s = scores.get(p.id);
-    return { ...p, isStarred: true, score: s ? (s.score as number) : null, scoreResult: s ? s.result : null };
+    return {
+      ...p,
+      isStarred: true,
+      score: s ? (s.score as number) : null,
+      scoreResult: s ? s.result : null,
+      relevance: jobRelevance(relProfile, p),
+    };
   });
   return NextResponse.json({ jobs });
 });

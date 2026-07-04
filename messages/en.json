@@ -298,10 +298,11 @@
       "hint": "A weekly recap of your applications, proposals and new feed matches."
     },
     "profileStrength": {
-      "title": "Profile strength",
+      "title": "Setup progress",
       "percent": "{percent}%",
-      "complete": "Your profile is complete — great work!",
+      "complete": "Setup complete — great work!",
       "hint": "Complete profiles get noticed far more often. Finish these steps:",
+      "bonusLabel": "Optional:",
       "items": {
         "headline": "Write a stronger headline",
         "summary": "Expand your summary",
@@ -429,7 +430,7 @@
     "save": "Save",
     "saved": "Saved",
     "preview": "Preview",
-    "completion": "Completion",
+    "completion": "Core profile",
     "photoAlt": "Profile photo",
     "portfolioTitle": "Portfolio ({count})",
     "identityEyebrow": "Your professional identity",
@@ -650,6 +651,9 @@
     "unstar": "Unstar",
     "analyze": "Analyze match",
     "analyzing": "Analyzing…",
+    "relevanceLabel": "Profile match",
+    "lowRelevanceWarn": "This job doesn't look like a strong match for your profile. Analyze it anyway?",
+    "analyzeAnyway": "Analyze anyway",
     "openOnPlatform": "Open on platform",
     "markApplied": "Mark as applied",
     "applied": "Applied",

@@ -12,7 +12,6 @@ import { notifyFeedMatches } from "@/lib/scrape/notify";
 import { translateJobTitles } from "@/lib/ai/translate";
 import { sendFeedDigestEmail } from "@/lib/notifications/email";
 import { remotiveSource } from "@/lib/scrape/sources/remotive";
-import { arbeitnowSource } from "@/lib/scrape/sources/arbeitnow";
 import { remoteOkSource } from "@/lib/scrape/sources/remoteok";
 
 // Arka plan (çeviri+bildirim) adımı için tavan; Fluid Compute yanıttan sonra
@@ -44,7 +43,8 @@ export const POST = withErrorHandler(async (req) => {
   // Koşu başlangıcı: bildirim adımı yalnız bu andan sonra INSERT edilen
   // (created_at >= startedAt) pool satırlarını "yeni" sayar.
   const startedAt = new Date().toISOString();
-  const results = await runScrape(admin, [remotiveSource, arbeitnowSource, remoteOkSource]);
+  // Arbeitnow düşürüldü (filtresiz Alman on-site "(m/w/d)" çöpü — feed alakasını bozuyordu).
+  const results = await runScrape(admin, [remotiveSource, remoteOkSource]);
 
   // Çeviri (AI, ~50sn) + bildirim adımları cron-job.org'un ~30sn HTTP zaman
   // aşımını aşıyordu → koşu "Failed (timeout)" görünüyordu (iş aslında bitiyordu).

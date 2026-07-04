@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { X, Sparkles, ExternalLink, Check, Languages, RefreshCw } from "lucide-react";
+import { X, Sparkles, ExternalLink, Check, Languages, RefreshCw, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
 import { poolJobTitle } from "@/lib/feed/filter";
+import { RELEVANCE_WARN_BELOW } from "@/lib/feed/relevance";
 import { scoreColor, scoreBarColor } from "./shared";
 import { MatchRubric, VerdictBadge, RiskBadges } from "./match-rubric";
 
@@ -26,6 +27,9 @@ export function PoolJobPanel({
   const [scoring, setScoring] = useState(false);
   const [applied, setApplied] = useState(false);
   const [error, setError] = useState("");
+  // Düşük-alaka skorlama uyarısı (kredi israfını önler); ilan değişince RENDER'da sıfırlanır.
+  const [gate, setGate] = useState({ jobId: job.id, warned: false });
+  if (gate.jobId !== job.id) setGate({ jobId: job.id, warned: false });
   // Çeviri durumu tek nesnede; ilan/dil değişince RENDER sırasında sıfırlanır
   // (effect içinde senkron setState yasak — react-hooks/set-state-in-effect).
   const [tr, setTr] = useState({ jobId: job.id, locale, text: null as string | null, failed: false, showOriginal: false });
@@ -81,6 +85,13 @@ export function PoolJobPanel({
   }
 
   const result = job.scoreResult;
+  const lowRelevance = job.relevance !== null && job.relevance < RELEVANCE_WARN_BELOW;
+
+  // Skorlama tıklaması: düşük alakada önce uyar (ikinci tık kredi harcar).
+  function requestAnalyze() {
+    if (lowRelevance && !gate.warned) { setGate({ jobId: job.id, warned: true }); return; }
+    analyze();
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -121,10 +132,24 @@ export function PoolJobPanel({
             )}
           </div>
         ) : (
-          <Button variant="outline" onClick={() => analyze()} disabled={scoring} className="gap-2 w-full">
-            <Sparkles className="h-4 w-4" />{scoring ? t("analyzing") : t("analyze")}
-            <CreditCost kind="job_match" />
-          </Button>
+          <div className="space-y-2">
+            {job.relevance !== null && (
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-muted-foreground">{t("relevanceLabel")}</span>
+                <span className={`font-bold rounded-md px-1.5 py-0.5 tabular-nums ${scoreColor(job.relevance)}`}>{job.relevance}</span>
+              </div>
+            )}
+            {gate.warned && lowRelevance && (
+              <p className="text-[11px] text-amber-600 dark:text-amber-400 flex items-start gap-1.5">
+                <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-px" />{t("lowRelevanceWarn")}
+              </p>
+            )}
+            <Button variant="outline" onClick={requestAnalyze} disabled={scoring} className="gap-2 w-full">
+              <Sparkles className="h-4 w-4" />
+              {scoring ? t("analyzing") : gate.warned && lowRelevance ? t("analyzeAnyway") : t("analyze")}
+              <CreditCost kind="job_match" />
+            </Button>
+          </div>
         )}
 
         <div>
