@@ -61,7 +61,8 @@ export function ProfileTab({
   const [summary, setSummary] = useState(initialProfile?.summary ?? "");
   const [skills, setSkills] = useState<string[]>(initialProfile?.skills ?? []);
   // Görseller içe aktarmadan gelir; burada salt-okunur gösterilir (kaydetme ezmez).
-  const avatarUrl = initialProfile?.avatarUrl ?? null;
+  // Çekirdek profilde foto yoksa bağlı public profillerden (en son çekilen) foto'ya düş.
+  const avatarUrl = initialProfile?.avatarUrl ?? connectedProfiles.find((c) => c.avatarUrl)?.avatarUrl ?? null;
   const portfolio = initialProfile?.portfolio ?? [];
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">(
     initialProfile !== null ? "saved" : "idle",
