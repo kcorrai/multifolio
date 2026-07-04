@@ -142,7 +142,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
               </p>
             )}
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors shrink-0 mt-0.5 cursor-pointer">
+          <button onClick={onClose} title={t("close")} aria-label={t("close")} className="text-muted-foreground hover:text-foreground transition-colors shrink-0 mt-0.5 cursor-pointer">
             <X className="h-4 w-4" />
           </button>
         </div>

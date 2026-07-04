@@ -431,6 +431,7 @@ export function PlatformDetailTab({
                     disabled={deletingConn}
                     className="ml-auto text-muted-foreground/40 hover:text-destructive transition-colors cursor-pointer"
                     title={tc("removeConnection")}
+                    aria-label={tc("removeConnection")}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>

@@ -97,7 +97,7 @@ export function FeedModal({
       <div className="w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-2xl border border-border bg-card p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between">
           <h3 className="font-bold">{feed ? t("modal.editTitle") : t("modal.title")}</h3>
-          <button onClick={onClose} className="text-muted-foreground/50 hover:text-foreground"><X className="h-4 w-4" /></button>
+          <button onClick={onClose} title={t("close")} aria-label={t("close")} className="text-muted-foreground/50 hover:text-foreground"><X className="h-4 w-4" /></button>
         </div>
         <div className="space-y-3.5">
           <label className="block space-y-1">

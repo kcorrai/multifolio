@@ -54,7 +54,7 @@ export function ChipsInput({
           {values.map((v) => (
             <span key={v} className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium">
               {v}
-              <button type="button" onClick={() => onChange(values.filter((k) => k !== v))} className="text-muted-foreground/60 hover:text-foreground" title={removeTitle}>
+              <button type="button" onClick={() => onChange(values.filter((k) => k !== v))} className="text-muted-foreground/60 hover:text-foreground" title={removeTitle} aria-label={`${removeTitle}: ${v}`}>
                 <X className="h-3 w-3" />
               </button>
             </span>

@@ -144,6 +144,7 @@ export function FeedSettingsPanel({
           <label className="block space-y-1">
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.minClientSpentLabel")}</span>
             <input value={minClientSpent} onChange={(e) => setMinClientSpent(e.target.value)} inputMode="numeric" placeholder="1000" className={input} />
+            <span className="block text-[11px] text-muted-foreground/70">{t("modal.minClientSpentHint")}</span>
           </label>
           <label className="block space-y-1">
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.minHourlyLabel")}</span>

@@ -6,6 +6,8 @@
     "goToDashboard": "Dashboard'a Git",
     "switchToLight": "Açık moda geç",
     "switchToDark": "Koyu moda geç",
+    "copy": "Kopyala",
+    "toggleLanguage": "Dili değiştir",
     "metaDescription": "Çoklu platform freelancer kariyer aracı — profilini bir kez gir, her platform için optimize et."
   },
   "landing": {
@@ -285,6 +287,7 @@
       "offer": "Teklif",
       "rejected": "Reddedildi"
     },
+    "close": "Kapat",
     "deleteError": "İlan silinemedi.",
     "statApplied": "Başvurulan",
     "statAwaiting": "Yanıt Bekleniyor",
@@ -498,6 +501,7 @@
     "ctaButton": "Ücretsiz başla"
   },
   "feed": {
+    "close": "Kapat",
     "tabs": {
       "feed": "Feed",
       "search": "Ara",
@@ -583,7 +587,7 @@
       "minHourlyLabel": "Min saatlik ücret (USD)",
       "minFixedLabel": "Min sabit fiyat (USD)",
       "minClientSpentLabel": "Müşteri min harcaması (USD)",
-      "minClientSpentHint": "Platformlar müşteri harcamasını bildirdiğinde uygulanır; verisi olmayan ilanlar görünmeye devam eder.",
+      "minClientSpentHint": "Mevcut ilan kaynakları müşteri harcaması bildirmiyor — bu filtre veri geldiğinde etkinleşir; verisi olmayan ilanlar görünmeye devam eder.",
       "minScoreLabel": "Minimum skor",
       "minScoreOff": "Kapalı",
       "minScoreHint": "Yalnız skorladığın ilanlara uygulanır; skorsuz ilanlar görünmeye devam eder.",

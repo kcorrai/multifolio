@@ -137,6 +137,7 @@ export function AppliedView({
                       disabled={deletingId === job.id}
                       className="text-muted-foreground/30 hover:text-destructive transition-colors cursor-pointer"
                       title={t("delete")}
+                      aria-label={t("delete")}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>

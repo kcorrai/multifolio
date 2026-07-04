@@ -54,6 +54,7 @@ export function OverviewTab({
                 onClick={() => setOnboardingDismissed(true)}
                 className="text-muted-foreground hover:text-foreground transition-colors shrink-0 cursor-pointer"
                 title={t("close")}
+                aria-label={t("close")}
               >
                 <X className="h-4 w-4" />
               </button>

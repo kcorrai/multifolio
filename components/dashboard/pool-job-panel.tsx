@@ -91,7 +91,7 @@ export function PoolJobPanel({
             {job.source}{job.budget ? ` · ${job.budget}` : ""}{job.client_country ? ` · ${job.client_country}` : ""}
           </p>
         </div>
-        <button onClick={onClose} className="text-muted-foreground/50 hover:text-foreground shrink-0"><X className="h-4 w-4" /></button>
+        <button onClick={onClose} title={t("close")} aria-label={t("close")} className="text-muted-foreground/50 hover:text-foreground shrink-0"><X className="h-4 w-4" /></button>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">

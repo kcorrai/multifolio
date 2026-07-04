@@ -6,6 +6,8 @@
     "goToDashboard": "Go to dashboard",
     "switchToLight": "Switch to light mode",
     "switchToDark": "Switch to dark mode",
+    "copy": "Copy",
+    "toggleLanguage": "Toggle language",
     "metaDescription": "Multi-platform freelancer career tool — enter your profile once, optimize it for every platform."
   },
   "landing": {
@@ -285,6 +287,7 @@
       "offer": "Offer",
       "rejected": "Rejected"
     },
+    "close": "Close",
     "deleteError": "Could not delete the job.",
     "statApplied": "Applied",
     "statAwaiting": "Awaiting Reply",
@@ -498,6 +501,7 @@
     "ctaButton": "Get started free"
   },
   "feed": {
+    "close": "Close",
     "tabs": {
       "feed": "Feed",
       "search": "Search",
@@ -583,7 +587,7 @@
       "minHourlyLabel": "Min hourly rate (USD)",
       "minFixedLabel": "Min fixed price (USD)",
       "minClientSpentLabel": "Client min spent (USD)",
-      "minClientSpentHint": "Applies once platforms report client spend; jobs without data stay visible.",
+      "minClientSpentHint": "Current job sources don't report client spend yet — this filter activates when the data arrives; jobs without data stay visible.",
       "minScoreLabel": "Minimum score",
       "minScoreOff": "Off",
       "minScoreHint": "Only applies to jobs you already scored; unscored jobs stay visible.",

@@ -72,6 +72,7 @@ export function PoolJobRow({
             onClick={(e) => { e.stopPropagation(); onStar(job); }}
             className="text-muted-foreground/40 hover:text-amber-400 transition-colors cursor-pointer"
             title={job.isStarred ? t("unstar") : t("star")}
+            aria-label={job.isStarred ? t("unstar") : t("star")}
           >
             <Star className={`h-4 w-4 ${job.isStarred ? "fill-amber-400 text-amber-400" : ""}`} />
           </button>

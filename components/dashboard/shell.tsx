@@ -126,7 +126,7 @@ export function DashboardShell({
               </div>
               <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">{userEmail}</span>
               <form action="/auth/signout" method="post">
-                <button type="submit" title={t("shell.logout")} className="text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer">
+                <button type="submit" title={t("shell.logout")} aria-label={t("shell.logout")} className="text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer">
                   <LogOut className="h-3.5 w-3.5" />
                 </button>
               </form>
@@ -153,7 +153,7 @@ export function DashboardShell({
               <LanguageToggle />
               <ThemeToggle />
               <form action="/auth/signout" method="post" className="lg:hidden">
-                <Button type="submit" variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
+                <Button type="submit" variant="ghost" size="sm" title={t("shell.logout")} aria-label={t("shell.logout")} className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
                   <LogOut className="h-3.5 w-3.5" />
                 </Button>
               </form>

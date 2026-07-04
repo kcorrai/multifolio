@@ -170,6 +170,7 @@ export function FeedView({
                 onBlur={() => setConfirmingDelete(false)}
                 className="gap-1.5 h-8 text-xs shrink-0"
                 title={t("modal.delete")}
+                aria-label={t("modal.delete")}
               >
                 <Trash2 className="h-3 w-3" />{confirmingDelete ? t("deleteConfirm") : null}
               </Button>

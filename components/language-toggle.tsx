@@ -1,5 +1,5 @@
 "use client";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Languages } from "lucide-react";
@@ -8,6 +8,7 @@ import type { Locale } from "@/i18n/detect";
 
 // EN/TR dil değiştirici. Cookie'yi server action ile yazar, ardından yeniden render tetikler.
 export function LanguageToggle() {
+  const t = useTranslations("common");
   const locale = useLocale() as Locale;
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -24,7 +25,7 @@ export function LanguageToggle() {
     <button
       onClick={toggle}
       disabled={pending}
-      aria-label="Toggle language"
+      aria-label={t("toggleLanguage")}
       className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer disabled:opacity-50"
     >
       <Languages className="h-3.5 w-3.5" />
