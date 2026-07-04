@@ -49,9 +49,16 @@ async function fetchOne(category: string): Promise<unknown[]> {
 }
 
 async function fetchRemotive(): Promise<unknown[]> {
-  // Kategori bazlı çekimler birleşir; dedup upsert'te (source+external_id) zaten yapılır.
-  const batches = await Promise.all(REMOTIVE_CATEGORIES.map(fetchOne));
-  return batches.flat();
+  // Kategori bazlı çekimler birleşir (dedup upsert'te). allSettled: bir kategori
+  // Remotive rate-limit'ine (≤4/gün) takılsa da diğeri yine gelir — hepsi patlamaz.
+  const settled = await Promise.allSettled(REMOTIVE_CATEGORIES.map(fetchOne));
+  const jobs = settled.flatMap((s) => (s.status === "fulfilled" ? s.value : []));
+  // İkisi de başarısızsa gerçek hatayı yüzeye çıkar (runScrape kaynağı 'error' loglar).
+  if (jobs.length === 0) {
+    const firstErr = settled.find((s): s is PromiseRejectedResult => s.status === "rejected");
+    if (firstErr) throw firstErr.reason;
+  }
+  return jobs;
 }
 
 export const remotiveSource: ScrapeSource = {

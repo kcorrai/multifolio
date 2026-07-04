@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { jobRelevance } from "./relevance";
+import { jobRelevance, orderDefaultFeed } from "./relevance";
 import type { PoolJobRow } from "@/lib/validation/schemas/feed";
 
 function job(over: Partial<PoolJobRow> = {}): PoolJobRow {
@@ -60,5 +60,32 @@ describe("jobRelevance", () => {
       job(),
     )!;
     expect(r).toBeLessThan(15);
+  });
+});
+
+describe("orderDefaultFeed", () => {
+  const german = job({
+    id: "00000000-0000-0000-0000-0000000000de",
+    title: "Produktionsleiter (m/w/d)",
+    description: "Fertigung und Montage in der Produktion.",
+    skills: ["produktion", "montage"],
+  });
+  const reactJob = job();
+
+  it("yeterli sinyalde (≥3 skill) alakalı üste gelir, alakasız Alman ilan elenir", () => {
+    const out = orderDefaultFeed([german, reactJob], reactProfile);
+    expect(out[0].id).toBe(reactJob.id);
+    expect(out.some((j) => j.id === german.id)).toBe(false); // düşük alaka gizlendi
+  });
+
+  it("profil sinyali zayıfsa (skill yok) gelen sıra korunur (kronolojik)", () => {
+    const out = orderDefaultFeed([german, reactJob], { headline: "x", skills: [] });
+    expect(out.map((j) => j.id)).toEqual([german.id, reactJob.id]);
+  });
+
+  it("hepsi düşük alakalıysa boşaltmaz — en iyileri (sıralı) döndürür", () => {
+    const out = orderDefaultFeed([german], reactProfile);
+    expect(out).toHaveLength(1);
+    expect(out[0].id).toBe(german.id);
   });
 });

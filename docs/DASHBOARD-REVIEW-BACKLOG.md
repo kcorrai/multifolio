@@ -16,9 +16,9 @@
 - **Mobil dashboard nav'ı çalışıyor** (yatay kaydırılabilir sekmeler) — landing header'ının
   aksine. (Not: mobil nav sorunu yalnız pazarlama header'ında.)
 
-## P0 — Kritik (ilk izlenimi ve çekirdek vaadi kırıyor)
+## P0 — Kritik (ilk izlenimi ve çekirdek vaadi kırıyor) — ✅ TAMAMLANDI (2026-07-04, commit `916401c`)
 
-- [ ] **Feed alaka + içerik uyumsuzluğu — "mükemmel uyum" vaadi çöküyor**
+- [x] **Feed alaka** → `lib/feed/relevance.ts` (saf skill-kesişim motoru) varsayılan feed'i relevance DESC sıralar + düşük alakalıyı gizler; Arbeitnow scrape'ten düştü + havuzdan temizlendi; Remotive category=software-dev+design. E2E: React profili motor/üretim çöpü görmüyor (germanJunk 0).
   - Gözlem: "Senior Frontend Developer (React/Next.js)" profiliyle varsayılan **"Tüm eşleşen"**
     feed'i tamamen alakasız işlerle dolu — motor test mühendisi, üretim müdürü, dondurulmuş
     gıda satış direktörü, montaj teknisyeni. Hepsi **Arbeitnow Alman tam-zamanlı "(m/w/d)"**
@@ -32,30 +32,13 @@
   - Kabul: varsayılan feed profil beceri/başlığına göre en azından kaba sıralanır; havuz
     freelance/remote yazılım-tasarım ağırlıklı hale getirilir veya alakasızlar elenir.
 
-- [ ] **Alakasız işe "uyum" öğrenmek için 1 kredi harcatıyor**
-  - Nerede: ilan slide-over "Uyumu analiz et (1 kredi)" (`pool-job-panel.tsx`, `/api/feed/[poolId]/score`).
-  - Sorun: feed relevance olmadan kullanıcı bariz uymayan işlerde skorlamaya kredi yakar.
-  - Kabul: ücretsiz/ucuz ön-eleme (profil-skill kesişimi) skorlamadan önce çalışır; ya da
-    açıkça uymayan ilanlarda skor butonu pasif/uyarılı.
+- [x] **Alakasız işe kredi harcatma** → pool-job-panel'de ücretsiz relevance rozeti + düşük-alaka (<20) skorlamada iki-adımlı uyarı ("yine de analiz et?"); hard-block yok.
 
-- [ ] **İki çelişkili "profil tamamlanma" metriği**
-  - Gözlem: Genel Bakış **"Profil gücü %38" (KIRMIZI bar)**; Profil sekmesi **"Tamamlanma %100"**
-    (4 yeşil tik). Aynı profil, iki ekran, çelişkili sinyal.
-  - Kök: `lib/profile-strength.ts` = 8 eşit maddeli (headline/summary/skills/avatar/portfolio/
-    platformConnected/platformDataFetched/adapted) → 3/8 ≈ %38. Profil sekmesi ring'i yalnız
-    4 çekirdek alanı sayıyor → %100.
-  - Kabul: iki metrik birleştirilir VEYA etiket/anlam netçe ayrılır (ör. "Çekirdek profil %100"
-    vs "Kurulum ilerlemesi %38"); yeni kullanıcı çelişki görmez.
+- [x] **İki çelişkili tamamlanma metriği** → `profile-strength.ts` 6-çekirdek (ulaşılabilir) + 2-bonus (avatar/portfolyo %'ye girmez → manuel kullanıcı %100 olabilir, tavan kalktı); Overview "Kurulum ilerlemesi" vs Profil "Çekirdek profil" relabel (çelişki bitti). NOT: P1 "yapısal tavan" da bu değişiklikle kapandı.
 
 ## P1 — Orta
 
-- [ ] **Profil gücünde yapısal tavan — manuel kullanıcı asla %100 olamaz**
-  - Nerede: `lib/profile-strength.ts` — `avatar` + `portfolio` maddeleri yalnız içe aktarmadan
-    (pratikte Bionluk) doluyor. Metinle/manuel giren kullanıcı bu 2 maddeyi hiç dolduramaz →
-    kalıcı kırmızı/eksik görür. Üstelik **portfolyo UI'si kaldırılmış** olduğu halde skorda
-    cezalandırıyor.
-  - Kabul: manuel avatar yükleme eklenir VEYA bu maddeler manuel kullanıcı için opsiyonel/
-    ağırlıksız sayılır; ulaşılamaz tavan kalkar.
+- [x] **Profil gücünde yapısal tavan** → ✅ P0-3 ile kapandı: avatar/portfolyo artık opsiyonel bonus (yüzdeye girmez); manuel kullanıcı çekirdek döngüyle %100 olur.
 
 - [ ] **Uyarlama çıktı dili UI diline sabit (global platformlarda sorun olabilir)**
   - Nerede: `lib/ai/adapt.ts` + `lib/ai/language.ts` — LinkedIn/Upwork/Fiverr için de TR çıktı.
