@@ -5,7 +5,7 @@
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
 **Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/{en,tr}.json`) — EN varsayılan, TR opsiyonel; sabit string yazma, `useTranslations`/`getTranslations` kullan (yeni anahtar ekleyince iki katalogu da güncelle). **Kod yorumları Türkçe kalır.** AI çıktı dili UI locale'ine uyar.
-Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Dalga 1 quick-win paketi tamamlandı (feed sayfalama, exclude keywords, sahte ilan risk rozeti, RemoteOK kaynağı, iki dilli digest, düşük kredi banner'ı, a11y süpürme — 2026-07-04). Sırada: backlog Tier 1 (ücretsiz profil analiz aracı, referral, profil gücü skoru) / özel domain portfolyo / Iyzico. Migration'lar 0022 dahil.**
+Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Dalga 2 tamamlandı (ücretsiz /analyze aracı + referral kredi programı + profil gücü skoru — 2026-07-04; Dalga 1 aynı gün: sayfalama, exclude keywords, risk rozeti, RemoteOK, iki dilli digest, düşük kredi banner'ı). Sırada: backlog Tier 2 (haftalık özet e-postası, follow-up hatırlatıcı, EN teklifin TR karşılığı, net kazanç hesaplayıcı, portfolyo UI geri getirme) / Iyzico. Migration'lar 0024 dahil.**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
@@ -29,6 +29,8 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı + Telegram trigger.
   - `app/api/proposal` — GET (iş bazlı liste) / POST (AI teklif üretir, proposals'a kaydeder).
   - `app/api/credits` — GET: kullanıcının kredi bakiyesi (`credits` tablosu).
+  - `app/api/analyze` — POST: HERKESE AÇIK ücretsiz profil analizi (auth opsiyonel; kayıtsız 5/saat IP-hash `public_analyses`, girişli 10/saat `usage_events kind='public_analyze'`; teaser SUNUCUDA kesilir — kayıtsıza `full:null`). Motor `lib/ai/profile-analyze.ts` + saf skor `lib/analyze/{score,ip-hash}.ts`. Sayfa: `/analyze` (`components/analyze/analyze-form.tsx`).
+  - `app/api/referral` — GET: kullanıcının davet kodu (yoksa service-role üretir) + istatistik. Ödül tetiği `app/api/profile` POST'ta (`maybeGrantReferralBonus` — İLK profil kaydında iki tarafa +20, `referrals.referred_id` UNIQUE idempotency). Signup `?ref=` → `user_metadata.referred_by_code` (`app/signup/signup-form.tsx`, Suspense'li).
   - `app/api/platform-connections` — GET (liste) / PUT (upsert) / DELETE: platform profil URL'leri.
   - `app/api/platform-profiles` — POST: bağlı URL'den platform profil verisini çek → `platform_profiles` upsert (ücretsiz; saatte 10, `usage_events kind='platform_sync'`). Yalnız Bionluk+LinkedIn sunucudan; Upwork/Fiverr'ı uzantı akışı doldurur (`profile/import` da `platform_profiles`'a yazar). Platform detay "X Profilin" kartı buradan.
   - `app/api/feed` — GET: kullanıcının kayıtlı feed'lerine uyan `job_pool` ilanları (+yıldız+cache skor).
@@ -90,6 +92,8 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0020_platform_profiles.sql` — `platform_profiles` (kullanıcı×platform ÇEKİLMİŞ profil verisi: headline/summary/skills/avatar/portfolio/fetched_at; sync route + import route yazar, platform detay gösterir).
   `0021_feed_proposal_prompt.sql` — `job_feeds.proposal_prompt` (feed'e özel teklif AI yönergesi; `/api/proposal` source_pool_id'li ilanda uyan İLK prompt'lu feed'inkini prompt'a ekler).
   `0022_feed_exclude_keywords.sql` — `job_feeds.exclude_keywords` (feed başına hariç keyword; `matchesFeed` aynı hay metninde negatif kontrol — exclude pozitiften önce uygulanır).
+  `0023_public_analyses.sql` — kayıtsız /analyze rate-limit kaydı (ip_hash+created_at; RLS açık politikasız — yalnız service-role; ham IP saklanmaz).
+  `0024_referrals.sql` — `referral_codes` (select-own) + `referrals` (referred_id UNIQUE = idempotency, select-own referrer) + `grant_credits(p_user,p_amount,p_reason)` RPC (yalnız service_role).
 - `extension/` — Chrome MV3 tarayıcı uzantısı (Upwork/Fiverr/LinkedIn profil içe aktarma; ayrıntı `docs/EXTENSION.md`): KENDİ package.json/check'i var (kök check'ten hariç — tsconfig/eslint/vitest exclude). `src/extract.ts` saf yardımcılar (test'li), `content.ts` shadow-root buton + metin/medya toplama, `background.ts` cookie'li POST → `/api/profile/import mode:"extension"`. UI dili `_locales/{en,tr}` + `chrome.i18n`. Build: esbuild (`npm run build` prod — manifest'ten localhost izni çıkar / `build:dev` localhost / `package` store zip'i); `dist/` = load-unpacked klasörü. Store gizlilik sayfası: `app/extension/privacy/page.tsx` (`/extension/privacy`, i18n `extensionPrivacy`).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
