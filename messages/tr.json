@@ -283,6 +283,10 @@
       "body": "Linkini paylaş — arkadaşın ilk profilini kaydettiğinde ikiniz de {bonus} kredi kazanırsınız.",
       "stats": "{invited, plural, =0 {Henüz davet yok} one {# davet} other {# davet}} · {credits} kredi kazanıldı"
     },
+    "weeklyDigest": {
+      "label": "Haftalık özet e-postası",
+      "hint": "Başvuruların, tekliflerin ve yeni feed eşleşmelerin haftalık özeti."
+    },
     "profileStrength": {
       "title": "Profil gücü",
       "percent": "%{percent}",

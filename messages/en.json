@@ -283,6 +283,10 @@
       "body": "Share your link — you both get {bonus} credits when your friend saves their first profile.",
       "stats": "{invited, plural, =0 {No invites yet} one {# invite} other {# invites}} · {credits} credits earned"
     },
+    "weeklyDigest": {
+      "label": "Weekly summary email",
+      "hint": "A weekly recap of your applications, proposals and new feed matches."
+    },
     "profileStrength": {
       "title": "Profile strength",
       "percent": "{percent}%",

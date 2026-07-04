@@ -39,6 +39,8 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/feed/[poolId]/translate` — POST: ilan açıklamasını UI diline çevirir (ücretsiz; PAYLAŞIMLI `job_translations` cache; `usage_events kind='job_translate'` + saatlik limit).
   - `app/api/feeds` (+`[id]`) — kayıtlı feed CRUD (kullanıcı başına 10 limit). `app/api/starred` — yıldız GET/POST/DELETE.
   - `app/api/internal/scrape` — POST: dış cron (cron-job.org) `x-cron-secret` ile tetikler; Remotive+Arbeitnow ücretsiz API'lerinden çekip `job_pool`'a upsert (Alt-proje B canlı çekme).
+  - `app/api/internal/weekly-digest` — POST: dış cron (haftada 1, AYNI `x-cron-secret`) tetikler; son 7 günün kullanıcı aktivitesi + feed eşleşmelerini kullanıcı başına tek özet e-postada gönderir (motor `lib/digest/weekly.ts`, opt-out `user_settings.weekly_digest`).
+  - `app/api/settings` — GET/PATCH: kullanıcı ayarları (`user_settings`; satır yoksa varsayılan `weeklyDigest:true`). Toggle UI: `components/dashboard/weekly-digest-toggle.tsx` (Overview altında).
 - `lib/errors/` — tipli `AppError` sınıfları + `withErrorHandler` (her route bundan geçer).
 - `lib/ai/` — uyarlama motoru (sunucu-only): `openai-client.ts` (OpenAI gpt-4o-mini istemcisi),
   `platforms.ts` (LinkedIn/Upwork/Fiverr/Bionluk/Armut yönergeleri + `PROPOSAL_GUIDANCE`),
@@ -47,7 +49,8 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `profile-import.ts` (`extractProfile` — serbest metin → profil taslağı),
   `translate.ts` (`translateJobTitles` batch dil tespiti+EN/TR başlık, `translateJobDescription` on-demand açıklama — ilan çevirisi hibrit: başlık scrape-time, açıklama ilk görüntülemede),
   `coverage.ts` (saf kapsama yardımcıları: pending/summary/prompt blokları), `pricing.ts` (token → USD).
-- `lib/notifications/email.ts` — `sendMatchNotificationEmail` (Resend API, fire-and-forget; skor ≥ 70 olunca kullanıcı e-postasına bildirim).
+- `lib/notifications/email.ts` — `sendMatchNotificationEmail` (Resend API, fire-and-forget; skor ≥ 70 olunca kullanıcı e-postasına bildirim) + `sendFeedDigestEmail` + `sendWeeklyDigestEmail` (iki dilli).
+- `lib/digest/weekly.ts` — haftalık özet motoru: saf `buildWeeklySummaries` (ilan/teklif/kredi aktivitesi + `buildFeedDigests` yeniden kullanımıyla feed eşleşmeleri; sinyalsiz kullanıcıya e-posta yok) + `runWeeklyDigest` orchestrator (notify.ts deseni: admin client + gönderici parametre).
 - `lib/validation/` — Zod yardımcıları (`parseJson`/`parseQuery`) + `schemas/`.
 - `lib/supabase/` — `server.ts` (RLS'li, varsayılan), `admin.ts` (service-role, RLS bypass — dikkat),
   `client.ts` (tarayıcı), `middleware.ts` (oturum yenileme). Kök `proxy.ts` bunu çağırır.
@@ -94,6 +97,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0022_feed_exclude_keywords.sql` — `job_feeds.exclude_keywords` (feed başına hariç keyword; `matchesFeed` aynı hay metninde negatif kontrol — exclude pozitiften önce uygulanır).
   `0023_public_analyses.sql` — kayıtsız /analyze rate-limit kaydı (ip_hash+created_at; RLS açık politikasız — yalnız service-role; ham IP saklanmaz).
   `0024_referrals.sql` — `referral_codes` (select-own) + `referrals` (referred_id UNIQUE = idempotency, select-own referrer) + `grant_credits(p_user,p_amount,p_reason)` RPC (yalnız service_role).
+  `0025_user_settings.sql` — `user_settings` (user_id PK, `weekly_digest` bool default true; satır yoksa AÇIK sayılır; RLS sahip okur/yazar).
 - `extension/` — Chrome MV3 tarayıcı uzantısı (Upwork/Fiverr/LinkedIn profil içe aktarma; ayrıntı `docs/EXTENSION.md`): KENDİ package.json/check'i var (kök check'ten hariç — tsconfig/eslint/vitest exclude). `src/extract.ts` saf yardımcılar (test'li), `content.ts` shadow-root buton + metin/medya toplama, `background.ts` cookie'li POST → `/api/profile/import mode:"extension"`. UI dili `_locales/{en,tr}` + `chrome.i18n`. Build: esbuild (`npm run build` prod — manifest'ten localhost izni çıkar / `build:dev` localhost / `package` store zip'i); `dist/` = load-unpacked klasörü. Store gizlilik sayfası: `app/extension/privacy/page.tsx` (`/extension/privacy`, i18n `extensionPrivacy`).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.

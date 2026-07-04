@@ -18,6 +18,7 @@ import {
 import { useDashboard } from "./dashboard-context";
 import { ProfileStrengthCard } from "./profile-strength-card";
 import { ReferralCard } from "./referral-card";
+import { WeeklyDigestToggle } from "./weekly-digest-toggle";
 import type { ProfileStrengthResult } from "@/lib/profile-strength";
 
 export function OverviewTab({
@@ -263,6 +264,9 @@ export function OverviewTab({
           );
         })()}
       </div>
+
+      {/* Haftalık özet e-postası tercihi */}
+      <WeeklyDigestToggle />
 
       {/* Profile incomplete alert */}
       {!profileSaved && (
