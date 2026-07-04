@@ -4,13 +4,15 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   X, ExternalLink, Target, CheckCircle2, AlertCircle,
-  Sparkles, FileText, ChevronDown, RefreshCw,
+  Sparkles, FileText, ChevronDown, RefreshCw, BellRing,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ProposalModal } from "@/components/proposal-modal";
 import { CreditCost } from "@/components/credit-cost";
+import { CopyButton } from "@/components/dashboard/copy-button";
 import { MatchRubric, VerdictBadge, RiskBadges } from "@/components/dashboard/match-rubric";
+import { followUpDays } from "@/lib/followup";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 
 interface JobRow {
@@ -23,6 +25,8 @@ interface JobDetail extends JobRow {
   url: string | null;
   notes: string | null;
   budget: string | null;
+  updated_at: string | null;
+  status_changed_at: string | null;
 }
 
 const JOB_STATUSES = ["saved", "applied", "awaiting_reply", "interview", "offer", "rejected"] as const;
@@ -66,6 +70,9 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
   const [savingNotes, setSavingNotes] = useState(false);
   const [showProposal, setShowProposal] = useState(false);
   const [rematching, setRematching] = useState(false);
+  const [followUpMsg, setFollowUpMsg] = useState("");
+  const [followUpBusy, setFollowUpBusy] = useState(false);
+  const [followUpError, setFollowUpError] = useState("");
   const notesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loading = loadedJobId !== job.id;
@@ -125,8 +132,26 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
     }, 900);
   }
 
+  // AI takip mesajı üretimi (1 kredi; kalıcı değil — kullanıcı kopyalar).
+  async function generateFollowUpMsg() {
+    setFollowUpBusy(true);
+    setFollowUpError("");
+    const res = await fetch(`/api/jobs/${job.id}/followup`, { method: "POST" });
+    const body = await res.json().catch(() => null);
+    if (res.ok && body?.message) {
+      setFollowUpMsg(body.message as string);
+      if (body.credits) onCreditsUpdate?.(body.credits);
+    } else {
+      setFollowUpError((body?.error as string | undefined) ?? t("followup.error"));
+    }
+    setFollowUpBusy(false);
+  }
+
   const matchResult = detail?.match_result ?? job.match_result;
   const matchScore = detail?.match_score ?? job.match_score;
+  const staleDays = detail
+    ? followUpDays(status, detail.status_changed_at, detail.updated_at ?? detail.created_at, new Date())
+    : null;
 
   return (
     <>
@@ -167,6 +192,40 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
               </select>
               <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 opacity-60 pointer-events-none" />
             </div>
+
+            {/* Follow-up hatırlatıcı: X gündür durum değişmedi → AI takip mesajı */}
+            {staleDays !== null && (
+              <div className="rounded-xl border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 p-3 space-y-2">
+                <p className="text-xs font-semibold text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
+                  <BellRing className="h-3.5 w-3.5 shrink-0" />
+                  {t("followup.waiting", { days: staleDays })}
+                </p>
+                {followUpMsg ? (
+                  <div className="rounded-lg bg-background border border-border p-2.5 space-y-1.5">
+                    <p className="text-xs leading-relaxed whitespace-pre-wrap">{followUpMsg}</p>
+                    <div className="flex justify-end">
+                      <CopyButton text={followUpMsg} />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-[11px] text-amber-600/70 dark:text-amber-400/60">{t("followup.hint")}</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={generateFollowUpMsg}
+                      disabled={followUpBusy}
+                      className="gap-2 w-full border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      {followUpBusy ? t("followup.generating") : t("followup.generate")}
+                      <CreditCost kind="followup" />
+                    </Button>
+                    {followUpError && <p className="text-[11px] text-red-600 dark:text-red-400">{followUpError}</p>}
+                  </>
+                )}
+              </div>
+            )}
 
             {/* Meta bilgiler */}
             <div className="grid grid-cols-2 gap-2 text-xs">

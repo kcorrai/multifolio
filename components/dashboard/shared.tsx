@@ -1,5 +1,5 @@
 import {
-  User, Layers, Globe, Briefcase, Target, Sparkles, LayoutDashboard, Languages,
+  User, Layers, Globe, Briefcase, Target, Sparkles, LayoutDashboard, Languages, BellRing,
 } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
@@ -76,6 +76,7 @@ export const KIND_ICONS: Record<string, React.ElementType> = {
   job_match: Target,
   proposal: Sparkles,
   job_translate: Languages,
+  followup: BellRing,
 };
 
 /* ── Helpers ────────────────────────────────────────────────────────── */

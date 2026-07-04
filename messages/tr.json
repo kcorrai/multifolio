@@ -337,6 +337,13 @@
       "saving": "Kaydediliyor…",
       "notesPlaceholder": "Görüşme notları, önemli detaylar…"
     },
+    "followup": {
+      "waiting": "{days, plural, one {# gündür yanıt yok} other {# gündür yanıt yok}}",
+      "hint": "Kısa ve nazik bir takip mesajı başvurunu yeniden öne çıkarabilir.",
+      "generate": "AI takip mesajı üret",
+      "generating": "Yazılıyor…",
+      "error": "Takip mesajı üretilemedi. Tekrar dene."
+    },
     "add": {
       "title": "İlan Ekle",
       "jobTitle": "İlan başlığı",
@@ -365,7 +372,8 @@
       "portfolio_generation": "Portfolyo Üretimi",
       "job_match": "İlan Eşleştirme",
       "proposal": "Teklif Üretimi",
-      "job_translate": "İlan Çevirisi"
+      "job_translate": "İlan Çevirisi",
+      "followup": "Takip Mesajı"
     },
     "creditsSub": "{count} kredi",
     "dailyTitle": "Son 30 gün — günlük kredi kullanımı",

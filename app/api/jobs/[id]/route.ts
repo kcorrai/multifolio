@@ -17,7 +17,7 @@ export const GET = withErrorHandler(async (_req, { params }) => {
 
   const { data, error } = await supabase
     .from("job_listings")
-    .select("id, title, company, platform, status, match_score, match_result, description, url, notes, budget, created_at")
+    .select("id, title, company, platform, status, match_score, match_result, description, url, notes, budget, created_at, updated_at, status_changed_at")
     .eq("id", id)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -39,9 +39,15 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
 
   const input = await parseJson(req, jobUpdateSchema);
 
+  // Durum değişiyorsa status_changed_at damgalanır (follow-up hatırlatıcısının
+  // referansı — not düzenlemesi gibi güncellemeler sayacı sıfırlamaz).
+  const patch = input.status !== undefined
+    ? { ...input, status_changed_at: new Date().toISOString() }
+    : input;
+
   const { data, error } = await supabase
     .from("job_listings")
-    .update(input)
+    .update(patch)
     .eq("id", id)
     .eq("user_id", user.id)
     .select("id, title, company, platform, status, match_score, match_result, notes, created_at")

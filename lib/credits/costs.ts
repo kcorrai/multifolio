@@ -3,6 +3,7 @@ export const CREDIT_COSTS = {
   adaptation: 1,
   job_match: 1,
   proposal: 2,
+  followup: 1,
   portfolio_generation: 3,
 } as const;
 

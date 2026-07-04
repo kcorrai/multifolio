@@ -337,6 +337,13 @@
       "saving": "Saving…",
       "notesPlaceholder": "Interview notes, key details…"
     },
+    "followup": {
+      "waiting": "{days, plural, one {No reply for # day} other {No reply for # days}}",
+      "hint": "A short, polite follow-up can bring your application back to the top.",
+      "generate": "Generate AI follow-up",
+      "generating": "Writing…",
+      "error": "Could not generate the follow-up message. Try again."
+    },
     "add": {
       "title": "Add Job",
       "jobTitle": "Job title",
@@ -365,7 +372,8 @@
       "portfolio_generation": "Portfolio Generation",
       "job_match": "Job Matching",
       "proposal": "Proposal Generation",
-      "job_translate": "Job Translation"
+      "job_translate": "Job Translation",
+      "followup": "Follow-up Message"
     },
     "creditsSub": "{count} credits",
     "dailyTitle": "Last 30 days — daily credit usage",

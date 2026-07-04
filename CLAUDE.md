@@ -27,6 +27,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   - `app/api/jobs` — GET (liste) / POST (oluştur) iş ilanı uç noktaları; url/budget/notes alanları desteklenir.
   - `app/api/jobs/[id]` — GET (tam veri) / PATCH (durum/başlık/notlar) / DELETE.
   - `app/api/jobs/[id]/match` — POST: AI profil × ilan eşleştirme, maliyet kaydı + Telegram trigger.
+  - `app/api/jobs/[id]/followup` — POST: AI takip mesajı (1 kredi; kalıcı DEĞİL — kullanıcı kopyalar). Hatırlatma eşiği `lib/followup.ts` (saf, `followUpDays` — status_changed_at→updated_at fallback); üretim `lib/ai/followup.ts`. UI: job-detail-panel'de amber banner (applied/awaiting_reply + ≥5 gün).
   - `app/api/proposal` — GET (iş bazlı liste) / POST (AI teklif üretir, proposals'a kaydeder).
   - `app/api/credits` — GET: kullanıcının kredi bakiyesi (`credits` tablosu).
   - `app/api/analyze` — POST: HERKESE AÇIK ücretsiz profil analizi (auth opsiyonel; kayıtsız 5/saat IP-hash `public_analyses`, girişli 10/saat `usage_events kind='public_analyze'`; teaser SUNUCUDA kesilir — kayıtsıza `full:null`). Motor `lib/ai/profile-analyze.ts` + saf skor `lib/analyze/{score,ip-hash}.ts`. Sayfa: `/analyze` (`components/analyze/analyze-form.tsx`).
@@ -98,6 +99,7 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0023_public_analyses.sql` — kayıtsız /analyze rate-limit kaydı (ip_hash+created_at; RLS açık politikasız — yalnız service-role; ham IP saklanmaz).
   `0024_referrals.sql` — `referral_codes` (select-own) + `referrals` (referred_id UNIQUE = idempotency, select-own referrer) + `grant_credits(p_user,p_amount,p_reason)` RPC (yalnız service_role).
   `0025_user_settings.sql` — `user_settings` (user_id PK, `weekly_digest` bool default true; satır yoksa AÇIK sayılır; RLS sahip okur/yazar).
+  `0026_job_status_changed.sql` — `job_listings.status_changed_at` (follow-up sayacının referansı; PATCH route durum değişince damgalar — not düzenlemesi sayacı sıfırlamaz).
 - `extension/` — Chrome MV3 tarayıcı uzantısı (Upwork/Fiverr/LinkedIn profil içe aktarma; ayrıntı `docs/EXTENSION.md`): KENDİ package.json/check'i var (kök check'ten hariç — tsconfig/eslint/vitest exclude). `src/extract.ts` saf yardımcılar (test'li), `content.ts` shadow-root buton + metin/medya toplama, `background.ts` cookie'li POST → `/api/profile/import mode:"extension"`. UI dili `_locales/{en,tr}` + `chrome.i18n`. Build: esbuild (`npm run build` prod — manifest'ten localhost izni çıkar / `build:dev` localhost / `package` store zip'i); `dist/` = load-unpacked klasörü. Store gizlilik sayfası: `app/extension/privacy/page.tsx` (`/extension/privacy`, i18n `extensionPrivacy`).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
