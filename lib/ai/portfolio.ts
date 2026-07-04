@@ -5,7 +5,7 @@ import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
-import { type PortfolioContent } from "@/lib/validation/schemas/portfolio";
+import { type PortfolioContent, type PortfolioMedia } from "@/lib/validation/schemas/portfolio";
 import type { Locale } from "@/i18n/detect";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
@@ -31,7 +31,13 @@ const clamp = (s: string, n: number) => s.trim().slice(0, n);
 
 // AI ham çıktısını geçerli, kırpılmış PortfolioContent'e çevirir (depolama
 // şeması min/max sınırlarını asla ihlal etmez; boş alanlar profilden dolar).
-function mapToContent(raw: z.infer<typeof portfolioGenSchema>, profile: ProfileInput): PortfolioContent {
+// media (avatar+galeri) AI'dan DEĞİL, profilden anlık kopyalanır (route sağlar);
+// theme varsayılan (studio/blue) — kullanıcı panelden değiştirir/route korur.
+function mapToContent(
+  raw: z.infer<typeof portfolioGenSchema>,
+  profile: ProfileInput,
+  media: PortfolioMedia,
+): PortfolioContent {
   const skills = raw.skills.map((s) => clamp(s, 60)).filter(Boolean).slice(0, 30);
   return {
     headline: clamp(raw.headline, 220) || clamp(profile.headline, 220),
@@ -45,6 +51,8 @@ function mapToContent(raw: z.infer<typeof portfolioGenSchema>, profile: ProfileI
         const url = u && /^https?:\/\//i.test(u) ? u : undefined;
         return { title: clamp(p.title, 120), description: clamp(p.description, 500), ...(url ? { url } : {}) };
       }),
+    theme: { preset: "studio", accent: "blue" },
+    media,
   };
 }
 
@@ -64,6 +72,7 @@ const SYSTEM_PROMPT =
 export async function generatePortfolio(
   profile: ProfileInput,
   locale: Locale = "en",
+  media: PortfolioMedia = { avatarUrl: null, gallery: [] },
 ): Promise<GeneratePortfolioResult> {
   const client = getOpenAIClient();
 
@@ -104,7 +113,7 @@ export async function generatePortfolio(
   };
 
   return {
-    content: mapToContent(parsed, profile),
+    content: mapToContent(parsed, profile, media),
     model: AI_MODEL,
     inputTokens: usage.prompt_tokens,
     outputTokens: usage.completion_tokens,

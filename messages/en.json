@@ -573,7 +573,20 @@
     "public": "Public",
     "saving": "Saving…",
     "saveSettings": "Save Settings",
-    "viewPage": "View page"
+    "viewPage": "View page",
+    "themeTitle": "Theme",
+    "preset": {
+      "studio": "Studio",
+      "atelier": "Atelier",
+      "noir": "Noir"
+    },
+    "accentLabel": "Accent",
+    "headlineLabel": "Headline",
+    "bioLabel": "Bio",
+    "galleryTitle": "Gallery ({count})",
+    "galleryHint": "Pulled from your connected profiles. Remove any you don't want shown.",
+    "removeImage": "Remove image",
+    "saved": "Saved"
   },
   "accounts": {
     "title": "My Platform Accounts",
@@ -593,7 +606,9 @@
     "about": "About",
     "skills": "Skills",
     "projects": "Projects",
-    "lastUpdated": "Last updated"
+    "lastUpdated": "Last updated",
+    "gallery": "Work",
+    "madeWith": "Made with Multifolio"
   },
   "publicAnalysis": {
     "metaTitle": "Free Freelancer Profile Check — Multifolio",

@@ -8,7 +8,25 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { generatePortfolio } from "@/lib/ai/portfolio";
 import { spendCredits } from "@/lib/credits/spend";
-import type { ProfileInput } from "@/lib/validation/schemas/profile";
+import { portfolioThemeSchema, type PortfolioMedia } from "@/lib/validation/schemas/portfolio";
+import type { ProfileInput, PortfolioItem } from "@/lib/validation/schemas/profile";
+
+// Profil/platform görsellerini portfolyo galerisine çevirir (url'siz atlanır,
+// caption 120'ye kırpılır, url'ye göre dedup, 24 ile sınırlı).
+function buildGallery(...sources: (PortfolioItem[] | null | undefined)[]): PortfolioMedia["gallery"] {
+  const seen = new Set<string>();
+  const out: PortfolioMedia["gallery"] = [];
+  for (const list of sources) {
+    for (const item of list ?? []) {
+      const url = item?.imageUrl?.trim();
+      if (!url || seen.has(url)) continue;
+      seen.add(url);
+      out.push({ url, caption: (item.title ?? "").slice(0, 120) });
+      if (out.length >= 24) return out;
+    }
+  }
+  return out;
+}
 
 export const POST = withErrorHandler(async () => {
   const supabase = await createSupabaseServerClient();
@@ -18,15 +36,34 @@ export const POST = withErrorHandler(async () => {
   } = await supabase.auth.getUser();
   if (!user) throw new AuthError();
 
-  // Kayıtlı profilden üret; profil yoksa anlamlı hata.
+  // Kayıtlı profilden üret; profil yoksa anlamlı hata. Avatar + portfolyo görselleri
+  // de çekilir (public sayfaya gömülür → bağlı public profillerdeki veri iş görür).
   const { data: profileData, error: profileError } = await supabase
     .from("profiles")
-    .select("headline, summary, skills")
+    .select("headline, summary, skills, avatar_url, portfolio")
     .eq("user_id", user.id)
     .maybeSingle();
 
   if (profileError) throw profileError;
   if (!profileData) throw new NotFoundError((await getTranslations("errors"))("profileRequiredPortfolio"));
+
+  // Bağlı platform profillerinden avatar + galeri görselleri (yedek/ek kaynak).
+  const { data: platformRows } = await supabase
+    .from("platform_profiles")
+    .select("avatar_url, portfolio")
+    .eq("user_id", user.id)
+    .order("fetched_at", { ascending: false });
+
+  const media: PortfolioMedia = {
+    avatarUrl:
+      (profileData.avatar_url as string | null) ??
+      (platformRows ?? []).find((r) => r.avatar_url)?.avatar_url ??
+      null,
+    gallery: buildGallery(
+      profileData.portfolio as PortfolioItem[] | null,
+      ...(platformRows ?? []).map((r) => r.portfolio as PortfolioItem[] | null),
+    ),
+  };
 
   const portfolioLocale = await getUserLocale();
   const admin = createSupabaseAdminClient();
@@ -34,18 +71,22 @@ export const POST = withErrorHandler(async () => {
   // Mevcut portfolyoyu güncelle (yoksa oluştur). Slug: ilk üretimde user id'den türetilir (salt-okuma).
   const { data: existing } = await supabase
     .from("portfolios")
-    .select("id, slug")
+    .select("id, slug, content")
     .eq("user_id", user.id)
     .maybeSingle();
   const slug = existing?.slug ?? user.id.slice(0, 8);
+  // Yeniden üretimde kullanıcının seçtiği tema KORUNUR (eksikse studio/blue).
+  const existingContent = existing?.content as { theme?: unknown } | null;
+  const theme = portfolioThemeSchema.parse(existingContent?.theme);
 
   // AI üretimi + portfolyonun yazımı tek closure'da: yazım patlarsa spendCredits krediyi iade eder.
   const { result, balance, spent } = await spendCredits(user.id, "portfolio_generation", async () => {
-    const ai = await generatePortfolio(profileData as ProfileInput, portfolioLocale);
+    const ai = await generatePortfolio(profileData as ProfileInput, portfolioLocale, media);
+    const content = { ...ai.content, theme };
     const { data: portfolio, error: upsertError } = await admin
       .from("portfolios")
       .upsert(
-        { user_id: user.id, slug, content: ai.content },
+        { user_id: user.id, slug, content },
         { onConflict: "user_id" },
       )
       .select("id, slug, published, content, updated_at")

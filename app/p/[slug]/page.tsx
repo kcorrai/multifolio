@@ -1,12 +1,23 @@
 // /p/[slug] — genel portfolyo sayfası. Auth gerekmez; yalnızca published=true
-// portfolyolar görünür. İçerik yapılandırılmış JSON; React metin render'ı
-// otomatik escape eder (dangerouslySetInnerHTML kullanılmaz).
+// portfolyolar görünür. İçerik yapılandırılmış JSON (React metin render'ı otomatik
+// escape eder; dangerouslySetInnerHTML YOK). Görsel tema kullanıcının seçtiği
+// preset+vurgu rengine göre (lib/portfolio/theme). Motion global .anim-* ile
+// (reduced-motion globals.css'te saygı görür).
 import { cache } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Archivo, Space_Grotesk, Fraunces } from "next/font/google";
 import { getTranslations } from "next-intl/server";
+import { ArrowUpRight } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
+import { portfolioTheme } from "@/lib/portfolio/theme";
+
+// Türkçe karakterler için latin-ext şart. Başlık fontu preset'e göre (sans/serif).
+const archivo = Archivo({ subsets: ["latin", "latin-ext"], variable: "--font-archivo", display: "swap" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin", "latin-ext"], variable: "--font-space", display: "swap" });
+const fraunces = Fraunces({ subsets: ["latin", "latin-ext"], variable: "--font-fraunces", display: "swap" });
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -34,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const t = await getTranslations("portfolioPublic");
     return { title: t("notFoundTitle") };
   }
-  const { headline, bio } = portfolio.content;
+  const { headline, bio, media } = portfolio.content;
   const description = bio.slice(0, 160);
   return {
     title: headline,
@@ -43,6 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: headline,
       description,
       type: "profile",
+      ...(media.avatarUrl ? { images: [{ url: media.avatarUrl }] } : {}),
     },
   };
 }
@@ -52,71 +64,161 @@ export default async function PortfolioPage({ params }: PageProps) {
   const portfolio = await fetchPortfolio(slug);
   if (!portfolio) notFound();
   const { content, updatedAt } = portfolio;
+  const { headline, bio, skills, projects, media, theme } = content;
   const t = await getTranslations("portfolioPublic");
+  const { vars, dark } = portfolioTheme(theme.preset, theme.accent);
+
+  const accentTint = "color-mix(in_srgb,var(--pf-accent)_12%,transparent)";
+  const heading = { fontFamily: "var(--pf-heading-font)" };
 
   return (
-    <main className="mx-auto max-w-2xl flex-1 p-8">
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{content.headline}</h1>
+    <div
+      className={`${archivo.variable} ${spaceGrotesk.variable} ${fraunces.variable} min-h-dvh bg-[var(--pf-bg)] text-[var(--pf-text)] selection:bg-[var(--pf-accent)] selection:text-white`}
+      style={{ ...vars, fontFamily: "var(--pf-body-font)" }}
+    >
+      {/* Üst vurgu şeridi */}
+      <div className="h-1 w-full bg-[var(--pf-accent)]" />
+
+      {/* ── Hero ─────────────────────────────────────────────────────── */}
+      <header className="mx-auto max-w-5xl px-6 pt-14 pb-10 sm:pt-24 sm:pb-14">
+        <div className="flex flex-col items-start gap-6 sm:gap-8">
+          {media.avatarUrl && (
+            // Dış görsel (bağlı platformdan) — next/image remotePatterns gerektirmesin.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={media.avatarUrl}
+              alt={headline}
+              className="anim-fade-in anim-d0 h-24 w-24 sm:h-28 sm:w-28 rounded-2xl object-cover ring-1 ring-[var(--pf-border)] shadow-xl"
+            />
+          )}
+          <div className="space-y-4">
+            <h1
+              style={heading}
+              className="anim-fade-up anim-d1 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.05] max-w-3xl"
+            >
+              {headline}
+            </h1>
+            {skills.length > 0 && (
+              <div className="anim-fade-up anim-d2 flex flex-wrap gap-2">
+                {skills.slice(0, 12).map((s) => (
+                  <span
+                    key={s}
+                    className="rounded-full px-3 py-1 text-sm font-medium text-[var(--pf-accent)]"
+                    style={{ backgroundColor: accentTint }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+      </header>
 
-        <section className="space-y-2">
-          <h2 className="text-sm font-semibold uppercase tracking-widest text-neutral-500">
-            {t("about")}
-          </h2>
-          <p className="whitespace-pre-wrap leading-relaxed text-neutral-800">{content.bio}</p>
+      {/* ── Galeri (bağlı public profillerden çekilen görseller) ──────── */}
+      {media.gallery.length > 0 && (
+        <section className="mx-auto max-w-5xl px-6 py-8">
+          <SectionLabel style={heading}>{t("gallery")}</SectionLabel>
+          <div className="mt-5 gap-4 [column-fill:_balance] columns-1 sm:columns-2 lg:columns-3">
+            {media.gallery.map((item, i) => (
+              <figure
+                key={item.url}
+                className="anim-fade-up mb-4 break-inside-avoid overflow-hidden rounded-xl border border-[var(--pf-border)] bg-[var(--pf-surface)] group"
+                style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={item.url}
+                  alt={item.caption || headline}
+                  loading="lazy"
+                  className="w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+                {item.caption && (
+                  <figcaption className="px-3 py-2 text-xs text-[var(--pf-muted)]">{item.caption}</figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
         </section>
+      )}
 
-        {content.skills.length > 0 && (
-          <section className="space-y-3">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-neutral-500">
-              {t("skills")}
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {content.skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-full bg-neutral-100 px-3 py-1 text-sm text-neutral-700"
+      {/* ── Hakkında ─────────────────────────────────────────────────── */}
+      <section className="mx-auto max-w-3xl px-6 py-10">
+        <SectionLabel style={heading}>{t("about")}</SectionLabel>
+        <p className="mt-4 whitespace-pre-wrap text-lg leading-relaxed text-[var(--pf-text)]/90">{bio}</p>
+      </section>
+
+      {/* ── Projeler ─────────────────────────────────────────────────── */}
+      {projects.length > 0 && (
+        <section className="mx-auto max-w-5xl px-6 py-10">
+          <SectionLabel style={heading}>{t("projects")}</SectionLabel>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            {projects.map((project, i) => {
+              const inner = (
+                <>
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 style={heading} className="text-lg font-semibold leading-snug">{project.title}</h3>
+                    {project.url && (
+                      <ArrowUpRight className="h-4 w-4 shrink-0 text-[var(--pf-accent)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    )}
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--pf-muted)]">{project.description}</p>
+                </>
+              );
+              const cls =
+                "anim-fade-up block rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-5 transition-colors hover:border-[var(--pf-accent)]";
+              return project.url ? (
+                <a
+                  key={i}
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${cls} group`}
+                  style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
                 >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {content.projects.length > 0 && (
-          <section className="space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-neutral-500">
-              {t("projects")}
-            </h2>
-            <div className="space-y-4">
-              {content.projects.map((project, i) => (
-                <div key={i} className="rounded-lg border p-4 space-y-1">
-                  {project.url ? (
-                    <a
-                      href={project.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium hover:underline"
-                    >
-                      {project.title}
-                    </a>
-                  ) : (
-                    <p className="font-medium">{project.title}</p>
-                  )}
-                  <p className="text-sm text-neutral-600">{project.description}</p>
+                  {inner}
+                </a>
+              ) : (
+                <div key={i} className={`${cls} group`} style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}>
+                  {inner}
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
+              );
+            })}
+          </div>
+        </section>
+      )}
 
-        <p className="text-xs text-neutral-400">
-          {t("lastUpdated")}: {new Date(updatedAt).toLocaleDateString("tr-TR")}
-        </p>
-      </div>
-    </main>
+      {/* ── Footer ───────────────────────────────────────────────────── */}
+      <footer className="mx-auto max-w-5xl px-6 pb-16 pt-10">
+        <div className="flex flex-col gap-2 border-t border-[var(--pf-border)] pt-6 text-xs text-[var(--pf-muted)] sm:flex-row sm:items-center sm:justify-between">
+          <span>
+            {t("lastUpdated")}: {new Date(updatedAt).toLocaleDateString(theme.preset === "atelier" ? "tr-TR" : undefined)}
+          </span>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1 font-medium hover:text-[var(--pf-accent)] transition-colors"
+          >
+            {t("madeWith")}
+            <ArrowUpRight className="h-3 w-3" />
+          </Link>
+        </div>
+      </footer>
+
+      {/* Koyu preset'te görsel kenar yumuşatma (arka planla kaynaşmasın) */}
+      {dark && <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 h-px bg-white/5" />}
+    </div>
+  );
+}
+
+// Vurgu renkli küçük bölüm etiketi (eyebrow).
+function SectionLabel({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <h2
+      style={style}
+      className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--pf-accent)]"
+    >
+      <span className="h-px w-6 bg-[var(--pf-accent)]" />
+      {children}
+    </h2>
   );
 }

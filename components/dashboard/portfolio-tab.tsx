@@ -2,11 +2,18 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Sparkles, Save, AlertCircle, ExternalLink } from "lucide-react";
+import { Sparkles, Save, AlertCircle, ExternalLink, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { CreditCost } from "@/components/credit-cost";
+import {
+  PORTFOLIO_PRESETS, PORTFOLIO_ACCENTS, ACCENT_HEX, portfolioTheme,
+  type PortfolioPreset,
+} from "@/lib/portfolio/theme";
+import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
 import { ELEVATED, type InitialPortfolio } from "./shared";
 import { useDashboard } from "./dashboard-context";
 
@@ -18,40 +25,46 @@ export function PortfolioTab({
 }) {
   const { applyCredits, triggerComingSoon } = useDashboard();
   const t = useTranslations("portfolio");
-  const [portfolio, setPortfolio] = useState<InitialPortfolio | null>(initialPortfolio);
-  const [portfolioSlug, setPortfolioSlug] = useState(initialPortfolio?.slug ?? "");
-  const [portfolioPublished, setPortfolioPublished] = useState(initialPortfolio?.published ?? false);
+  const [content, setContent] = useState<PortfolioContent | null>(initialPortfolio?.content ?? null);
+  const [slug, setSlug] = useState(initialPortfolio?.slug ?? "");
+  const [published, setPublished] = useState(initialPortfolio?.published ?? false);
   const [generating, setGenerating] = useState(false);
-  const [savingPortfolio, setSavingPortfolio] = useState(false);
-  const [portfolioError, setPortfolioError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [error, setError] = useState("");
+
+  // İçerik alanını değiştir + kaydedilmemiş işaretle.
+  function patch(next: Partial<PortfolioContent>) {
+    setContent((prev) => (prev ? { ...prev, ...next } : prev));
+    setDirty(true);
+  }
 
   async function generatePortfolio() {
-    setGenerating(true); setPortfolioError("");
+    setGenerating(true); setError("");
     const res = await fetch("/api/portfolio/generate", { method: "POST" });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
-      setPortfolioError(body?.error?.message ?? t("errorGenerate"));
-      if (res.status === 402) triggerComingSoon(); // yetersiz kredi → "Kredi al" nudge
+      setError(body?.error?.message ?? t("errorGenerate"));
+      if (res.status === 402) triggerComingSoon();
       setGenerating(false); return;
     }
     const p = body.portfolio;
-    setPortfolio({ slug: p.slug, published: p.published, content: p.content });
-    setPortfolioSlug(p.slug);
-    setPortfolioPublished(p.published);
+    setContent(p.content); setSlug(p.slug); setPublished(p.published); setDirty(false);
     if (body.credits) applyCredits(body.credits);
     setGenerating(false);
   }
 
-  async function savePortfolioSettings() {
-    setSavingPortfolio(true); setPortfolioError("");
+  async function save() {
+    if (!content) return;
+    setSaving(true); setError("");
     const res = await fetch("/api/portfolio", {
       method: "PUT", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug: portfolioSlug, published: portfolioPublished }),
+      body: JSON.stringify({ slug, published, content }),
     });
     const body = await res.json().catch(() => null);
-    if (!res.ok) { setPortfolioError(body?.error?.message ?? t("errorSaveSettings")); setSavingPortfolio(false); return; }
-    setPortfolio((prev) => prev ? { ...prev, slug: body.portfolio.slug, published: body.portfolio.published } : null);
-    setSavingPortfolio(false);
+    if (!res.ok) { setError(body?.error?.message ?? t("errorSaveSettings")); setSaving(false); return; }
+    setSlug(body.portfolio.slug); setPublished(body.portfolio.published); setDirty(false);
+    setSaving(false);
   }
 
   return (
@@ -62,72 +75,131 @@ export function PortfolioTab({
           <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
-          {!profileSaved && !portfolio?.content && (
+          {!profileSaved && !content && (
             <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
               <AlertCircle className="h-4 w-4 shrink-0" />{t("saveProfileFirst")}
             </div>
           )}
 
-          <Button onClick={generatePortfolio} disabled={generating || (!profileSaved && !portfolio?.content)} className="gap-2">
+          <Button onClick={generatePortfolio} disabled={generating || (!profileSaved && !content)} className="gap-2">
             <Sparkles className="h-4 w-4" />
-            {generating ? t("generating") : portfolio?.content ? t("regenerate") : t("generate")}
+            {generating ? t("generating") : content ? t("regenerate") : t("generate")}
             <CreditCost kind="portfolio_generation" />
           </Button>
 
-          {portfolioError && (
+          {error && (
             <div className="flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4 shrink-0" />{portfolioError}
+              <AlertCircle className="h-4 w-4 shrink-0" />{error}
             </div>
           )}
 
-          {portfolio?.content && (
-            <div className="space-y-5 border-t pt-5">
-              <div className="rounded-2xl border bg-gradient-to-br from-primary/5 to-violet-500/5 overflow-hidden">
-                <div className="h-1 bg-gradient-to-r from-primary via-violet-500 to-primary/40" />
-                <div className="p-5 space-y-3">
-                  <p className="font-bold text-lg text-foreground">{portfolio.content.headline}</p>
-                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{portfolio.content.bio}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {portfolio.content.skills.slice(0, 8).map((s) => (
-                      <span key={s} className="rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-xs font-medium">{s}</span>
+          {content && (
+            <div className="space-y-6 border-t pt-5">
+              {/* ── Canlı önizleme (seçili tema) ─────────────────────── */}
+              <ThemePreview content={content} />
+
+              {/* ── Tema: preset + vurgu rengi ───────────────────────── */}
+              <div className="space-y-3">
+                <Label>{t("themeTitle")}</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {PORTFOLIO_PRESETS.map((preset) => (
+                    <PresetCard
+                      key={preset}
+                      preset={preset}
+                      label={t(`preset.${preset}`)}
+                      selected={content.theme.preset === preset}
+                      onSelect={() => patch({ theme: { ...content.theme, preset } })}
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <span className="text-xs text-muted-foreground">{t("accentLabel")}</span>
+                  <div className="flex gap-1.5">
+                    {PORTFOLIO_ACCENTS.map((accent) => (
+                      <button
+                        key={accent}
+                        onClick={() => patch({ theme: { ...content.theme, accent } })}
+                        aria-label={accent}
+                        className={`h-6 w-6 rounded-full transition-transform hover:scale-110 cursor-pointer ${
+                          content.theme.accent === accent ? "ring-2 ring-offset-2 ring-offset-background ring-foreground/40" : ""
+                        }`}
+                        style={{ backgroundColor: ACCENT_HEX[accent] }}
+                      />
                     ))}
-                    {portfolio.content.skills.length > 8 && (
-                      <span className="text-xs text-muted-foreground self-center">{t("moreSkills", { count: portfolio.content.skills.length - 8 })}</span>
-                    )}
                   </div>
                 </div>
               </div>
 
+              {/* ── İçerik düzenleme ─────────────────────────────────── */}
+              <div className="grid gap-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="pf-headline">{t("headlineLabel")}</Label>
+                  <Input id="pf-headline" value={content.headline} maxLength={220}
+                    onChange={(e) => patch({ headline: e.target.value })} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="pf-bio">{t("bioLabel")}</Label>
+                  <Textarea id="pf-bio" rows={5} value={content.bio} maxLength={2000}
+                    onChange={(e) => patch({ bio: e.target.value })} className="resize-none" />
+                </div>
+              </div>
+
+              {/* ── Galeri (bağlı profillerden; kaldırılabilir) ──────── */}
+              {content.media.gallery.length > 0 && (
+                <div className="space-y-2">
+                  <Label>{t("galleryTitle", { count: content.media.gallery.length })}</Label>
+                  <p className="text-xs text-muted-foreground">{t("galleryHint")}</p>
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                    {content.media.gallery.map((item) => (
+                      <div key={item.url} className="relative group aspect-square">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.url} alt={item.caption} title={item.caption}
+                          className="h-full w-full rounded-lg object-cover border border-border" />
+                        <button
+                          onClick={() => patch({ media: { ...content.media, gallery: content.media.gallery.filter((g) => g.url !== item.url) } })}
+                          aria-label={t("removeImage")}
+                          className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-background border border-border shadow flex items-center justify-center text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Adres + yayın ────────────────────────────────────── */}
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="portfolio-slug">{t("pageAddress")}</Label>
-                  <div className="flex items-center rounded-md border border-input bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring overflow-hidden">
+                  <div className="flex items-center rounded-md border border-input bg-background focus-within:ring-2 focus-within:ring-ring overflow-hidden">
                     <span className="px-3 text-sm text-muted-foreground bg-muted border-r border-input select-none py-2">/p/</span>
-                    <input id="portfolio-slug" value={portfolioSlug}
-                      onChange={(e) => setPortfolioSlug(e.target.value.toLowerCase())}
+                    <input id="portfolio-slug" value={slug}
+                      onChange={(e) => { setSlug(e.target.value.toLowerCase()); setDirty(true); }}
                       placeholder={t("slugPlaceholder")}
                       className="flex-1 px-3 py-2 text-sm bg-transparent outline-none text-foreground" />
                   </div>
                   <p className="text-xs text-muted-foreground">{t("slugHelp")}</p>
                 </div>
                 <div className="flex items-end">
-                  <label className="flex items-center gap-3 cursor-pointer pb-2">
-                    <div onClick={() => setPortfolioPublished((v) => !v)}
-                      className={`relative h-5 w-9 rounded-full transition-colors cursor-pointer ${portfolioPublished ? "bg-primary" : "bg-muted-foreground/30"}`}>
-                      <span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${portfolioPublished ? "translate-x-4" : ""}`} />
-                    </div>
+                  <button type="button" aria-pressed={published}
+                    onClick={() => { setPublished((v) => !v); setDirty(true); }}
+                    className="flex items-center gap-3 cursor-pointer pb-2">
+                    <span className={`relative h-5 w-9 rounded-full transition-colors ${published ? "bg-primary" : "bg-muted-foreground/30"}`}>
+                      <span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${published ? "translate-x-4" : ""}`} />
+                    </span>
                     <span className="text-sm font-medium">{t("public")}</span>
-                  </label>
+                  </button>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <Button onClick={savePortfolioSettings} disabled={savingPortfolio} variant="outline" className="gap-2">
-                  <Save className="h-4 w-4" />
-                  {savingPortfolio ? t("saving") : t("saveSettings")}
+                <Button onClick={save} disabled={saving || !dirty} className="gap-2">
+                  {saving ? <Save className="h-4 w-4 animate-pulse" /> : dirty ? <Save className="h-4 w-4" /> : <Check className="h-4 w-4" />}
+                  {saving ? t("saving") : dirty ? t("saveSettings") : t("saved")}
                 </Button>
-                {portfolio.published && (
-                  <a href={`/p/${portfolio.slug}`} target="_blank" rel="noopener noreferrer"
+                {published && slug && (
+                  <a href={`/p/${slug}`} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-sm text-primary hover:underline">
                     {t("viewPage")} <ExternalLink className="h-3.5 w-3.5" />
                   </a>
@@ -138,5 +210,71 @@ export function PortfolioTab({
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+// Seçili tema tokenlarıyla küçük canlı önizleme (public sayfanın minyatürü).
+function ThemePreview({ content }: { content: PortfolioContent }) {
+  const { vars } = portfolioTheme(content.theme.preset, content.theme.accent);
+  const tint = "color-mix(in srgb, var(--pf-accent) 14%, transparent)";
+  return (
+    <div
+      className="rounded-2xl border border-[var(--pf-border)] overflow-hidden bg-[var(--pf-bg)] text-[var(--pf-text)]"
+      style={vars}
+    >
+      <div className="h-1 w-full bg-[var(--pf-accent)]" />
+      <div className="p-5 space-y-3">
+        <div className="flex items-center gap-3">
+          {content.media.avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={content.media.avatarUrl} alt="" className="h-12 w-12 rounded-xl object-cover ring-1 ring-[var(--pf-border)]" />
+          ) : (
+            <div className="h-12 w-12 rounded-xl bg-[var(--pf-surface)] border border-[var(--pf-border)]" />
+          )}
+          <p className="text-lg font-bold leading-tight line-clamp-2">{content.headline}</p>
+        </div>
+        {content.skills.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {content.skills.slice(0, 5).map((s) => (
+              <span key={s} className="rounded-full px-2 py-0.5 text-[11px] font-medium text-[var(--pf-accent)]" style={{ backgroundColor: tint }}>{s}</span>
+            ))}
+          </div>
+        )}
+        {content.media.gallery.length > 0 && (
+          <div className="grid grid-cols-4 gap-1.5">
+            {content.media.gallery.slice(0, 4).map((g) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={g.url} src={g.url} alt="" className="aspect-square w-full rounded-md object-cover border border-[var(--pf-border)]" />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Preset seçim kartı: preset renk şeridi + adı.
+function PresetCard({
+  preset, label, selected, onSelect,
+}: {
+  preset: PortfolioPreset; label: string; selected: boolean; onSelect: () => void;
+}) {
+  const { vars } = portfolioTheme(preset, "blue");
+  return (
+    <button
+      onClick={onSelect}
+      className={`rounded-xl border p-2 text-left transition-all cursor-pointer ${
+        selected ? "border-primary ring-2 ring-primary/30" : "border-border hover:border-border/80"
+      }`}
+    >
+      <div className="rounded-lg overflow-hidden border border-[var(--pf-border)]" style={vars}>
+        <div className="h-1.5 bg-[var(--pf-accent)]" />
+        <div className="h-10 bg-[var(--pf-bg)] p-1.5 flex items-end gap-1">
+          <span className="h-3 w-3 rounded-full bg-[var(--pf-accent)]" />
+          <span className="h-2 flex-1 rounded bg-[var(--pf-surface)] border border-[var(--pf-border)]" />
+        </div>
+      </div>
+      <span className="mt-1.5 block text-xs font-medium text-center">{label}</span>
+    </button>
   );
 }

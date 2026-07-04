@@ -573,7 +573,20 @@
     "public": "Herkese açık",
     "saving": "Kaydediliyor…",
     "saveSettings": "Ayarları Kaydet",
-    "viewPage": "Sayfayı görüntüle"
+    "viewPage": "Sayfayı görüntüle",
+    "themeTitle": "Tema",
+    "preset": {
+      "studio": "Studio",
+      "atelier": "Atelier",
+      "noir": "Noir"
+    },
+    "accentLabel": "Vurgu",
+    "headlineLabel": "Başlık",
+    "bioLabel": "Biyografi",
+    "galleryTitle": "Galeri ({count})",
+    "galleryHint": "Bağlı profillerinden çekildi. Görünmesini istemediklerini kaldır.",
+    "removeImage": "Görseli kaldır",
+    "saved": "Kaydedildi"
   },
   "accounts": {
     "title": "Platform Hesaplarım",
@@ -593,7 +606,9 @@
     "about": "Hakkında",
     "skills": "Beceriler",
     "projects": "Projeler",
-    "lastUpdated": "Son güncelleme"
+    "lastUpdated": "Son güncelleme",
+    "gallery": "Çalışmalar",
+    "madeWith": "Multifolio ile yapıldı"
   },
   "publicAnalysis": {
     "metaTitle": "Ücretsiz Freelancer Profil Analizi — Multifolio",
