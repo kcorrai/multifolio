@@ -52,9 +52,8 @@
 
 ## P2 — Küçük / cila
 
-- [ ] Mobilde dashboard içeriğinde **yatay kaydırma çubuğu** görünüyor (küçük taşma).
-- [~] İlan başlıkları çevriliyor ama **"(m/w/d)"** Alman artefaktı kalıyor (`lib/ai/translate.ts`). NOT: Arbeitnow düştüğü için yeni ilanlarda sorun büyük ölçüde kalktı (kaynak Alman'dı).
-- [ ] Platform detayda **"Uyarla" CTA'sı iki kez** tekrarlanıyor (başlık + boş durum kutusu).
-- [ ] **E-posta doğrula banner'ı her sekmede** tekrar görünüyor — kapat/ertele yok gibi;
-  kalıcı tekrar rahatsız edici olabilir.
-- [ ] Referral/davet linki dev'de `http://localhost:3000/...` gösteriyor (prod'da doğru olmalı — env kontrolü).
+- [x] Mobilde **yatay taşma** → içerik kabına `overflow-x-clip` (2026-07-04, `4954908`).
+- [~] İlan başlıklarında **"(m/w/d)"** artefaktı — Arbeitnow düştüğü için yeni ilanlarda büyük ölçüde kalktı (kaynak Alman'dı).
+- [x] Platform detay **çift "Uyarla" CTA'sı** → boş-durumdaki tekrar kaldırıldı (2026-07-04, `f54bb61`).
+- [x] **E-posta doğrula banner'ı** → kapat (X) eklendi, oturum boyunca gizli (2026-07-04, `f54bb61`).
+- [x] Referral localhost → NON-ISSUE: `window.location.origin` prod'da doğru domain (reviewer dev'de gördü).
