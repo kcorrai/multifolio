@@ -14,6 +14,7 @@
     "nav": {
       "features": "Özellikler",
       "howItWorks": "Nasıl Çalışır",
+      "analyze": "Ücretsiz Profil Analizi",
       "pricing": "Fiyat"
     },
     "cta": {
@@ -492,6 +493,45 @@
     "skills": "Beceriler",
     "projects": "Projeler",
     "lastUpdated": "Son güncelleme"
+  },
+  "publicAnalysis": {
+    "metaTitle": "Ücretsiz Freelancer Profil Analizi — Multifolio",
+    "metaDescription": "Upwork, Fiverr, LinkedIn veya Bionluk profilini yapıştır; anında AI skoru ve iyileştirme önerileri al. Ücretsiz, kayıt gerekmez.",
+    "heroEyebrow": "Ücretsiz araç",
+    "heroTitle": "Freelancer profilin ne kadar güçlü?",
+    "heroSubtitle": "Profil linkini veya metnini yapıştır, anında AI skoru al — Upwork onay çıtasını geçip geçmeyeceği dahil.",
+    "mode": {
+      "url": "Profil URL'i",
+      "text": "Metin yapıştır"
+    },
+    "urlPlaceholder": "https://www.linkedin.com/in/sen veya bionluk.com/sen",
+    "urlHint": "LinkedIn ve Bionluk linkleri doğrudan çalışır. Upwork/Fiverr için profil metnini yapıştır.",
+    "textPlaceholder": "Başlığını, özetini ve becerilerini buraya yapıştır…",
+    "textHint": "En az 40 karakter. Hiçbir şey saklanmaz — yalnız analiz ederiz.",
+    "analyzeCta": "Profilimi analiz et",
+    "analyzing": "Analiz ediliyor…",
+    "freeNote": "Ücretsiz · kayıt gerekmez · kredi kartı yok",
+    "genericError": "Bir şeyler ters gitti. Tekrar dene.",
+    "resultTitle": "Profil skoru",
+    "verdict": {
+      "strong": "Güçlü",
+      "average": "Geliştirilmeli",
+      "weak": "Zayıf"
+    },
+    "topSuggestion": "En önemli iyileştirme",
+    "weight": "%{percent}",
+    "dimensions": {
+      "headline_impact": "Başlık etkisi",
+      "summary_quality": "Özet kalitesi",
+      "skills_coverage": "Beceri kapsamı",
+      "trust_signals": "Güven sinyalleri"
+    },
+    "allSuggestions": "Tüm öneriler",
+    "upworkNotes": "Upwork onay notları",
+    "lockedTitle": "Tam rapor kilitli",
+    "lockedBody": "Tam skor dökümünü, tüm önerileri ve Upwork onay notlarını gör — hesapla ücretsiz.",
+    "lockedCta": "Ücretsiz kayıt ol",
+    "signupPerk": "Kayıt olunca ayrıca profilini her platforma uyarlamak için 100 ücretsiz kredi kazanırsın."
   },
   "pricingPage": {
     "metaTitle": "Fiyatlandırma — Multifolio",

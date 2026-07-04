@@ -14,6 +14,7 @@
     "nav": {
       "features": "Features",
       "howItWorks": "How it works",
+      "analyze": "Free profile check",
       "pricing": "Pricing"
     },
     "cta": {
@@ -492,6 +493,45 @@
     "skills": "Skills",
     "projects": "Projects",
     "lastUpdated": "Last updated"
+  },
+  "publicAnalysis": {
+    "metaTitle": "Free Freelancer Profile Check — Multifolio",
+    "metaDescription": "Paste your Upwork, Fiverr, LinkedIn or Bionluk profile and get an instant AI score with improvement tips. Free, no signup needed.",
+    "heroEyebrow": "Free tool",
+    "heroTitle": "How strong is your freelancer profile?",
+    "heroSubtitle": "Paste your profile link or text and get an instant AI score — including whether it would pass Upwork's approval bar.",
+    "mode": {
+      "url": "Profile URL",
+      "text": "Paste text"
+    },
+    "urlPlaceholder": "https://www.linkedin.com/in/you or bionluk.com/you",
+    "urlHint": "LinkedIn and Bionluk links work directly. For Upwork/Fiverr, paste your profile text instead.",
+    "textPlaceholder": "Paste your headline, overview and skills here…",
+    "textHint": "At least 40 characters. Nothing is stored — we only analyze.",
+    "analyzeCta": "Analyze my profile",
+    "analyzing": "Analyzing…",
+    "freeNote": "Free · no signup needed · no credit card",
+    "genericError": "Something went wrong. Please try again.",
+    "resultTitle": "Profile score",
+    "verdict": {
+      "strong": "Strong",
+      "average": "Needs work",
+      "weak": "Weak"
+    },
+    "topSuggestion": "Top improvement",
+    "weight": "{percent}%",
+    "dimensions": {
+      "headline_impact": "Headline impact",
+      "summary_quality": "Summary quality",
+      "skills_coverage": "Skills coverage",
+      "trust_signals": "Trust signals"
+    },
+    "allSuggestions": "All suggestions",
+    "upworkNotes": "Upwork approval notes",
+    "lockedTitle": "Full report is locked",
+    "lockedBody": "See the full score breakdown, every suggestion and Upwork approval notes — free with an account.",
+    "lockedCta": "Sign up free",
+    "signupPerk": "Signing up also gets you 100 free credits to adapt your profile for every platform."
   },
   "pricingPage": {
     "metaTitle": "Pricing — Multifolio",

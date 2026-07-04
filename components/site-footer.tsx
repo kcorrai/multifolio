@@ -17,6 +17,7 @@ export async function SiteFooter() {
         <nav className="hidden sm:flex items-center gap-6">
           <Link href="/#features" className="text-xs text-slate-400 dark:text-white/30 hover:text-slate-700 dark:hover:text-white/70 transition-colors font-medium">{t("nav.features")}</Link>
           <Link href="/#how" className="text-xs text-slate-400 dark:text-white/30 hover:text-slate-700 dark:hover:text-white/70 transition-colors font-medium">{t("nav.howItWorks")}</Link>
+          <Link href="/analyze" className="text-xs text-slate-400 dark:text-white/30 hover:text-slate-700 dark:hover:text-white/70 transition-colors font-medium">{t("nav.analyze")}</Link>
           <Link href="/pricing" className="text-xs text-slate-400 dark:text-white/30 hover:text-slate-700 dark:hover:text-white/70 transition-colors font-medium">{t("nav.pricing")}</Link>
         </nav>
         <p className="text-xs text-slate-400 dark:text-white/20 font-medium">{t("footer.rights")}</p>

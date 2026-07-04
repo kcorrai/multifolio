@@ -23,6 +23,7 @@ export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean 
           {[
             { label: t("nav.features"),   href: "/#features" },
             { label: t("nav.howItWorks"), href: "/#how" },
+            { label: t("nav.analyze"),    href: "/analyze" },
             { label: t("nav.pricing"),    href: "/pricing" },
           ].map(({ label, href }) => (
             <Link key={href} href={href} className="text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
