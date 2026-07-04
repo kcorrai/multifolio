@@ -14,15 +14,21 @@ import { FeedModal } from "./feed-modal";
 import { FeedSettingsPanel } from "./feed-settings-panel";
 import { useDashboard } from "./dashboard-context";
 
+// Sayfa boyutu SSR'ın ilk dilimiyle (jobs/page.tsx slice(0, 25)) tutarlı.
+const PAGE_SIZE = 25;
+
 export function FeedView({
-  initialJobs, initialFeeds,
+  initialJobs, initialFeeds, initialTotal,
 }: {
   initialJobs: PoolJob[];
   initialFeeds: JobFeedRow[];
+  initialTotal: number;
 }) {
   const t = useTranslations("feed");
   const { applyCredits } = useDashboard();
   const [jobs, setJobs] = useState<PoolJob[]>(initialJobs);
+  const [total, setTotal] = useState(initialTotal);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [feeds, setFeeds] = useState<JobFeedRow[]>(initialFeeds);
   const [selectedFeedId, setSelectedFeedId] = useState<string | null>(null);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
@@ -30,13 +36,33 @@ export function FeedView({
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [showLowScores, setShowLowScores] = useState(false);
 
-  // Feed'ler değişince (oluştur/düzenle/sil) hem feed listesini hem eşleşen işleri tazele.
+  // Feed'ler değişince (oluştur/düzenle/sil) hem feed listesini hem eşleşen işleri
+  // tazele; sayfalama baştan başlar (offset=0).
   async function refresh() {
-    const [feedsRes, feedJobsRes] = await Promise.all([fetch("/api/feeds"), fetch("/api/feed?limit=50")]);
+    const [feedsRes, feedJobsRes] = await Promise.all([fetch("/api/feeds"), fetch(`/api/feed?offset=0&limit=${PAGE_SIZE}`)]);
     const f = await feedsRes.json().catch(() => ({ feeds: [] }));
     const j = await feedJobsRes.json().catch(() => ({ jobs: [] }));
     setFeeds(f.feeds ?? []);
     setJobs(j.jobs ?? []);
+    setTotal(typeof j.total === "number" ? j.total : (j.jobs ?? []).length);
+  }
+
+  // Sonraki dilimi çekip mevcut listeye ekler; pool bu arada değişmiş olabilir
+  // diye id bazlı dedup yapılır.
+  async function loadMore() {
+    setLoadingMore(true);
+    try {
+      const res = await fetch(`/api/feed?offset=${jobs.length}&limit=${PAGE_SIZE}`);
+      const b = await res.json().catch(() => ({ jobs: [] }));
+      const incoming = (b.jobs ?? []) as PoolJob[];
+      setJobs((prev) => {
+        const seen = new Set(prev.map((j) => j.id));
+        return [...prev, ...incoming.filter((j) => !seen.has(j.id))];
+      });
+      if (typeof b.total === "number") setTotal(b.total);
+    } finally {
+      setLoadingMore(false);
+    }
   }
 
   async function deleteFeed(id: string) {
@@ -78,6 +104,9 @@ export function FeedView({
   const visibleJobs = activeCriteria ? jobs.filter((j) => matchesFeed(j, activeCriteria, j.score)) : jobs;
   const selectedJob = selectedJobId ? jobs.find((j) => j.id === selectedJobId) ?? null : null;
   const hasFeeds = feeds.length > 0;
+  // Ham yüklenen sayıya bakılır (istemci filtreli görünür sayıya DEĞİL) —
+  // filtre gizlese de sunucudaki kalan ilanlar çekilebilmeli.
+  const hasMore = jobs.length < total;
 
   if (!hasFeeds && jobs.length === 0) {
     return (
@@ -170,6 +199,11 @@ export function FeedView({
                     <PoolJobRow key={job.id} job={job} selected={job.id === selectedJobId} onStar={toggleStar} onOpen={(j) => setSelectedJobId(j.id)} />
                   ))
                 )}
+                {hasMore && (
+                  <Button variant="outline" size="sm" onClick={loadMore} disabled={loadingMore} className="w-full mt-1">
+                    {t("loadMore")}
+                  </Button>
+                )}
               </div>
               {/* key={id}: feed değişince panel state'i tazelenir */}
               <FeedSettingsPanel key={activeFeed.id} feed={activeFeed} onSaved={onFeedSaved} />
@@ -186,6 +220,11 @@ export function FeedView({
             {visibleJobs.map((job) => (
               <PoolJobRow key={job.id} job={job} selected={job.id === selectedJobId} onStar={toggleStar} onOpen={(j) => setSelectedJobId(j.id)} />
             ))}
+            {hasMore && (
+              <Button variant="outline" size="sm" onClick={loadMore} disabled={loadingMore} className="w-full mt-1">
+                {t("loadMore")}
+              </Button>
+            )}
           </div>
         )}
       </div>

@@ -14,11 +14,12 @@ type View = "feed" | "search" | "starred" | "applied";
 const VIEWS: View[] = ["feed", "search", "starred", "applied"];
 
 export function JobsTab({
-  initialJobs, profileSaved, initialFeedJobs, initialFeeds, initialView,
+  initialJobs, profileSaved, initialFeedJobs, initialFeedTotal, initialFeeds, initialView,
 }: {
   initialJobs: JobRow[];
   profileSaved: boolean;
   initialFeedJobs: PoolJob[];
+  initialFeedTotal: number;
   initialFeeds: JobFeedRow[];
   initialView: View;
 }) {
@@ -50,7 +51,7 @@ export function JobsTab({
         ))}
       </div>
 
-      {view === "feed" && <FeedView initialJobs={initialFeedJobs} initialFeeds={initialFeeds} />}
+      {view === "feed" && <FeedView initialJobs={initialFeedJobs} initialFeeds={initialFeeds} initialTotal={initialFeedTotal} />}
       {view === "search" && <SearchView />}
       {view === "starred" && <StarredView />}
       {view === "applied" && <AppliedView initialJobs={initialJobs} profileSaved={profileSaved} />}

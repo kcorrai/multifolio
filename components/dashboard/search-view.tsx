@@ -38,6 +38,8 @@ export function SearchView() {
   const { applyCredits } = useDashboard();
   const [q, setQ] = useState("");
   const [jobs, setJobs] = useState<PoolJob[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [loaded, setLoaded] = useState(false);
   // Zaman filtresi referansı: render saf kalsın diye fetch anında sabitlenir.
   const [loadedAt, setLoadedAt] = useState(0);
@@ -54,6 +56,7 @@ export function SearchView() {
   const [saveModal, setSaveModal] = useState(false);
 
   // Canlı arama: q/platform değişince debounce'lu çek. Boş q = tüm pool (açılışta hepsi).
+  // Yeni arama listeyi DEĞİŞTİRİR (sayfalama sıfırlanır); loadedAt yalnız burada sabitlenir.
   useEffect(() => {
     let cancelled = false;
     const timer = setTimeout(() => {
@@ -62,11 +65,37 @@ export function SearchView() {
       if (platform) params.set("platform", platform);
       fetch(`/api/feed/search?${params.toString()}`)
         .then((r) => r.json())
-        .then((b) => { if (!cancelled) { setJobs(b.jobs ?? []); setLoaded(true); setLoadedAt(Date.now()); setSelectedId(null); } })
+        .then((b) => {
+          if (!cancelled) {
+            setJobs(b.jobs ?? []);
+            setTotal(typeof b.total === "number" ? b.total : (b.jobs ?? []).length);
+            setLoaded(true); setLoadedAt(Date.now()); setSelectedId(null);
+          }
+        })
         .catch(() => { if (!cancelled) setLoaded(true); });
     }, 300);
     return () => { cancelled = true; clearTimeout(timer); };
   }, [q, platform]);
+
+  // Sonraki dilimi aynı arama parametreleriyle çekip listeye ekler (id bazlı dedup).
+  async function loadMore() {
+    setLoadingMore(true);
+    try {
+      const params = new URLSearchParams({ limit: "50", offset: String(jobs.length) });
+      if (q.trim()) params.set("q", q.trim());
+      if (platform) params.set("platform", platform);
+      const res = await fetch(`/api/feed/search?${params.toString()}`);
+      const b = await res.json().catch(() => ({ jobs: [] }));
+      const incoming = (b.jobs ?? []) as PoolJob[];
+      setJobs((prev) => {
+        const seen = new Set(prev.map((j) => j.id));
+        return [...prev, ...incoming.filter((j) => !seen.has(j.id))];
+      });
+      if (typeof b.total === "number") setTotal(b.total);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   async function toggleStar(job: PoolJob) {
     const next = !job.isStarred;
@@ -195,6 +224,12 @@ export function SearchView() {
         {visible.map((job) => (
           <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={toggleStar} onOpen={(j) => setSelectedId(j.id)} />
         ))}
+        {/* Ham yüklenen sayıya bakılır — istemci filtresi gizlese de sunucudaki kalan çekilebilmeli. */}
+        {loaded && jobs.length < total && (
+          <Button variant="outline" size="sm" onClick={loadMore} disabled={loadingMore} className="w-full mt-1">
+            {t("loadMore")}
+          </Button>
+        )}
       </div>
 
       {selected && (
