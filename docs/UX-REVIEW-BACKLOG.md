@@ -4,34 +4,25 @@
 > `/earnings`, mobil 390px) + kod çapraz kontrolü ile bulundu. Önceliğe göre sıralı.
 > Her madde: **ne / nerede / kabul kriteri**.
 
-## P0 — Kritik (para & güven kaybettiren)
+## P0 — Kritik (para & güven kaybettiren) — ✅ TAMAMLANDI (2026-07-04, commit `b0f6149`)
 
-- [ ] **Mobil navigasyonda hamburger menü yok**
+- [x] **Mobil navigasyonda hamburger menü yok** → `components/mobile-nav.tsx` (createPortal ile body'ye; hero altında kalma bug'ı çözüldü); site-header mobilde logo+hamburger.
   - Nerede: `components/site-header.tsx` — nav `hidden md:flex`, mobil menü butonu yok.
   - Sorun: 390px'de Özellikler / Nasıl Çalışır / Ücretsiz Profil Analizi / Net Kazanç
     Hesaplayıcı / Fiyat linklerine header'dan ulaşılamıyor (en değerli funnel araçları
     mobilde ölü). Ayrıca sağ üstteki "Ücretsiz Başla" CTA ekrandan taşıp kesiliyor.
   - Kabul: mobilde hamburger + açılır menü tüm nav linklerini gösterir; CTA taşmaz.
 
-- [ ] **"Portfolyo Sitesi" vaadi üründe yok — 3 yerde tutarsız**
-  - Nerede: `app/page.tsx` (feature kartı + "Nasıl çalışır" adım 2 "paylaşıma hazır
-    portfolyo sitesi al"), login sol panel bullet'ı. Dashboard'da portfolyo UI kaldırılmış
-    (yalnız arka uç + `/p/[slug]`).
-  - Karar gerek: **ya portfolyo UI'yi geri getir ya da bu 3 yerden vaadi kaldır.**
-  - Kabul: landing/login'de vaat edilen her özellik dashboard'da gerçekten var.
+- [x] **"Portfolyo Sitesi" vaadi üründe yok** → KARAR: UI geri getirildi (arka uç %100 canlıydı;
+    geri getirmek kaldırmaktan az işti). `/dashboard/portfolio` + `portfolio-tab` geri. Bonus:
+    OpenAI structured-output bug'ı düzeltildi (url `.optional()` API'yi 400'lüyordu → `portfolioGenSchema`).
 
-- [ ] **Gerçek satın alma akışı yok (Iyzico beklemede)**
-  - Nerede: `components/pricing-section.tsx` — "Başla" sadece `/signup`/`/dashboard`'a gider;
-    checkout yok. Kredi biten kullanıcıya banner "yakında" toast'ı.
-  - Kabul (ara adım): fiyat sayfası ödeme durumunu dürüstçe işaretler (ör. "yakında" /
-    bekleme listesi). Nihai: Iyzico checkout bağlanır.
+- [x] **Gerçek satın alma akışı yok (Iyzico beklemede)** → ARA ADIM: dürüst işaret eklendi
+    (`pricing-section` "kredi satın alma yakında" banner + kart "yakında" çipi). Iyzico sonraki tur.
 
-- [ ] **Yasal/güven altyapısı eksik**
-  - Nerede: `components/site-footer.tsx` — Gizlilik Politikası, Kullanım Şartları,
-    **KVKK aydınlatma metni**, iletişim linki yok.
-  - Sorun: TR'de KVKK zorunlu; ödeme almadan önce şart. (Uzantı privacy sayfası var,
-    site geneli yok.)
-  - Kabul: footer'da Gizlilik / Şartlar / KVKK / İletişim linkleri + sayfaları mevcut.
+- [x] **Yasal/güven altyapısı eksik** → `app/{privacy,terms,kvkk,contact}` (ortak `legal-shell`,
+    iki dilli ŞABLON i18n — veri sorumlusu `[...]` yer tutuculu, hukuki inceleme notlu) + footer linkleri.
+    NOT: metinler taslak; ödeme öncesi hukukçuya inceletilmeli + `[Şirket Ünvanı/Adres/VKN]` doldurulmalı.
 
 ## P1 — Orta (dönüşümü zayıflatan)
 
