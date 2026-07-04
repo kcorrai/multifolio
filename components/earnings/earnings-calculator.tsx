@@ -4,8 +4,9 @@
 // Tüm oranlar varsayılanla önceden doldurulur ve DÜZENLENEBİLİR — platform/
 // vergi oranları zamanla değişir; sorumluluk kullanıcıya bırakılır (uyarı notu).
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { Wallet, Info } from "lucide-react";
+import { Wallet, Info, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   computeNetEarnings, PLATFORM_FEE_DEFAULTS, TRANSFER_METHOD_DEFAULTS, TAX_PRESETS,
@@ -26,7 +27,7 @@ function numOr(v: string, fallback = 0): number {
   return Number.isFinite(n) ? n : fallback;
 }
 
-export function EarningsCalculator() {
+export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = useTranslations("earnings");
   const locale = useLocale();
 
@@ -197,6 +198,20 @@ export function EarningsCalculator() {
           <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
           {t("disclaimer")}
         </p>
+
+        {/* Bağlamsal signup köprüsü (analyze deseni) — yalnız kayıtsıza. */}
+        {!isLoggedIn && (
+          <div className="rounded-2xl border border-violet-500/20 bg-violet-500/[0.04] p-4 space-y-2">
+            <p className="text-sm font-semibold">{t("ctaTitle")}</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">{t("ctaBody")}</p>
+            <Link
+              href="/signup"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm px-4 py-2 transition-colors"
+            >
+              {t("ctaButton")}<ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

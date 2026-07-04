@@ -2,12 +2,11 @@ import "server-only";
 import { z } from "zod";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { AI_MODEL, getOpenAIClient } from "./openai-client";
-import { PLATFORMS, type PlatformId } from "./platforms";
+import { PLATFORMS, PLATFORM_LANGUAGE, type PlatformId } from "./platforms";
 import { computeCostUsd } from "./pricing";
 import { languageDirective } from "./language";
 import { buildPlatformProfileBlock, type PlatformProfileContext } from "./platform-context";
 import { InternalError } from "@/lib/errors";
-import type { Locale } from "@/i18n/detect";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export const adaptedOutputSchema = z.object({
@@ -33,7 +32,6 @@ const SYSTEM_PROMPT =
 export async function adaptProfile(
   profile: ProfileInput,
   platformId: PlatformId,
-  locale: Locale = "en",
   platformProfile: PlatformProfileContext | null = null,
 ): Promise<AdaptResult> {
   const platform = PLATFORMS[platformId];
@@ -48,7 +46,9 @@ export async function adaptProfile(
     `- Özet: ${profile.summary}`,
     `- Beceriler: ${profile.skills.join(", ")}`,
     buildPlatformProfileBlock(platformProfile),
-    languageDirective(locale),
+    // Uyarlanan metin platform PROFİLİNE gider → platform dilinde (global platformlar
+    // EN, yerel platformlar TR); UI diline göre değil (teklifteki PLATFORM_LANGUAGE deseni).
+    languageDirective(PLATFORM_LANGUAGE[platformId]),
   ].join("\n");
 
   const completion = await client.chat.completions.parse({

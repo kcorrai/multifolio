@@ -41,7 +41,7 @@ export default async function EarningsPage() {
 
       {/* Hesaplayıcı */}
       <section className="relative mx-auto max-w-4xl px-8 py-12">
-        <EarningsCalculator />
+        <EarningsCalculator isLoggedIn={isLoggedIn} />
       </section>
 
       <SiteFooter />

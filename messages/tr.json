@@ -72,7 +72,10 @@
       },
       "secure": {
         "title": "Güvenli & Hızlı",
-        "desc": "Satır bazlı güvenlik (RLS), sanitize edilmiş çıktı ve yalnızca sunucuda tutulan AI anahtarları. Verin sana ait kalır."
+        "desc": "Verilerin şifreli saklanır ve yalnızca sana aittir; hesabına başkası erişemez. Güvenlik varsayılan olarak açık.",
+        "badge1": "Şifreli",
+        "badge2": "Sana özel",
+        "badge3": "Varsayılan gizli"
       }
     },
     "how": {
@@ -104,6 +107,7 @@
       "paymentSoon": "Kredi satın alma çok yakında — şimdilik herkes 100 ücretsiz krediyle başlıyor.",
       "comingSoon": "Yakında",
       "creditsLine": "{count} kredi",
+      "valueHint": "≈ {adaptations} profil uyarlaması veya {proposals} teklif",
       "plans": {
         "starter": "Başlangıç",
         "pro": "Pro",
@@ -386,7 +390,10 @@
       "job_translate": "İlan Çevirisi",
       "followup": "Takip Mesajı",
       "proposal_translate": "Teklif Çevirisi",
-      "profile_suggest": "Profil Önerisi"
+      "profile_suggest": "Profil Önerisi",
+      "profile_import": "Profil İçe Aktarma",
+      "platform_sync": "Platform Senkronu",
+      "public_analyze": "Profil Analizi"
     },
     "creditsSub": "{count} kredi",
     "dailyTitle": "Son 30 gün — günlük kredi kullanımı",
@@ -834,7 +841,10 @@
       "tax": "Vergi",
       "net": "Net"
     },
-    "disclaimer": "Tüm oranlar düzenlenebilir tahminlerdir ve zamanla değişebilir; bu bir vergi/finans danışmanlığı değildir. Karar vermeden önce güncel platform ve banka ücretlerini kontrol et."
+    "disclaimer": "Tüm oranlar düzenlenebilir tahminlerdir ve zamanla değişebilir; bu bir vergi/finans danışmanlığı değildir. Karar vermeden önce güncel platform ve banka ücretlerini kontrol et.",
+    "ctaTitle": "Kazancından daha fazlasını elinde tut",
+    "ctaBody": "Multifolio platformlar arası daha iyi işler kazanmana yardım eder — optimize profiller, eşleşen ilanlar ve teklifler. 100 ücretsiz krediyle başla.",
+    "ctaButton": "Ücretsiz başla"
   },
   "legalPrivacy": {
     "metaTitle": "Gizlilik Politikası — Multifolio",

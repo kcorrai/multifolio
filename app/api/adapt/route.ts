@@ -4,7 +4,6 @@
 // olarak (service-role) usage_events'e kaydeder (harcama takibi).
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
-import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { adaptRequestSchema } from "@/lib/validation/schemas/adapt";
@@ -46,10 +45,9 @@ export const POST = withErrorHandler(async (req) => {
     .maybeSingle();
   if (ppError) throw ppError;
 
-  const locale = await getUserLocale();
   const { result, balance, spent } = await spendCredits(user.id, "adaptation", async () => {
     const r = await adaptProfile(
-      profile, input.platform, locale,
+      profile, input.platform,
       platformProfileRow as { headline: string; summary: string; skills: string[] } | null,
     );
     // Kalıcılık closure İÇİNDE: yazım patlarsa kredi iade edilir (Faz 9 kuralı).

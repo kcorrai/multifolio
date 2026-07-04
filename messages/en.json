@@ -72,7 +72,10 @@
       },
       "secure": {
         "title": "Secure & fast",
-        "desc": "Row-level security, sanitized output and server-only AI keys. Your data is yours."
+        "desc": "Your data is encrypted and only yours — no one else can reach your account. Security is on by default.",
+        "badge1": "Encrypted",
+        "badge2": "Yours only",
+        "badge3": "Private by default"
       }
     },
     "how": {
@@ -104,6 +107,7 @@
       "paymentSoon": "Credit purchasing is coming soon — for now everyone starts with 100 free credits.",
       "comingSoon": "Soon",
       "creditsLine": "{count} credits",
+      "valueHint": "≈ {adaptations} profile adaptations or {proposals} proposals",
       "plans": {
         "starter": "Starter",
         "pro": "Pro",
@@ -386,7 +390,10 @@
       "job_translate": "Job Translation",
       "followup": "Follow-up Message",
       "proposal_translate": "Proposal Translation",
-      "profile_suggest": "Profile Suggestion"
+      "profile_suggest": "Profile Suggestion",
+      "profile_import": "Profile Import",
+      "platform_sync": "Platform Sync",
+      "public_analyze": "Profile Analysis"
     },
     "creditsSub": "{count} credits",
     "dailyTitle": "Last 30 days — daily credit usage",
@@ -834,7 +841,10 @@
       "tax": "Tax",
       "net": "Net"
     },
-    "disclaimer": "All rates are editable estimates and can change over time; this is not tax or financial advice. Check current platform and bank fees before deciding."
+    "disclaimer": "All rates are editable estimates and can change over time; this is not tax or financial advice. Check current platform and bank fees before deciding.",
+    "ctaTitle": "Keep more of what you earn",
+    "ctaBody": "Multifolio helps you win better-paying work across platforms — optimized profiles, matched jobs and proposals. Start free with 100 credits.",
+    "ctaButton": "Start free"
   },
   "legalPrivacy": {
     "metaTitle": "Privacy Policy — Multifolio",

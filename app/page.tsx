@@ -508,7 +508,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                 <ShieldCheck className="h-5 w-5 text-[#00F0FF]" />
               </div>
               <div className="flex gap-1.5 flex-wrap">
-                {["RLS", "Zod", "DOMPurify"].map((tech, i) => (
+                {[t("features.secure.badge1"), t("features.secure.badge2"), t("features.secure.badge3")].map((tech, i) => (
                   <span
                     key={tech}
                     className="demo-pop rounded-full border border-emerald-500/25 bg-emerald-500/8 px-2 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400"

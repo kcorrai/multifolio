@@ -3,7 +3,7 @@
 // Kayıtsız analiz formu: URL | metin toggle → POST /api/analyze → teaser
 // (skor+verdict+ilk öneri). Kilitli bölüm JENERİK placeholder'dır — gerçek
 // veri DOM'a HİÇ gelmez (sunucu full:null keser); blur CSS hilesi değildir.
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Link2, ClipboardPaste, Sparkles, Lock, ArrowRight, AlertTriangle } from "lucide-react";
@@ -41,6 +41,12 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  // Sonuç fold altında beliriyordu → geldiğinde otomatik kaydır (reduced-motion'a saygı).
+  useEffect(() => {
+    if (result) resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [result]);
 
   const canSubmit = mode === "url" ? url.trim().length > 8 : text.trim().length >= 40;
 
@@ -121,7 +127,7 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
 
       {/* ── Sonuç ──────────────────────────────────────────────────── */}
       {result && (
-        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] p-6 space-y-5 shadow-sm">
+        <div ref={resultRef} className="scroll-mt-24 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] p-6 space-y-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-[#94A3B8]">{t("resultTitle")}</p>

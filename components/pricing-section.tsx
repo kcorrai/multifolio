@@ -60,6 +60,9 @@ export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: bool
               <p className="mt-1 text-sm text-slate-500 dark:text-[#94A3B8] font-medium">
                 {t("pricing.creditsLine", { count: credits })}
               </p>
+              <p className="mt-0.5 text-xs text-slate-400 dark:text-[#94A3B8]/70">
+                {t("pricing.valueHint", { adaptations: credits, proposals: Math.floor(credits / 2) })}
+              </p>
               <div className="my-5 h-px bg-slate-100 dark:bg-white/6" />
               <p className="text-sm text-slate-500 dark:text-[#94A3B8] font-medium flex-1">{t(`pricing.desc.${key}`)}</p>
               <Link
