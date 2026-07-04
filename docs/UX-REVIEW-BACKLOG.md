@@ -30,34 +30,21 @@
   - Nerede: `components/pricing-section.tsx` ($9/$29/$69).
   - Kabul: TRY toggle veya "≈ ₺X" gösterimi (`/earnings`'teki para birimi deseni örnek).
 
-- [ ] **Kredi → değer eşlemesi yok**
-  - Nerede: fiyat kartları "100/500/1500 kredi" diyor ama 1 kredinin ne yaptığı belirsiz.
-  - Kabul: karta "≈ X profil uyarlaması / X teklif" gibi somut karşılık eklenir.
+- [x] **Kredi → değer eşlemesi** (2026-07-04, `01fa26b`): pricing kartlarına "≈ N uyarlama veya N teklif" eklendi.
 
-- [ ] **Header auth durumu tutarsız / şüpheli**
-  - Gözlem: landing "Dashboard" gösterdi, `/analyze` "Giriş Yap" gösterdi, `/dashboard`
-    login'e attı — aynı `getUser()` kod yolu olmasına rağmen.
-  - Kabul: oturum expiry/doğrulama elle test edilir; geçerli oturumda tüm sayfalar
-    tutarlı "Dashboard" gösterir, geçersizde tutarlı "Giriş Yap".
+- [ ] **Header auth durumu tutarsız / şüpheli** — kod yolu tüm sayfalarda aynı; muhtemelen Next `<Link>` prefetch/router-cache staleness. Elle oturum-expiry testi gerekli (bu turda yapılmadı).
 
-- [ ] **Geliştirici jargonu son kullanıcıya gösteriliyor**
-  - Nerede: `app/page.tsx` "Güvenli & Hızlı" kartı — RLS / Zod / DOMPurify rozetleri.
-  - Kabul: fayda diline çevrilir ("Verilerin şifreli", "Sadece sana ait", "Güvenli altyapı").
+- [x] **Geliştirici jargonu** (2026-07-04, `01fa26b`): RLS/Zod/DOMPurify rozetleri → "Şifreli/Sana özel/Varsayılan gizli"; secure açıklaması da fayda diline.
 
-- [ ] **`/earnings`'ten ürüne köprü yok**
-  - Nerede: `components/earnings/earnings-calculator.tsx` / `app/earnings/page.tsx`.
-  - Kabul: hesaplama sonrası signup'a çeken bağlamsal CTA eklenir (analyze deseni).
+- [x] **`/earnings`'ten ürüne köprü** (2026-07-04, `01fa26b`): sonuç altına kayıtsıza bağlamsal signup CTA (analyze deseni).
 
 ## P2 — Küçük / cila
 
-- [ ] **Footer nav header'la tutarsız** — footer'da "Net Kazanç Hesaplayıcı" linki yok
-  (header'da var); footer genelde çok ince. (`components/site-footer.tsx`)
-- [ ] **Fiverr logosu** küçük boyutta "irerr" gibi bozuk okunuyor. (`components/platform-logo.tsx`)
-- [ ] **"Beta sürecinde ücretsiz" final CTA'sı** ile ücretli fiyat kartları arası mesaj
-  kafa karışıklığı — netleştir. (`app/page.tsx` finalCta)
-- [ ] **Sosyal kanıt yok** — 3-4 gerçek testimonial funnel'ı güçlendirir (beta için opsiyonel).
-- [ ] **Analyze submit sonrası otomatik kaydırma yok** — sonuç fold altında beliriyor.
-  (`components/analyze/analyze-form.tsx`)
+- [x] **Footer nav** (UX P0 turunda, `b0f6149`): footer iki katmanlı yeniden yapıldı — earnings + yasal linkler eklendi, mobilde de görünür.
+- [x] **Fiverr logosu** (2026-07-04, `01fa26b`): wordmark → letter-mark (yeşil kare + beyaz "fi"), Bionluk/Armut deseniyle tutarlı.
+- [ ] **"Beta sürecinde ücretsiz" final CTA'sı** vs ücretli fiyat kartları mesaj karışıklığı. NOT: pricing "ödeme yakında" işareti (UX P0) çelişkiyi kısmen giderdi; finalCta metni ayrıca netleştirilebilir.
+- [ ] **Sosyal kanıt yok** — 3-4 gerçek testimonial (beta için opsiyonel).
+- [x] **Analyze otomatik kaydırma** (2026-07-04, `01fa26b`): sonuç gelince `scrollIntoView` (reduced-motion'a saygılı `scroll-mt-24`).
 
 ## Güçlü yönler (koru)
 - Olgun görsel dil (renk sistemi, tipografi, bento grid, mikro-animasyon, dark/light).

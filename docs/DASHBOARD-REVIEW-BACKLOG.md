@@ -40,16 +40,9 @@
 
 - [x] **Profil gücünde yapısal tavan** → ✅ P0-3 ile kapandı: avatar/portfolyo artık opsiyonel bonus (yüzdeye girmez); manuel kullanıcı çekirdek döngüyle %100 olur.
 
-- [ ] **Uyarlama çıktı dili UI diline sabit (global platformlarda sorun olabilir)**
-  - Nerede: `lib/ai/adapt.ts` + `lib/ai/language.ts` — LinkedIn/Upwork/Fiverr için de TR çıktı.
-  - Sorun: global müşteri hedefleyen kullanıcı EN profil ister. Teklifte platform dili var
-    (`PLATFORM_LANGUAGE`) ama uyarlamada yok — tutarsız.
-  - Kabul: uyarlamada da platform dili/dil seçimi (EN/TR toggle) uygulanır.
+- [x] **Uyarlama çıktı dili → PLATFORM dili** (2026-07-04, `01fa26b`): `adaptProfile` artık `PLATFORM_LANGUAGE[platformId]` kullanır (upwork/fiverr/linkedin=EN, bionluk/armut=TR) — teklifteki desen. `locale` param kaldırıldı.
 
-- [ ] **Ham event etiketi kullanıcıya sızıyor**
-  - Nerede: Genel Bakış tür-bazlı kullanım kartı — "profile_import" çevrilmeden gösteriliyor
-    (`components/dashboard/overview-tab.tsx`).
-  - Kabul: event kind'lar i18n ile insan-okur etikete çevrilir ("Profil içe aktarma").
+- [x] **Ham event etiketi** (2026-07-04, `01fa26b`): profile_import/platform_sync/public_analyze i18n `analytics.kind`'a eklendi.
 
 - [ ] **Onboarding sonrası "şimdi ne yapayım" yönü zayıf**
   - Gözlem: profil kaydedilince Genel Bakış'a düşüyor; checklist var ama net "sıradaki adım"
@@ -60,7 +53,7 @@
 ## P2 — Küçük / cila
 
 - [ ] Mobilde dashboard içeriğinde **yatay kaydırma çubuğu** görünüyor (küçük taşma).
-- [ ] İlan başlıkları çevriliyor ama **"(m/w/d)"** Alman artefaktı kalıyor (`lib/ai/translate.ts`).
+- [~] İlan başlıkları çevriliyor ama **"(m/w/d)"** Alman artefaktı kalıyor (`lib/ai/translate.ts`). NOT: Arbeitnow düştüğü için yeni ilanlarda sorun büyük ölçüde kalktı (kaynak Alman'dı).
 - [ ] Platform detayda **"Uyarla" CTA'sı iki kez** tekrarlanıyor (başlık + boş durum kutusu).
 - [ ] **E-posta doğrula banner'ı her sekmede** tekrar görünüyor — kapat/ertele yok gibi;
   kalıcı tekrar rahatsız edici olabilir.
