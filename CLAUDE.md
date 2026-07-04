@@ -5,7 +5,7 @@
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
 ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
 **Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/{en,tr}.json`) — EN varsayılan, TR opsiyonel; sabit string yazma, `useTranslations`/`getTranslations` kullan (yeni anahtar ekleyince iki katalogu da güncelle). **Kod yorumları Türkçe kalır.** AI çıktı dili UI locale'ine uyar.
-Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Dalga 3 + Tier 2 TAMAMLANDI (haftalık özet e-postası, follow-up hatırlatıcı + AI takip mesajı, platform dilinde teklif + TR karşılığı toggle, /earnings hesaplayıcı, portfolyo UI geri, hesap sağlığı taraması `lib/health/scan.ts` — 2026-07-04). Ayrıca header-auth E2E doğrulandı (staleness yok). Sırada: Iyzico ödeme (monetizasyon kapısı). Migration'lar 0026 dahil (0025-0026 prod push bekliyor); haftalık digest cron'u (cron-job.org) kurulacak; yayına-çıkış adımları `docs/GO-LIVE-CHECKLIST.md`.**
+Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: Dalga 3 + Tier 2 TAMAMLANDI (haftalık özet e-postası, follow-up hatırlatıcı + AI takip mesajı, platform dilinde teklif + TR karşılığı toggle, /earnings hesaplayıcı, portfolyo UI geri, hesap sağlığı taraması `lib/health/scan.ts` — 2026-07-04). Ayrıca header-auth E2E doğrulandı (staleness yok). Sırada: Iyzico ödeme (monetizasyon kapısı). Migration'lar 0026 dahil HEPSİ PROD'DA (2026-07-04 `supabase db push` → "up to date"); haftalık digest cron'u (cron-job.org) kurulacak; yayına-çıkış adımları `docs/GO-LIVE-CHECKLIST.md`.**
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
