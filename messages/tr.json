@@ -16,7 +16,9 @@
       "howItWorks": "Nasıl Çalışır",
       "analyze": "Ücretsiz Profil Analizi",
       "earnings": "Net Kazanç Hesaplayıcı",
-      "pricing": "Fiyat"
+      "pricing": "Fiyat",
+      "openMenu": "Menüyü aç",
+      "closeMenu": "Menüyü kapat"
     },
     "cta": {
       "login": "Giriş Yap",
@@ -99,6 +101,8 @@
       "badgeFreeStart": "100 ücretsiz kredi",
       "popular": "En popüler",
       "cta": "Başla",
+      "paymentSoon": "Kredi satın alma çok yakında — şimdilik herkes 100 ücretsiz krediyle başlıyor.",
+      "comingSoon": "Yakında",
       "creditsLine": "{count} kredi",
       "plans": {
         "starter": "Başlangıç",
@@ -134,7 +138,11 @@
       "subtitle": "Beta sürecinde ücretsiz. Kredi kartı gerekmez."
     },
     "footer": {
-      "rights": "© 2026 Multifolio. Tüm hakları saklıdır."
+      "rights": "© 2026 Multifolio. Tüm hakları saklıdır.",
+      "privacy": "Gizlilik Politikası",
+      "terms": "Kullanım Şartları",
+      "kvkk": "KVKK Aydınlatma Metni",
+      "contact": "İletişim"
     },
     "mockup": {
       "role": "Senior React Developer",
@@ -228,6 +236,7 @@
       "overview": "Genel Bakış",
       "profile": "Profil",
       "platforms": "Platformlar",
+      "portfolio": "Portfolyo",
       "jobs": "İlanlar"
     },
     "shell": {
@@ -519,6 +528,24 @@
       ]
     }
   },
+  "portfolio": {
+    "title": "Portfolyo Sitesi",
+    "description": "Profilinden herkese açık bir sayfa oluştur ve paylaş.",
+    "saveProfileFirst": "Portfolyo oluşturmak için önce profilini kaydet.",
+    "generating": "Üretiliyor…",
+    "regenerate": "Yeniden Üret",
+    "generate": "Portfolyo Üret",
+    "errorGenerate": "Portfolyo üretilemedi.",
+    "errorSaveSettings": "Ayarlar kaydedilemedi.",
+    "moreSkills": "+{count} daha",
+    "pageAddress": "Sayfa adresi",
+    "slugPlaceholder": "kullanici-adi",
+    "slugHelp": "Küçük harf, rakam, tire. Min 3 karakter.",
+    "public": "Herkese açık",
+    "saving": "Kaydediliyor…",
+    "saveSettings": "Ayarları Kaydet",
+    "viewPage": "Sayfayı görüntüle"
+  },
   "accounts": {
     "title": "Platform Hesaplarım",
     "description": "Her platform için profil URL'ni gir. Gelecekte bu bağlantılar üzerinden profilini import edebileceksin.",
@@ -804,6 +831,91 @@
       "net": "Net"
     },
     "disclaimer": "Tüm oranlar düzenlenebilir tahminlerdir ve zamanla değişebilir; bu bir vergi/finans danışmanlığı değildir. Karar vermeden önce güncel platform ve banka ücretlerini kontrol et."
+  },
+  "legalPrivacy": {
+    "metaTitle": "Gizlilik Politikası — Multifolio",
+    "metaDescription": "Multifolio verilerinizi nasıl topluyor, kullanıyor ve koruyor.",
+    "eyebrow": "Yasal",
+    "title": "Gizlilik Politikası",
+    "updated": "Son güncelleme: 4 Temmuz 2026",
+    "intro": "Bu politika, Multifolio'nun hangi verileri neden topladığını ve nasıl koruduğunu açıklar. Multifolio web sitesi ve uygulaması için geçerlidir.",
+    "draftNotice": "Bu metin bilgilendirme amaçlı bir taslaktır ve hukuki tavsiye değildir. Ödeme almaya başlamadan önce bir hukuk danışmanına inceletmeniz önerilir.",
+    "collectedTitle": "Topladığımız veriler",
+    "collectedBody": "• Hesap verisi: e-posta adresiniz ve şifreniz (kimlik doğrulama sağlayıcımız tarafından şifreli saklanır).\n• Girdiğiniz profil verisi: başlık, özet, beceriler ve içe aktardığınız profil metni veya dosyaları.\n• Bağladığınız platformlardan (ör. LinkedIn, Bionluk) çekilen veriler: verdiğiniz URL'deki herkese açık profil bilgileri.\n• Kullanım verisi: çalıştırdığınız AI aksiyonları ve harcanan krediler.\nÖdeme kartı bilgilerini saklamıyoruz.",
+    "useTitle": "Verilerinizi nasıl kullanıyoruz",
+    "useBody": "Verilerinizi hizmeti sunmak için kullanırız: platforma uyarlanmış profiller, teklifler, ilan eşleştirmeleri ve portfolyo sayfaları üretmek ve hesabınızı işletmek. AI üretimi, yalnızca istediğiniz çıktıyı oluşturmak amacıyla model sağlayıcımız tarafından gerçekleştirilir.",
+    "sharingTitle": "Paylaşım",
+    "sharingBody": "Verilerinizi satmıyoruz. Yalnızca Multifolio'yu çalıştırmak için gereken hizmet sağlayıcılarla paylaşırız: barındırma ve veritabanı sağlayıcımız (Supabase), AI sağlayıcımız (OpenAI) ve e-posta sağlayıcımız (Resend). Yayınlamayı seçtiğiniz içerik (ör. herkese açık portfolyo sayfası) herkese açık hale gelir.",
+    "cookiesTitle": "Çerezler",
+    "cookiesBody": "Kimlik doğrulama ve dil/tema tercihlerinizi hatırlamak için zorunlu çerezler kullanırız. Reklam çerezi kullanmıyoruz.",
+    "securityTitle": "Güvenlik",
+    "securityBody": "Verilerinize erişim satır bazlı güvenlikle korunur; her hesap yalnızca kendi kayıtlarına erişebilir. AI anahtarları ve sırlar yalnızca sunucu tarafında tutulur ve veriler şifreli bağlantılar üzerinden iletilir.",
+    "rightsTitle": "Haklarınız",
+    "rightsBody": "Profil verilerinizi dilediğiniz zaman panelinizden görüntüleyip düzenleyebilir, verilerinizi kaldırmak için hesabınızı silebilirsiniz. Talepleriniz için aşağıdaki adresten bize ulaşın.",
+    "contactTitle": "İletişim",
+    "contactBody": "Gizlilikle ilgili sorular için yanlizcakaan@gmail.com adresinden bize ulaşın."
+  },
+  "legalTerms": {
+    "metaTitle": "Kullanım Şartları — Multifolio",
+    "metaDescription": "Multifolio kullanım şartları.",
+    "eyebrow": "Yasal",
+    "title": "Kullanım Şartları",
+    "updated": "Son güncelleme: 4 Temmuz 2026",
+    "intro": "Bu şartlar Multifolio kullanımınızı düzenler. Hesap oluşturarak bunları kabul etmiş olursunuz.",
+    "draftNotice": "Bu metin bilgilendirme amaçlı bir taslaktır ve hukuki tavsiye değildir. Ödeme almaya başlamadan önce bir hukuk danışmanına inceletmeniz önerilir.",
+    "acceptanceTitle": "Kabul",
+    "acceptanceBody": "Multifolio'ya erişerek veya kullanarak bu şartları kabul edersiniz. Kabul etmiyorsanız lütfen hizmeti kullanmayın.",
+    "serviceTitle": "Hizmet",
+    "serviceBody": "Multifolio, freelancer'ların profilini birden çok platform için uyarlamasına, teklif üretmesine, iş ilanlarıyla eşleşmesine ve portfolyo sayfası yayınlamasına yardımcı olur. Hizmet şu an beta aşamasındadır ve özellikler değişebilir.",
+    "accountTitle": "Hesabınız",
+    "accountBody": "Sağladığınız bilgilerin doğruluğundan ve giriş bilgilerinizin güvenliğinden siz sorumlusunuz. Bu sözleşmeyi yapmaya hukuken ehil olmalısınız.",
+    "creditsTitle": "Krediler ve ödeme",
+    "creditsBody": "AI aksiyonları kredi harcar. Yeni hesaplar ücretsiz kredilerle başlar. Ücretli kredi satın alma henüz mevcut değildir; devreye girdiğinde geçerli şartlar ve fiyatlar satın alma öncesi gösterilecektir. Kredilerin nakit karşılığı yoktur ve yasa gerektirmedikçe iade edilmez.",
+    "acceptableTitle": "Kabul edilebilir kullanım",
+    "acceptableBody": "Hizmeti kötüye kullanmamayı kabul edersiniz: yasa dışı içerik yok, güvenliği ihlal girişimi yok, otomatik kötüye kullanım yok ve hedeflediğiniz üçüncü taraf platformların kurallarını ihlal eden kullanım yok.",
+    "ipTitle": "Fikri mülkiyet",
+    "ipBody": "Sağladığınız profil içeriğinin mülkiyeti sizde kalır. AI ile üretilen metin kullanımınıza sunulur. Multifolio adı, tasarımı ve yazılımı bize aittir.",
+    "disclaimerTitle": "Sorumluluk reddi",
+    "disclaimerBody": "Hizmet beta süresince \"olduğu gibi\" sunulur. AI çıktısı hata içerebilir — kullanmadan önce gözden geçirin. Üçüncü taraf platformlardaki sonuçlardan sorumlu değiliz; hesaplayıcılar ve skorlar tahmindir, garanti değildir.",
+    "changesTitle": "Değişiklikler",
+    "changesBody": "Ürün geliştikçe bu şartları güncelleyebiliriz. Değişiklik sonrası kullanıma devam etmeniz güncel şartları kabul ettiğiniz anlamına gelir.",
+    "contactTitle": "İletişim",
+    "contactBody": "Bu şartlarla ilgili sorularınız için yanlizcakaan@gmail.com adresine yazın."
+  },
+  "legalKvkk": {
+    "metaTitle": "KVKK Aydınlatma Metni — Multifolio",
+    "metaDescription": "6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında aydınlatma metni.",
+    "eyebrow": "Yasal",
+    "title": "KVKK Aydınlatma Metni",
+    "updated": "Son güncelleme: 4 Temmuz 2026",
+    "intro": "Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu'nun (\"KVKK\") 10. maddesi uyarınca hazırlanmıştır ve kişisel verilerinizin nasıl işlendiğini açıklar.",
+    "draftNotice": "Bu metin bilgilendirme amaçlı bir taslaktır ve hukuki tavsiye değildir. Ödeme almaya başlamadan önce bir hukuk danışmanına inceletmeniz önerilir.",
+    "controllerTitle": "Veri sorumlusu",
+    "controllerBody": "Veri sorumlusu [Şirket Ünvanı], [Adres], [VKN / sicil no]'dur. İletişim: yanlizcakaan@gmail.com.",
+    "dataTitle": "İşlenen kişisel veriler",
+    "dataBody": "• Kimlik ve iletişim: e-posta adresi.\n• Sağladığınız profil içeriği: başlık, özet, beceriler, içe aktarılan profil metni veya dosyaları.\n• Bağladığınız platformlardan gelen herkese açık profil verileri.\n• İşlem ve kullanım kayıtları: AI aksiyonları ve kredi kullanımı.",
+    "purposeTitle": "İşleme amaçları",
+    "purposeBody": "Verileriniz; hesabınızı oluşturmak ve işletmek, istediğiniz AI çıktılarını (profil uyarlama, teklif, eşleştirme, portfolyo) sunmak, destek sağlamak ve hukuki yükümlülüklerimizi yerine getirmek amacıyla işlenir.",
+    "basisTitle": "Hukuki sebepler",
+    "basisBody": "İşleme; bir sözleşmenin ifası (KVKK m. 5/2-c), meşru menfaatlerimiz (m. 5/2-f), hukuki yükümlülüğe uyum (m. 5/2-ç) ve gerektiğinde açık rızanız hukuki sebeplerine dayanır.",
+    "transferTitle": "Veri aktarımı",
+    "transferBody": "Hizmeti sunmak için verileriniz; barındırma ve veritabanı (Supabase), AI işleme (OpenAI) ve e-posta (Resend) dahil, yurt dışında bulunabilen sağlayıcılarımız tarafından işlenebilir. Aktarımlar KVKK'nın 8. ve 9. maddelerine uygun yapılır.",
+    "methodTitle": "Toplama yöntemi",
+    "methodBody": "Verileriniz; web sitesi, uygulama, tarayıcı uzantısı ve sağladığınız bağlı platform URL'leri üzerinden elektronik ortamda toplanır.",
+    "rightsTitle": "Haklarınız (KVKK m. 11)",
+    "rightsBody": "Verilerinizin işlenip işlenmediğini öğrenme, bilgi talep etme, amacını öğrenme, düzeltilmesini veya silinmesini isteme, itiraz etme ve zararın giderilmesini talep etme haklarına sahipsiniz. Bu hakları kullanmak için yukarıdaki veri sorumlusuyla iletişime geçin.",
+    "contactTitle": "İletişim",
+    "contactBody": "Haklarınızı kullanmak veya sorularınız için yanlizcakaan@gmail.com adresine yazın."
+  },
+  "legalContact": {
+    "metaTitle": "İletişim — Multifolio",
+    "metaDescription": "Multifolio ekibiyle iletişime geçin.",
+    "eyebrow": "İletişim",
+    "title": "Bize ulaşın",
+    "intro": "Sorular, geri bildirim veya yasal bir talep mi var? Sizden haber almayı çok isteriz.",
+    "emailLabel": "E-posta",
+    "email": "yanlizcakaan@gmail.com",
+    "note": "Birkaç iş günü içinde yanıt vermeyi hedefliyoruz. Bu bir beta ürünü; geri bildiriminiz sıradaki adımları doğrudan şekillendiriyor."
   },
   "errors": {
     "profileRequired": "Önce bir profil oluşturmalısın.",

@@ -4,6 +4,7 @@ import {
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
+import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
 
 export type { PoolJob } from "@/lib/validation/schemas/feed";
 
@@ -17,6 +18,7 @@ export interface InitialProfile {
   portfolio: PortfolioItem[];
 }
 export interface AdaptOutput { headline: string; body: string }
+export interface InitialPortfolio { slug: string; published: boolean; content: PortfolioContent | null }
 /** Profil sayfasında gösterilen, bir platformdan çekilmiş public profil özeti. */
 export interface ConnectedProfile {
   platform: PlatformId;
@@ -46,6 +48,7 @@ export const NAV_ITEMS: { href: string; labelKey: string; icon: React.ElementTyp
   { href: "/dashboard",           labelKey: "overview",  icon: LayoutDashboard },
   { href: "/dashboard/profile",   labelKey: "profile",   icon: User },
   { href: "/dashboard/platforms", labelKey: "platforms", icon: Layers,     badge: "connections" },
+  { href: "/dashboard/portfolio", labelKey: "portfolio", icon: Globe },
   { href: "/dashboard/jobs",      labelKey: "jobs",      icon: Briefcase, badge: "jobs" },
 ];
 

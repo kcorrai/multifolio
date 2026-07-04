@@ -16,7 +16,9 @@
       "howItWorks": "How it works",
       "analyze": "Free profile check",
       "earnings": "Earnings calculator",
-      "pricing": "Pricing"
+      "pricing": "Pricing",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
     },
     "cta": {
       "login": "Log in",
@@ -99,6 +101,8 @@
       "badgeFreeStart": "100 free credits to start",
       "popular": "Most popular",
       "cta": "Get started",
+      "paymentSoon": "Credit purchasing is coming soon — for now everyone starts with 100 free credits.",
+      "comingSoon": "Soon",
       "creditsLine": "{count} credits",
       "plans": {
         "starter": "Starter",
@@ -134,7 +138,11 @@
       "subtitle": "Free during beta. No credit card required."
     },
     "footer": {
-      "rights": "© 2026 Multifolio. All rights reserved."
+      "rights": "© 2026 Multifolio. All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "kvkk": "KVKK Notice",
+      "contact": "Contact"
     },
     "mockup": {
       "role": "Senior React Developer",
@@ -228,6 +236,7 @@
       "overview": "Overview",
       "profile": "Profile",
       "platforms": "Platforms",
+      "portfolio": "Portfolio",
       "jobs": "Jobs"
     },
     "shell": {
@@ -519,6 +528,24 @@
       ]
     }
   },
+  "portfolio": {
+    "title": "Portfolio Site",
+    "description": "Create a public page from your profile and share it.",
+    "saveProfileFirst": "Save your profile first to create a portfolio.",
+    "generating": "Generating…",
+    "regenerate": "Regenerate",
+    "generate": "Generate Portfolio",
+    "errorGenerate": "Could not generate portfolio.",
+    "errorSaveSettings": "Could not save settings.",
+    "moreSkills": "+{count} more",
+    "pageAddress": "Page address",
+    "slugPlaceholder": "username",
+    "slugHelp": "Lowercase, numbers, hyphens. Min 3 characters.",
+    "public": "Public",
+    "saving": "Saving…",
+    "saveSettings": "Save Settings",
+    "viewPage": "View page"
+  },
   "accounts": {
     "title": "My Platform Accounts",
     "description": "Enter your profile URL for each platform. In the future you'll be able to import your profile through these connections.",
@@ -804,6 +831,91 @@
       "net": "Net"
     },
     "disclaimer": "All rates are editable estimates and can change over time; this is not tax or financial advice. Check current platform and bank fees before deciding."
+  },
+  "legalPrivacy": {
+    "metaTitle": "Privacy Policy — Multifolio",
+    "metaDescription": "How Multifolio collects, uses and protects your data.",
+    "eyebrow": "Legal",
+    "title": "Privacy Policy",
+    "updated": "Last updated: July 4, 2026",
+    "intro": "This policy explains what data Multifolio collects, why, and how we protect it. It applies to the Multifolio website and app.",
+    "draftNotice": "This is a template for informational purposes and is not legal advice. Please have it reviewed by a legal professional before you start taking payments.",
+    "collectedTitle": "Data we collect",
+    "collectedBody": "• Account data: your email address and password (stored encrypted by our authentication provider).\n• Profile data you enter: headline, summary, skills, and any profile text or files you import.\n• Data pulled from platforms you connect (e.g. LinkedIn, Bionluk): public profile information from the URL you provide.\n• Usage data: the AI actions you run and the credits they consume.\nWe do not store payment card details.",
+    "useTitle": "How we use your data",
+    "useBody": "We use your data to provide the service: generating platform-adapted profiles, proposals, job matches and portfolio pages, and to operate your account. AI generation is performed by our model provider solely to produce the output you request.",
+    "sharingTitle": "Sharing",
+    "sharingBody": "We do not sell your data. We share it only with the service providers needed to run Multifolio: our hosting and database provider (Supabase), our AI provider (OpenAI) and our email provider (Resend). Content you choose to publish, such as a public portfolio page, becomes publicly accessible.",
+    "cookiesTitle": "Cookies",
+    "cookiesBody": "We use essential cookies for authentication and to remember your language and theme preferences. We do not use advertising cookies.",
+    "securityTitle": "Security",
+    "securityBody": "Access to your data is protected by row-level security, so each account can only reach its own records. AI keys and secrets are kept server-side only, and data is transmitted over encrypted connections.",
+    "rightsTitle": "Your rights",
+    "rightsBody": "You can view and edit your profile data at any time from your dashboard, and delete your account to remove your data. For requests, contact us at the address below.",
+    "contactTitle": "Contact",
+    "contactBody": "For privacy questions, contact us at yanlizcakaan@gmail.com."
+  },
+  "legalTerms": {
+    "metaTitle": "Terms of Service — Multifolio",
+    "metaDescription": "The terms for using Multifolio.",
+    "eyebrow": "Legal",
+    "title": "Terms of Service",
+    "updated": "Last updated: July 4, 2026",
+    "intro": "These terms govern your use of Multifolio. By creating an account you agree to them.",
+    "draftNotice": "This is a template for informational purposes and is not legal advice. Please have it reviewed by a legal professional before you start taking payments.",
+    "acceptanceTitle": "Acceptance",
+    "acceptanceBody": "By accessing or using Multifolio, you agree to these terms. If you do not agree, please do not use the service.",
+    "serviceTitle": "The service",
+    "serviceBody": "Multifolio helps freelancers adapt their profile for multiple platforms, generate proposals, match with job listings and publish a portfolio page. The service is currently in beta and features may change.",
+    "accountTitle": "Your account",
+    "accountBody": "You are responsible for the accuracy of the information you provide and for keeping your login credentials secure. You must be legally able to enter into this agreement.",
+    "creditsTitle": "Credits and payment",
+    "creditsBody": "AI actions consume credits. New accounts start with free credits. Paid credit purchasing is not yet available; when it launches, applicable terms and pricing will be shown before purchase. Credits have no cash value and are non-refundable except where required by law.",
+    "acceptableTitle": "Acceptable use",
+    "acceptableBody": "You agree not to misuse the service: no unlawful content, no attempts to breach security, no automated abuse, and no use that violates the rules of the third-party platforms you target.",
+    "ipTitle": "Intellectual property",
+    "ipBody": "You retain ownership of the profile content you provide. AI-generated text is provided for your use. The Multifolio name, design and software remain our property.",
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerBody": "The service is provided \"as is\" during beta. AI-generated output may contain errors — review it before use. We are not responsible for outcomes on third-party platforms, and calculators and scores are estimates, not guarantees.",
+    "changesTitle": "Changes",
+    "changesBody": "We may update these terms as the product evolves. Continued use after changes means you accept the updated terms.",
+    "contactTitle": "Contact",
+    "contactBody": "Questions about these terms? Contact yanlizcakaan@gmail.com."
+  },
+  "legalKvkk": {
+    "metaTitle": "Data Protection (KVKK) Notice — Multifolio",
+    "metaDescription": "Information notice under Turkey's Personal Data Protection Law (KVKK).",
+    "eyebrow": "Legal",
+    "title": "Data Protection (KVKK) Notice",
+    "updated": "Last updated: July 4, 2026",
+    "intro": "This notice is provided under Article 10 of Turkey's Personal Data Protection Law No. 6698 (\"KVKK\") and explains how your personal data is processed.",
+    "draftNotice": "This is a template for informational purposes and is not legal advice. Please have it reviewed by a legal professional before you start taking payments.",
+    "controllerTitle": "Data controller",
+    "controllerBody": "The data controller is [Company Name], [Address], [Tax ID / registration number]. Contact: yanlizcakaan@gmail.com.",
+    "dataTitle": "Personal data processed",
+    "dataBody": "• Identity and contact: email address.\n• Profile content you provide: headline, summary, skills, imported profile text or files.\n• Public profile data from platforms you connect.\n• Transaction and usage records: AI actions and credit usage.",
+    "purposeTitle": "Purposes of processing",
+    "purposeBody": "Your data is processed to create and operate your account, to deliver the requested AI outputs (profile adaptation, proposals, matching, portfolio), to provide support, and to meet our legal obligations.",
+    "basisTitle": "Legal grounds",
+    "basisBody": "Processing is based on the performance of a contract (KVKK Art. 5/2-c), our legitimate interests (Art. 5/2-f), compliance with legal obligations (Art. 5/2-ç), and, where required, your explicit consent.",
+    "transferTitle": "Data transfers",
+    "transferBody": "To operate the service, data may be processed by our providers, including hosting and database (Supabase), AI processing (OpenAI) and email (Resend), which may be located abroad. Transfers are made in line with KVKK Articles 8 and 9.",
+    "methodTitle": "Method of collection",
+    "methodBody": "Your data is collected electronically through the website, the app, the browser extension, and the connected platform URLs you provide.",
+    "rightsTitle": "Your rights (KVKK Art. 11)",
+    "rightsBody": "You have the right to learn whether your data is processed, to request information about it, to know the purpose, to request correction or deletion, to object, and to claim compensation for damages. To exercise these rights, contact the data controller above.",
+    "contactTitle": "Contact",
+    "contactBody": "To exercise your rights or for questions, contact yanlizcakaan@gmail.com."
+  },
+  "legalContact": {
+    "metaTitle": "Contact — Multifolio",
+    "metaDescription": "Get in touch with the Multifolio team.",
+    "eyebrow": "Contact",
+    "title": "Get in touch",
+    "intro": "Questions, feedback, or a legal request? We'd love to hear from you.",
+    "emailLabel": "Email",
+    "email": "yanlizcakaan@gmail.com",
+    "note": "We aim to reply within a few business days. This is a beta product, so your feedback directly shapes what we build next."
   },
   "errors": {
     "profileRequired": "You need to create a profile first.",

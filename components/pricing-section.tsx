@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Clock } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
@@ -24,12 +24,19 @@ export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: bool
         </div>
       </ScrollReveal>
 
-      <div className="flex flex-wrap items-center justify-center gap-3 mb-10 text-xs font-medium text-slate-500 dark:text-[#94A3B8]">
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-6 text-xs font-medium text-slate-500 dark:text-[#94A3B8]">
         {[t("pricing.badgePayg"), t("pricing.badgeNoSub"), t("pricing.badgeNeverExpire"), t("pricing.badgeFreeStart")].map((b) => (
           <span key={b} className="flex items-center gap-1.5">
             <CheckCircle2 className="h-3.5 w-3.5 text-[#00F0FF] shrink-0" />{b}
           </span>
         ))}
+      </div>
+
+      {/* Dürüst ödeme işareti: gerçek checkout henüz yok (Iyzico beklemede). */}
+      <div className="flex justify-center mb-10">
+        <p className="inline-flex items-center gap-2 rounded-full border border-amber-300/50 dark:border-amber-700/40 bg-amber-50 dark:bg-amber-950/30 px-4 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+          <Clock className="h-3.5 w-3.5 shrink-0" />{t("pricing.paymentSoon")}
+        </p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
@@ -44,8 +51,11 @@ export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: bool
                 </span>
               )}
               <h3 className="font-bold text-lg">{t(`pricing.plans.${key}`)}</h3>
-              <div className="mt-3 flex items-baseline gap-1">
+              <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-4xl font-extrabold tracking-tight">{price}</span>
+                <span className="rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide">
+                  {t("pricing.comingSoon")}
+                </span>
               </div>
               <p className="mt-1 text-sm text-slate-500 dark:text-[#94A3B8] font-medium">
                 {t("pricing.creditsLine", { count: credits })}

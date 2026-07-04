@@ -1,12 +1,52 @@
 import "server-only";
+import { z } from "zod";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
-import { portfolioContentSchema, type PortfolioContent } from "@/lib/validation/schemas/portfolio";
+import { type PortfolioContent } from "@/lib/validation/schemas/portfolio";
 import type { Locale } from "@/i18n/detect";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
+
+// OpenAI structured-output ŞEMASI (depolama şemasından AYRI): OpenAI, tüm
+// alanların zorunlu olmasını ister ve `.optional()`'ı `.nullable()` olmadan
+// reddeder; ayrıca min/max/refine/default'u yok sayar. Bu yüzden burada sade,
+// nullable-url'li bir şema kullanılır; sonuç depolama şemasına (PortfolioContent)
+// eşlenip kırpılır (aşağıda mapToContent).
+const portfolioGenSchema = z.object({
+  headline: z.string(),
+  bio: z.string(),
+  skills: z.array(z.string()),
+  projects: z.array(
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      url: z.string().nullable(),
+    }),
+  ),
+});
+
+const clamp = (s: string, n: number) => s.trim().slice(0, n);
+
+// AI ham çıktısını geçerli, kırpılmış PortfolioContent'e çevirir (depolama
+// şeması min/max sınırlarını asla ihlal etmez; boş alanlar profilden dolar).
+function mapToContent(raw: z.infer<typeof portfolioGenSchema>, profile: ProfileInput): PortfolioContent {
+  const skills = raw.skills.map((s) => clamp(s, 60)).filter(Boolean).slice(0, 30);
+  return {
+    headline: clamp(raw.headline, 220) || clamp(profile.headline, 220),
+    bio: clamp(raw.bio, 2000) || clamp(profile.summary, 2000),
+    skills: skills.length ? skills : profile.skills.slice(0, 30),
+    projects: raw.projects
+      .filter((p) => p.title?.trim() && p.description?.trim())
+      .slice(0, 12)
+      .map((p) => {
+        const u = p.url?.trim();
+        const url = u && /^https?:\/\//i.test(u) ? u : undefined;
+        return { title: clamp(p.title, 120), description: clamp(p.description, 500), ...(url ? { url } : {}) };
+      }),
+  };
+}
 
 export interface GeneratePortfolioResult {
   content: PortfolioContent;
@@ -48,7 +88,7 @@ export async function generatePortfolio(
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userContent },
     ],
-    response_format: zodResponseFormat(portfolioContentSchema, "portfolio"),
+    response_format: zodResponseFormat(portfolioGenSchema, "portfolio"),
   });
 
   const parsed = completion.choices[0].message.parsed;
@@ -64,7 +104,7 @@ export async function generatePortfolio(
   };
 
   return {
-    content: parsed,
+    content: mapToContent(parsed, profile),
     model: AI_MODEL,
     inputTokens: usage.prompt_tokens,
     outputTokens: usage.completion_tokens,

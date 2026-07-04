@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
+import { MobileNav } from "@/components/mobile-nav";
 
 /* ─── Paylaşılan üst gezinme (landing + pricing) ─────────────────── */
 export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
@@ -33,7 +34,7 @@ export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean 
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3">
           <LanguageToggle />
           <ThemeToggle />
           {isLoggedIn ? (
@@ -51,6 +52,9 @@ export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean 
             </>
           )}
         </div>
+
+        {/* Mobil: hamburger + açılır menü (tüm nav + toggle + CTA) */}
+        <MobileNav isLoggedIn={isLoggedIn} />
       </div>
     </header>
   );
