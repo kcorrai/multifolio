@@ -25,6 +25,17 @@ export type ProfileStrengthKey =
 
 export type ProfileBonusKey = "avatar" | "portfolio";
 
+// Kademeler (LinkedIn "All-Star" deseni): yüzdeyi somut bir hedefe bağlar → kullanıcı
+// bir sonraki eşiği görür. Eşikler UI bar renkleriyle uyumlu (40/75 civarı).
+export type ProfileStrengthStage = "start" | "shaping" | "strong" | "allstar";
+
+export function profileStrengthStage(percent: number): ProfileStrengthStage {
+  if (percent >= 100) return "allstar";
+  if (percent >= 67) return "strong";
+  if (percent >= 34) return "shaping";
+  return "start";
+}
+
 export interface ProfileStrengthItem {
   key: ProfileStrengthKey;
   done: boolean;
@@ -40,6 +51,10 @@ export interface ProfileBonusItem {
 
 export interface ProfileStrengthResult {
   percent: number;
+  /** Yüzdeden türeyen kademe (start/shaping/strong/allstar). */
+  stage: ProfileStrengthStage;
+  /** Her çekirdek maddenin yüzdeye katkısı (şeffaflık: "+{stepPercent}%"). */
+  stepPercent: number;
   items: ProfileStrengthItem[];
   /** Yüzdeye SAYILMAYAN opsiyonel maddeler (içe aktarmadan gelir). */
   bonus: ProfileBonusItem[];
@@ -68,5 +83,6 @@ export function computeProfileStrength(input: ProfileStrengthInput): ProfileStre
 
   const doneCount = items.filter((i) => i.done).length;
   const percent = Math.min(100, Math.max(0, Math.round((doneCount / items.length) * 100)));
-  return { percent, items, bonus };
+  const stepPercent = Math.round(100 / items.length);
+  return { percent, stage: profileStrengthStage(percent), stepPercent, items, bonus };
 }

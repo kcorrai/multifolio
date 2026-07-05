@@ -309,6 +309,13 @@
     "profileStrength": {
       "title": "Setup progress",
       "percent": "{percent}%",
+      "step": "+{percent}%",
+      "stage": {
+        "start": "Getting started",
+        "shaping": "Taking shape",
+        "strong": "Strong",
+        "allstar": "All-Star"
+      },
       "complete": "Setup complete — great work!",
       "hint": "Complete profiles get noticed far more often. Finish these steps:",
       "bonusLabel": "Optional:",

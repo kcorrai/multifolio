@@ -309,6 +309,13 @@
     "profileStrength": {
       "title": "Kurulum ilerlemesi",
       "percent": "%{percent}",
+      "step": "+%{percent}",
+      "stage": {
+        "start": "Başlangıç",
+        "shaping": "Şekilleniyor",
+        "strong": "Güçlü",
+        "allstar": "All-Star"
+      },
       "complete": "Kurulum tamam — harika iş!",
       "hint": "Tam profiller çok daha fazla fark edilir. Şu adımları tamamla:",
       "bonusLabel": "Opsiyonel:",

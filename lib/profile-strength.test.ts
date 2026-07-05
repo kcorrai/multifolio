@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeProfileStrength, type ProfileStrengthInput } from "./profile-strength";
+import { computeProfileStrength, profileStrengthStage, type ProfileStrengthInput } from "./profile-strength";
 
 // Tüm maddeleri geçen dolu girdi; testler tek alanı bozarak ilerler.
 function full(over: Partial<ProfileStrengthInput> = {}): ProfileStrengthInput {
@@ -59,6 +59,19 @@ describe("computeProfileStrength", () => {
       avatarUrl: null, portfolioCount: 0, connectionsCount: 0, platformProfilesCount: 0, adaptationsCount: 0,
     }));
     expect(r.percent).toBe(50); // 3/6
+  });
+
+  it("stage: 100 allstar, 67 strong, 50 shaping, 0 start", () => {
+    expect(computeProfileStrength(full()).stage).toBe("allstar");
+    expect(profileStrengthStage(100)).toBe("allstar");
+    expect(profileStrengthStage(67)).toBe("strong");
+    expect(profileStrengthStage(50)).toBe("shaping");
+    expect(profileStrengthStage(33)).toBe("start");
+    expect(profileStrengthStage(0)).toBe("start");
+  });
+
+  it("stepPercent = 6 çekirdek madde için 17", () => {
+    expect(computeProfileStrength(full()).stepPercent).toBe(17);
   });
 
   it("href hedefleri: çekirdek profil/platform, bonus /import", () => {

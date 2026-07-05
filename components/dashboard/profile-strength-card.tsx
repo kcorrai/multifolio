@@ -25,7 +25,12 @@ export function ProfileStrengthCard({ strength }: { strength: ProfileStrengthRes
           <Gauge className="h-4 w-4 text-[#00F0FF]" />
           {t("title")}
         </h3>
-        <span className="text-lg font-extrabold tabular-nums">{t("percent", { percent: strength.percent })}</span>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-[#00F0FF]/10 px-2 py-0.5 text-[11px] font-bold text-[#0891b2] dark:text-[#00F0FF]">
+            {t(`stage.${strength.stage}`)}
+          </span>
+          <span className="text-lg font-extrabold tabular-nums">{t("percent", { percent: strength.percent })}</span>
+        </div>
       </div>
 
       <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -50,7 +55,10 @@ export function ProfileStrengthCard({ strength }: { strength: ProfileStrengthRes
                   className="group flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-[#00F0FF]/30 hover:bg-[#00F0FF]/5 transition-colors"
                 >
                   <span>{t(`items.${item.key}`)}</span>
-                  <ArrowRight className="h-3.5 w-3.5 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  <span className="flex items-center gap-1.5 shrink-0">
+                    <span className="text-[10px] font-bold text-[#0891b2] dark:text-[#00F0FF]">{t("step", { percent: strength.stepPercent })}</span>
+                    <ArrowRight className="h-3.5 w-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </span>
                 </Link>
               </li>
             ))}
