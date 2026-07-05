@@ -44,7 +44,7 @@ export const POST = withErrorHandler(async (req) => {
 
   const input = await parseJson(req, proposalCreateSchema);
 
-  const [profileRes, jobRes, lastProposalRes, platformProfileRes] = await Promise.all([
+  const [profileRes, jobRes, lastProposalRes, platformProfileRes, voiceRes] = await Promise.all([
     supabase
       .from("profiles")
       .select("headline, summary, skills")
@@ -72,6 +72,15 @@ export const POST = withErrorHandler(async (req) => {
       .eq("user_id", user.id)
       .eq("platform", input.platform)
       .maybeSingle(),
+    // Ses hafızası: kullanıcının DİĞER işlerdeki son teklifleri (üslup örneği; aynı iş
+    // hariç → içerik kopyalama riski yok). Boşsa davranış değişmez.
+    supabase
+      .from("proposals")
+      .select("content")
+      .eq("user_id", user.id)
+      .neq("job_id", input.job_id)
+      .order("created_at", { ascending: false })
+      .limit(3),
   ]);
 
   if (profileRes.error) throw profileRes.error;
@@ -134,6 +143,7 @@ export const POST = withErrorHandler(async (req) => {
         feedPrompt,
         tone: input.tone,
         length: input.length,
+        voiceExamples: ((voiceRes.data ?? []) as { content: string }[]).map((p) => p.content),
       },
     );
     const { data: saved, error: saveError } = await supabase
