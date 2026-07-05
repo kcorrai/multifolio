@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Sparkles, X, Check, AlertCircle, BarChart3,
-  Wallet, Zap, Briefcase, ShoppingCart, ArrowRight,
+  Wallet, Zap, Briefcase, ShoppingCart, ArrowRight, TrendingUp,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   StatCard, TINT_CYAN, TINT_VIOLET, ELEVATED, KIND_ICONS,
   STATUS_DOT, scoreColor, type AnalyticsData, type JobRow,
 } from "./shared";
+import { winRateByScore, hasWinRateSignal, type ScoreBucket } from "@/lib/analytics/win-rate";
 import { useDashboard } from "./dashboard-context";
 import { ProfileStrengthCard } from "./profile-strength-card";
 import { ReferralCard } from "./referral-card";
@@ -278,6 +279,42 @@ export function OverviewTab({
                       />
                     </div>
                     <span className="text-xs font-bold tabular-nums w-4 text-right">{count}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          );
+        })()}
+
+        {/* Kazanma oranı × AI-skor: yüksek skorun daha çok kazandırdığını kanıtlar (T2.2). */}
+        {jobs.length > 0 && (() => {
+          const winRows = winRateByScore(jobs);
+          if (!hasWinRateSignal(winRows)) return null;
+          const BUCKET_STYLE: Record<ScoreBucket, string> = {
+            high: "bg-green-500", medium: "bg-amber-500", low: "bg-red-500",
+          };
+          return (
+            <Card className={`shadow-sm ${ELEVATED}`}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-[#00F0FF]" />
+                  <CardTitle className="text-sm">{ta("winRateTitle")}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-xs text-muted-foreground">{ta("winRateHint")}</p>
+                {winRows.filter((r) => r.applied > 0).map((r) => (
+                  <div key={r.bucket} className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground w-28 shrink-0">{ta(`winRateBucket.${r.bucket}`)}</span>
+                    <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                      <div className={`h-full rounded-full ${BUCKET_STYLE[r.bucket]}`} style={{ width: `${r.winRate ?? 0}%` }} />
+                    </div>
+                    <span className="text-xs font-bold tabular-nums w-16 text-right">
+                      {r.winRate != null ? `${r.winRate}%` : ta("winRatePending")}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground/70 w-20 text-right shrink-0">
+                      {ta("winRateApplied", { count: r.applied })}
+                    </span>
                   </div>
                 ))}
               </CardContent>

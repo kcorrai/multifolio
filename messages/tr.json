@@ -414,7 +414,16 @@
     "dailyTitle": "Son 30 gün — günlük kredi kullanımı",
     "noUsage": "Henüz kullanım yok",
     "noUsageHint": "Uyarlama, portfolyo veya eşleştirme yaptıkça burada görünür.",
-    "applicationPerformance": "Başvuru Performansı"
+    "applicationPerformance": "Başvuru Performansı",
+    "winRateTitle": "Skor bandına göre kazanma oranı",
+    "winRateHint": "Yüksek AI eşleşme skoru gerçekten daha çok mu kazandırıyor? Sonuçlarını skor bandına göre izler.",
+    "winRateBucket": {
+      "high": "Yüksek (70+)",
+      "medium": "Orta (40–69)",
+      "low": "Düşük (<40)"
+    },
+    "winRatePending": "bekliyor",
+    "winRateApplied": "{count} başvuru"
   },
   "proposal": {
     "modal": {

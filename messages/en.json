@@ -414,7 +414,16 @@
     "dailyTitle": "Last 30 days — daily credit usage",
     "noUsage": "No usage yet",
     "noUsageHint": "It will appear here as you adapt, generate portfolios or match listings.",
-    "applicationPerformance": "Application Performance"
+    "applicationPerformance": "Application Performance",
+    "winRateTitle": "Win rate by match score",
+    "winRateHint": "Do higher AI match scores actually win more? This tracks your outcomes by score band.",
+    "winRateBucket": {
+      "high": "High (70+)",
+      "medium": "Medium (40–69)",
+      "low": "Low (<40)"
+    },
+    "winRatePending": "pending",
+    "winRateApplied": "{count} applied"
   },
   "proposal": {
     "modal": {
