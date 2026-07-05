@@ -102,13 +102,16 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
   `extract.ts`/`content.ts`/`background.ts` reuse; "manuel iş ekle" sürtünmesini öldürür).
 - [x] **T2.2 — Kazanma oranı vs AI-skor analitiği** 🟨 ✅ 2026-07-05 — `lib/analytics/win-rate.ts`
   (saf, 5 test): başvurulan işleri skor bandına böl → kazanma oranı; Overview'da kart (sinyal varsa).
-- [ ] **T2.3 — Teklif ton/uzunluk kontrolleri + "geçmiş tekliflerimden öğren"** 🟨 — resmi↔samimi/
-  kısa↔detaylı slider + kullanıcının eski tekliflerinden ses tonu; "AI slop" şikayetini öldürür.
+- [~] **T2.3 — Teklif ton/uzunluk kontrolleri** 🟨 ✅ 2026-07-05 — ton (profesyonel/samimi/iddialı) +
+  uzunluk (kısa/standart/detaylı) seçici (`lib/proposal/style.ts` saf, 5 test). [ ] Ertelendi: "geçmiş
+  tekliflerimden ses tonu öğren" (few-shot, ayrı iş).
 - [ ] **T2.4 — Uzantı "sayfaya yapıştır" (asla göndermez)** 🟨 — cover-letter kutusunu doldur, auto-submit yok.
-- [ ] **T2.5 — Portfolyo değer katmanları** 🟨 — sayfa başı SEO metadata + JSON-LD (link önizlemesi) ·
-  Problem→Çözüm→Sonuç vaka şeması (AI mevcut işlerden) · nitelikli "İşe al" formu → dashboard lead.
-- [ ] **T2.6 — Feed iyileştirmeleri** 🟨 — digest konu satırı = eşleşme sayısı (bedava, +%58 CTR) ·
-  saat dilimi/vize filtresi (TR'de #1 elenme sebebi) · alert cadence + duraklat · "bilinen şirket" rozeti.
+- [~] **T2.5 — Portfolyo değer katmanları** 🟨 ✅ 2026-07-05 (SEO parçası) — sayfa başı SEO metadata +
+  Twitter card + JSON-LD Person (`lib/portfolio/json-ld.ts`, yayınlı sayfada doğrulandı). [ ] Ertelendi:
+  Problem→Çözüm→Sonuç vaka şeması + nitelikli "İşe al" formu (ayrı iş).
+- [~] **T2.6 — Feed iyileştirmeleri** 🟨 — digest konu satırı = eşleşme sayısı ZATEN VAR (`email.ts:150`
+  feed-digest sayıyı içeriyor). Kalanlar elimizde-olmayan veri ister: saat dilimi/vize filtresi + "bilinen
+  şirket" rozeti (job_pool'da güvenilir timezone/company alanı yok) → ertelendi/veri-bloklu.
 - [ ] **T2.7 — Armut "teklif ver / geç" ROI yardımcısı** 🟨 — pay-per-lead'de kazanma olasılığı +
   break-even (`match.ts`/rubrik reuse); kimsenin yapmadığı gerçek TR farklılaşması.
 
