@@ -199,6 +199,10 @@ export function SearchView() {
           <Plus className="h-3.5 w-3.5" />{t("saveAsFeed")}
         </Button>
       </div>
+      {/* Dürüstlük: zaman filtresi feed'e taşınmaz (job_feeds şemasında yaş yok). */}
+      {time !== "all" && (
+        <p className="text-[11px] text-muted-foreground/70">{t("timeNotSaved")}</p>
+      )}
 
       {filtersOpen && (
         <div className="rounded-2xl border border-border bg-card p-4 animate-in fade-in-0 slide-in-from-top-1 duration-200 motion-reduce:animate-none">
@@ -240,7 +244,17 @@ export function SearchView() {
         </div>
       )}
 
-      {loaded && <p className="text-xs text-muted-foreground">{t("resultsCount", { count: visible.length })}</p>}
+      {loaded && (
+        <p className="text-xs text-muted-foreground">
+          {t("resultsCount", { count: visible.length })}
+          {/* Zaman filtresi aktifken tarihsiz ilanlar elenmiyor (lenient) → şeffaf ol. */}
+          {time !== "all" && visible.some((j) => !j.posted_at) && (
+            <span className="text-muted-foreground/60">
+              {" · "}{t("undatedIncluded", { count: visible.filter((j) => !j.posted_at).length })}
+            </span>
+          )}
+        </p>
+      )}
       {loaded && visible.length === 0 && <p className="text-sm text-muted-foreground text-center py-10">{t("searchEmpty")}</p>}
 
       <div className="space-y-1.5">

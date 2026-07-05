@@ -77,7 +77,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ...(images ? { images } : {}),
     },
     twitter: {
-      card: media.avatarUrl ? "summary_large_image" : "summary",
+      // Avatar yoksa da dinamik opengraph-image fallback'i var → her zaman büyük kart.
+      card: "summary_large_image",
       title: headline,
       description,
       ...(images ? { images } : {}),
@@ -141,7 +142,7 @@ export default async function PortfolioPage({ params }: PageProps) {
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <header className="mx-auto max-w-5xl px-6 pt-14 pb-10 sm:pt-24 sm:pb-14">
         <div className="flex flex-col items-start gap-6 sm:gap-8">
-          {media.avatarUrl && (
+          {media.avatarUrl ? (
             // Dış görsel (bağlı platformdan) — next/image remotePatterns gerektirmesin.
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -149,6 +150,16 @@ export default async function PortfolioPage({ params }: PageProps) {
               alt={headline}
               className="anim-fade-in anim-d0 h-24 w-24 sm:h-28 sm:w-28 rounded-2xl object-cover ring-1 ring-[var(--pf-border)] shadow-xl"
             />
+          ) : (
+            // Avatar yoksa (yalnız Bionluk/LinkedIn foto verir) baş-harfli çapa —
+            // hero görsel kimlik hissini korur.
+            <div
+              aria-hidden
+              className="anim-fade-in anim-d0 flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-2xl text-4xl font-bold text-white shadow-xl ring-1 ring-[var(--pf-border)]"
+              style={{ backgroundColor: "var(--pf-accent)" }}
+            >
+              {(headline.trim()[0] ?? "?").toUpperCase()}
+            </div>
           )}
           <div className="space-y-4">
             <h1
@@ -200,7 +211,9 @@ export default async function PortfolioPage({ params }: PageProps) {
                   src={item.url}
                   alt={item.caption || headline}
                   loading="lazy"
-                  className="w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  decoding="async"
+                  /* aspect-ratio yükleme öncesi yer ayırır → sütun akışı kaymaz (CLS). */
+                  className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 />
                 {item.caption && (
                   <figcaption className="px-3 py-2 text-xs text-[var(--pf-muted)]">{item.caption}</figcaption>

@@ -472,6 +472,7 @@
     "saving": "Saving…",
     "save": "Save",
     "saved": "Saved",
+    "unsavedReminder": "Applied — don't forget to save",
     "preview": "Preview",
     "completion": "Core profile",
     "photoAlt": "Profile photo",
@@ -625,6 +626,8 @@
     "contactHint": "Shown as a “Get in touch” button on your public page. Email is used first; leave both empty to hide it.",
     "contactEmailLabel": "Contact email",
     "contactUrlLabel": "Or a contact link (URL)",
+    "contactEmailInvalid": "Not a valid email — the button won't show until it's fixed.",
+    "contactUrlInvalid": "Enter a full URL starting with http:// or https:// — otherwise the button won't show.",
     "saved": "Saved",
     "testimonials": {
       "title": "Client recommendations",
@@ -767,6 +770,8 @@
     "actionFailed": "Something went wrong. Please try again.",
     "weakSignalHint": "Add at least 3 skills to your profile so your feed ranks the best-matching jobs first.",
     "weakSignalCta": "Complete profile",
+    "undatedIncluded": "Includes {count} job(s) with no post date.",
+    "timeNotSaved": "The time filter isn't saved with the feed — saved feeds match jobs of any age.",
     "tabs": {
       "feed": "Feed",
       "search": "Search",

@@ -472,6 +472,7 @@
     "saving": "Kaydediliyor…",
     "save": "Kaydet",
     "saved": "Kaydedildi",
+    "unsavedReminder": "Uygulandı — kaydetmeyi unutma",
     "preview": "Önizleme",
     "completion": "Çekirdek profil",
     "photoAlt": "Profil fotoğrafı",
@@ -625,6 +626,8 @@
     "contactHint": "Public sayfanda “İletişime geç” butonu olarak görünür. Önce e-posta kullanılır; ikisini de boş bırakırsan gizlenir.",
     "contactEmailLabel": "İletişim e-postası",
     "contactUrlLabel": "Veya bir iletişim bağlantısı (URL)",
+    "contactEmailInvalid": "Geçerli bir e-posta değil — düzeltilene kadar buton görünmez.",
+    "contactUrlInvalid": "http:// veya https:// ile başlayan tam bir URL gir — yoksa buton görünmez.",
     "saved": "Kaydedildi",
     "testimonials": {
       "title": "Müşteri yorumları",
@@ -767,6 +770,8 @@
     "actionFailed": "Bir şeyler ters gitti. Lütfen tekrar dene.",
     "weakSignalHint": "Profiline en az 3 beceri ekle ki feed en uygun işleri en üste sıralasın.",
     "weakSignalCta": "Profili tamamla",
+    "undatedIncluded": "Tarihi olmayan {count} ilan da dahil.",
+    "timeNotSaved": "Zaman filtresi feed'e kaydedilmez — kayıtlı feed'ler her yaştan ilanı eşler.",
     "tabs": {
       "feed": "Feed",
       "search": "Ara",

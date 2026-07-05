@@ -8,7 +8,7 @@ import { Send, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export function RecommendForm({ slug }: { slug: string }) {
+export function RecommendForm({ slug, accentHex }: { slug: string; accentHex?: string }) {
   const t = useTranslations("recommend");
   const [authorName, setAuthorName] = useState("");
   const [authorRole, setAuthorRole] = useState("");
@@ -81,7 +81,12 @@ export function RecommendForm({ slug }: { slug: string }) {
         className="absolute left-[-9999px] h-0 w-0 opacity-0"
       />
       {status === "error" && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      <Button type="submit" disabled={!canSubmit || status === "sending"} className="w-full gap-2 font-semibold bg-violet-600 hover:bg-violet-500 text-white">
+      <Button
+        type="submit"
+        disabled={!canSubmit || status === "sending"}
+        className="w-full gap-2 font-semibold text-white hover:opacity-90"
+        style={accentHex ? { backgroundColor: accentHex } : undefined}
+      >
         <Send className="h-4 w-4" />{status === "sending" ? t("sending") : t("submit")}
       </Button>
       <p className="text-center text-[11px] text-muted-foreground/70">{t("moderationNote")}</p>

@@ -240,6 +240,12 @@ export function ProfileTab({
                   <CheckCircle2 className="h-4 w-4" /> {t("saved")}
                 </span>
               )}
+              {/* AI önerisi uygulanıp henüz kaydedilmediyse: sessiz kayıp riskini uyar. */}
+              {(applied.headline || applied.summary || applied.skills) && saveState !== "saved" && saveState !== "saving" && (
+                <span className="flex items-center gap-1.5 text-sm text-amber-600 dark:text-amber-400">
+                  <AlertCircle className="h-4 w-4" /> {t("unsavedReminder")}
+                </span>
+              )}
             </div>
           </CardContent>
         </Card>

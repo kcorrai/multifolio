@@ -49,6 +49,12 @@ export function ChipsInput({
           <Plus className="h-4 w-4" />
         </Button>
       </div>
+      {/* Limit sayacı: dolmaya yaklaşınca (son 3) amber → "+" neden pasif belli olur. */}
+      {values.length > 0 && (
+        <p className={`text-right text-[10px] tabular-nums ${values.length >= max - 3 ? "text-amber-500" : "text-muted-foreground/50"}`}>
+          {values.length}/{max}
+        </p>
+      )}
       {values.length > 0 && (
         <div className="flex flex-wrap gap-1.5 pt-1">
           {values.map((v) => (

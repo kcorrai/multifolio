@@ -150,9 +150,16 @@ export function PortfolioTab({
                   <Input type="email" inputMode="email" value={content.contactEmail ?? ""} maxLength={200}
                     placeholder={t("contactEmailLabel")} aria-label={t("contactEmailLabel")}
                     onChange={(e) => patch({ contactEmail: e.target.value })} />
+                  {/* Canlı doğrulama: public sayfadaki regex ile aynı → sessiz CTA kaybını önle. */}
+                  {(content.contactEmail ?? "").trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((content.contactEmail ?? "").trim()) && (
+                    <p className="text-[11px] text-amber-600 dark:text-amber-400">{t("contactEmailInvalid")}</p>
+                  )}
                   <Input type="url" inputMode="url" value={content.contactUrl ?? ""} maxLength={300}
                     placeholder={t("contactUrlLabel")} aria-label={t("contactUrlLabel")}
                     onChange={(e) => patch({ contactUrl: e.target.value })} />
+                  {(content.contactUrl ?? "").trim() && !/^https?:\/\//i.test((content.contactUrl ?? "").trim()) && (
+                    <p className="text-[11px] text-amber-600 dark:text-amber-400">{t("contactUrlInvalid")}</p>
+                  )}
                 </div>
               </div>
 
