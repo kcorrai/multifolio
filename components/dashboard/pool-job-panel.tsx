@@ -11,6 +11,7 @@ import { poolJobTitle } from "@/lib/feed/filter";
 import { RELEVANCE_WARN_BELOW } from "@/lib/feed/relevance";
 import { scoreColor, scoreBarColor } from "./shared";
 import { MatchRubric, VerdictBadge, RiskBadges } from "./match-rubric";
+import { JobScamWarning } from "./job-risk";
 
 export function PoolJobPanel({
   job, onClose, onScored, onApplied, onCreditsUpdate,
@@ -106,6 +107,7 @@ export function PoolJobPanel({
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <JobScamWarning text={`${job.title} ${job.description}`} />
         {job.score !== null && result ? (
           <div className="space-y-3">
             <div className="flex items-center gap-2 flex-wrap">

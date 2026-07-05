@@ -6,6 +6,7 @@ import type { PoolJob } from "@/lib/validation/schemas/feed";
 import { poolJobTitle } from "@/lib/feed/filter";
 import type { PlatformId } from "@/lib/ai/platforms";
 import { PlatformLogo } from "@/components/platform-logo";
+import { JobScamBadge } from "./job-risk";
 import { scoreColor, formatRelativeTime, PLATFORM_STYLES } from "./shared";
 
 const UNIT_KEY = { minute: "min", hour: "hour", day: "day" } as const;
@@ -52,6 +53,7 @@ export function PoolJobRow({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             {job.source && <PlatformBadge source={job.source} />}
+            <JobScamBadge text={`${job.title} ${job.description}`} />
             <h3 className="text-sm font-semibold leading-snug truncate">{poolJobTitle(job, locale)}</h3>
           </div>
           <div className="flex items-center gap-2 mt-1 text-[11px] text-muted-foreground">
