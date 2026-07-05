@@ -97,7 +97,12 @@ export const POST = withErrorHandler(async () => {
     | { theme?: unknown; contactEmail?: unknown; contactUrl?: unknown }
     | null;
   const theme = portfolioThemeSchema.parse(existingContent?.theme);
-  const contactEmail = typeof existingContent?.contactEmail === "string" ? existingContent.contactEmail : undefined;
+  // İletişim CTA: ilk üretimde hesap e-postasına VARSAYILAN (public sayfada "İşe al"
+  // butonu default çalışsın — P1 #6). Editörde görünür + değiştirilebilir/silinebilir;
+  // yeniden üretimde kullanıcının değeri (boş bıraktıysa boş dahil) KORUNUR.
+  const contactEmail = typeof existingContent?.contactEmail === "string"
+    ? existingContent.contactEmail
+    : (existing ? undefined : (user.email ?? undefined));
   const contactUrl = typeof existingContent?.contactUrl === "string" ? existingContent.contactUrl : undefined;
 
   // AI üretimi + portfolyonun yazımı tek closure'da: yazım patlarsa spendCredits krediyi iade eder.
