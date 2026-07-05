@@ -16,9 +16,10 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
 
 ## 🔴 Tier 0 — Lansmandan ÖNCE (bloklayıcı / canlı hata)
 
-- [~] **T0.1 — Ödemeyi AKTİF ET** 🟩 ⛔ **ERTELENDİ/İPTAL** (kullanıcı 2026-07-05: "Iyzico yapmayı
-  düşünmüyorum" → ödeme aktivasyonu gündemde değil; herkes 100 ücretsiz kredide kalır). "Stripe"→nötr
-  string zaten düzeltildi. Aşağısı referans (yeniden açılırsa):
+- [x] **T0.1a — "Stripe"→nötr ödeme metni** 🟩 ✅ 2026-07-05 (`comingSoonBody` nötr yapıldı).
+- [ ] **T0.1b — Ödeme aktivasyonu (Iyzico)** 🟩 ⛔ **İPTAL** (kullanıcı 2026-07-05: "Iyzico yapmayı
+  düşünmüyorum" → gündemde değil; herkes 100 ücretsiz kredide kalır). Backend kodu duruyor
+  (checkout+callback+`grant_credits`+`purchases`); yeniden açılırsa referans aşağıda:
   - Sorun: Iyzico backend tam (checkout+callback+`grant_credits`+`purchases`) ama dashboard "Kredi Al"
     + tüm 402 durumları sahte "yakında" toast'ına gidiyor; toast **yanlışlıkla "Stripe" diyor**.
   - Yapılacak: migration `0027` push · Iyzico env + `NEXT_PUBLIC_APP_URL` gir · `shell.tsx` Buy
@@ -36,11 +37,10 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
     Fiverr/Bionluk %20. Canlı hata YOK. Armut pay-per-lead yolu + gerçek TR vergi dilimi ihtiyacı
     **T1.2'ye taşındı** (yeni araç orada). Bu madde kapalı.
 
-- [~] **T0.3 — Sahte testimonial'ları emekli et → gerçek toplama widget'ı** 🟨 (hukuki risk)
-  - ✅ 2026-07-05: Sahte veriler GİZLENDİ — `messages/{en,tr}.json` `landing.testimonials.items`
-    boş dizi → `TestimonialsSection` null döner (bölüm kaybolur). Hukuki risk kapandı.
-  - [ ] KALAN: gerçek toplama widget'ı — paylaşılabilir link → müşteri kısa form → owner onayı →
-    portfolyoda/landing'de "Wall of Love". Yeni tablo + public submit route + Resend.
+- [x] **T0.3a — Sahte testimonial'ları gizle** 🟨 ✅ 2026-07-05 (hukuki risk) — `messages/{en,tr}.json`
+  `landing.testimonials.items` boş dizi → `TestimonialsSection` null döner. Risk kapandı.
+- [ ] **T0.3b — Gerçek testimonial toplama widget'ı** 🟨 — paylaşılabilir link → müşteri kısa form →
+  owner onayı → portfolyoda/landing'de "Wall of Love". Yeni tablo + public submit route + Resend.
 
 - [ ] **T0.4 — Yasal placeholder + kişisel e-posta doldur** 🟩 (backlog'da zaten açık)
   - `messages/en.json:983` `[Company Name]/[Address]/[Tax ID]` → gerçek · `yanlizcakaan@gmail.com`
@@ -102,16 +102,16 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
   `extract.ts`/`content.ts`/`background.ts` reuse; "manuel iş ekle" sürtünmesini öldürür).
 - [x] **T2.2 — Kazanma oranı vs AI-skor analitiği** 🟨 ✅ 2026-07-05 — `lib/analytics/win-rate.ts`
   (saf, 5 test): başvurulan işleri skor bandına böl → kazanma oranı; Overview'da kart (sinyal varsa).
-- [~] **T2.3 — Teklif ton/uzunluk kontrolleri** 🟨 ✅ 2026-07-05 — ton (profesyonel/samimi/iddialı) +
-  uzunluk (kısa/standart/detaylı) seçici (`lib/proposal/style.ts` saf, 5 test). [ ] Ertelendi: "geçmiş
-  tekliflerimden ses tonu öğren" (few-shot, ayrı iş).
+- [x] **T2.3a — Teklif ton/uzunluk kontrolleri** 🟨 ✅ 2026-07-05 — ton (profesyonel/samimi/iddialı) +
+  uzunluk (kısa/standart/detaylı) seçici (`lib/proposal/style.ts` saf, 5 test).
+- [ ] **T2.3b — "Geçmiş tekliflerimden ses tonu öğren"** 🟨 — kullanıcının eski tekliflerinden few-shot ses tonu.
 - [ ] **T2.4 — Uzantı "sayfaya yapıştır" (asla göndermez)** 🟨 — cover-letter kutusunu doldur, auto-submit yok.
-- [~] **T2.5 — Portfolyo değer katmanları** 🟨 ✅ 2026-07-05 (SEO parçası) — sayfa başı SEO metadata +
-  Twitter card + JSON-LD Person (`lib/portfolio/json-ld.ts`, yayınlı sayfada doğrulandı). [ ] Ertelendi:
-  Problem→Çözüm→Sonuç vaka şeması + nitelikli "İşe al" formu (ayrı iş).
-- [~] **T2.6 — Feed iyileştirmeleri** 🟨 — digest konu satırı = eşleşme sayısı ZATEN VAR (`email.ts:150`
-  feed-digest sayıyı içeriyor). Kalanlar elimizde-olmayan veri ister: saat dilimi/vize filtresi + "bilinen
-  şirket" rozeti (job_pool'da güvenilir timezone/company alanı yok) → ertelendi/veri-bloklu.
+- [x] **T2.5a — Portfolyo SEO metadata + JSON-LD** 🟨 ✅ 2026-07-05 — sayfa başı SEO + Twitter card +
+  JSON-LD Person (`lib/portfolio/json-ld.ts`, yayınlı sayfada doğrulandı).
+- [ ] **T2.5b — Vaka şeması + "İşe al" formu** 🟨 — Problem→Çözüm→Sonuç vaka şeması + nitelikli lead formu.
+- [x] **T2.6a — Digest konu satırı = eşleşme sayısı** 🟨 ✅ ZATEN VAR (`email.ts:150` feed-digest sayıyı içeriyor).
+- [ ] **T2.6b — Saat dilimi/vize filtresi + "bilinen şirket" rozeti** 🟨 ⛔ veri-bloklu (job_pool'da
+  güvenilir timezone/company alanı yok; uygun kaynak eklenince açılır).
 - [ ] **T2.7 — Armut "teklif ver / geç" ROI yardımcısı** 🟨 — pay-per-lead'de kazanma olasılığı +
   break-even (`match.ts`/rubrik reuse); kimsenin yapmadığı gerçek TR farklılaşması.
 
