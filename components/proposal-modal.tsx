@@ -108,6 +108,15 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
       .finally(() => setLoadingHistory(false));
   }, [jobId]);
 
+  // A11y: Escape kapatır + açıkken arka plan kaydırması kilitlenir (mobile-nav deseni).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [onClose]);
+
   async function generate(focus?: string[]) {
     setGenerating(true); setError("");
     const res = await fetch("/api/proposal", {
@@ -138,8 +147,16 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl border border-border bg-background shadow-2xl overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl border border-border bg-background shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">

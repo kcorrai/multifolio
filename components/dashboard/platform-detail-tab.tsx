@@ -72,6 +72,9 @@ export function PlatformDetailTab({
     if (!res.ok) { setConnError(body?.error?.message ?? tc("errorSave")); setSavingConn(false); return; }
     if (!saved) setConnectionsCount((c) => c + 1);
     setSaved(url); setSavingConn(false);
+    // Emek azaltma: sunucudan çekilebilen platformda (Bionluk/LinkedIn) URL
+    // kaydedilince veriyi otomatik çek (kullanıcı ayrı "Çek" tıklamasın).
+    if (SERVER_FETCHABLE.includes(platform) && url) void syncPlatformProfile();
   }
 
   async function removeConnection() {
@@ -167,8 +170,13 @@ export function PlatformDetailTab({
           </div>
 
           {syncError && (
-            <div className="flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4 shrink-0" />{syncError}
+            <div className="flex flex-wrap items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>{syncError}</span>
+              {/* Çekim başarısız (ör. LinkedIn authwall) → elle içe aktarmaya yönlendir. */}
+              <Link href="/dashboard/import" className="ml-auto inline-flex items-center gap-1 font-semibold underline underline-offset-2 hover:no-underline">
+                {t("detail.syncFailedCta")}<ExternalLink className="h-3 w-3" />
+              </Link>
             </div>
           )}
 
@@ -278,6 +286,12 @@ export function PlatformDetailTab({
                   <p className="text-sm text-muted-foreground max-w-md">
                     {t("detail.syncExtensionHint", { platform: PLATFORMS[platform].label })}
                   </p>
+                  {/* Boş durum eylemsiz kalmasın: uzantı hakkında bilgi sayfasına yönlendir. */}
+                  <Button asChild size="sm" variant="outline" className="mt-4 gap-1.5">
+                    <Link href="/extension/privacy">
+                      <Puzzle className="h-3.5 w-3.5" />{t("detail.extensionLearnMore")}
+                    </Link>
+                  </Button>
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground max-w-md">
@@ -318,8 +332,14 @@ export function PlatformDetailTab({
                   <CreditCost kind="adaptation" />
                 </Button>
               </div>
+              {/* Yeniden üretme veri kaybı uyarısı: mevcut uyarlanmış metin üzerine yazılır. */}
+              {adaptResult && (
+                <p className="text-[11px] text-amber-600 dark:text-amber-400 flex items-start gap-1.5">
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-px" />{t("detail.regenerateWarn")}
+                </p>
+              )}
               {/* Kaynak seçici: uyarlama neyden üretilsin (çekirdek / platform / ikisi). */}
-              {sourceOptions.length > 1 && (
+              {sourceOptions.length > 1 ? (
                 <div className="flex flex-wrap items-center gap-1.5">
                   <span className="text-[11px] text-muted-foreground shrink-0">{t("detail.sourceLabel")}</span>
                   <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5">
@@ -338,7 +358,15 @@ export function PlatformDetailTab({
                     ))}
                   </div>
                 </div>
-              )}
+              ) : effectiveSource ? (
+                // Tek kaynak: seçici gizli ama hangi verinin kullanıldığı şeffaf kalsın.
+                <p className="text-[11px] text-muted-foreground">
+                  {t("detail.sourceLabel")}{" "}
+                  <span className="font-medium text-foreground">
+                    {t(`detail.source_${effectiveSource}`, { platform: PLATFORMS[platform].label })}
+                  </span>
+                </p>
+              ) : null}
             </CardHeader>
             <CardContent>
               {adaptResult ? (
