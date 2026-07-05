@@ -39,7 +39,7 @@ select column_name from information_schema.columns
 | Header | `x-cron-secret: <SCRAPER_CRON_SECRET değerin>` |
 | Zamanlama | Günde ≤2 (ör. `0 6,18 * * *`) — Remotive ≤4/gün kuralına uyar |
 
-### 2b. Haftalık özet e-postası (weekly digest) — YENİ, bu kurulacak
+### 2b. Haftalık özet e-postası (weekly digest) — ✅ KURULDU (2026-07-05, cron-job.org "Multifolio Weekly Digest", Pazartesi 09:00, successful/error yok)
 | Alan | Değer |
 |------|-------|
 | URL | `https://multifolio-ecru.vercel.app/api/internal/weekly-digest` |
@@ -78,12 +78,13 @@ Ayrıca Supabase Auth manuel ayarı (kodda değil):
 
 ---
 
-## 4. Sentry — source map upload
+## 4. Sentry — source map upload — ✅ LOKAL DOĞRULANDI (2026-07-05)
 
-- [ ] Sentry'de proje aç, DSN'i al → Vercel env `NEXT_PUBLIC_SENTRY_DSN`.
-- [ ] Auth token üret (Settings → Auth Tokens, `project:releases` scope) → Vercel env `SENTRY_AUTH_TOKEN`.
-- [ ] `SENTRY_ORG` + `SENTRY_PROJECT` env'lerini gir.
-- Token yoksa build çalışır ama source map yüklenmez (stack trace satır no'ları minified kalır).
+- [x] Sentry projesi açıldı (`multifolio`/`javascript-nextjs`, EU/`.de.` veri bölgesi). DSN + `.env.local`'a girildi.
+- [x] Personal token (Release:Admin + Project:R&W + Org:Read) üretildi → `SENTRY_AUTH_TOKEN`.
+- [x] `CI=1 npm run build` → source map upload çalıştı (release `394f10c...`, artifact bundle + debug id'ler yüklendi).
+- [x] 4 env Vercel prod'a eklendi (`vercel env add ... production`, hepsi Encrypted — doğrulandı 2026-07-05).
+      Bir sonraki deploy'da devreye girer. **SENTRY TAMAMEN BİTTİ.**
 
 ---
 
