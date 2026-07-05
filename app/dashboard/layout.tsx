@@ -1,11 +1,15 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { maybeGrantSignupCredits } from "@/lib/credits/signup-bonus";
 import { DashboardShell } from "@/components/dashboard/shell";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  // Reklamı yapılan kayıt kredisini ilk ziyarette ver (idempotent; bakiye çekilmeden ÖNCE).
+  await maybeGrantSignupCredits(user);
 
   const [creditsRes, usageRes, jobsCountRes, connCountRes] = await Promise.all([
     supabase.from("credits").select("balance").eq("user_id", user.id).maybeSingle(),
