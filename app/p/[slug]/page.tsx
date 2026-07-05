@@ -41,14 +41,14 @@ const fetchPortfolio = cache(async (slug: string) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("portfolios")
-    .select("content, updated_at")
+    .select("user_id, content, updated_at")
     .eq("slug", slug)
     .eq("published", true)
     .maybeSingle();
   if (error || !data) return null;
   const parsed = portfolioContentSchema.safeParse(data.content);
   if (!parsed.success) return null;
-  return { content: parsed.data, updatedAt: data.updated_at as string };
+  return { content: parsed.data, updatedAt: data.updated_at as string, userId: data.user_id as string };
 });
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -90,6 +90,17 @@ export default async function PortfolioPage({ params }: PageProps) {
   const portfolio = await fetchPortfolio(slug);
   if (!portfolio) notFound();
   const { content, updatedAt } = portfolio;
+
+  // Onaylı müşteri yorumları ("Wall of Love"). RLS approved-or-own → anon onaylıları okur.
+  const supabase = await createSupabaseServerClient();
+  const { data: testimonialRows } = await supabase
+    .from("testimonials")
+    .select("id, author_name, author_role, quote")
+    .eq("user_id", portfolio.userId)
+    .eq("status", "approved")
+    .order("created_at", { ascending: false })
+    .limit(12);
+  const testimonials = testimonialRows ?? [];
   const { headline, bio, skills, projects, media, theme } = content;
   const t = await getTranslations("portfolioPublic");
   const { vars, dark } = portfolioTheme(theme.preset, theme.accent);
@@ -259,6 +270,23 @@ export default async function PortfolioPage({ params }: PageProps) {
                 </div>
               );
             })}
+          </div>
+        </section>
+      )}
+
+      {/* ── Müşteri yorumları ("Wall of Love") — yalnız onaylılar ──────── */}
+      {testimonials.length > 0 && (
+        <section className="mx-auto max-w-5xl px-6 py-10">
+          <SectionLabel style={heading}>{t("testimonials")}</SectionLabel>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            {testimonials.map((tm) => (
+              <figure key={tm.id} className="rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-5">
+                <blockquote className="text-sm leading-relaxed text-[var(--pf-text)]">“{tm.quote}”</blockquote>
+                <figcaption className="mt-3 text-xs font-semibold text-[var(--pf-muted)]">
+                  {tm.author_name}{tm.author_role ? <span className="font-normal"> · {tm.author_role}</span> : null}
+                </figcaption>
+              </figure>
+            ))}
           </div>
         </section>
       )}

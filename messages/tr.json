@@ -622,7 +622,21 @@
     "contactHint": "Public sayfanda “İletişime geç” butonu olarak görünür. Önce e-posta kullanılır; ikisini de boş bırakırsan gizlenir.",
     "contactEmailLabel": "İletişim e-postası",
     "contactUrlLabel": "Veya bir iletişim bağlantısı (URL)",
-    "saved": "Kaydedildi"
+    "saved": "Kaydedildi",
+    "testimonials": {
+      "title": "Müşteri yorumları",
+      "publishFirst": "Yorum toplamak için portfolyonu yayınla.",
+      "shareHint": "Yorum toplamak için bu linki müşterilerinle paylaş:",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı",
+      "loading": "Yükleniyor…",
+      "pending": "Bekleyen ({count})",
+      "approved": "Yayında ({count})",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "remove": "Kaldır",
+      "empty": "Henüz yorum yok. Linkini paylaşarak toplamaya başla."
+    }
   },
   "accounts": {
     "title": "Platform Hesaplarım",
@@ -650,7 +664,24 @@
     "hireCta": "İletişime geç",
     "hireHeading": "İşe uygunum",
     "hireBody": "Aklında bir proje mi var? Konuşalım.",
-    "madeWith": "Multifolio ile yapıldı"
+    "madeWith": "Multifolio ile yapıldı",
+    "testimonials": "Müşteriler ne diyor"
+  },
+  "recommend": {
+    "metaTitle": "Yorum bırak",
+    "title": "Deneyimini paylaş",
+    "subtitle": "Yorumun, daha iyi işler kazanmasına yardım eder. Onayladıktan sonra görünür.",
+    "nameLabel": "Adın",
+    "roleLabel": "Rolün / şirketin",
+    "rolePlaceholder": "ör. Ürün Müdürü, Acme",
+    "quoteLabel": "Yorumun",
+    "quotePlaceholder": "Birlikte çalışmak nasıldı? Ne teslim etti?",
+    "submit": "Yorumu gönder",
+    "sending": "Gönderiliyor…",
+    "successTitle": "Teşekkürler!",
+    "successBody": "Yorumun gönderildi, onaylandıktan sonra görünecek.",
+    "moderationNote": "Yorumlar görünmeden önce incelenir.",
+    "error": "Yorumun gönderilemedi. Lütfen tekrar dene."
   },
   "publicAnalysis": {
     "metaTitle": "Ücretsiz Freelancer Profil Analizi — Multifolio",
@@ -1136,6 +1167,8 @@
     "importRateLimited": "Çok fazla içe aktarma denemesi. Bir saat sonra tekrar dene.",
     "analyzeRateLimited": "Çok fazla analiz denemesi. Bir saat sonra tekrar dene — ya da daha yüksek limit için kayıt ol.",
     "analyzeNoContent": "Bu girdiden bir profil okuyamadık. Profil metnini yapıştırmayı dene.",
+    "testimonialTargetMissing": "Bu portfolyo yorum almaya açık değil.",
+    "testimonialRateLimited": "Şu an çok fazla yorum geldi. Lütfen sonra tekrar dene.",
     "translateRateLimited": "Çok fazla çeviri isteği. Bir saat sonra tekrar dene.",
     "syncNoConnection": "Önce Bağlantı bölümünde profil URL'ini kaydet.",
     "syncUnsupported": "Bu platform yalnız tarayıcı uzantısıyla içe aktarılabilir.",

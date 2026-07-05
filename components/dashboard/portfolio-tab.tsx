@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { TestimonialsManager } from "./testimonials-manager";
 import { Sparkles, Save, AlertCircle, ExternalLink, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -220,6 +221,7 @@ export function PortfolioTab({
           )}
         </CardContent>
       </Card>
+      {content && <TestimonialsManager slug={slug} published={published} />}
     </div>
   );
 }

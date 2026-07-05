@@ -622,7 +622,21 @@
     "contactHint": "Shown as a “Get in touch” button on your public page. Email is used first; leave both empty to hide it.",
     "contactEmailLabel": "Contact email",
     "contactUrlLabel": "Or a contact link (URL)",
-    "saved": "Saved"
+    "saved": "Saved",
+    "testimonials": {
+      "title": "Client recommendations",
+      "publishFirst": "Publish your portfolio to collect recommendations.",
+      "shareHint": "Share this link with clients to collect recommendations:",
+      "copy": "Copy",
+      "copied": "Copied",
+      "loading": "Loading…",
+      "pending": "Pending ({count})",
+      "approved": "Published ({count})",
+      "approve": "Approve",
+      "reject": "Reject",
+      "remove": "Remove",
+      "empty": "No recommendations yet. Share your link to collect some."
+    }
   },
   "accounts": {
     "title": "My Platform Accounts",
@@ -650,7 +664,24 @@
     "hireCta": "Get in touch",
     "hireHeading": "Available for work",
     "hireBody": "Have a project in mind? Let's talk.",
-    "madeWith": "Made with Multifolio"
+    "madeWith": "Made with Multifolio",
+    "testimonials": "What clients say"
+  },
+  "recommend": {
+    "metaTitle": "Leave a recommendation",
+    "title": "Share your experience",
+    "subtitle": "Your recommendation helps them win better work. It appears after they approve it.",
+    "nameLabel": "Your name",
+    "roleLabel": "Your role / company",
+    "rolePlaceholder": "e.g. Product Manager, Acme",
+    "quoteLabel": "Your recommendation",
+    "quotePlaceholder": "What was it like working together? What did they deliver?",
+    "submit": "Send recommendation",
+    "sending": "Sending…",
+    "successTitle": "Thank you!",
+    "successBody": "Your recommendation was sent and will appear once approved.",
+    "moderationNote": "Recommendations are reviewed before they appear.",
+    "error": "Couldn't send your recommendation. Please try again."
   },
   "publicAnalysis": {
     "metaTitle": "Free Freelancer Profile Check — Multifolio",
@@ -1136,6 +1167,8 @@
     "importRateLimited": "Too many import attempts. Please try again in an hour.",
     "analyzeRateLimited": "Too many analyses. Please try again in an hour — or sign up for a higher limit.",
     "analyzeNoContent": "We couldn't read a profile from that input. Try pasting your profile text instead.",
+    "testimonialTargetMissing": "This portfolio isn't available for recommendations.",
+    "testimonialRateLimited": "Too many recommendations right now. Please try again later.",
     "translateRateLimited": "Too many translation requests. Please try again in an hour.",
     "syncNoConnection": "Save your profile URL in the Connection section first.",
     "syncUnsupported": "This platform can only be imported with the browser extension.",
