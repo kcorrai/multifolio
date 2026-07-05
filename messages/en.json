@@ -96,6 +96,7 @@
       "badgeFreeStart": "100 free credits to start",
       "popular": "Most popular",
       "cta": "Get started",
+      "buy": "Buy credits",
       "paymentSoon": "Credit purchasing is coming soon — for now everyone starts with 100 free credits.",
       "comingSoon": "Soon",
       "creditsLine": "{count} credits",
@@ -672,6 +673,19 @@
     "lockedBody": "See the full score breakdown, every suggestion and Upwork approval notes — free with an account.",
     "lockedCta": "Sign up free",
     "signupPerk": "Signing up also gets you 100 free credits to adapt your profile for every platform."
+  },
+  "checkout": {
+    "processing": "Processing…",
+    "error": "Couldn't start the payment. Please try again.",
+    "result": {
+      "metaTitle": "Payment result",
+      "successTitle": "Payment successful",
+      "successBody": "Your credits have been added to your account. You can start using them right away.",
+      "failedTitle": "Payment didn't go through",
+      "failedBody": "No charge was completed. You can try again — your card was not billed.",
+      "toDashboard": "Go to dashboard",
+      "tryAgain": "Try again"
+    }
   },
   "pricingPage": {
     "metaTitle": "Pricing — Multifolio",

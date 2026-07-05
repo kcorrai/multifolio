@@ -96,6 +96,7 @@
       "badgeFreeStart": "100 ücretsiz kredi",
       "popular": "En popüler",
       "cta": "Başla",
+      "buy": "Satın Al",
       "paymentSoon": "Kredi satın alma çok yakında — şimdilik herkes 100 ücretsiz krediyle başlıyor.",
       "comingSoon": "Yakında",
       "creditsLine": "{count} kredi",
@@ -672,6 +673,19 @@
     "lockedBody": "Tam skor dökümünü, tüm önerileri ve Upwork onay notlarını gör — hesapla ücretsiz.",
     "lockedCta": "Ücretsiz kayıt ol",
     "signupPerk": "Kayıt olunca ayrıca profilini her platforma uyarlamak için 100 ücretsiz kredi kazanırsın."
+  },
+  "checkout": {
+    "processing": "İşleniyor…",
+    "error": "Ödeme başlatılamadı. Lütfen tekrar deneyin.",
+    "result": {
+      "metaTitle": "Ödeme sonucu",
+      "successTitle": "Ödeme başarılı",
+      "successBody": "Kredilerin hesabına eklendi. Hemen kullanmaya başlayabilirsin.",
+      "failedTitle": "Ödeme tamamlanmadı",
+      "failedBody": "Herhangi bir tahsilat yapılmadı. Tekrar deneyebilirsin — kartından çekim olmadı.",
+      "toDashboard": "Panele git",
+      "tryAgain": "Tekrar dene"
+    }
   },
   "pricingPage": {
     "metaTitle": "Fiyatlandırma — Multifolio",
