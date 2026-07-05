@@ -51,21 +51,23 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
     id: "bionluk",
     label: "Bionluk",
     guidance:
-      "Bionluk (Türk freelance platformu) profili için yaz. Samimi, profesyonel, " +
-      "yerel pazara uygun bir ton — Türk müşterilere hitap et. " +
-      "headline: uzmanlık alanını ve hedef müşteriyi açıkça belirten kısa bir başlık. " +
-      "body: Türk iş dünyasının beklentilerine uygun; iletişim kolaylığı, hızlı teslimat " +
-      "ve güvenilirliği vurgula. Somut proje türleri ve sektörleri listele.",
+      "Bionluk (Türk DİJİTAL freelance platformu — tasarım/yazılım/yazarlık/video, UZAKTAN teslim) " +
+      "profili için yaz. Samimi, profesyonel, portföy-odaklı bir ton. " +
+      "headline: dijital uzmanlık alanını ve hedef müşteriyi açıkça belirten kısa bir başlık. " +
+      "body: dijital teslimat sürecini öne çıkar — örnek işler/portfolyo, revizyon politikası, " +
+      "teslim süresi ve dosya formatları. Somut proje türlerini ve sektörleri listele. " +
+      "NOT: bu uzaktan dijital hizmettir; yerinde/fiziksel iş DEĞİL.",
   },
   armut: {
     id: "armut",
     label: "Armut",
     guidance:
-      "Armut (Türk hizmet platformu) profili için yaz. Net, güven verici, " +
-      "hizmet tanımı odaklı bir ton — yerel müşteriyle doğrudan konuş. " +
+      "Armut (Türk YERİNDE hizmet platformu — temizlik/tadilat/nakliyat/özel ders/tamir, " +
+      "FİZİKSEL/randevulu hizmet) profili için yaz. Net, güven verici, güvenilirlik-odaklı bir ton. " +
       "headline: sunulan hizmetin tam adını içeren, arama dostu bir başlık. " +
-      "body: hangi hizmetleri verdiğini, neden tercih edilmesi gerektiğini ve " +
-      "müşterinin ne bekleyebileceğini (süreç, teslimat, iletişim) netçe anlat.",
+      "body: yerinde hizmete özgü güven sinyallerini öne çıkar — hizmet verilen bölge/şehir, " +
+      "randevu/çalışma saatleri, deneyim yılı, iş güvenliği/temizlik, fiyat netliği ve " +
+      "referanslar. NOT: bu fiziksel/yerinde hizmettir; dijital teslim/portfolyo linki değil.",
   },
 };
 
@@ -92,10 +94,12 @@ export const PROPOSAL_GUIDANCE: Record<PlatformId, string> = {
   fiverr: "Fiverr Buyer Request yanıtı olarak yaz. Enerjik, doğrudan ve güven verici. " +
     "Ne teslim edeceğini ve sürecinin nasıl işlediğini net anlat. " +
     "150 kelimeyi geçme. Kısa paragraflar kullan.",
-  bionluk: "Bionluk iş teklifi olarak yaz. Türkçe, samimi ve profesyonel bir ton. " +
-    "Yerel iş dünyasına uygun; hızlı iletişim, güvenilirlik ve yerel referansları öne çıkar. " +
-    "150-200 kelime. İlanın gereksinimlerine özelleştirilmiş bir yaklaşım sun.",
-  armut: "Armut platformu için hizmet teklifi olarak yaz. Türkçe, net ve güven odaklı. " +
-    "Sunulan hizmetin kapsamını, sürecini ve neden tercih edilmesi gerektiğini açıkla. " +
-    "Yerel müşteriyle doğrudan konuş; somut örnekler ve referanslar ekle. 150-200 kelime.",
+  bionluk: "Bionluk (DİJİTAL/uzaktan freelance) iş teklifi olarak yaz. Türkçe, samimi ve " +
+    "profesyonel bir ton. Dijital teslimata odaklan: benzer örnek işlerine/portfolyona atıf, " +
+    "teslim süresi, revizyon yaklaşımı ve dosya/çıktı formatı. İlanın gereksinimlerine " +
+    "özelleştir. 150-200 kelime.",
+  armut: "Armut (YERİNDE/fiziksel hizmet) teklifi olarak yaz. Türkçe, net ve güven odaklı. " +
+    "Yerinde hizmete odaklan: hizmet verilebilecek bölge, uygun randevu/çalışma saatleri, " +
+    "işin süresi, deneyim ve neden güvenle tercih edileceği. Fiyat/kapsam konusunda net ol; " +
+    "somut örnek ve referans ekle. 150-200 kelime.",
 };

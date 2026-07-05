@@ -33,7 +33,10 @@ const SYSTEM_PROMPT =
   "- skill_fit: profildeki becerilerin ilanın istediği becerileri karşılama derecesi.\n" +
   "- experience_fit: profildeki deneyim/alan geçmişinin ilanın alanına uygunluğu.\n" +
   "- budget_fit: ilanın bütçe/kapsamının profildeki seviyeye uygunluğu (bütçe bilgisi yoksa açıklamadaki kapsam sinyallerinden değerlendir; hiç sinyal yoksa 50 ver ve gerekçede belirt).\n" +
-  "- listing_quality: ilanın kalitesi ve risk sinyalleri (net gereksinimler, gerçekçi bütçe, güvenilir müşteri sinyalleri = yüksek; belirsiz/şablon metin, gerçekdışı beklenti = düşük).\n" +
+  "- listing_quality: ilanın kalitesi ve risk sinyalleri (net gereksinimler, gerçekçi bütçe, güvenilir müşteri sinyalleri = yüksek; belirsiz/şablon metin, gerçekdışı beklenti = düşük; ilan çok kısa/şablon olup kalite sinyali vermiyorsa 50 ver ve gerekçede belirt).\n" +
+  "Puan bantları (her boyutta tutarlı uygula, ortalama bir 'güvenli' banda kümelenme): " +
+  "0-30 zayıf/uyumsuz · 40-60 kısmi/orta · 70-85 güçlü · 90-100 mükemmel. " +
+  "Gerçekten zayıfsa düşük, gerçekten güçlüyse yüksek ver; gerekçe skorla tutarlı olsun.\n" +
   "Toplam skoru SEN HESAPLAMAZSIN; sistem rubrikten türetir. " +
   "Ayrıca öne çıkan güçlü/eksik yönleri öz biçimde raporlar ve ilandan, bir teklifin karşılaması " +
   "gereken en önemli somut gereksinimleri (en çok 7 madde) 'requirements' olarak çıkarırsın; " +
@@ -80,8 +83,12 @@ export async function matchJobToProfile(
     languageDirective(locale),
   ].join("\n");
 
+  // Düşük temperature: skor akışı tekrar üretimde stabil kalsın (deterministik
+  // rubrik vaadi — force:true yeniden-skorda go↔maybe kaymasını azaltır).
   const completion = await client.chat.completions.parse({
     model: AI_MODEL,
+    temperature: 0.3,
+    max_tokens: 1200,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userContent },

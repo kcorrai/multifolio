@@ -53,6 +53,7 @@ export async function adaptProfile(
 
   const completion = await client.chat.completions.parse({
     model: AI_MODEL,
+    max_tokens: 1400,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userContent },

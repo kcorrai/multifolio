@@ -103,12 +103,15 @@ export async function generatePortfolio(
     "- skills: profildeki becerileri koruyarak öncelik sırasına diz.",
     "- projects: profil verisinde somut bir proje/başarı varsa çıkar; yoksa boş bırak.",
     "- her proje için mümkünse problem (çözülen sorun), solution (senin yaklaşımın) ve " +
-      "result (ÖLÇÜLEBİLİR sonuç/etki — sayısallaştır) alanlarını doldur; bilgi yoksa ilgili alanı boş string bırak.",
+      "result (sonuç/etki) alanlarını doldur. result için: kaynak profilde SOMUT bir sonuç/rakam " +
+      "varsa birebir aktar; rakam yoksa niteliksel anlat (ör. 'teslimat süresini belirgin kısalttı'). " +
+      "RAKAM UYDURMA — bu içerik public bir sayfada yayınlanır. Bilgi yoksa alanı boş string bırak.",
     languageDirective(locale),
   ].join("\n");
 
   const completion = await client.chat.completions.parse({
     model: AI_MODEL,
+    max_tokens: 1600,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userContent },

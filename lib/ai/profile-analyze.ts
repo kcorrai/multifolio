@@ -31,6 +31,9 @@ const SYSTEM_PROMPT =
   "- summary_quality: özetin somutluğu, sonuç/kanıt içermesi, müşteri-odaklılığı.\n" +
   "- skills_coverage: becerilerin sayısı, güncelliği ve pazarda aranırlığı.\n" +
   "- trust_signals: güven sinyalleri (deneyim süresi, portfolyo/sonuç referansları, profesyonel ton).\n" +
+  "Puan bantları (her boyutta tutarlı uygula, ortalama bir 'güvenli' banda kümelenme): " +
+  "0-30 zayıf · 40-60 orta · 70-85 güçlü · 90-100 mükemmel. " +
+  "Gerçekten zayıfsa düşük, gerçekten güçlüyse yüksek ver; gerekçe skorla tutarlı olsun.\n" +
   "Toplam skoru SEN HESAPLAMAZSIN; sistem boyutlardan türetir.\n" +
   "Ayrıca en etkili 5 somut iyileştirme önerisini 'suggestions' olarak yazarsın " +
   "(kısa, eyleme dönük, önem sırasıyla).\n" +
@@ -56,8 +59,12 @@ export async function analyzeProfileText(
 
   const userContent = ["Profil metni:", sourceText, "", languageDirective(locale)].join("\n");
 
+  // Düşük temperature: public /analyze skoru pazarlama vitrini — tekrar analizde
+  // tutarlı kalsın.
   const completion = await client.chat.completions.parse({
     model: AI_MODEL,
+    temperature: 0.3,
+    max_tokens: 1200,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userContent },
