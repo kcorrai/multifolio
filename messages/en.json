@@ -138,26 +138,7 @@
     "testimonials": {
       "eyebrow": "From early users",
       "title": "What freelancers say",
-      "items": [
-        {
-          "quote": "I entered my profile once and got separate, optimized copy for both Bionluk and Upwork. Saved me hours of rewriting.",
-          "name": "Ayşe K.",
-          "role": "Interior Designer",
-          "platform": "Bionluk"
-        },
-        {
-          "quote": "Seeing a match score for each job made it clear where to actually spend my proposals instead of applying to everything.",
-          "name": "Mert D.",
-          "role": "Frontend Developer",
-          "platform": "Upwork"
-        },
-        {
-          "quote": "My portfolio page was ready in minutes — now I just send clients the link. Clean and professional.",
-          "name": "Selin A.",
-          "role": "Graphic Designer",
-          "platform": "Fiverr"
-        }
-      ]
+      "items": []
     },
     "footer": {
       "rights": "© 2026 Multifolio. All rights reserved.",
@@ -266,7 +247,7 @@
       "buyCredits": "Buy",
       "logout": "Sign out",
       "comingSoonTitle": "Payments coming soon!",
-      "comingSoonBody": "Stripe integration is on the way."
+      "comingSoonBody": "Credit purchasing goes live very soon."
     },
     "overview": {
       "welcome": "Welcome to Multifolio!",
@@ -742,6 +723,17 @@
     "postedRelative": "{time} ago",
     "budget": "Budget",
     "description": "Description",
+    "scam": {
+      "badge": "Possible scam",
+      "title": "This listing shows scam warning signs",
+      "items": {
+        "offplatform": "Directs you to apply or chat off-platform (Telegram/WhatsApp) — a common scam pattern.",
+        "upfront_payment": "Asks for an upfront fee, deposit, or to buy a kit — legitimate jobs never charge you to work.",
+        "crypto_payment": "Promises payment in cryptocurrency — a frequent red flag for fake jobs.",
+        "financial_info": "Requests sensitive bank, card, or ID details — never share these to 'apply'."
+      },
+      "footnote": "Automated heads-up, not a verdict — review the listing carefully before engaging."
+    },
     "loadMore": "Load more",
     "minShort": "{count}m",
     "hourShort": "{count}h",

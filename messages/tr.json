@@ -138,26 +138,7 @@
     "testimonials": {
       "eyebrow": "İlk kullanıcılardan",
       "title": "Freelancer'lar ne diyor?",
-      "items": [
-        {
-          "quote": "Profilimi bir kez girdim, hem Bionluk hem Upwork için ayrı ayrı optimize metin çıktı. Saatlerce yeniden yazmaktan kurtuldum.",
-          "name": "Ayşe K.",
-          "role": "İç Mimar",
-          "platform": "Bionluk"
-        },
-        {
-          "quote": "Her ilana ne kadar uyduğumu skorla görmek, her işe teklif vermek yerine nereye odaklanacağımı netleştirdi.",
-          "name": "Mert D.",
-          "role": "Frontend Geliştirici",
-          "platform": "Upwork"
-        },
-        {
-          "quote": "Portfolyo sayfam dakikalar içinde hazırdı — artık müşterilere sadece linki atıyorum. Temiz ve profesyonel.",
-          "name": "Selin A.",
-          "role": "Grafik Tasarımcı",
-          "platform": "Fiverr"
-        }
-      ]
+      "items": []
     },
     "footer": {
       "rights": "© 2026 Multifolio. Tüm hakları saklıdır.",
@@ -266,7 +247,7 @@
       "buyCredits": "Satın Al",
       "logout": "Çıkış Yap",
       "comingSoonTitle": "Ödeme sistemi yakında!",
-      "comingSoonBody": "Stripe entegrasyonu hazırlanıyor."
+      "comingSoonBody": "Kredi satın alma çok yakında açılıyor."
     },
     "overview": {
       "welcome": "Multifolio'ya hoş geldin!",
@@ -742,6 +723,17 @@
     "postedRelative": "{time} önce",
     "budget": "Bütçe",
     "description": "Açıklama",
+    "scam": {
+      "badge": "Olası dolandırıcılık",
+      "title": "Bu ilan dolandırıcılık işaretleri taşıyor",
+      "items": {
+        "offplatform": "Platform dışında (Telegram/WhatsApp) başvuru veya iletişim istiyor — yaygın dolandırıcılık kalıbı.",
+        "upfront_payment": "Önden ücret, depozito veya 'kit satın alma' istiyor — meşru işler çalışman için senden para almaz.",
+        "crypto_payment": "Ödemeyi kripto para ile vaat ediyor — sahte ilanların sık görülen bir işareti.",
+        "financial_info": "Banka/kart/kimlik gibi hassas bilgi istiyor — 'başvuru' için bunları asla paylaşma."
+      },
+      "footnote": "Otomatik uyarı, kesin hüküm değil — ilana yanıt vermeden önce dikkatle incele."
+    },
     "loadMore": "Daha fazla",
     "minShort": "{count}dk",
     "hourShort": "{count}sa",
