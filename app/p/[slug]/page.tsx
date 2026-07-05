@@ -216,6 +216,28 @@ export default async function PortfolioPage({ params }: PageProps) {
                     )}
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-[var(--pf-muted)]">{project.description}</p>
+                  {(project.problem || project.solution || project.result) && (
+                    <dl className="mt-3 space-y-2 border-t border-[var(--pf-border)] pt-3 text-xs">
+                      {project.problem && (
+                        <div>
+                          <dt className="font-semibold uppercase tracking-wide text-[var(--pf-muted)]">{t("caseProblem")}</dt>
+                          <dd className="mt-0.5 leading-relaxed text-[var(--pf-text)]">{project.problem}</dd>
+                        </div>
+                      )}
+                      {project.solution && (
+                        <div>
+                          <dt className="font-semibold uppercase tracking-wide text-[var(--pf-muted)]">{t("caseSolution")}</dt>
+                          <dd className="mt-0.5 leading-relaxed text-[var(--pf-text)]">{project.solution}</dd>
+                        </div>
+                      )}
+                      {project.result && (
+                        <div>
+                          <dt className="font-semibold uppercase tracking-wide text-[var(--pf-accent)]">{t("caseResult")}</dt>
+                          <dd className="mt-0.5 font-medium leading-relaxed text-[var(--pf-text)]">{project.result}</dd>
+                        </div>
+                      )}
+                    </dl>
+                  )}
                 </>
               );
               const cls =

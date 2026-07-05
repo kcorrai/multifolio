@@ -4,6 +4,11 @@ import { PORTFOLIO_PRESETS, PORTFOLIO_ACCENTS } from "@/lib/portfolio/theme";
 export const portfolioProjectSchema = z.object({
   title: z.string().min(1).max(120),
   description: z.string().min(1).max(500),
+  // Vaka-çalışması alanları (opsiyonel → eski kayıtlar geçerli kalır). Nicelenmiş
+  // sonuç premium ücretle korele; render'da doluysa Problem→Çözüm→Sonuç gösterilir.
+  problem: z.string().max(400).optional(),
+  solution: z.string().max(400).optional(),
+  result: z.string().max(400).optional(),
   url: z
     .string()
     .url()

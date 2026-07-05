@@ -22,6 +22,10 @@ const portfolioGenSchema = z.object({
     z.object({
       title: z.string(),
       description: z.string(),
+      // OpenAI tüm alanları ZORUNLU ister → boş string (uygulanamazsa). Depolamada opsiyonel.
+      problem: z.string(),
+      solution: z.string(),
+      result: z.string(),
       url: z.string().nullable(),
     }),
   ),
@@ -49,7 +53,17 @@ function mapToContent(
       .map((p) => {
         const u = p.url?.trim();
         const url = u && /^https?:\/\//i.test(u) ? u : undefined;
-        return { title: clamp(p.title, 120), description: clamp(p.description, 500), ...(url ? { url } : {}) };
+        const problem = clamp(p.problem ?? "", 400);
+        const solution = clamp(p.solution ?? "", 400);
+        const result = clamp(p.result ?? "", 400);
+        return {
+          title: clamp(p.title, 120),
+          description: clamp(p.description, 500),
+          ...(problem ? { problem } : {}),
+          ...(solution ? { solution } : {}),
+          ...(result ? { result } : {}),
+          ...(url ? { url } : {}),
+        };
       }),
     theme: { preset: "studio", accent: "blue" },
     media,
@@ -88,6 +102,8 @@ export async function generatePortfolio(
     "- bio: ilgi çekici biyografi (2-3 paragraf, max 1500 karakter).",
     "- skills: profildeki becerileri koruyarak öncelik sırasına diz.",
     "- projects: profil verisinde somut bir proje/başarı varsa çıkar; yoksa boş bırak.",
+    "- her proje için mümkünse problem (çözülen sorun), solution (senin yaklaşımın) ve " +
+      "result (ÖLÇÜLEBİLİR sonuç/etki — sayısallaştır) alanlarını doldur; bilgi yoksa ilgili alanı boş string bırak.",
     languageDirective(locale),
   ].join("\n");
 
