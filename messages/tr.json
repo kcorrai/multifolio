@@ -762,6 +762,8 @@
   "feed": {
     "close": "Kapat",
     "actionFailed": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+    "weakSignalHint": "Profiline en az 3 beceri ekle ki feed en uygun işleri en üste sıralasın.",
+    "weakSignalCta": "Profili tamamla",
     "tabs": {
       "feed": "Feed",
       "search": "Ara",

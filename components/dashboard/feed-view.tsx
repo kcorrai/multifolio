@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Briefcase, Plus, Trash2, Rss, Layers } from "lucide-react";
+import { Briefcase, Plus, Trash2, Rss, Layers, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { PoolJob, JobFeedRow } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
@@ -18,11 +19,12 @@ import { useDashboard } from "./dashboard-context";
 const PAGE_SIZE = 25;
 
 export function FeedView({
-  initialJobs, initialFeeds, initialTotal,
+  initialJobs, initialFeeds, initialTotal, weakRelevanceSignal = false,
 }: {
   initialJobs: PoolJob[];
   initialFeeds: JobFeedRow[];
   initialTotal: number;
+  weakRelevanceSignal?: boolean;
 }) {
   const t = useTranslations("feed");
   const { applyCredits } = useDashboard();
@@ -155,7 +157,7 @@ export function FeedView({
           }`}
         >
           <span className="inline-flex items-center gap-2 min-w-0"><Layers className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{t("allJobs")}</span></span>
-          <span className="text-[11px] tabular-nums text-muted-foreground">{jobs.length}</span>
+          <span className="text-[11px] tabular-nums text-muted-foreground">{total}</span>
         </button>
         {feeds.map((f) => (
           <button
@@ -176,6 +178,20 @@ export function FeedView({
 
       {/* ── Sağ içerik ────────────────────────────────────────────────── */}
       <div className="space-y-3 min-w-0">
+        {/* Zayıf skill sinyali: varsayılan feed relevance sıralaması devre dışı →
+            kullanıcıyı profilini tamamlamaya yönlendir (isabet + kredi tasarrufu). */}
+        {!activeFeed && weakRelevanceSignal && (
+          <Link
+            href="/dashboard/profile"
+            className="flex items-center gap-3 rounded-xl border border-[#00F0FF]/25 bg-[#00F0FF]/5 px-4 py-3 transition-colors hover:bg-[#00F0FF]/10"
+          >
+            <Sparkles className="h-4 w-4 shrink-0 text-[#00F0FF]" />
+            <span className="flex-1 text-xs text-muted-foreground">{t("weakSignalHint")}</span>
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#00F0FF] shrink-0">
+              {t("weakSignalCta")}<ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </Link>
+        )}
         {activeFeed ? (
           <>
             {/* Feed başlığı: ad + sayı + sil */}

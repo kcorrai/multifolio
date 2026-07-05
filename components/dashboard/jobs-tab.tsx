@@ -15,6 +15,7 @@ const VIEWS: View[] = ["feed", "search", "starred", "applied"];
 
 export function JobsTab({
   initialJobs, profileSaved, initialFeedJobs, initialFeedTotal, initialFeeds, initialView,
+  weakRelevanceSignal = false,
 }: {
   initialJobs: JobRow[];
   profileSaved: boolean;
@@ -22,6 +23,7 @@ export function JobsTab({
   initialFeedTotal: number;
   initialFeeds: JobFeedRow[];
   initialView: View;
+  weakRelevanceSignal?: boolean;
 }) {
   const t = useTranslations("feed");
   const router = useRouter();
@@ -55,7 +57,7 @@ export function JobsTab({
       {/* Ekran okuyucu için aktif görünümün bölüm başlığı (görsel olarak gizli; DEEP P2). */}
       <h2 className="sr-only">{t(`tabs.${view}`)}</h2>
 
-      {view === "feed" && <FeedView initialJobs={initialFeedJobs} initialFeeds={initialFeeds} initialTotal={initialFeedTotal} />}
+      {view === "feed" && <FeedView initialJobs={initialFeedJobs} initialFeeds={initialFeeds} initialTotal={initialFeedTotal} weakRelevanceSignal={weakRelevanceSignal} />}
       {view === "search" && <SearchView />}
       {view === "starred" && <StarredView />}
       {view === "applied" && <AppliedView initialJobs={initialJobs} profileSaved={profileSaved} />}

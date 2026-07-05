@@ -762,6 +762,8 @@
   "feed": {
     "close": "Close",
     "actionFailed": "Something went wrong. Please try again.",
+    "weakSignalHint": "Add at least 3 skills to your profile so your feed ranks the best-matching jobs first.",
+    "weakSignalCta": "Complete profile",
     "tabs": {
       "feed": "Feed",
       "search": "Search",

@@ -4,7 +4,7 @@ import { JobsTab } from "@/components/dashboard/jobs-tab";
 import type { JobRow } from "@/components/dashboard/shared";
 import type { PoolJob, PoolJobRow, JobFeedRow } from "@/lib/validation/schemas/feed";
 import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
-import { jobRelevance, orderDefaultFeed, dedupeNearDuplicates, type RelevanceProfile } from "@/lib/feed/relevance";
+import { jobRelevance, orderDefaultFeed, dedupeNearDuplicates, RELEVANCE_MIN_SIGNAL_SKILLS, type RelevanceProfile } from "@/lib/feed/relevance";
 
 type View = "feed" | "search" | "starred" | "applied";
 const VIEWS: View[] = ["feed", "search", "starred", "applied"];
@@ -60,6 +60,11 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const requested = (viewParam && VIEWS.includes(viewParam as View)) ? (viewParam as View) : null;
   const initialView: View = requested ?? (profileSaved ? "feed" : "applied");
 
+  // Profil skill sinyali zayıfsa (<3) varsayılan feed relevance sıralaması devre dışı
+  // kalır (orderDefaultFeed kronolojiye düşer) — UI'da "profilini tamamla" ipucu göster.
+  const skillCount = (relProfile.skills ?? []).filter((s) => s.trim()).length;
+  const weakRelevanceSignal = skillCount < RELEVANCE_MIN_SIGNAL_SKILLS;
+
   return (
     <JobsTab
       initialJobs={jobs}
@@ -68,6 +73,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
       initialFeedTotal={matched.length}
       initialFeeds={feeds}
       initialView={initialView}
+      weakRelevanceSignal={weakRelevanceSignal}
     />
   );
 }

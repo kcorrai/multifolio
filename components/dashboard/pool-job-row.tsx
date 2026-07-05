@@ -7,6 +7,7 @@ import { poolJobTitle } from "@/lib/feed/filter";
 import type { PlatformId } from "@/lib/ai/platforms";
 import { PlatformLogo } from "@/components/platform-logo";
 import { JobScamBadge } from "./job-risk";
+import { RELEVANCE_WARN_BELOW } from "@/lib/feed/relevance";
 import { scoreColor, formatRelativeTime, PLATFORM_STYLES } from "./shared";
 
 const UNIT_KEY = { minute: "min", hour: "hour", day: "day" } as const;
@@ -78,9 +79,22 @@ export function PoolJobRow({
           >
             <Star className={`h-4 w-4 ${job.isStarred ? "fill-amber-400 text-amber-400" : ""}`} />
           </button>
-          {job.score !== null && (
+          {job.score !== null ? (
             <span className={`text-[10px] font-bold rounded-md px-1.5 py-0.5 tabular-nums ${scoreColor(job.score)}`}>{job.score}</span>
-          )}
+          ) : job.relevance !== null ? (
+            // AI skoru yokken ücretsiz profil-alaka rozeti: kullanıcı panel açıp
+            // kredi harcamadan listede eleyebilsin. "~" = yaklaşık/ücretsiz sinyal.
+            <span
+              title={t("relevanceLabel")}
+              className={`text-[10px] font-semibold rounded-md px-1.5 py-0.5 tabular-nums ${
+                job.relevance < RELEVANCE_WARN_BELOW
+                  ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                  : "bg-muted text-muted-foreground"
+              }`}
+            >
+              ~{job.relevance}
+            </span>
+          ) : null}
         </div>
       </div>
     </div>
