@@ -107,12 +107,12 @@ Prod'da tanımlı olmalı (`.env.example` referans; **güncellendi**):
 
 ---
 
-## 6. Chrome Web Store — uzantı yayını
+## 6. Chrome Web Store — uzantı yayını — ⏳ İNCELEMEDE (2026-07-05)
 
-- [ ] `cd extension && npm run build` (prod — manifest'ten localhost izni çıkar) → `npm run package` (store zip).
-- [ ] Chrome Web Store Developer Dashboard'a zip yükle.
-- [ ] Gizlilik sayfası URL'i: `https://multifolio-ecru.vercel.app/extension/privacy` (hazır).
-- [ ] İzin gerekçeleri: cookie'li fetch (login'li sekmeden profil içe aktarma) — `docs/EXTENSION.md`.
+- [x] `cd extension && npm run build` → `npm run package` (store zip) + dashboard'a yüklendi.
+- [x] Gizlilik sayfası URL'i: `https://multifolio-ecru.vercel.app/extension/privacy` (hazır).
+- [x] İzin gerekçeleri girildi (cookie'li fetch — `docs/EXTENSION.md`).
+- [ ] **Google incelemesinin bitmesi bekleniyor** (onaylanınca canlı; kullanıcı takip ediyor).
 
 ---
 
