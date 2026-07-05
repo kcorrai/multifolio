@@ -4,7 +4,7 @@ import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseQuery } from "@/lib/validation";
 import { feedSearchQuerySchema, type PoolJobRow, type PoolJob } from "@/lib/validation/schemas/feed";
 import { searchPool } from "@/lib/feed/filter";
-import { jobRelevance, type RelevanceProfile } from "@/lib/feed/relevance";
+import { jobRelevance, dedupeNearDuplicates, type RelevanceProfile } from "@/lib/feed/relevance";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const POOL_WINDOW = 200;
@@ -33,7 +33,8 @@ export const GET = withErrorHandler(async (req) => {
 
   // Arama sonucu kullanıcının sorgusuna göre (searchPool) filtrelenir; sıra korunur,
   // relevance yalnız rozet/skorlama-uyarısı için eklenir (arama sıralamasını değiştirmez).
-  const filtered = searchPool(pool, { q, platform, minBudget });
+  // Near-duplicate (aynı başlık farklı şehir) ilanlar tekilleştirilir (JOBS-FLOWS P1).
+  const filtered = dedupeNearDuplicates(searchPool(pool, { q, platform, minBudget }));
   const page: PoolJob[] = filtered.slice(offset, offset + limit).map((p) => {
     const s = scores.get(p.id);
     return {

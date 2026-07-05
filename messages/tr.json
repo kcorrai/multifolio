@@ -108,6 +108,7 @@
       "comingSoon": "Yakında",
       "creditsLine": "{count} kredi",
       "valueHint": "≈ {adaptations} profil uyarlaması veya {proposals} teklif",
+      "tryApprox": "TL fiyatları yaklaşık USD karşılığıdır; kesin tutar satın alma açılınca ödeme adımında netleşir.",
       "plans": {
         "starter": "Başlangıç",
         "pro": "Pro",
@@ -610,6 +611,10 @@
     "galleryTitle": "Galeri ({count})",
     "galleryHint": "Bağlı profillerinden çekildi. Görünmesini istemediklerini kaldır.",
     "removeImage": "Görseli kaldır",
+    "contactTitle": "İletişim / işe-al butonu",
+    "contactHint": "Public sayfanda “İletişime geç” butonu olarak görünür. Önce e-posta kullanılır; ikisini de boş bırakırsan gizlenir.",
+    "contactEmailLabel": "İletişim e-postası",
+    "contactUrlLabel": "Veya bir iletişim bağlantısı (URL)",
     "saved": "Kaydedildi"
   },
   "accounts": {
@@ -632,6 +637,9 @@
     "projects": "Projeler",
     "lastUpdated": "Son güncelleme",
     "gallery": "Çalışmalar",
+    "hireCta": "İletişime geç",
+    "hireHeading": "İşe uygunum",
+    "hireBody": "Aklında bir proje mi var? Konuşalım.",
     "madeWith": "Multifolio ile yapıldı"
   },
   "publicAnalysis": {
@@ -736,6 +744,7 @@
     "showOriginal": "Orijinali göster",
     "showTranslation": "Çeviriyi göster",
     "filters": "Filtreler",
+    "filterInactive": "Pasif — mevcut ilan kaynakları bu veriyi henüz sağlamıyor.",
     "clearFilters": "Temizle",
     "saveAsFeed": "Feed olarak kaydet",
     "resultsCount": "{count} ilan bulundu",

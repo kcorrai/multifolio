@@ -75,14 +75,18 @@ export const POST = withErrorHandler(async () => {
     .eq("user_id", user.id)
     .maybeSingle();
   const slug = existing?.slug ?? user.id.slice(0, 8);
-  // Yeniden üretimde kullanıcının seçtiği tema KORUNUR (eksikse studio/blue).
-  const existingContent = existing?.content as { theme?: unknown } | null;
+  // Yeniden üretimde kullanıcının seçtiği tema + iletişim CTA hedefi KORUNUR (AI bunları üretmez).
+  const existingContent = existing?.content as
+    | { theme?: unknown; contactEmail?: unknown; contactUrl?: unknown }
+    | null;
   const theme = portfolioThemeSchema.parse(existingContent?.theme);
+  const contactEmail = typeof existingContent?.contactEmail === "string" ? existingContent.contactEmail : undefined;
+  const contactUrl = typeof existingContent?.contactUrl === "string" ? existingContent.contactUrl : undefined;
 
   // AI üretimi + portfolyonun yazımı tek closure'da: yazım patlarsa spendCredits krediyi iade eder.
   const { result, balance, spent } = await spendCredits(user.id, "portfolio_generation", async () => {
     const ai = await generatePortfolio(profileData as ProfileInput, portfolioLocale, media);
-    const content = { ...ai.content, theme };
+    const content = { ...ai.content, theme, ...(contactEmail !== undefined ? { contactEmail } : {}), ...(contactUrl !== undefined ? { contactUrl } : {}) };
     const { data: portfolio, error: upsertError } = await admin
       .from("portfolios")
       .upsert(

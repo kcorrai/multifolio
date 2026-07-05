@@ -42,6 +42,7 @@ export function JobsTab({
           <button
             key={v}
             onClick={() => selectView(v)}
+            aria-current={view === v ? "page" : undefined}
             className={`rounded-lg px-3.5 py-1.5 text-sm font-semibold transition-colors ${
               view === v ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             }`}
@@ -50,6 +51,9 @@ export function JobsTab({
           </button>
         ))}
       </div>
+
+      {/* Ekran okuyucu için aktif görünümün bölüm başlığı (görsel olarak gizli; DEEP P2). */}
+      <h2 className="sr-only">{t(`tabs.${view}`)}</h2>
 
       {view === "feed" && <FeedView initialJobs={initialFeedJobs} initialFeeds={initialFeeds} initialTotal={initialFeedTotal} />}
       {view === "search" && <SearchView />}

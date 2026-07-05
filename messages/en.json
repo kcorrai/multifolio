@@ -108,6 +108,7 @@
       "comingSoon": "Soon",
       "creditsLine": "{count} credits",
       "valueHint": "≈ {adaptations} profile adaptations or {proposals} proposals",
+      "tryApprox": "TL prices are approximate USD equivalents; the exact amount is confirmed at checkout when purchasing opens.",
       "plans": {
         "starter": "Starter",
         "pro": "Pro",
@@ -610,6 +611,10 @@
     "galleryTitle": "Gallery ({count})",
     "galleryHint": "Pulled from your connected profiles. Remove any you don't want shown.",
     "removeImage": "Remove image",
+    "contactTitle": "Contact / hire button",
+    "contactHint": "Shown as a “Get in touch” button on your public page. Email is used first; leave both empty to hide it.",
+    "contactEmailLabel": "Contact email",
+    "contactUrlLabel": "Or a contact link (URL)",
     "saved": "Saved"
   },
   "accounts": {
@@ -632,6 +637,9 @@
     "projects": "Projects",
     "lastUpdated": "Last updated",
     "gallery": "Work",
+    "hireCta": "Get in touch",
+    "hireHeading": "Available for work",
+    "hireBody": "Have a project in mind? Let's talk.",
     "madeWith": "Made with Multifolio"
   },
   "publicAnalysis": {
@@ -736,6 +744,7 @@
     "showOriginal": "Show original",
     "showTranslation": "Show translation",
     "filters": "Filters",
+    "filterInactive": "Inactive — current job sources don't provide this data yet.",
     "clearFilters": "Clear",
     "saveAsFeed": "Save as feed",
     "resultsCount": "{count} jobs found",

@@ -68,6 +68,14 @@ export default async function PortfolioPage({ params }: PageProps) {
   const t = await getTranslations("portfolioPublic");
   const { vars, dark } = portfolioTheme(theme.preset, theme.accent);
 
+  // İletişim/işe-al hedefi: e-posta öncelikli (mailto), yoksa http(s) link. İkisi de yoksa CTA gizli.
+  // Render'da defense-in-depth: yalnız geçerli e-posta / http(s) URL kabul (javascript: vb. engellenir).
+  const rawEmail = content.contactEmail?.trim() || "";
+  const rawUrl = content.contactUrl?.trim() || "";
+  const contactEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail) ? rawEmail : null;
+  const contactUrl = /^https?:\/\//i.test(rawUrl) ? rawUrl : null;
+  const contactHref = contactEmail ? `mailto:${contactEmail}` : contactUrl;
+
   const accentTint = "color-mix(in_srgb,var(--pf-accent)_12%,transparent)";
   const heading = { fontFamily: "var(--pf-heading-font)" };
 
@@ -110,6 +118,16 @@ export default async function PortfolioPage({ params }: PageProps) {
                   </span>
                 ))}
               </div>
+            )}
+            {contactHref && (
+              <a
+                href={contactHref}
+                {...(contactUrl && !contactEmail ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="anim-fade-up anim-d3 inline-flex items-center gap-1.5 rounded-full bg-[var(--pf-accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+              >
+                {t("hireCta")}
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
             )}
           </div>
         </div>
@@ -184,6 +202,27 @@ export default async function PortfolioPage({ params }: PageProps) {
                 </div>
               );
             })}
+          </div>
+        </section>
+      )}
+
+      {/* ── İletişim / işe-al CTA bölümü ─────────────────────────────── */}
+      {contactHref && (
+        <section className="mx-auto max-w-3xl px-6 py-12">
+          <div
+            className="anim-fade-up rounded-3xl border border-[var(--pf-border)] p-8 text-center sm:p-10"
+            style={{ backgroundColor: accentTint }}
+          >
+            <h2 style={heading} className="text-2xl font-bold sm:text-3xl">{t("hireHeading")}</h2>
+            <p className="mx-auto mt-2 max-w-md text-[var(--pf-muted)]">{t("hireBody")}</p>
+            <a
+              href={contactHref}
+              {...(contactUrl && !contactEmail ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-[var(--pf-accent)] px-6 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+            >
+              {t("hireCta")}
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
           </div>
         </section>
       )}

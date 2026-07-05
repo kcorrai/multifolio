@@ -4,7 +4,7 @@ import { JobsTab } from "@/components/dashboard/jobs-tab";
 import type { JobRow } from "@/components/dashboard/shared";
 import type { PoolJob, PoolJobRow, JobFeedRow } from "@/lib/validation/schemas/feed";
 import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
-import { jobRelevance, orderDefaultFeed, type RelevanceProfile } from "@/lib/feed/relevance";
+import { jobRelevance, orderDefaultFeed, dedupeNearDuplicates, type RelevanceProfile } from "@/lib/feed/relevance";
 
 type View = "feed" | "search" | "starred" | "applied";
 const VIEWS: View[] = ["feed", "search", "starred", "applied"];
@@ -37,13 +37,14 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   };
 
   // Feedsiz varsayılan görünüm profil alakasına göre sıralanır/elenir (route ile aynı).
+  // Near-duplicate (aynı başlık farklı şehir) ilanlar tekilleştirilir (JOBS-FLOWS P1).
   const matched = feeds.length === 0
     ? orderDefaultFeed(pool, relProfile)
-    : pool.filter((p) => {
+    : dedupeNearDuplicates(pool.filter((p) => {
         const s = scores.get(p.id);
         const score = s ? (s.score as number) : null;
         return feeds.some((f) => matchesFeed(p, feedCriteria(f), score));
-      });
+      }));
 
   const initialFeedJobs: PoolJob[] = matched.slice(0, 25).map((p) => {
     const s = scores.get(p.id);

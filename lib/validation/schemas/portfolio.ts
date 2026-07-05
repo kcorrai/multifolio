@@ -41,6 +41,11 @@ export const portfolioContentSchema = z.object({
   projects: z.array(portfolioProjectSchema).max(12).default([]),
   theme: portfolioThemeSchema,
   media: portfolioMediaSchema,
+  // İşe-al/iletişim CTA hedefi (opsiyonel; ikisi de yoksa CTA gizli). Editörde serbest
+  // yazılır (yarım e-posta tüm kaydı bloklamasın diye biçim burada zorlanmaz); public
+  // sayfa RENDER'da yalnız geçerli e-posta / http(s) URL'i href yapar (javascript: vb. engellenir).
+  contactEmail: z.string().max(200).nullable().optional(),
+  contactUrl: z.string().max(300).nullable().optional(),
 });
 
 export type PortfolioTheme = z.infer<typeof portfolioThemeSchema>;

@@ -52,7 +52,7 @@ export function PoolJobRow({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             {job.source && <PlatformBadge source={job.source} />}
-            <p className="text-sm font-semibold leading-snug truncate">{poolJobTitle(job, locale)}</p>
+            <h3 className="text-sm font-semibold leading-snug truncate">{poolJobTitle(job, locale)}</h3>
           </div>
           <div className="flex items-center gap-2 mt-1 text-[11px] text-muted-foreground">
             {job.budget && <span>{job.budget}</span>}

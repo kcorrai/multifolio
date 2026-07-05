@@ -35,9 +35,11 @@
 
 ## 🟡 Analiz notları (yeni, minör)
 
-- [ ] **TL fiyatları statik mi, FX mi?** ₺349/₺1.149/₺2.749 sabit çeviri gibi görünüyor. TRY
+- [x] **TL fiyatları statik mi, FX mi?** ₺349/₺1.149/₺2.749 sabit çeviri gibi görünüyor. TRY
   oynarsa $9/$29/$69 niyetinden sapar. Kabul: ya periyodik güncellenir ya kur-bazlı hesaplanır;
   ya da "yaklaşık" ibaresi netleştirilir. (`components/pricing-section.tsx`)
+  — KAPANDI 2026-07-05: TR para biriminde fiyat grid'i altında "TL fiyatları yaklaşık USD
+  karşılığıdır; kesin tutar satın alma açılınca netleşir" notu (`pricing.tryApprox`).
 
 ## Sonuç
 Bu turda **yeni defect yok** — tek yeni özellik (onboarding CTA) temiz; doğrulanan fix'ler

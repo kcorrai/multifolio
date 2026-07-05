@@ -25,13 +25,14 @@
 
 ## P1 — Orta (yeni bulgular)
 
-- [ ] **`profile_import` kullanım kartı ham etiketle görünüyor (KESİN)**
+- [x] **`profile_import` kullanım kartı ham etiketle görünüyor (KESİN)** — KAPANDI 2026-07-05
   - Nerede: Genel Bakış tür-bazlı kullanım kartları (`components/dashboard/overview-tab.tsx` +
     `messages/{en,tr}.json`). Diğer tüm kind'lar çevrili ("Proposal Generation / Teklif Üretimi",
     "Job Matching", "Platform Adaptation"...) ama **`profile_import` hem EN hem TR'de ham string**.
   - Kabul: `profile_import` kind'ına iki katalogda da insan-okur etiket eklenir.
+  - Çözüm: `messages/{en,tr}.json:422` → "Profile Import" / "Profil İçe Aktarma".
 
-- [ ] **Arama filtreleri, havuzun sağlamadığı Upwork-kalite veri için tasarlanmış**
+- [x] **Arama filtreleri, havuzun sağlamadığı Upwork-kalite veri için tasarlanmış** — KAPANDI 2026-07-05
   - Nerede: `search-view.tsx` Filtreler paneli — "Müşteri min harcaması / Min saatlik / Min
     sabit fiyat" hepsi USD. Panelin kendi notu: "Mevcut ilan kaynakları müşteri harcaması
     bildirmiyor — bu filtre veri geldiğinde etkinleşir."
@@ -39,15 +40,23 @@
     uyumsuzluğunu güçlendiriyor.
   - Kabul: havuz zenginleşene kadar atıl filtreler gizlenir/pasif işaretlenir; ya da havuz
     Upwork-benzeri veri sağlayan kaynaklarla beslenir.
+  - Çözüm: `search-view.tsx` yüklenen havuzda ilgili veri var mı bakar (`hasSpendData`/
+    `hasBudgetData`); veri yoksa client-spent/hourly/fixed alanları `disabled` + `opacity-50`
+    + "Pasif — kaynaklar bu veriyi sağlamıyor" notu (`feed.filterInactive`). Veri gelince otomatik aktif.
 
 ## P2 — Küçük / cila
 
-- [ ] **Liste sayfalarında başlık hiyerarşisi zayıf** — Jobs sayfasında yalnız `H1: Jobs`;
+- [x] **Liste sayfalarında başlık hiyerarşisi zayıf** — Jobs sayfasında yalnız `H1: Jobs`;
   ilan satırları/bölümler heading değil (ekran okuyucu ile bölüm gezinmesi zayıf).
-- [ ] **Fiverr logosu "irerr" görünümü light mode'da da var** (cross-theme; `platform-logo.tsx`).
-- [ ] **Kredi maliyetleri tutarlı gösteriliyor** ama not: teklif 2 kredi, eşleştirme 1, uyarlama
+  — KAPANDI 2026-07-05: `jobs-tab.tsx` aktif görünüme `sr-only` h2 + `aria-current`;
+  `pool-job-row.tsx` ilan başlığı `<p>`→`<h3>` (ekran okuyucu heading gezinmesi).
+- [x] **Fiverr logosu "irerr" görünümü light mode'da da var** (cross-theme; `platform-logo.tsx`).
+  — KAPANDI 2026-07-05: `platform-logo.tsx:27` letter-mark'a geçti (yeşil kare + beyaz "fi").
+- [x] **Kredi maliyetleri tutarlı gösteriliyor** ama not: teklif 2 kredi, eşleştirme 1, uyarlama
   1 — modal/butonlarda rozet var; sadece kullanıcı beklentisi için fiyat sayfasında da
   "hangi işlem kaç kredi" tablosu faydalı olur (DASHBOARD/UX kredi-değer maddesiyle bağlantılı).
+  — ZATEN VAR (doğrulandı 2026-07-05): `/pricing` sayfasında `CREDIT_COSTS`'tan kredi-maliyet
+  tablosu (adaptation/job_match/proposal/portfolio_generation satırları) render ediliyor.
 
 ## Aktif WIP sırasında gözlemlenen (shipped bug DEĞİL)
 - Denetim sırasında **Portfolyo nav'ı canlı geri getiriliyordu** (`/dashboard/portfolio`).

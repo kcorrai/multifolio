@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { jobRelevance, orderDefaultFeed } from "./relevance";
+import { jobRelevance, orderDefaultFeed, nearDuplicateKey, dedupeNearDuplicates } from "./relevance";
 import type { PoolJobRow } from "@/lib/validation/schemas/feed";
 
 function job(over: Partial<PoolJobRow> = {}): PoolJobRow {
@@ -87,5 +87,42 @@ describe("orderDefaultFeed", () => {
     const out = orderDefaultFeed([german], reactProfile);
     expect(out).toHaveLength(1);
     expect(out[0].id).toBe(german.id);
+  });
+});
+
+describe("nearDuplicateKey", () => {
+  it("aynı ilan farklı şehir/cinsiyet-işareti → aynı anahtar", () => {
+    const a = nearDuplicateKey("Tax Advisor (m/w/d) in Waghäusel");
+    const b = nearDuplicateKey("Tax Advisor (m/w/d) in Budenheim");
+    const c = nearDuplicateKey("Tax Advisor (w/m/d) in Grafing");
+    expect(a).toBe(b);
+    expect(a).toBe(c);
+  });
+
+  it("farklı roller ayrı anahtar üretir", () => {
+    expect(nearDuplicateKey("React Developer in Berlin"))
+      .not.toBe(nearDuplicateKey("Backend Engineer in Berlin"));
+  });
+
+  it("konum soyma kalanı boşaltacaksa soymadan başlığı kullanır", () => {
+    // "Work in Progress" → " in progress" soyulursa 'work' tek token kalır;
+    // yine de deterministik, boş dönmez.
+    expect(nearDuplicateKey("Work in Progress")).not.toBe("");
+  });
+});
+
+describe("dedupeNearDuplicates", () => {
+  it("aynı başlık farklı şehir → ilk kopya kalır", () => {
+    const j1 = job({ id: "00000000-0000-0000-0000-00000000d001", title: "Tax Advisor (m/w/d) in Waghäusel" });
+    const j2 = job({ id: "00000000-0000-0000-0000-00000000d002", title: "Tax Advisor (m/w/d) in Budenheim" });
+    const j3 = job({ id: "00000000-0000-0000-0000-00000000d003", title: "Senior React Developer" });
+    const out = dedupeNearDuplicates([j1, j2, j3]);
+    expect(out.map((j) => j.id)).toEqual([j1.id, j3.id]);
+  });
+
+  it("title_en varsa onu kullanır (çevrilmiş başlıkta dedup)", () => {
+    const j1 = job({ id: "00000000-0000-0000-0000-00000000d101", title: "Steuerberater in München", title_en: "Tax Advisor in Munich" });
+    const j2 = job({ id: "00000000-0000-0000-0000-00000000d102", title: "Steuerberater in Köln", title_en: "Tax Advisor in Cologne" });
+    expect(dedupeNearDuplicates([j1, j2])).toHaveLength(1);
   });
 });

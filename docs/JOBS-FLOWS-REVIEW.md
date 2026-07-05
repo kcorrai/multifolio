@@ -20,7 +20,7 @@
 
 ## P1 — Orta
 
-- [ ] **Feed default alaka + kalite, ilk sanılandan DAHA KÖTÜ**
+- [x] **Feed default alaka + kalite, ilk sanılandan DAHA KÖTÜ** — KISMEN KAPANDI 2026-07-05
   - Gözlem: varsayılan **"All matched jobs" (25)** feed'i, aynı **"Tax Advisor (m/w/d) in
     [Alman şehri]"** ilanını ~10 farklı kasabada (Waghäusel, Budenheim, Grafing, Neubulach,
     Ratingen...) **tekrarlıyor** + Sales Director, Werkstudent minijob, Video Editor 17€/std.
@@ -31,14 +31,20 @@
     **duplikasyon eleme (dedup)** ihtiyacını ekler.
   - Kabul: havuz freelance/uygun pazar ağırlıklı; near-duplicate ilanlar (aynı başlık/şirket,
     farklı şehir) tekilleştirilir; varsayılan feed profile göre sıralanır.
+  - Çözüm (alaka+pazar): Arbeitnow düşürüldü, Remotive/RemoteOK'ye geçildi (Alman on-site çöpü
+    gitti — round4 doğruladı) + `lib/feed/relevance.ts` profile göre sıralama/gizleme.
+  - Çözüm (dedup): near-duplicate eleme `lib/feed/relevance.ts` `dedupeNearDuplicates` ile
+    varsayılan feed + arama görünümüne eklendi (aynı normalize başlık+şirket → tek ilan).
 
-- [ ] **Feed kaydetme hatasında kullanıcıya görünür geri bildirim yok (silent fail)**
+- [x] **Feed kaydetme hatasında kullanıcıya görünür geri bildirim yok (silent fail)** — KAPANDI 2026-07-05
   - Gözlem: "Save feed" → `POST /api/feeds` **401** döndü, modal **sessizce açık kaldı**,
     kalıcı hata/toast görünmedi. (401'in kendisi bu turdaki oturum churn'ünden olabilir — eş
     zamanlı dev aktivitesi hesabı değiştirdi — ama **başarısız kayıtta sessiz kalma UX'i** neden
     ne olursa olsun geçerli.)
   - Kabul: feed kaydı başarısızsa (401/ağ/validasyon) net bir hata mesajı/toast gösterilir;
     kullanıcı "kaydettim ama bir şey olmadı" durumunda kalmaz.
+  - Çözüm: `feed-modal.tsx` `error` state + `!res.ok` → `setError(...)` + satır 186 görünür
+    `text-destructive` mesajı; modal artık sessiz kapanmıyor.
 
 ## Doğrulanamayan (ortam kaynaklı)
 

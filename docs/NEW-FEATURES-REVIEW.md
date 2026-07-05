@@ -34,7 +34,7 @@
     için kişisel Gmail hem profesyonellik hem gizlilik (kişisel adres ifşası) açısından zayıf.
   - Kabul: [Şirket]/[Adres]/[Vergi No] doldurulur; iletişim domain/destek e-postasına geçer.
 
-- [ ] **Public toggle erişilebilir değil (a11y)**
+- [x] **Public toggle erişilebilir değil (a11y)** — KAPANDI 2026-07-05
   - Nerede: `components/dashboard/portfolio-tab.tsx` — toggle `<label>` içinde salt `<div>` pill +
     `<span>Public</span>`; **gerçek `<input>`/`role="switch"`/`tabindex` YOK**.
   - Sorun: klavye ile odaklanılamaz/açılamaz; ekran okuyucu aksiyon olarak duyurmaz. Testte de
@@ -42,14 +42,19 @@
     denemesinden sonra public sayfa 404 verdi — re-toggle gerekti). İnsan tıklamasında büyük
     olasılıkla çalışır ama tıklama hedefi hassas.
   - Kabul: gerçek `role="switch"` + klavye desteği; toggle+kaydet güvenilir persist eder.
+  - Çözüm: portfolyo redesign'da toggle gerçek `<button type="button" aria-pressed={published}>`
+    oldu (`portfolio-tab.tsx:185`) — klavye ile odaklanır/tetiklenir, ekran okuyucu duyurur.
 
-- [ ] **Public portfolyo sayfası tasarımca çok sade (müşteriye satmıyor)**
+- [x] **Public portfolyo sayfası tasarımca çok sade (müşteriye satmıyor)** — KAPANDI 2026-07-05
   - Nerede: public `/p/[slug]` — tek sütun düz metin (ABOUT/SKILLS/PROJECTS). Avatar yok, aksan
     renk yok, **iletişim/işe-al CTA'sı yok**, **"Built with Multifolio" markası/geri-linki yok**.
   - Sorun: (a) portfolyonun işi izleyiciyi müşteriye çevirmek — CTA/iletişim yok. (b) her paylaşılan
     portfolyo Multifolio'ya signup getirebilecek büyüme döngüsü (footer backlink) kaçıyor. (c) ürünün
     geri kalanının cilası yanında bu sayfa "portfolyo sitesi" vaadinin altında kalıyor.
   - Kabul: avatar + aksan/tema + iletişim/CTA + ince Multifolio footer backlink; opsiyonel OG görsel.
+  - Çözüm: `/p/[slug]` baştan yazıldı (3 tema × 6 aksan `lib/portfolio/theme.ts`, avatar'lı hero +
+    masonry galeri + projeler + motion), OG görseli (avatar), footer "Made with Multifolio" backlink
+    (satır 197) + **iletişim/işe-al CTA** (2026-07-05 eklendi).
 
 ## Not
 - Testte dev ortam yine hot-reload/oturum-churn ile oynadı (tarayıcı birkaç kez düştü); yukarıdakiler

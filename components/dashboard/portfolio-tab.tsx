@@ -142,6 +142,17 @@ export function PortfolioTab({
                   <Textarea id="pf-bio" rows={5} value={content.bio} maxLength={2000}
                     onChange={(e) => patch({ bio: e.target.value })} className="resize-none" />
                 </div>
+                {/* İletişim / işe-al CTA hedefi (public sayfada buton) */}
+                <div className="space-y-1.5">
+                  <Label>{t("contactTitle")}</Label>
+                  <p className="text-xs text-muted-foreground">{t("contactHint")}</p>
+                  <Input type="email" inputMode="email" value={content.contactEmail ?? ""} maxLength={200}
+                    placeholder={t("contactEmailLabel")} aria-label={t("contactEmailLabel")}
+                    onChange={(e) => patch({ contactEmail: e.target.value })} />
+                  <Input type="url" inputMode="url" value={content.contactUrl ?? ""} maxLength={300}
+                    placeholder={t("contactUrlLabel")} aria-label={t("contactUrlLabel")}
+                    onChange={(e) => patch({ contactUrl: e.target.value })} />
+                </div>
               </div>
 
               {/* ── Galeri (bağlı profillerden; kaldırılabilir) ──────── */}
