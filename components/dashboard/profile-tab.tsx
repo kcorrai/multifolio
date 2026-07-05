@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PlatformLogo } from "@/components/platform-logo";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import { ChipsInput } from "./chips-input";
+import { isHeadlineComplete, isSummaryComplete, areSkillsComplete } from "@/lib/profile-strength";
 import { ELEVATED, type InitialProfile, type ConnectedProfile } from "./shared";
 
 interface Suggestion { headline: string; summary: string; skills: string[] }
@@ -78,8 +79,15 @@ export function ProfileTab({
   const profileSaved = saveState === "saved";
   const hasConnected = connectedProfiles.length > 0;
 
-  // Tamamlanma yüzdesi (hero halkası): 4 eşit ağırlıklı adım.
-  const steps = [headline.trim().length > 0, summary.trim().length > 0, skills.length > 0, profileSaved];
+  // Tamamlanma yüzdesi (hero halkası): 4 eşit ağırlıklı adım. Alan eşikleri
+  // Overview "Kurulum ilerlemesi" ile AYNI predicate'lerden (lib/profile-strength)
+  // → iki gösterge çelişmez.
+  const steps = [
+    isHeadlineComplete(headline),
+    isSummaryComplete(summary),
+    areSkillsComplete(skills),
+    profileSaved,
+  ];
   const percent = Math.round((steps.filter(Boolean).length / steps.length) * 100);
 
   async function saveProfile() {

@@ -54,6 +54,7 @@ export function SearchView() {
   const [minHourly, setMinHourly] = useState("");
   const [minFixed, setMinFixed] = useState("");
   const [saveModal, setSaveModal] = useState(false);
+  const [actionError, setActionError] = useState("");
 
   // Canlı arama: q/platform değişince debounce'lu çek. Boş q = tüm pool (açılışta hepsi).
   // Yeni arama listeyi DEĞİŞTİRİR (sayfalama sıfırlanır); loadedAt yalnız burada sabitlenir.
@@ -99,12 +100,17 @@ export function SearchView() {
 
   async function toggleStar(job: PoolJob) {
     const next = !job.isStarred;
+    setActionError("");
     setJobs((prev) => prev.map((j) => j.id === job.id ? { ...j, isStarred: next } : j));
-    await fetch(`/api/starred${next ? "" : `?jobPoolId=${job.id}`}`, {
+    const res = await fetch(`/api/starred${next ? "" : `?jobPoolId=${job.id}`}`, {
       method: next ? "POST" : "DELETE",
       headers: next ? { "Content-Type": "application/json" } : undefined,
       body: next ? JSON.stringify({ jobPoolId: job.id }) : undefined,
     });
+    if (!res.ok) {
+      setJobs((prev) => prev.map((j) => j.id === job.id ? { ...j, isStarred: !next } : j));
+      setActionError(t("actionFailed"));
+    }
   }
 
   function onScored(poolId: string, score: number, result: JobMatchResult) {
@@ -143,6 +149,15 @@ export function SearchView() {
 
   return (
     <div className="space-y-3">
+      {actionError && (
+        <div
+          role="alert"
+          className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-500 shadow-lg backdrop-blur cursor-pointer"
+          onClick={() => setActionError("")}
+        >
+          {actionError}
+        </div>
+      )}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("searchPlaceholder")} className="w-full rounded-xl border border-border bg-background pl-10 pr-3 py-2.5 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40" />

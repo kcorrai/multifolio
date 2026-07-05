@@ -16,15 +16,23 @@ export function StarredView() {
   const [jobs, setJobs] = useState<PoolJob[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState("");
 
   useEffect(() => {
     fetch("/api/starred").then((r) => r.json()).then((b) => { setJobs(b.jobs ?? []); setLoaded(true); }).catch(() => setLoaded(true));
   }, []);
 
   async function unstar(job: PoolJob) {
+    setActionError("");
+    // İyimser kaldır; başarısızsa listeye geri ekle + hata göster.
     setJobs((prev) => prev.filter((j) => j.id !== job.id));
-    if (selectedId === job.id) setSelectedId(null);
-    await fetch(`/api/starred?jobPoolId=${job.id}`, { method: "DELETE" });
+    const wasSelected = selectedId === job.id;
+    if (wasSelected) setSelectedId(null);
+    const res = await fetch(`/api/starred?jobPoolId=${job.id}`, { method: "DELETE" });
+    if (!res.ok) {
+      setJobs((prev) => (prev.some((j) => j.id === job.id) ? prev : [...prev, job]));
+      setActionError(t("actionFailed"));
+    }
   }
 
   function onScored(poolId: string, score: number, result: JobMatchResult) {
@@ -45,6 +53,15 @@ export function StarredView() {
 
   return (
     <div className="space-y-1.5">
+      {actionError && (
+        <div
+          role="alert"
+          className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-500 shadow-lg backdrop-blur cursor-pointer"
+          onClick={() => setActionError("")}
+        >
+          {actionError}
+        </div>
+      )}
       {jobs.map((job) => (
         <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={unstar} onOpen={(j) => setSelectedId(j.id)} />
       ))}

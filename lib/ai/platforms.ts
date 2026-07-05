@@ -42,7 +42,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
     label: "Fiverr",
     guidance:
       "Fiverr seller profili için yaz. Enerjik, güven verici, hizmet-odaklı bir ton. " +
-      "headline: 'I will...' kalıbıyla değil, Türkçe freelancer kimliği olarak; " +
+      "headline: 'I will...' kalıbıyla değil, net bir freelancer kimliği olarak; " +
       "net hizmet alanı + fark yaratan bir özellik belirt. " +
       "body: kısa paragraflar; alıcı kime yardım ettiğini, nasıl çalıştığını ve neden " +
       "tercih edilmesi gerektiğini anlasın. Rakamlar ve somut örneklerle güven oluştur.",

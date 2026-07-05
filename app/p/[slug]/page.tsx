@@ -9,7 +9,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Archivo, Space_Grotesk, Fraunces } from "next/font/google";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { ArrowUpRight } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
@@ -103,6 +103,8 @@ export default async function PortfolioPage({ params }: PageProps) {
   const testimonials = testimonialRows ?? [];
   const { headline, bio, skills, projects, media, theme } = content;
   const t = await getTranslations("portfolioPublic");
+  // Tarih formatı ziyaretçi/UI diline bağlanır — görsel preset'e DEĞİL (atelier ≠ TR).
+  const locale = await getLocale();
   const { vars, dark } = portfolioTheme(theme.preset, theme.accent);
 
   // İletişim/işe-al hedefi: e-posta öncelikli (mailto), yoksa http(s) link. İkisi de yoksa CTA gizli.
@@ -113,7 +115,10 @@ export default async function PortfolioPage({ params }: PageProps) {
   const contactUrl = /^https?:\/\//i.test(rawUrl) ? rawUrl : null;
   const contactHref = contactEmail ? `mailto:${contactEmail}` : contactUrl;
 
-  const accentTint = "color-mix(in_srgb,var(--pf-accent)_12%,transparent)";
+  // NOT: inline style'da GERÇEK boşluk şart — Tailwind-arbitrary `_` yerine değil.
+  // `color-mix(in_srgb,...)` ham CSS'te geçersizdir (in_srgb token'ı) → deklarasyon
+  // reddedilir ve vurgu arka planı public sayfada hiç render olmaz.
+  const accentTint = "color-mix(in srgb, var(--pf-accent) 12%, transparent)";
   const heading = { fontFamily: "var(--pf-heading-font)" };
 
   // schema.org Person JSON-LD (SEO + zengin paylaşım önizlemesi).
@@ -316,7 +321,7 @@ export default async function PortfolioPage({ params }: PageProps) {
       <footer className="mx-auto max-w-5xl px-6 pb-16 pt-10">
         <div className="flex flex-col gap-2 border-t border-[var(--pf-border)] pt-6 text-xs text-[var(--pf-muted)] sm:flex-row sm:items-center sm:justify-between">
           <span>
-            {t("lastUpdated")}: {new Date(updatedAt).toLocaleDateString(theme.preset === "atelier" ? "tr-TR" : undefined)}
+            {t("lastUpdated")}: {new Date(updatedAt).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-US")}
           </span>
           <Link
             href="/"

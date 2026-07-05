@@ -60,16 +60,22 @@ export interface ProfileStrengthResult {
   bonus: ProfileBonusItem[];
 }
 
+// Çekirdek alan-tamamlanma eşikleri — TEK DOĞRU KAYNAK. Hem bu fonksiyon (Overview
+// "Kurulum ilerlemesi") hem ProfileTab hero halkası bu predicate'leri kullanır ki
+// "headline='a' halkada dolu ama strength'te değil" çelişkisi olmasın.
+export const isHeadlineComplete = (headline: string | null): boolean =>
+  (headline ?? "").trim().length >= 20;
+export const isSummaryComplete = (summary: string | null): boolean =>
+  (summary ?? "").trim().length >= 80;
+export const areSkillsComplete = (skills: string[] | null): boolean =>
+  (skills ?? []).length >= 5;
+
 // Çekirdek madde sırası UI'daki checklist sırasıdır (profil alanları → platform döngüsü).
 export function computeProfileStrength(input: ProfileStrengthInput): ProfileStrengthResult {
-  const headline = (input.headline ?? "").trim();
-  const summary = (input.summary ?? "").trim();
-  const skills = input.skills ?? [];
-
   const items: ProfileStrengthItem[] = [
-    { key: "headline", done: headline.length >= 20, href: "/dashboard/profile" },
-    { key: "summary", done: summary.length >= 80, href: "/dashboard/profile" },
-    { key: "skills", done: skills.length >= 5, href: "/dashboard/profile" },
+    { key: "headline", done: isHeadlineComplete(input.headline), href: "/dashboard/profile" },
+    { key: "summary", done: isSummaryComplete(input.summary), href: "/dashboard/profile" },
+    { key: "skills", done: areSkillsComplete(input.skills), href: "/dashboard/profile" },
     { key: "platformConnected", done: (input.connectionsCount ?? 0) >= 1, href: "/dashboard/platforms" },
     { key: "platformDataFetched", done: (input.platformProfilesCount ?? 0) >= 1, href: "/dashboard/platforms" },
     { key: "adapted", done: (input.adaptationsCount ?? 0) >= 1, href: "/dashboard/platforms" },
