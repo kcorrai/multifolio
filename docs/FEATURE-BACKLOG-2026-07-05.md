@@ -39,8 +39,9 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
 
 - [x] **T0.3a — Sahte testimonial'ları gizle** 🟨 ✅ 2026-07-05 (hukuki risk) — `messages/{en,tr}.json`
   `landing.testimonials.items` boş dizi → `TestimonialsSection` null döner. Risk kapandı.
-- [ ] **T0.3b — Gerçek testimonial toplama widget'ı** 🟨 — paylaşılabilir link → müşteri kısa form →
-  owner onayı → portfolyoda/landing'de "Wall of Love". Yeni tablo + public submit route + Resend.
+- [x] **T0.3b — Gerçek testimonial toplama widget'ı** 🟨 ✅ 2026-07-05 — migration 0028 (prod'da) +
+  `/api/testimonials` + `/p/[slug]/recommend` formu + public "Wall of Love" + dashboard onay UI.
+  **PROD E2E DOĞRULANDI** (gönder→pending→onayla→render→temizle). Sahte testimonial'ın kalıcı çözümü.
 
 - [ ] **T0.4 — Yasal placeholder + kişisel e-posta doldur** 🟩 (backlog'da zaten açık)
   - `messages/en.json:983` `[Company Name]/[Address]/[Tax ID]` → gerçek · `yanlizcakaan@gmail.com`
