@@ -61,7 +61,10 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
 
 ---
 
-## 🟠 Tier 1 — Edinim & aktivasyon (en yüksek ROI yeni özellik)
+## 🟠 Tier 1 — Edinim & aktivasyon (en yüksek ROI yeni özellik) — ✅ TAMAMLANDI 2026-07-05
+
+> Tüm Tier 1 kodlandı + check temiz + commit'lendi (main). Ertelenen küçük parçalar madde
+> içinde işaretli. Bir sonraki tur için: Tier 2 veya Tier 0 kalan (ödeme aktivasyonu = env/Supabase).
 
 - [x] **T1.1 — Gelen ilan scam ön-filtresi** 🟩 ⭐ ✅ 2026-07-05
   - Çözüldü: `lib/feed/scam.ts` (saf `scanJobListing`, scam-odaklı ruleset: offplatform /
@@ -70,24 +73,24 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
     (`JobScamBadge` satır + `JobScamWarning` panel) → `pool-job-row` + `pool-job-panel`'e bağlı +
     i18n `feed.scam.*` (en/tr). AI maliyeti sıfır. (scan.ts DEĞİL — o giden metin; bu ayrı ayna.)
 
-- [ ] **T1.2 — Çok-platform net gelir karşılaştırıcı + TR vergi araçları** 🟨 ⭐ (TR'de rakipsiz, SEO)
-  - Net karşılaştırıcı: tutar gir → 5 platformda ele geçen net yan yana (en marka-uyumlu yeni araç,
-    "tek profil çok platform"u somutlaştırır; istemci-tarafı, AI yok).
-  - TR vergi checker: **GVK %80 yazılımcı istisnası** (yurtdışı müşteriye hizmet — tam kullanıcı
-    profili, Batılı rakip asla yapmaz) + genç girişimci + stopaj/KDV. "not tax advice" uyarısı.
+- [x] **T1.2 — Çok-platform net gelir karşılaştırıcı + TR vergi araçları** 🟨 ⭐ ✅ 2026-07-05
+  - T1.2a: `/compare` — `lib/compare/platforms.ts` (computeNetEarnings reuse) + Armut teklif-başı kartı.
+  - T1.2b: `/vergi` — `lib/compare/tr-tax.ts` GVK 89/1-13 (2025 %80 / 2026 %100) + genç girişimci
+    (2025 ₺330k / 2026 ₺400k) uygunluk + kaba matrah indirimi; araştırma-kaynaklı, GİB link,
+    güçlü "mali müşavir" uyarısı, KDV %0/302 notu, Bağ-Kur 2026 notu. Dev smoke EN+TR 200.
 
-- [ ] **T1.3 — Match skoru → "ne eklemeli" aksiyon listesi** 🟩
-  - Rubriği "X becerisini ekle / Y sonucunu belirt → skor +N" aksiyonlarına çevir. Harcanan kredinin
-    değerini görünür kılar → sonraki krediyi harcatır. `matchJobToProfile` çıktı şeması değişikliği.
+- [x] **T1.3 — Match skoru → "ne eklemeli" aksiyon listesi** 🟩 ✅ 2026-07-05
+  - `jobMatchAiSchema.improvements` (eyleme dönük, bu ilana özgü) + prompt + `MatchImprovements`
+    bileşeni (feed panel + iş detay panel). Result şemasında optional (eski cache uyumlu).
 
-- [ ] **T1.4 — Onboarding checklist + boş-durum örnekleri + profil gücü kademeleri** 🟩
-  - En kanıtlı retention kaldıraçları ("boş ekranda %84 terk"). Profil gücünü kademeye çevir
-    (Başlangıç→All-Star, "+1 portfolyo = +%5" şeffaf); "%38 vs %100" çelişkisini de kapatır.
+- [x] **T1.4 — Profil gücü kademeleri + şeffaf katkı** 🟩 ✅ 2026-07-05
+  - `profileStrengthStage` (Başlangıç→Şekilleniyor→Güçlü→All-Star) + `stepPercent` (+17%/madde);
+    kart'ta kademe rozeti + eksik maddede "+17%". [ ] Ertelendi: boş-durum örnek verisi (ayrı iş).
 
-- [ ] **T1.5 — Dönüşüm kopya kaldıraçları** 🟩 (çok düşük efor)
-  - `/analyze` teaser'da boş kesme yerine kilitli SAYI ("3 iyileştirme alanı daha — kaydol") ·
-    exit-intent yakalama · büyük pakette "+N kredi" çerçevesi · anti-Connects/anti-"teklif ücreti"
-    konumlandırması ("ürettiğin metin senin olur, belirsiz denemelere para yok").
+- [x] **T1.5 — Dönüşüm kopya kaldıraçları** 🟩 ✅ 2026-07-05 (kısmi — 2 sağlam kaldıraç)
+  - ✅ `/analyze` kilitli SAYI teaser'ı (gizli madde adedi sunucudan; içerik değil) · ✅ anti-Connects/
+    PAYG-dürüst konumlandırma (pricing). [ ] Ertelendi: exit-intent yakalama + büyük pakette "+N kredi"
+    çerçevesi (daha riskli/düşük öncelik — ayrı turda).
 
 ---
 
