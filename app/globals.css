@@ -173,6 +173,12 @@
 .anim-scale-in         { animation: scaleIn  0.55s cubic-bezier(.22,1,.36,1) both; }
 .anim-neon-pulse       { animation: neonPulse 2.8s ease-in-out infinite; }
 
+/* Testimonial marquee — sonsuz sağa kayan şerit. Şerit iki özdeş kopya içerir;
+   -50% → 0 kaydırma tam bir kopya boyu ilerletir → dikişsiz döngü. */
+@keyframes marqueeRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+.anim-marquee-track  { width: max-content; animation: marqueeRight var(--marquee-dur, 45s) linear infinite; }
+.anim-marquee-group:hover .anim-marquee-track { animation-play-state: paused; }
+
 .anim-d0  { animation-delay: 0ms; }
 .anim-d1  { animation-delay: 80ms; }
 .anim-d2  { animation-delay: 160ms; }

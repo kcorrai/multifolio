@@ -317,30 +317,9 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         </div>
       </section>
 
-      {/* Stats bar */}
-      <ScrollReveal>
-        <div className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-[#161923]/60">
-          <div className="mx-auto max-w-6xl px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { value: "5",                       label: t("stats.platforms"), color: "text-[#00F0FF]" },
-              { value: t("stats.avgScoreValue"),  label: t("stats.avgScore"),  color: "text-violet-400" },
-              { value: "GPT-4o",                  label: t("stats.engine"),    color: "text-[#00F0FF]" },
-              { value: t("stats.firstAdaptValue"), label: t("stats.firstAdapt"), color: "text-violet-400" },
-            ].map(({ value, label, color }) => {
-              /* Sayıyla başlayan değerler sayarak gelir ("89%" → 89 + "%"); diğerleri düz metin */
-              const m = value.match(/^(\d+)(.*)$/);
-              return (
-                <div key={label} className="text-center space-y-1">
-                  <p className={`text-2xl font-extrabold ${color} tabular-nums`}>
-                    {m ? <CountUp value={Number(m[1])} suffix={m[2]} duration={1400} /> : value}
-                  </p>
-                  <p className="text-xs text-slate-400 dark:text-[#94A3B8]/50 font-medium">{label}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </ScrollReveal>
+
+      {/* Sosyal kanıt — kayan yorum şeridi (desteklenen platformların hemen üstünde) */}
+      <TestimonialsSection />
 
       {/* Platforms strip */}
       <ScrollReveal className="mx-auto max-w-6xl px-8 py-14">
@@ -556,9 +535,6 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
         </div>
       </section>
-
-      {/* Sosyal kanıt */}
-      <TestimonialsSection />
 
       {/* Pricing */}
       <PricingSection isLoggedIn={isLoggedIn} />

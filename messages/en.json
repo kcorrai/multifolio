@@ -35,14 +35,6 @@
       "trust2": "Set up in 5 minutes",
       "trust3": "Pay-as-you-go"
     },
-    "stats": {
-      "platforms": "Supported platforms",
-      "avgScore": "Avg. match score",
-      "avgScoreValue": "89%",
-      "engine": "Powerful engine",
-      "firstAdapt": "First adaptation",
-      "firstAdaptValue": "2 min"
-    },
     "platformsStrip": {
       "title": "Supported platforms"
     },

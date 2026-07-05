@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { getTranslations } from "next-intl/server";
 import { Quote } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -11,54 +12,56 @@ interface Testimonial {
 
 // Sosyal kanıt bölümü. İçerik i18n `landing.testimonials.items`'tan gelir —
 // beta boyunca YER TUTUCU (gerçek kullanıcı sözleri geldikçe değiştirilir).
-// Bilerek initials-avatar kullanılır (sahte kişi fotoğrafı değil).
+// Yalnızca yorum metni gösterilir (kimlik/avatar yok — sahte kişi izlenimi vermez).
+// Sunumu: sağa kayan sonsuz marquee (CSS-only; hover'da durur, reduced-motion'da freeze).
 export async function TestimonialsSection() {
   const t = await getTranslations("landing.testimonials");
   const items = t.raw("items") as Testimonial[];
   if (!Array.isArray(items) || items.length === 0) return null;
 
+  const quotes = items.map((it) => it.quote);
+  // Bir "yarım" = yorumlar geniş ekranı da dolduracak kadar tekrar (boşluk kalmasın).
+  // Şerit bu yarımı İKİ kez basar; -50% kaydırma dikişsiz döngü verir.
+  const repeats = Math.max(2, Math.ceil(6 / quotes.length));
+  const half = Array.from({ length: repeats }, () => quotes).flat();
+
   return (
-    <section className="mx-auto max-w-6xl px-8 py-24">
+    <section className="py-24 overflow-hidden">
       <ScrollReveal>
-        <div className="text-center space-y-3 mb-12">
+        <div className="text-center space-y-3 mb-12 px-8">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("eyebrow")}</p>
           <h2 className="text-4xl font-extrabold tracking-tight">{t("title")}</h2>
         </div>
       </ScrollReveal>
 
-      <div className="grid gap-5 md:grid-cols-3">
-        {items.map((item, i) => (
-          <ScrollReveal key={item.name} delay={i * 90}>
-            <figure className="h-full flex flex-col rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 shadow-sm">
-              <Quote className="h-6 w-6 text-[#00F0FF]/50 shrink-0" aria-hidden />
-              <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-slate-700 dark:text-[#CBD5E1]">
-                “{item.quote}”
-              </blockquote>
-              <figcaption className="mt-5 flex items-center gap-3 border-t border-slate-100 dark:border-white/6 pt-4">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#00F0FF]/20 to-violet-500/20 border border-[#00F0FF]/20 text-sm font-bold text-[#00F0FF]">
-                  {initials(item.name)}
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-sm font-semibold truncate">{item.name}</span>
-                  <span className="block text-xs text-slate-500 dark:text-[#94A3B8] truncate">
-                    {item.role} · {item.platform}
-                  </span>
-                </span>
-              </figcaption>
-            </figure>
-          </ScrollReveal>
-        ))}
+      {/* Kenarlarda yumuşak solma (mask) + hover'da durma grubu */}
+      <div
+        className="anim-marquee-group relative [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]"
+        style={{ "--marquee-dur": "50s" } as CSSProperties}
+      >
+        <div className="anim-marquee-track flex gap-5">
+          <MarqueeHalf quotes={half} />
+          <MarqueeHalf quotes={half} ariaHidden />
+        </div>
       </div>
     </section>
   );
 }
 
-// "Ayşe K." → "AK"
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .map((p) => p[0] ?? "")
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+// Şeridin bir kopyası. İkinci kopya ekran okuyucudan gizlenir (yinelenmesin).
+function MarqueeHalf({ quotes, ariaHidden = false }: { quotes: string[]; ariaHidden?: boolean }) {
+  return (
+    <ul className="flex shrink-0 gap-5" aria-hidden={ariaHidden || undefined}>
+      {quotes.map((quote, i) => (
+        <li key={i} className="shrink-0">
+          <figure className="flex h-full w-[340px] flex-col rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 shadow-sm">
+            <Quote className="h-6 w-6 shrink-0 text-[#00F0FF]/50" aria-hidden />
+            <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-slate-700 dark:text-[#CBD5E1]">
+              “{quote}”
+            </blockquote>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  );
 }

@@ -35,14 +35,6 @@
       "trust2": "5 dakikada kur",
       "trust3": "Pay-as-you-go"
     },
-    "stats": {
-      "platforms": "Desteklenen Platform",
-      "avgScore": "Ort. Uyum Skoru",
-      "avgScoreValue": "%89",
-      "engine": "Güçlü Motor",
-      "firstAdapt": "İlk Uyarlama",
-      "firstAdaptValue": "2 dk"
-    },
     "platformsStrip": {
       "title": "Desteklenen platformlar"
     },
