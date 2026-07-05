@@ -7,7 +7,9 @@ import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { generatePortfolio } from "@/lib/ai/portfolio";
+import { slugify } from "@/lib/portfolio/slug";
 import { spendCredits } from "@/lib/credits/spend";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { portfolioThemeSchema, type PortfolioMedia } from "@/lib/validation/schemas/portfolio";
 import type { ProfileInput, PortfolioItem } from "@/lib/validation/schemas/profile";
 
@@ -26,6 +28,20 @@ function buildGallery(...sources: (PortfolioItem[] | null | undefined)[]): Portf
     }
   }
   return out;
+}
+
+// İlk üretimde okunabilir + benzersiz slug türetir. Başlıktan slugify → alınmışsa
+// kısa user-id eki → o da alınmışsa hex fallback. RLS bypass (admin) ile TÜM
+// slug'lara karşı kontrol (portfolios.slug UNIQUE; select-own RLS başkasınınkini gizler).
+async function deriveUniqueSlug(admin: SupabaseClient, headline: string | null, userId: string): Promise<string> {
+  const base = slugify(headline ?? "");
+  const hex = userId.slice(0, 8);
+  const candidates = [base, base ? `${base}-${userId.slice(0, 4)}` : "", hex].filter(Boolean);
+  for (const slug of candidates) {
+    const { data: taken } = await admin.from("portfolios").select("slug").eq("slug", slug).maybeSingle();
+    if (!taken) return slug;
+  }
+  return hex; // aşırı düşük olasılık — hex zaten user'a özgü
 }
 
 export const POST = withErrorHandler(async () => {
@@ -68,13 +84,14 @@ export const POST = withErrorHandler(async () => {
   const portfolioLocale = await getUserLocale();
   const admin = createSupabaseAdminClient();
 
-  // Mevcut portfolyoyu güncelle (yoksa oluştur). Slug: ilk üretimde user id'den türetilir (salt-okuma).
+  // Mevcut portfolyoyu güncelle (yoksa oluştur). Slug: ilk üretimde profil başlığından
+  // OKUNABİLİR türetilir (/p/senior-react-developer), benzersizlik DB'den kontrol edilir.
   const { data: existing } = await supabase
     .from("portfolios")
     .select("id, slug, content")
     .eq("user_id", user.id)
     .maybeSingle();
-  const slug = existing?.slug ?? user.id.slice(0, 8);
+  const slug = existing?.slug ?? (await deriveUniqueSlug(admin, profileData.headline as string | null, user.id));
   // Yeniden üretimde kullanıcının seçtiği tema + iletişim CTA hedefi KORUNUR (AI bunları üretmez).
   const existingContent = existing?.content as
     | { theme?: unknown; contactEmail?: unknown; contactUrl?: unknown }
