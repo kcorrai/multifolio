@@ -109,7 +109,10 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
 - [ ] **T2.4 — Uzantı "sayfaya yapıştır" (asla göndermez)** 🟨 — cover-letter kutusunu doldur, auto-submit yok.
 - [x] **T2.5a — Portfolyo SEO metadata + JSON-LD** 🟨 ✅ 2026-07-05 — sayfa başı SEO + Twitter card +
   JSON-LD Person (`lib/portfolio/json-ld.ts`, yayınlı sayfada doğrulandı).
-- [ ] **T2.5b — Vaka şeması + "İşe al" formu** 🟨 — Problem→Çözüm→Sonuç vaka şeması + nitelikli lead formu.
+- [x] **T2.5b-i — Vaka-çalışması şeması** 🟨 ✅ 2026-07-05 — projelere opsiyonel Problem→Çözüm→Sonuç
+  (gen şema zorunlu/`.optional()` tuzağı aşıldı; public sayfa render; production build temiz).
+- [ ] **T2.5b-ii — Nitelikli "İşe al" lead formu** 🟨 — bütçe/tip/timeline formu → dashboard lead
+  (⚠️ migration gerekir = Supabase onayın).
 - [x] **T2.6a — Digest konu satırı = eşleşme sayısı** 🟨 ✅ ZATEN VAR (`email.ts:150` feed-digest sayıyı içeriyor).
 - [ ] **T2.6b — Saat dilimi/vize filtresi + "bilinen şirket" rozeti** 🟨 ⛔ veri-bloklu (job_pool'da
   güvenilir timezone/company alanı yok; uygun kaynak eklenince açılır).
