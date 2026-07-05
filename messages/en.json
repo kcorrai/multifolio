@@ -104,6 +104,7 @@
       "creditsLine": "{count} credits",
       "valueHint": "≈ {adaptations} profile adaptations or {proposals} proposals",
       "tryApprox": "TL prices are approximate USD equivalents; the exact amount is confirmed at checkout when purchasing opens.",
+      "antiConnects": "Credits pay for work you keep — optimized profiles and proposals that stay yours. No subscription traps, no per-bid \"Connects\" fees, and no charge for jobs you don't win.",
       "plans": {
         "starter": "Starter",
         "pro": "Pro",
@@ -661,6 +662,7 @@
     "upworkNotes": "Upwork approval notes",
     "lockedTitle": "Full report is locked",
     "lockedBody": "See the full score breakdown, every suggestion and Upwork approval notes — free with an account.",
+    "lockedCount": "{suggestions} more improvement tips and {notes} Upwork approval notes are ready for you.",
     "lockedCta": "Sign up free",
     "signupPerk": "Signing up also gets you 100 free credits to adapt your profile for every platform."
   },

@@ -104,6 +104,7 @@
       "creditsLine": "{count} kredi",
       "valueHint": "≈ {adaptations} profil uyarlaması veya {proposals} teklif",
       "tryApprox": "TL fiyatları yaklaşık USD karşılığıdır; kesin tutar satın alma açılınca ödeme adımında netleşir.",
+      "antiConnects": "Kredi, ürettiğin ve senin kalan iş içindir — optimize profiller ve teklifler. Abonelik tuzağı yok, teklif başına \"Connects\" ücreti yok, kazanmadığın işe ödeme yok.",
       "plans": {
         "starter": "Başlangıç",
         "pro": "Pro",
@@ -661,6 +662,7 @@
     "upworkNotes": "Upwork onay notları",
     "lockedTitle": "Tam rapor kilitli",
     "lockedBody": "Tam skor dökümünü, tüm önerileri ve Upwork onay notlarını gör — hesapla ücretsiz.",
+    "lockedCount": "{suggestions} iyileştirme önerisi ve {notes} Upwork onay notu seni bekliyor.",
     "lockedCta": "Ücretsiz kayıt ol",
     "signupPerk": "Kayıt olunca ayrıca profilini her platforma uyarlamak için 100 ücretsiz kredi kazanırsın."
   },

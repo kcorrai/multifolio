@@ -14,6 +14,9 @@ interface AnalyzeResponse {
   score: number;
   verdict: AnalysisVerdict;
   firstSuggestion: string | null;
+  // Kilitli madde ADEDİ (içerik değil) — kayıtsıza "N iyileştirme daha var" göstermek için.
+  lockedSuggestions?: number;
+  lockedNotes?: number;
   full: {
     dimensions: Record<AnalysisDimensionKey, { score: number; reason: string }>;
     suggestions: string[];
@@ -206,6 +209,11 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <p className="inline-flex items-center gap-1.5 text-sm font-bold">
                   <Lock className="h-4 w-4 text-[#00F0FF]" />{t("lockedTitle")}
                 </p>
+                {((result.lockedSuggestions ?? 0) + (result.lockedNotes ?? 0)) > 0 && (
+                  <p className="text-xs font-semibold text-[#0891b2] dark:text-[#00F0FF]">
+                    {t("lockedCount", { suggestions: result.lockedSuggestions ?? 0, notes: result.lockedNotes ?? 0 })}
+                  </p>
+                )}
                 <p className="text-xs text-slate-500 dark:text-[#94A3B8] max-w-xs">{t("lockedBody")}</p>
                 <Button asChild size="sm" className="gap-1.5 font-semibold bg-violet-600 hover:bg-violet-500 text-white">
                   <Link href="/signup">{t("lockedCta")}<ArrowRight className="h-3.5 w-3.5" /></Link>

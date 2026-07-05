@@ -102,6 +102,11 @@ export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: bool
         })}
       </div>
 
+      {/* Anti-Connects konumlandırma: kredi = ürettiğin ve senin olan iş (belirsiz teklif hakkı değil). */}
+      <p className="mt-8 text-center text-sm text-slate-500 dark:text-[#94A3B8] max-w-2xl mx-auto font-medium">
+        {t("pricing.antiConnects")}
+      </p>
+
       {/* TL fiyatları canlı kur değil — yaklaşık olduğunu dürüstçe belirt (ROUND5). */}
       {currency === "try" && (
         <p className="mt-6 text-center text-xs text-slate-400 dark:text-[#94A3B8]/70 max-w-lg mx-auto">

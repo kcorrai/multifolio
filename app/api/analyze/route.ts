@@ -120,10 +120,14 @@ export const POST = withErrorHandler(async (req) => {
   }
 
   // TEASER GATING — kayıtsıza tam rapor SUNUCUDA kesilir.
+  // Kilitli SAYI (Grammarly deseni): içerik değil, gizli madde ADEDİ döner →
+  // "N iyileştirme daha var" boş kesmeden çok daha yüksek dönüşüm getirir.
   const teaser = {
     score,
     verdict,
     firstSuggestion: result.analysis.suggestions[0] ?? null,
+    lockedSuggestions: Math.max(0, result.analysis.suggestions.length - 1),
+    lockedNotes: result.analysis.upworkApprovalNotes.length,
   };
   if (!user) {
     return NextResponse.json({ ...teaser, full: null });
