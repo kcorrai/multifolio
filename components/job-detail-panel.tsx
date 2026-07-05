@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ProposalModal } from "@/components/proposal-modal";
 import { CreditCost } from "@/components/credit-cost";
 import { CopyButton } from "@/components/dashboard/copy-button";
-import { MatchRubric, VerdictBadge, RiskBadges } from "@/components/dashboard/match-rubric";
+import { MatchRubric, VerdictBadge, RiskBadges, MatchImprovements } from "@/components/dashboard/match-rubric";
 import { followUpDays } from "@/lib/followup";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 
@@ -294,6 +294,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                     )}
                   </div>
                 )}
+                {matchResult?.improvements && <MatchImprovements improvements={matchResult.improvements} />}
               </div>
             )}
 

@@ -10,7 +10,7 @@ import type { JobMatchResult } from "@/lib/validation/schemas/job";
 import { poolJobTitle } from "@/lib/feed/filter";
 import { RELEVANCE_WARN_BELOW } from "@/lib/feed/relevance";
 import { scoreColor, scoreBarColor } from "./shared";
-import { MatchRubric, VerdictBadge, RiskBadges } from "./match-rubric";
+import { MatchRubric, VerdictBadge, RiskBadges, MatchImprovements } from "./match-rubric";
 import { JobScamWarning } from "./job-risk";
 
 export function PoolJobPanel({
@@ -125,6 +125,7 @@ export function PoolJobPanel({
                 {result.strengths.map((s, i) => <li key={i}>{s}</li>)}
               </ul>
             )}
+            {result.improvements && <MatchImprovements improvements={result.improvements} />}
             {!result.rubric && (
               /* Rubrik öncesi cache'lenmiş skor: rubrikli yeniden analiz (cache bypass, 1 kredi). */
               <Button variant="outline" size="sm" onClick={() => analyze(true)} disabled={scoring} className="gap-2 w-full">

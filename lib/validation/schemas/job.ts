@@ -49,6 +49,9 @@ export const jobMatchAiSchema = z.object({
   rubric: jobMatchRubricSchema,
   strengths: z.array(z.string()).max(5),
   gaps: z.array(z.string()).max(5),
+  // improvements: skoru yükseltmek için profile/teklife eklenebilecek SOMUT, eyleme
+  // dönük öneriler (bu ilana özgü) — kullanıcıya harcanan kredinin değerini gösterir.
+  improvements: z.array(z.string().max(200)).max(5),
   requirements: z.array(z.string()).max(7),
   risks: z.array(z.string().max(200)).max(3),
   summary: z.string().max(400),
@@ -61,6 +64,8 @@ export const jobMatchResultSchema = jobMatchAiSchema.extend({
   rubric: jobMatchRubricSchema.optional(),
   verdict: z.enum(MATCH_VERDICTS).optional(),
   risks: z.array(z.string().max(200)).max(3).optional(),
+  // Eski cache'lenmiş satırlarda yok → optional (geriye dönük uyum).
+  improvements: z.array(z.string().max(200)).max(5).optional(),
 });
 
 export type JobCreate = z.infer<typeof jobCreateSchema>;

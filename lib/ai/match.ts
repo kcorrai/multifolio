@@ -38,6 +38,11 @@ const SYSTEM_PROMPT =
   "Ayrıca öne çıkan güçlü/eksik yönleri öz biçimde raporlar ve ilandan, bir teklifin karşılaması " +
   "gereken en önemli somut gereksinimleri (en çok 7 madde) 'requirements' olarak çıkarırsın; " +
   "her madde kısa ve eyleme dönük olsun. Nesnel ol; yalnızca verilen bilgiden çıkar.\n" +
+  "Ek olarak, freelancer'ın bu ilandaki uyum skorunu YÜKSELTMEK için profiline veya teklifine " +
+  "ekleyebileceği somut, uygulanabilir öneriler (en çok 5 madde) 'improvements' olarak verirsin — " +
+  "her madde hangi eksiği kapatacağını/hangi boyutu güçlendireceğini ima etsin " +
+  "(ör. 'Portfolyona bir Shopify mağaza projesi ekle — skill_fit artar'). Genel tavsiye verme; " +
+  "yalnız bu ilana özgü, eyleme dönük öneriler. İyileştirilecek bir şey yoksa boş dizi.\n" +
   "Son olarak ilanı dolandırıcılık/risk sinyalleri için tararsın ve bulduklarını 'risks' dizisinde " +
   "(en çok 3 kısa madde) raporlarsın: platform dışına iletişim daveti (Telegram/WhatsApp/e-posta), " +
   "freelancer'dan ödeme/depozito/yazılım satın alma talebi, kişisel/finansal veri talebi, " +

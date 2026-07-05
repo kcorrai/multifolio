@@ -811,6 +811,7 @@
   },
   "rubric": {
     "breakdown": "Skor dağılımı",
+    "improveTitle": "Skorunu yükselt",
     "risksTitle": "Risk sinyalleri",
     "weight": "%{percent}",
     "dimensions": {

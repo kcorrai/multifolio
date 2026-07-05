@@ -3,7 +3,7 @@
 // Şeffaf skor rubriği: karar rozeti + 4 boyutun ağırlıklı bar dökümü + risk uyarıları.
 // PoolJobPanel (feed slide-over) ve JobDetailPanel (iş takibi) paylaşır.
 import { useTranslations } from "next-intl";
-import { ThumbsUp, Scale, ThumbsDown, AlertTriangle } from "lucide-react";
+import { ThumbsUp, Scale, ThumbsDown, AlertTriangle, TrendingUp } from "lucide-react";
 import type { JobMatchRubric, MatchVerdict, RubricKey } from "@/lib/validation/schemas/job";
 import { RUBRIC_KEYS } from "@/lib/validation/schemas/job";
 import { RUBRIC_WEIGHTS } from "@/lib/ai/rubric";
@@ -45,6 +45,27 @@ export function RiskBadges({ risks }: { risks: string[] }) {
         {risks.map((risk, i) => (
           <li key={i} className="rounded-md bg-amber-50 px-2 py-1 text-[11px] leading-snug text-amber-700 ring-1 ring-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:ring-amber-800">
             {risk}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Skoru yükseltmek için eyleme dönük öneriler — harcanan kredinin değerini gösterir. Boşsa render etmez. */
+export function MatchImprovements({ improvements }: { improvements: string[] }) {
+  const t = useTranslations("rubric");
+  if (improvements.length === 0) return null;
+  return (
+    <div className="rounded-xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] px-3 py-2.5 space-y-1.5">
+      <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0891b2] dark:text-[#00F0FF]">
+        <TrendingUp className="h-3.5 w-3.5" />{t("improveTitle")}
+      </p>
+      <ul className="space-y-1">
+        {improvements.map((item, i) => (
+          <li key={i} className="flex items-start gap-1.5 text-[11px] leading-snug text-muted-foreground">
+            <span className="mt-1 h-1 w-1 rounded-full bg-[#00F0FF] shrink-0" />
+            <span>{item}</span>
           </li>
         ))}
       </ul>

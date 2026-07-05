@@ -811,6 +811,7 @@
   },
   "rubric": {
     "breakdown": "Score breakdown",
+    "improveTitle": "Raise your match",
     "risksTitle": "Risk signals",
     "weight": "{percent}%",
     "dimensions": {
