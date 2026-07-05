@@ -6,6 +6,7 @@
 import { cache } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Archivo, Space_Grotesk, Fraunces } from "next/font/google";
 import { getTranslations } from "next-intl/server";
@@ -13,6 +14,18 @@ import { ArrowUpRight } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
 import { portfolioTheme } from "@/lib/portfolio/theme";
+import { buildPersonJsonLd } from "@/lib/portfolio/json-ld";
+
+// Uygulamanın mutlak taban URL'i (canonical + JSON-LD + og:url için). NEXT_PUBLIC_APP_URL
+// kesin; yoksa proxy header'larından türetilir (app-url.ts deseni, next/headers ile).
+async function getBaseUrl(): Promise<string> {
+  const env = process.env.NEXT_PUBLIC_APP_URL;
+  if (env) return env.replace(/\/$/, "");
+  const h = await headers();
+  const host = h.get("x-forwarded-host") || h.get("host") || "localhost:3000";
+  const proto = h.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
+  return `${proto}://${host}`;
+}
 
 // Türkçe karakterler için latin-ext şart. Başlık fontu preset'e göre (sans/serif).
 const archivo = Archivo({ subsets: ["latin", "latin-ext"], variable: "--font-archivo", display: "swap" });
@@ -47,14 +60,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   const { headline, bio, media } = portfolio.content;
   const description = bio.slice(0, 160);
+  const base = await getBaseUrl();
+  const url = `${base}/p/${slug}`;
+  const images = media.avatarUrl ? [{ url: media.avatarUrl }] : undefined;
   return {
+    metadataBase: new URL(base),
     title: headline,
     description,
+    alternates: { canonical: url },
     openGraph: {
       title: headline,
       description,
       type: "profile",
-      ...(media.avatarUrl ? { images: [{ url: media.avatarUrl }] } : {}),
+      url,
+      siteName: "Multifolio",
+      ...(images ? { images } : {}),
+    },
+    twitter: {
+      card: media.avatarUrl ? "summary_large_image" : "summary",
+      title: headline,
+      description,
+      ...(images ? { images } : {}),
     },
   };
 }
@@ -79,11 +105,20 @@ export default async function PortfolioPage({ params }: PageProps) {
   const accentTint = "color-mix(in_srgb,var(--pf-accent)_12%,transparent)";
   const heading = { fontFamily: "var(--pf-heading-font)" };
 
+  // schema.org Person JSON-LD (SEO + zengin paylaşım önizlemesi).
+  const base = await getBaseUrl();
+  const jsonLd = buildPersonJsonLd({
+    name: headline, description: bio, skills, avatarUrl: media.avatarUrl, url: `${base}/p/${slug}`,
+  });
+
   return (
     <div
       className={`${archivo.variable} ${spaceGrotesk.variable} ${fraunces.variable} min-h-dvh bg-[var(--pf-bg)] text-[var(--pf-text)] selection:bg-[var(--pf-accent)] selection:text-white`}
       style={{ ...vars, fontFamily: "var(--pf-body-font)" }}
     >
+      {/* schema.org Person yapısal veri */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+
       {/* Üst vurgu şeridi */}
       <div className="h-1 w-full bg-[var(--pf-accent)]" />
 
