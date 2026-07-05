@@ -187,6 +187,8 @@
       "subtitle": "Ücretsiz hesabını oluştur, hemen başla.",
       "errorRegistered": "Bu e-posta zaten kayıtlı.",
       "errorNoSession": "Kayıt oluşturuldu ama oturum açılamadı. Giriş yapmayı dene.",
+      "consent": "<terms>Kullanım Şartları</terms>'nı ve <kvkk>KVKK Aydınlatma Metni</kvkk>'ni okudum, kabul ediyorum.",
+      "consentRequired": "Devam etmek için Şartlar ve KVKK metnini kabul etmelisin.",
       "confirmLabel": "Şifre (tekrar)",
       "submitting": "Oluşturuluyor…",
       "submit": "Hesap oluştur",

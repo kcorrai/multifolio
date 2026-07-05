@@ -21,6 +21,7 @@ export function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -29,14 +30,19 @@ export function SignupForm() {
     setMessage("");
     if (password.length < 8) { setStatus("error"); setMessage(t("shared.passwordMin")); return; }
     if (password !== confirm) { setStatus("error"); setMessage(t("shared.passwordsMismatch")); return; }
+    // KVKK/Şartlar açık rızası — TR'de veri işleme + ödeme öncesi beklenen onay.
+    if (!agreed) { setStatus("error"); setMessage(t("signup.consentRequired")); return; }
     setStatus("submitting");
     const supabase = createSupabaseBrowserClient();
     // Davet kodu: format doğrulaması sunucuda (DB lookup); burada yalnız üst sınır.
     const ref = searchParams.get("ref")?.trim().slice(0, 32);
+    // Onay kaydı user_metadata'ya (audit izi) + varsa davet kodu.
+    const metadata: Record<string, unknown> = { terms_accepted: true };
+    if (ref) metadata.referred_by_code = ref;
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      ...(ref ? { options: { data: { referred_by_code: ref } } } : {}),
+      options: { data: metadata },
     });
     if (error) {
       setStatus("error");
@@ -76,6 +82,22 @@ export function SignupForm() {
           <Input id="confirm" type="password" required autoComplete="new-password" value={confirm}
             onChange={(e) => setConfirm(e.target.value)} placeholder="••••••••" className="h-11" />
         </div>
+
+        <label htmlFor="consent" className="flex items-start gap-2.5 cursor-pointer">
+          <input
+            id="consent"
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 rounded border-input accent-[#00F0FF] cursor-pointer"
+          />
+          <span className="text-xs text-muted-foreground leading-relaxed">
+            {t.rich("signup.consent", {
+              terms: (chunks) => <Link href="/terms" target="_blank" className="font-semibold text-foreground hover:underline underline-offset-2">{chunks}</Link>,
+              kvkk: (chunks) => <Link href="/kvkk" target="_blank" className="font-semibold text-foreground hover:underline underline-offset-2">{chunks}</Link>,
+            })}
+          </span>
+        </label>
 
         {status === "error" && <p role="alert" className="text-sm text-destructive">{message}</p>}
 

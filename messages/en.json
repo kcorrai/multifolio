@@ -187,6 +187,8 @@
       "subtitle": "Create your free account and get started right away.",
       "errorRegistered": "This email is already registered.",
       "errorNoSession": "Account created but the session couldn't be started. Try signing in.",
+      "consent": "I have read and accept the <terms>Terms of Service</terms> and the <kvkk>Data Protection (KVKK) notice</kvkk>.",
+      "consentRequired": "Please accept the Terms and KVKK notice to continue.",
       "confirmLabel": "Password (again)",
       "submitting": "Creating…",
       "submit": "Create account",
