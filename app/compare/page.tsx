@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PlatformCompare } from "@/components/compare/platform-compare";
+import { ArmutRoi } from "@/components/compare/armut-roi";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -38,8 +39,9 @@ export default async function ComparePage() {
         </div>
       </section>
 
-      <section className="relative mx-auto max-w-4xl px-8 py-12">
+      <section className="relative mx-auto max-w-4xl px-8 py-12 space-y-8">
         <PlatformCompare isLoggedIn={isLoggedIn} />
+        <ArmutRoi />
       </section>
 
       <SiteFooter />
