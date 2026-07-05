@@ -14,6 +14,19 @@ Değerlendirici notu: Ürünün çekirdek "profil → çoklu platform" hattı **
 
 ---
 
+## 📌 Durum güncellemesi (2026-07-05, aynı gün ele alındı)
+- **P0-1 feed veri kalitesi** → ✅ KOD DÜZELTİLDİ: `lib/scrape/quality.ts` çöp başlık (casino/data-entry/
+  "All Positions") + kalıp çöp etiket süzgeci (canlı RemoteOK'te doğrulandı). ⚠️ KALAN: mevcut prod
+  `job_pool` çöp satırları bir kez silinmeli (Supabase op — kullanıcı). Kalıp etiketler re-scrape'te self-heal.
+- **P0-3 sahte testimonial** → ✅ gizlendi (bu oturum).
+- **P1 #5 signup KVKK/Şartlar onayı** → ✅ zorunlu onay kutusu eklendi (bu oturum).
+- **P1 #4 oturumsuz "Dashboard'a Git" CTA** → ❌ YANLIŞ-POZİTİF: kod zaten `isLoggedIn` dallanıyor
+  (hero/header/final CTA); ajan giriş yapmış test hesabıyla baktığı için kendi oturum CTA'sını yanlış
+  yorumlamış. Değişiklik gerekmez.
+- **P0-2 KVKK/legal kimlik**, **P1 #6 portfolyo CTA**, **P1 #7 slug**, **P2** → hâlâ açık (backlog).
+
+---
+
 ## ✅ İyi çalışan (koru)
 
 - **Bionluk içe aktarma kusursuz:** Gerçek profilden başlık, özet, 6 beceri, avatar ve **5 portfolyo görseli** doğru çekildi. Emek→sıfır vaadini gerçekten tutuyor.
