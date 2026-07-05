@@ -16,7 +16,9 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
 
 ## 🔴 Tier 0 — Lansmandan ÖNCE (bloklayıcı / canlı hata)
 
-- [ ] **T0.1 — Ödemeyi AKTİF ET** 🟩 (kod %100 hazır) ⚠️ *Supabase işlemi → onay iste*
+- [~] **T0.1 — Ödemeyi AKTİF ET** 🟩 ⛔ **ERTELENDİ/İPTAL** (kullanıcı 2026-07-05: "Iyzico yapmayı
+  düşünmüyorum" → ödeme aktivasyonu gündemde değil; herkes 100 ücretsiz kredide kalır). "Stripe"→nötr
+  string zaten düzeltildi. Aşağısı referans (yeniden açılırsa):
   - Sorun: Iyzico backend tam (checkout+callback+`grant_credits`+`purchases`) ama dashboard "Kredi Al"
     + tüm 402 durumları sahte "yakında" toast'ına gidiyor; toast **yanlışlıkla "Stripe" diyor**.
   - Yapılacak: migration `0027` push · Iyzico env + `NEXT_PUBLIC_APP_URL` gir · `shell.tsx` Buy
@@ -98,8 +100,8 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
 
 - [ ] **T2.1 — Uzantıyla tek-tık iş yakalama** 🟨 — herhangi ilan sayfası → `job_listings` (Teal/Huntr;
   `extract.ts`/`content.ts`/`background.ts` reuse; "manuel iş ekle" sürtünmesini öldürür).
-- [ ] **T2.2 — Kazanma oranı vs AI-skor analitiği** 🟨 — `job_listings.status` × `job_scores` korelasyonu;
-  saf agregasyon, AI'sız, eşleştirmenin işe yaradığını kanıtlar (genel CRM'ler yapamaz).
+- [x] **T2.2 — Kazanma oranı vs AI-skor analitiği** 🟨 ✅ 2026-07-05 — `lib/analytics/win-rate.ts`
+  (saf, 5 test): başvurulan işleri skor bandına böl → kazanma oranı; Overview'da kart (sinyal varsa).
 - [ ] **T2.3 — Teklif ton/uzunluk kontrolleri + "geçmiş tekliflerimden öğren"** 🟨 — resmi↔samimi/
   kısa↔detaylı slider + kullanıcının eski tekliflerinden ses tonu; "AI slop" şikayetini öldürür.
 - [ ] **T2.4 — Uzantı "sayfaya yapıştır" (asla göndermez)** 🟨 — cover-letter kutusunu doldur, auto-submit yok.
