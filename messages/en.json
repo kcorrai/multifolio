@@ -16,6 +16,7 @@
       "howItWorks": "How it works",
       "analyze": "Free profile check",
       "earnings": "Earnings calculator",
+      "compare": "Platform comparison",
       "pricing": "Pricing",
       "openMenu": "Open menu",
       "closeMenu": "Close menu"
@@ -911,6 +912,35 @@
     "disclaimer": "All rates are editable estimates and can change over time; this is not tax or financial advice. Check current platform and bank fees before deciding.",
     "ctaTitle": "Keep more of what you earn",
     "ctaBody": "Multifolio helps you win better-paying work across platforms — optimized profiles, matched jobs and proposals. Start free with 100 credits.",
+    "ctaButton": "Start free"
+  },
+  "compare": {
+    "metaTitle": "Freelance Platform Net Income Comparison — Multifolio",
+    "metaDescription": "One project, five platforms: see how much you take home on Upwork, Fiverr, Bionluk and direct clients after fees, transfer costs and tax.",
+    "heroEyebrow": "Free tool",
+    "heroTitle": "Same project — which platform pays you most?",
+    "heroSubtitle": "Enter one amount and compare your net take-home across platforms side by side, after commission, transfer fees and tax.",
+    "gross": "Project amount",
+    "currency": "Currency",
+    "transferMethod": "Payout method",
+    "method": {
+      "payoneer": "Payoneer",
+      "wise": "Wise",
+      "bank": "Bank transfer",
+      "none": "None / other"
+    },
+    "transferPct": "Transfer fee (%)",
+    "transferFixed": "Fixed fee",
+    "tax": "Tax rate (%)",
+    "platform": {
+      "direct": "Direct client"
+    },
+    "feeChip": "{pct}% fee",
+    "netPct": "{pct}% of gross",
+    "armutNote": "Armut isn't a percentage cut — it charges a per-lead fee (you pay for every quote you send, win or lose), so it can't be compared as a flat %. Factor in your win rate before bidding.",
+    "disclaimer": "Rates are editable estimates and change over time; this is not tax or financial advice. Transfer and tax are applied equally to every platform, so the ranking reflects platform commission.",
+    "ctaTitle": "Win better-paying work everywhere",
+    "ctaBody": "Multifolio turns one profile into optimized profiles and proposals for every platform — so you keep more per project. Start free with 100 credits.",
     "ctaButton": "Start free"
   },
   "legalPrivacy": {

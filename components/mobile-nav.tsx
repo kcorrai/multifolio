@@ -17,6 +17,7 @@ const LINKS = [
   { key: "nav.howItWorks",  href: "/#how" },
   { key: "nav.analyze",     href: "/analyze" },
   { key: "nav.earnings",    href: "/earnings" },
+  { key: "nav.compare",     href: "/compare" },
   { key: "nav.pricing",     href: "/pricing" },
 ];
 

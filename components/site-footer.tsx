@@ -10,6 +10,7 @@ export async function SiteFooter() {
     { href: "/#how", label: t("nav.howItWorks") },
     { href: "/analyze", label: t("nav.analyze") },
     { href: "/earnings", label: t("nav.earnings") },
+    { href: "/compare", label: t("nav.compare") },
     { href: "/pricing", label: t("nav.pricing") },
   ];
   const legalLinks = [

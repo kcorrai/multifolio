@@ -16,6 +16,7 @@
       "howItWorks": "Nasıl Çalışır",
       "analyze": "Ücretsiz Profil Analizi",
       "earnings": "Net Kazanç Hesaplayıcı",
+      "compare": "Platform Karşılaştırma",
       "pricing": "Fiyat",
       "openMenu": "Menüyü aç",
       "closeMenu": "Menüyü kapat"
@@ -911,6 +912,35 @@
     "disclaimer": "Tüm oranlar düzenlenebilir tahminlerdir ve zamanla değişebilir; bu bir vergi/finans danışmanlığı değildir. Karar vermeden önce güncel platform ve banka ücretlerini kontrol et.",
     "ctaTitle": "Kazancından daha fazlasını elinde tut",
     "ctaBody": "Multifolio platformlar arası daha iyi işler kazanmana yardım eder — optimize profiller, eşleşen ilanlar ve teklifler. 100 ücretsiz krediyle başla.",
+    "ctaButton": "Ücretsiz başla"
+  },
+  "compare": {
+    "metaTitle": "Freelance Platform Net Gelir Karşılaştırması — Multifolio",
+    "metaDescription": "Tek proje, beş platform: Upwork, Fiverr, Bionluk ve doğrudan müşteride komisyon, transfer ve vergi sonrası elinde ne kaldığını yan yana gör.",
+    "heroEyebrow": "Ücretsiz araç",
+    "heroTitle": "Aynı iş — hangi platform sana en çok ödüyor?",
+    "heroSubtitle": "Tek tutar gir, komisyon + transfer + vergi sonrası ele geçen neti platformlar arasında yan yana karşılaştır.",
+    "gross": "Proje tutarı",
+    "currency": "Para birimi",
+    "transferMethod": "Ödeme yöntemi",
+    "method": {
+      "payoneer": "Payoneer",
+      "wise": "Wise",
+      "bank": "Banka havalesi",
+      "none": "Yok / diğer"
+    },
+    "transferPct": "Transfer kesintisi (%)",
+    "transferFixed": "Sabit ücret",
+    "tax": "Vergi oranı (%)",
+    "platform": {
+      "direct": "Doğrudan müşteri"
+    },
+    "feeChip": "%{pct} komisyon",
+    "netPct": "brütün %{pct} kadarı",
+    "armutNote": "Armut yüzde komisyon almaz — teklif başına ücret alır (gönderdiğin her teklife, kazan ya da kaybet, ödersin), bu yüzden düz yüzdeyle kıyaslanamaz. Teklif vermeden önce kazanma oranını hesaba kat.",
+    "disclaimer": "Oranlar düzenlenebilir tahminlerdir ve zamanla değişir; vergi/finans danışmanlığı değildir. Transfer ve vergi her platforma eşit uygulanır, bu yüzden sıralama platform komisyonunu yansıtır.",
+    "ctaTitle": "Her yerde daha iyi ödeyen işler kazan",
+    "ctaBody": "Multifolio tek profili her platform için optimize profil ve tekliflere çevirir — proje başına daha çoğu sende kalır. 100 ücretsiz krediyle başla.",
     "ctaButton": "Ücretsiz başla"
   },
   "legalPrivacy": {
