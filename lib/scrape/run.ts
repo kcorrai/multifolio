@@ -4,17 +4,21 @@
 // (import etmez) — bu yüzden saf/test-edilebilir kalır; "server-only" gerekmez.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PoolJobUpsert, ScrapeSource, ScrapeRunResult } from "@/lib/scrape/types";
+import { cleanScrapedRows } from "@/lib/scrape/quality";
 
 async function runOne(admin: SupabaseClient, source: ScrapeSource): Promise<ScrapeRunResult> {
   const started = Date.now();
   const base = { source: source.id, fetched: 0, upserted: 0, skipped: 0 };
   try {
     const raw = await source.fetch();
-    const rows: PoolJobUpsert[] = [];
+    const normalized: PoolJobUpsert[] = [];
     for (const item of raw) {
       const norm = source.normalize(item);
-      if (norm) rows.push(norm);
+      if (norm) normalized.push(norm);
     }
+    // Kalite süzgeci: çöp/spam başlıkları ele + kalıplaşmış çöp etiketleri temizle
+    // (RemoteOK gibi filtresiz kaynaklar feed'i + relevance'ı kirletir).
+    const rows = cleanScrapedRows(normalized);
     const fetched = raw.length;
     const skipped = fetched - rows.length;
 
