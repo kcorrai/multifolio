@@ -18,6 +18,7 @@ const LINKS = [
   { key: "nav.analyze",     href: "/analyze" },
   { key: "nav.earnings",    href: "/earnings" },
   { key: "nav.compare",     href: "/compare" },
+  { key: "nav.trTax",       href: "/vergi" },
   { key: "nav.pricing",     href: "/pricing" },
 ];
 

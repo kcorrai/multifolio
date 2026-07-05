@@ -17,6 +17,7 @@
       "analyze": "Ücretsiz Profil Analizi",
       "earnings": "Net Kazanç Hesaplayıcı",
       "compare": "Platform Karşılaştırma",
+      "trTax": "Türkiye vergi rehberi",
       "pricing": "Fiyat",
       "openMenu": "Menüyü aç",
       "closeMenu": "Menüyü kapat"
@@ -941,6 +942,49 @@
     "disclaimer": "Oranlar düzenlenebilir tahminlerdir ve zamanla değişir; vergi/finans danışmanlığı değildir. Transfer ve vergi her platforma eşit uygulanır, bu yüzden sıralama platform komisyonunu yansıtır.",
     "ctaTitle": "Her yerde daha iyi ödeyen işler kazan",
     "ctaBody": "Multifolio tek profili her platform için optimize profil ve tekliflere çevirir — proje başına daha çoğu sende kalır. 100 ücretsiz krediyle başla.",
+    "ctaButton": "Ücretsiz başla"
+  },
+  "trTax": {
+    "metaTitle": "Türkiye Freelancer Vergi Avantajları — Multifolio",
+    "metaDescription": "Türkiye'den yurt dışı müşteriye mi hizmet veriyorsun? Hizmet ihracı kazanç indirimi (GVK 89/1-13) ve genç girişimci istisnası uygunluğunu ve kabaca ne kadar matrah koruyabileceğini gör.",
+    "heroEyebrow": "Ücretsiz araç · Türkiye",
+    "heroTitle": "Vergi avantajlarını masada mı bırakıyorsun?",
+    "heroSubtitle": "Türkiye'den yurt dışı müşteriye hizmet veren freelancer'lar bu gelirin büyük kısmını matrahtan indirebilir. Birkaç soruyla hangi avantajların sana uyduğunu gör.",
+    "yearLabel": "Vergi yılı",
+    "q": {
+      "foreignClients": "Türkiye dışında yerleşik müşterilere mi hizmet veriyorsun?",
+      "professionInScope": "İşin yazılım, tasarım, mühendislik, mimarlık, veri işleme vb. kapsamda mı?",
+      "invoicesFromTurkey": "Türkiye'den fatura kesip kazancı beyan tarihine kadar Türkiye'ye getiriyor musun?",
+      "youngFirstTime": "29 yaş altı ve ilk kez mi gelir vergisi mükellefi oluyorsun?"
+    },
+    "yes": "Evet",
+    "no": "Hayır",
+    "incomeLabel": "Yıllık yurt dışı hizmet gelirin (₺, opsiyonel)",
+    "incomePlaceholder": "ör. 1.000.000",
+    "incomeHint": "Yalnız indirilebilir matrahın kaba gösterimi için — ödeyeceğin vergi değildir.",
+    "hizmetIhraci": {
+      "title": "Hizmet ihracı indirimi (GVK 89/1-13)",
+      "likely": "Muhtemelen uygun — {year} için bu gelirin %{pct}'ini matrahtan indirebilirsin.",
+      "no": "Cevaplarına göre uygun değil — üç şart (yurt dışı müşteri, kapsamdaki hizmet, Türkiye'den fatura) birlikte gerekir."
+    },
+    "gencGirisimci": {
+      "title": "Genç girişimci istisnası (GVK mük. 20)",
+      "likely": "Muhtemelen uygun — {year} için kazancın {cap} kadarı 3 yıl boyunca istisna.",
+      "no": "Cevaplarına göre uygun değil (29 yaş altı + ilk kez mükellefiyet gerekir)."
+    },
+    "est": {
+      "title": "Kaba indirilebilir matrah",
+      "gencExempt": "Genç girişimci istisnası",
+      "hizmetDeduction": "Hizmet ihracı indirimi",
+      "remaining": "Kalan vergiye tabi matrah",
+      "shielded": "Gelir vergisi dilimleri uygulanmadan önce gelirinin ≈ %{pct}'i korunuyor."
+    },
+    "kdvNote": "Bonus: yurt dışı müşteriye verilen hizmet KDV'den istisnadır (%0, KDV kodu 302) — fatura KDV'siz kesilir, yüklenilen KDV iade alınabilir.",
+    "bagkurNote": "2026 notu: genç girişimciye sağlanan Bağ-Kur prim teşviki kaldırıldı — Bağ-Kur primini artık kendin ödersin.",
+    "disclaimer": "Bilgilendirme amaçlıdır, vergi danışmanlığı değildir. Oranlar ve tavanlar her yıl değişir, şartlar katıdır; 2026 rakamları yenidir — güvenmeden önce resmi kaynaktan ve mali müşavirinden teyit et.",
+    "sourceLink": "Resmi kaynak: gib.gov.tr",
+    "ctaTitle": "Her projeden daha fazlasını elinde tut",
+    "ctaBody": "Multifolio platformlar arası daha iyi ödeyen yurt dışı müşteriler kazanmana yardım eder — tek profil, her yerde optimize. 100 ücretsiz krediyle başla.",
     "ctaButton": "Ücretsiz başla"
   },
   "legalPrivacy": {

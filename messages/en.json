@@ -17,6 +17,7 @@
       "analyze": "Free profile check",
       "earnings": "Earnings calculator",
       "compare": "Platform comparison",
+      "trTax": "Turkey tax guide",
       "pricing": "Pricing",
       "openMenu": "Open menu",
       "closeMenu": "Close menu"
@@ -941,6 +942,49 @@
     "disclaimer": "Rates are editable estimates and change over time; this is not tax or financial advice. Transfer and tax are applied equally to every platform, so the ranking reflects platform commission.",
     "ctaTitle": "Win better-paying work everywhere",
     "ctaBody": "Multifolio turns one profile into optimized profiles and proposals for every platform — so you keep more per project. Start free with 100 credits.",
+    "ctaButton": "Start free"
+  },
+  "trTax": {
+    "metaTitle": "Turkey Freelancer Tax Advantages — Multifolio",
+    "metaDescription": "Serving foreign clients from Turkey? Check if you qualify for the service-export income deduction (GVK 89/1-13) and the young entrepreneur exemption — and roughly how much tax base you can shield.",
+    "heroEyebrow": "Free tool · Turkey",
+    "heroTitle": "Are you leaving Turkish tax breaks on the table?",
+    "heroSubtitle": "Freelancers serving foreign clients from Turkey can deduct most of that income. Answer a few questions to see which exemptions likely apply.",
+    "yearLabel": "Tax year",
+    "q": {
+      "foreignClients": "Do you serve clients based outside Turkey?",
+      "professionInScope": "Is your work software, design, engineering, architecture, data processing or similar?",
+      "invoicesFromTurkey": "Do you invoice from Turkey and bring the earnings into Turkey by the filing deadline?",
+      "youngFirstTime": "Are you under 29 and registering as an income-tax payer for the first time?"
+    },
+    "yes": "Yes",
+    "no": "No",
+    "incomeLabel": "Annual foreign-service income (₺, optional)",
+    "incomePlaceholder": "e.g. 1.000.000",
+    "incomeHint": "Used only for a rough illustration of the deductible base — not the tax you owe.",
+    "hizmetIhraci": {
+      "title": "Service-export deduction (GVK 89/1-13)",
+      "likely": "Likely eligible — for {year} you may deduct {pct}% of this income from your tax base.",
+      "no": "Not eligible from your answers — all three conditions (foreign client, in-scope service, invoiced from Turkey) must hold."
+    },
+    "gencGirisimci": {
+      "title": "Young entrepreneur exemption (GVK mük. 20)",
+      "likely": "Likely eligible — for {year} up to {cap} of profit is exempt, for 3 years.",
+      "no": "Not eligible from your answers (requires under 29 + first-time taxpayer)."
+    },
+    "est": {
+      "title": "Rough deductible base",
+      "gencExempt": "Young entrepreneur exemption",
+      "hizmetDeduction": "Service-export deduction",
+      "remaining": "Remaining taxable base",
+      "shielded": "≈ {pct}% of your income shielded before income-tax brackets apply."
+    },
+    "kdvNote": "Bonus: services exported to clients abroad are VAT-exempt (0%, KDV code 302) — you charge no VAT and can reclaim input VAT.",
+    "bagkurNote": "Note for 2026: the young-entrepreneur Bağ-Kur premium subsidy was removed — you now pay your own Bağ-Kur premium.",
+    "disclaimer": "Informational only, not tax advice. Rates and caps change yearly and conditions are strict; the 2026 figures are recent — confirm with the official source and your accountant (mali müşavir) before relying on them.",
+    "sourceLink": "Official source: gib.gov.tr",
+    "ctaTitle": "Keep more of every project",
+    "ctaBody": "Multifolio helps you win better-paying foreign clients across platforms — one profile, optimized everywhere. Start free with 100 credits.",
     "ctaButton": "Start free"
   },
   "legalPrivacy": {
