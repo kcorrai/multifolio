@@ -23,7 +23,9 @@ Değerlendirici notu: Ürünün çekirdek "profil → çoklu platform" hattı **
 - **P1 #4 oturumsuz "Dashboard'a Git" CTA** → ❌ YANLIŞ-POZİTİF: kod zaten `isLoggedIn` dallanıyor
   (hero/header/final CTA); ajan giriş yapmış test hesabıyla baktığı için kendi oturum CTA'sını yanlış
   yorumlamış. Değişiklik gerekmez.
-- **P0-2 KVKK/legal kimlik**, **P1 #6 portfolyo CTA**, **P1 #7 slug**, **P2** → hâlâ açık (backlog).
+- **P1 #6 portfolyo iletişim CTA** → ✅ ilk üretimde hesap e-postasına varsayılan (editörde değiştirilebilir).
+- **P1 #7 portfolyo slug** → ✅ okunabilir slug (`slugify` + benzersizlik; mevcut hex slug'lar korunur).
+- **P0-2 KVKK/legal kimlik** (senin şirket bilgisi) + **P2** (verify-banner, ödeme-yakında) → hâlâ açık.
 
 ---
 
