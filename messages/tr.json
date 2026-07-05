@@ -433,6 +433,18 @@
       "generate": "Oluştur",
       "generating": "Oluşturuluyor…",
       "generateError": "Teklif üretilemedi.",
+      "tone": "Ton",
+      "length": "Uzunluk",
+      "tones": {
+        "professional": "Profesyonel",
+        "friendly": "Samimi",
+        "confident": "İddialı"
+      },
+      "lengths": {
+        "concise": "Kısa",
+        "standard": "Standart",
+        "detailed": "Detaylı"
+      },
       "showTranslation": "Türkçe karşılığını gör",
       "hideTranslation": "Çeviriyi gizle",
       "translating": "Çevriliyor…",

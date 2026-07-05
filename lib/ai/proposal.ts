@@ -5,6 +5,7 @@ import { computeCostUsd } from "./pricing";
 import { buildRequirementsBlock, buildFocusBlock } from "./coverage";
 import { proposalLanguageDirective } from "./language";
 import { buildPlatformProfileBlock, type PlatformProfileContext } from "./platform-context";
+import { buildStyleDirective, type ProposalTone, type ProposalLength } from "@/lib/proposal/style";
 import { InternalError } from "@/lib/errors";
 import { PROPOSAL_GUIDANCE, PLATFORM_LANGUAGE, type PlatformId } from "@/lib/ai/platforms";
 import {
@@ -31,6 +32,9 @@ export interface GenerateProposalOptions {
   platformProfile?: PlatformProfileContext | null;
   /** İlanın geldiği feed'in kullanıcı tanımlı teklif yönergesi (varsa). */
   feedPrompt?: string | null;
+  /** Kullanıcının seçtiği yazım tonu + uzunluğu (varsa; yoksa nötr). */
+  tone?: ProposalTone | null;
+  length?: ProposalLength | null;
 }
 
 // Feed'e özel serbest yönerge bloğu (boş/whitespace ise eklenmez).
@@ -70,6 +74,7 @@ export async function generateProposal(
     "Platform Yönergesi:",
     PROPOSAL_GUIDANCE[platform],
     buildFeedPromptBlock(opts.feedPrompt),
+    buildStyleDirective(opts.tone, opts.length),
     // content = platform dili (Upwork/Fiverr/LinkedIn → EN), coverage notları = UI dili.
     proposalLanguageDirective(PLATFORM_LANGUAGE[platform], opts.locale ?? "en"),
   ].join("\n");

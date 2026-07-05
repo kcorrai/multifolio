@@ -6,6 +6,7 @@ import { X, Sparkles, Copy, Check, ChevronDown, Clock, Languages } from "lucide-
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
 import { PLATFORMS, PLATFORM_IDS, PLATFORM_LANGUAGE, type PlatformId } from "@/lib/ai/platforms";
+import { PROPOSAL_TONES, PROPOSAL_LENGTHS, type ProposalTone, type ProposalLength } from "@/lib/proposal/style";
 import { pendingRequirements, coverageSummary } from "@/lib/ai/coverage";
 import { HealthWarnings } from "./dashboard/health-warnings";
 import { useDashboard } from "./dashboard/dashboard-context";
@@ -89,6 +90,8 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
   const { triggerComingSoon } = useDashboard();
   const validDefault = PLATFORM_IDS.includes(defaultPlatform as PlatformId) ? defaultPlatform as PlatformId : "upwork";
   const [platform, setPlatform] = useState<PlatformId>(validDefault);
+  const [tone, setTone] = useState<ProposalTone>("professional");
+  const [length, setLength] = useState<ProposalLength>("standard");
   const [generating, setGenerating] = useState(false);
   const [generated, setGenerated] = useState("");
   const [generatedId, setGeneratedId] = useState("");
@@ -114,6 +117,8 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
         job_id: jobId,
         platform,
         job_description: jobDescription,
+        tone,
+        length,
         ...(focus?.length ? { focus_requirements: focus } : {}),
       }),
     });
@@ -168,6 +173,30 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
               {generating ? t("modal.generating") : t("modal.generate")}
               <CreditCost kind="proposal" />
             </Button>
+          </div>
+
+          {/* Yazım stili: ton + uzunluk (AI slop'u azaltır) */}
+          <div className="grid grid-cols-2 gap-3">
+            <label className="space-y-1">
+              <span className="text-[11px] font-semibold text-muted-foreground">{t("modal.tone")}</span>
+              <div className="relative">
+                <select value={tone} onChange={(e) => setTone(e.target.value as ProposalTone)}
+                  className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F0FF]/30 cursor-pointer">
+                  {PROPOSAL_TONES.map((tn) => <option key={tn} value={tn}>{t(`modal.tones.${tn}`)}</option>)}
+                </select>
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              </div>
+            </label>
+            <label className="space-y-1">
+              <span className="text-[11px] font-semibold text-muted-foreground">{t("modal.length")}</span>
+              <div className="relative">
+                <select value={length} onChange={(e) => setLength(e.target.value as ProposalLength)}
+                  className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F0FF]/30 cursor-pointer">
+                  {PROPOSAL_LENGTHS.map((ln) => <option key={ln} value={ln}>{t(`modal.lengths.${ln}`)}</option>)}
+                </select>
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              </div>
+            </label>
           </div>
 
           {error && (

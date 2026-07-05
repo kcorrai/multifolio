@@ -132,6 +132,8 @@ export const POST = withErrorHandler(async (req) => {
         locale: proposalLocale,
         platformProfile: platformProfileRes.data as { headline: string; summary: string; skills: string[] } | null,
         feedPrompt,
+        tone: input.tone,
+        length: input.length,
       },
     );
     const { data: saved, error: saveError } = await supabase

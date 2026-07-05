@@ -433,6 +433,18 @@
       "generate": "Generate",
       "generating": "Generating…",
       "generateError": "Could not generate proposal.",
+      "tone": "Tone",
+      "length": "Length",
+      "tones": {
+        "professional": "Professional",
+        "friendly": "Friendly",
+        "confident": "Confident"
+      },
+      "lengths": {
+        "concise": "Concise",
+        "standard": "Standard",
+        "detailed": "Detailed"
+      },
       "showTranslation": "Show translation",
       "hideTranslation": "Hide translation",
       "translating": "Translating…",
