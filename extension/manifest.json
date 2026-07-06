@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "icons": {
@@ -24,6 +24,15 @@
       ],
       "js": ["content.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.upwork.com/freelancers/*",
+        "https://www.upwork.com/fl/*"
+      ],
+      "js": ["nuxt.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
     }
   ],
   "action": { "default_title": "Multifolio" }

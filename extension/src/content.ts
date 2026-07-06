@@ -89,6 +89,21 @@ function findAvatarUrl(): string | undefined {
 
 function sleep(ms: number) { return new Promise((r) => setTimeout(r, ms)); }
 
+// MAIN-world nuxt.js'ten window.__NUXT__ portfolyo projelerini ister (CustomEvent köprüsü).
+// İzole content script page global'ine erişemez → MAIN script çıkarıp JSON döner.
+function requestNuxtProjects(): Promise<ScrapedProject[]> {
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (v: ScrapedProject[]) => { if (done) return; done = true; document.removeEventListener("mf-projects", onResp); resolve(v); };
+    const onResp = (e: Event) => {
+      try { finish(JSON.parse((e as CustomEvent).detail || "[]") as ScrapedProject[]); } catch { finish([]); }
+    };
+    document.addEventListener("mf-projects", onResp);
+    document.dispatchEvent(new CustomEvent("mf-get-projects"));
+    setTimeout(() => finish([]), 2500); // MAIN yanıt vermezse (login'de veri yoksa) boş
+  });
+}
+
 // Upwork portfolyo görselleri sabit CDN deseninde: /att/download/portfolio/.../files/{id}.
 // Bu desenle, portfolyo bölümü nerede/nasıl render edilirse edilsin güvenle yakalanır.
 function isUpworkPortfolioImg(src: string): boolean {
@@ -292,9 +307,18 @@ async function collectPayload(platform: ProfilePlatform) {
   let portfolioImages: string[] = [];
   let portfolioProjects: ScrapedProject[] = [];
   if (platform === "upwork") {
-    const h = await harvestUpworkPortfolio();
-    portfolioImages = pickImageUrls(h.images, 50);
-    portfolioProjects = h.projects.slice(0, 30);
+    // ÖNCE window.__NUXT__'tan KESİN+TAM proje verisi (MAIN-world nuxt.js): başlık/açıklama/
+    // rol/beceriler + tüm görseller ve altyazıları — modal/sayfalama gerekmez. Boşsa
+    // (login'de veri Vue store'da değilse) DOM/modal harvest'e düş (best-effort).
+    const nuxt = await requestNuxtProjects();
+    if (nuxt.length) {
+      portfolioProjects = nuxt.slice(0, 30);
+      portfolioImages = pickImageUrls(nuxt.flatMap((p) => p.images.map((i) => i.url)), 50);
+    } else {
+      const h = await harvestUpworkPortfolio();
+      portfolioImages = pickImageUrls(h.images, 50);
+      portfolioProjects = h.projects.slice(0, 30);
+    }
   } else {
     const raw: string[] = [];
     for (const heading of document.querySelectorAll("h2, h3")) {

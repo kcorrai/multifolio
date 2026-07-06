@@ -22,7 +22,7 @@ cpSync("icons", "dist/icons", { recursive: true });
 cpSync("_locales", "dist/_locales", { recursive: true });
 
 await build({
-  entryPoints: ["src/background.ts", "src/content.ts"],
+  entryPoints: ["src/background.ts", "src/content.ts", "src/nuxt.ts"],
   bundle: true,
   format: "iife",
   outdir: "dist",
