@@ -1,7 +1,7 @@
 // Profil içe aktarma girdileri. `file` modu multipart geldiğinden bu union'da
 // YOKTUR; route'ta content-type'a göre ayrılır ve dosya elle doğrulanır.
 import { z } from "zod";
-import { httpUrl, portfolioItemSchema } from "./profile";
+import { httpUrl, portfolioItemSchema, profileProjectSchema } from "./profile";
 
 export const IMPORT_TEXT_MAX = 50_000; // ham girdi tavanı (AI'a gitmeden 20k'ya kırpılır)
 
@@ -28,8 +28,9 @@ export const importRequestSchema = z.discriminatedUnion("mode", [
     // görsel-başına altyazı). Route bunları portfolyo öğelerine düzleştirir.
     portfolioProjects: z.array(z.object({
       title: z.string().trim().max(200).default(""),
-      description: z.string().trim().max(2000).default(""),
-      skills: z.array(z.string().trim().min(1).max(60)).max(20).default([]),
+      description: z.string().trim().max(4000).default(""),
+      role: z.string().trim().max(200).default(""),
+      skills: z.array(z.string().trim().min(1).max(60)).max(30).default([]),
       images: z.array(z.object({
         url: httpUrl(1000),
         caption: z.string().trim().max(400).default(""),
@@ -44,6 +45,8 @@ export type ImportRequest = z.infer<typeof importRequestSchema>;
 export const profileImportMediaSchema = z.object({
   avatarUrl: z.string().nullable(),
   portfolio: z.array(portfolioItemSchema),
+  // Yapılandırılmış projeler (Upwork uzantısı) — varsa profile PROJE olarak kaydedilir.
+  projects: z.array(profileProjectSchema).default([]),
 });
 export type ProfileImportMedia = z.infer<typeof profileImportMediaSchema>;
 

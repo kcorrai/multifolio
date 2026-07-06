@@ -4,7 +4,7 @@ import {
 } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
-import type { PortfolioItem } from "@/lib/validation/schemas/profile";
+import type { PortfolioItem, ProfileProject } from "@/lib/validation/schemas/profile";
 import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
 
 export type { PoolJob } from "@/lib/validation/schemas/feed";
@@ -17,6 +17,7 @@ export interface InitialProfile {
   skills: string[];
   avatarUrl: string | null;
   portfolio: PortfolioItem[];
+  projects: ProfileProject[];
 }
 export interface AdaptOutput { headline: string; body: string }
 export interface InitialPortfolio { slug: string; published: boolean; content: PortfolioContent | null }

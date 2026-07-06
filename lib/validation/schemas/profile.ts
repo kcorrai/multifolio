@@ -16,6 +16,21 @@ export const portfolioItemSchema = z.object({
 });
 export type PortfolioItem = z.infer<typeof portfolioItemSchema>;
 
+// Yapılandırılmış proje (her biri ayrı): başlık + açıklama + rol + beceriler + görseller
+// (her görselin kendi altyazısı). Upwork uzantısı window.__NUXT__'tan çeker.
+export const projectImageSchema = z.object({
+  url: httpUrl(1000),
+  caption: z.string().trim().max(400).default(""),
+});
+export const profileProjectSchema = z.object({
+  title: z.string().trim().max(200).default(""),
+  description: z.string().trim().max(4000).default(""),
+  role: z.string().trim().max(200).default(""),
+  skills: z.array(z.string().trim().min(1).max(60)).max(30).default([]),
+  images: z.array(projectImageSchema).max(20).default([]),
+});
+export type ProfileProject = z.infer<typeof profileProjectSchema>;
+
 export const profileInputSchema = z.object({
   // Görünen başlık, ör. "Senior Frontend Developer".
   headline: z.string().trim().min(2).max(120),
@@ -27,6 +42,8 @@ export const profileInputSchema = z.object({
   // Profil fotoğrafı + portfolyo (opsiyonel — yoksa mevcut değerler korunur).
   avatar_url: httpUrl(1000).nullable().optional(),
   portfolio: z.array(portfolioItemSchema).max(50).optional(),
+  // Yapılandırılmış projeler (opsiyonel — gönderildiyse yazılır, yoksa korunur).
+  projects: z.array(profileProjectSchema).max(30).optional(),
 });
 
 export type ProfileInput = z.infer<typeof profileInputSchema>;

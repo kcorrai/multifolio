@@ -40,6 +40,7 @@ export default async function PlatformDetailPage({ params }: PageProps) {
         skills: (profileRes.data.skills as string[]) ?? [],
         avatarUrl: (profileRes.data.avatar_url as string | null) ?? null,
         portfolio: (profileRes.data.portfolio as PortfolioItem[]) ?? [],
+        projects: [], // platform detay projeleri kullanmaz
       }
     : null;
 

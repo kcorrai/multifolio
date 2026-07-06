@@ -58,7 +58,7 @@ export const GET = withErrorHandler(async () => {
   // RLS zaten sahibe sınırlar; user_id filtresi niyeti açık kılar.
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, headline, summary, skills, avatar_url, portfolio, updated_at")
+    .select("id, headline, summary, skills, avatar_url, portfolio, projects, updated_at")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -89,11 +89,12 @@ export const POST = withErrorHandler(async (req) => {
   };
   if (input.avatar_url !== undefined) row.avatar_url = input.avatar_url;
   if (input.portfolio !== undefined) row.portfolio = input.portfolio;
+  if (input.projects !== undefined) row.projects = input.projects;
 
   const { data, error } = await supabase
     .from("profiles")
     .upsert(row, { onConflict: "user_id" })
-    .select("id, headline, summary, skills, avatar_url, portfolio, updated_at")
+    .select("id, headline, summary, skills, avatar_url, portfolio, projects, updated_at")
     .single();
 
   if (error) throw error;

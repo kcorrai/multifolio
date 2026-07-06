@@ -40,6 +40,8 @@ export function ProfileTab({
   // Portfolyo görselleri düzenlenebilir: bağlı profillerden (Bionluk) foto EKLENEBİLİR
   // (galeri "+"); Kaydet'te persist. Lightbox: foto tıklanınca ortada büyür.
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>(initialProfile?.portfolio ?? []);
+  // İçe aktarılan yapılandırılmış projeler (Upwork) — profilde gruplu gösterilir; Kaydet'te korunur.
+  const projects = initialProfile?.projects ?? [];
   const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [picked, setPicked] = useState<Set<string>>(new Set());
@@ -105,8 +107,8 @@ export function ProfileTab({
     setSaveState("saving"); setProfileError("");
     const res = await fetch("/api/profile", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      // Seçilen avatar + portfolyo (galeriden eklenenler dahil) Kaydet'te persist edilir.
-      body: JSON.stringify({ headline, summary, skills, avatar_url: selectedAvatar, portfolio }),
+      // Seçilen avatar + portfolyo + projeler Kaydet'te persist edilir.
+      body: JSON.stringify({ headline, summary, skills, avatar_url: selectedAvatar, portfolio, projects }),
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
@@ -496,6 +498,57 @@ export function ProfileTab({
           )}
         </div>
       </div>
+
+      {/* ── Projeler (içe aktarılan yapılandırılmış projeler — her biri ayrı) ─────── */}
+      {projects.length > 0 && (
+        <div className="space-y-4">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("projectsEyebrow")}</p>
+            <h2 className="mt-1 text-lg font-bold tracking-tight">{t("projectsTitle", { count: projects.length })}</h2>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {projects.map((p, pi) => {
+              const imgs: LightboxImage[] = p.images.filter((im) => im.url).map((im) => ({ src: im.url, alt: im.caption || p.title }));
+              return (
+                <Card key={pi} className={`shadow-sm ${ELEVATED}`}>
+                  <CardContent className="pt-5 space-y-3">
+                    <div>
+                      <h3 className="text-base font-bold leading-snug">{p.title}</h3>
+                      {p.role && <p className="mt-0.5 text-xs font-semibold text-[#00F0FF]/80">{p.role}</p>}
+                    </div>
+                    {p.description && (
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground line-clamp-5">{p.description}</p>
+                    )}
+                    {p.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {p.skills.map((s) => (
+                          <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{s}</span>
+                        ))}
+                      </div>
+                    )}
+                    {imgs.length > 0 && (
+                      <div className="grid grid-cols-3 gap-2">
+                        {imgs.map((img, k) => (
+                          <button
+                            key={img.src + k}
+                            type="button"
+                            onClick={() => setLightbox({ images: imgs, index: k })}
+                            title={img.alt}
+                            className="group relative aspect-square overflow-hidden rounded-lg border border-border cursor-zoom-in"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={img.src} alt={img.alt} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Lightbox: avatar/portfolyo fotosu tıklanınca ortada büyür + ileri/geri gezinme. */}
       {lightbox && (

@@ -171,17 +171,19 @@ export const POST = withErrorHandler(async (req) => {
   // avatar (public ld+json portfolyo içermez). Eklenti best-effort görsel URL'leri yollar.
   let media: ProfileImportMedia | undefined;
   if (bionluk) {
-    media = { avatarUrl: bionluk.avatarUrl, portfolio: bionluk.portfolio };
+    media = { avatarUrl: bionluk.avatarUrl, portfolio: bionluk.portfolio, projects: [] };
   } else if (linkedin) {
-    media = { avatarUrl: linkedin.avatarUrl, portfolio: [] };
+    media = { avatarUrl: linkedin.avatarUrl, portfolio: [], projects: [] };
   } else if (extensionInput) {
-    // Zengin projeler varsa (Upwork proje modalları) onları düzleştir; yoksa düz görseller.
-    const portfolio = extensionInput.portfolioProjects?.length
-      ? projectsToPortfolio(extensionInput.portfolioProjects)
+    // Yapılandırılmış projeler (Upwork window.__NUXT__) → hem PROJE olarak (media.projects,
+    // profile'a kaydedilir) hem düz görseller (portfolio, mevcut galeri uyumu). Yoksa düz görsel.
+    const projects = extensionInput.portfolioProjects ?? [];
+    const portfolio = projects.length
+      ? projectsToPortfolio(projects)
       : (extensionInput.portfolioImages ?? []).map((u) => ({
           title: "", description: "", imageUrl: u, category: null,
         }));
-    media = { avatarUrl: extensionInput.avatarUrl ?? null, portfolio };
+    media = { avatarUrl: extensionInput.avatarUrl ?? null, portfolio, projects };
     // Eklenti akışında inceleme web'de yapılır: taslak + medya bekleyen-taslak satırına
     // upsert edilir (kullanıcı başına tek satır, RLS'li istemci); uzantı sonrasında
     // /dashboard/import?source=extension açar. created_at tazelik penceresi için yenilenir.

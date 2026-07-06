@@ -8,7 +8,7 @@
 // uid'ye göre BİRİKTİRİLİR. content.ts "mf-get-projects" ile ister; "mf-projects" (JSON) döner.
 
 interface NuxtImage { url: string; caption: string }
-interface NuxtProject { title: string; description: string; skills: string[]; images: NuxtImage[] }
+interface NuxtProject { title: string; description: string; role: string; skills: string[]; images: NuxtImage[] }
 
 const projectsByUid = new Map<string, Record<string, unknown>>();
 
@@ -66,7 +66,6 @@ function mapProject(p: Record<string, unknown>): NuxtProject {
     .filter(Boolean);
   const descParts = [
     p.description as string,
-    p.role ? `Role: ${p.role}` : "",
     p.projectGoal ? `Goal: ${p.projectGoal}` : "",
     p.solution ? `Solution: ${p.solution}` : "",
   ].filter(Boolean);
@@ -89,7 +88,8 @@ function mapProject(p: Record<string, unknown>): NuxtProject {
 
   return {
     title: String(p.title || "").slice(0, 200),
-    description: descParts.join("\n\n").slice(0, 2000),
+    description: descParts.join("\n\n").slice(0, 4000),
+    role: String(p.role || "").slice(0, 200),
     skills: [...new Set(skills)].slice(0, 20),
     images: images.slice(0, 20),
   };

@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ProfileTab } from "@/components/dashboard/profile-tab";
 import type { InitialProfile, ConnectedProfile } from "@/components/dashboard/shared";
 import { PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
-import type { PortfolioItem } from "@/lib/validation/schemas/profile";
+import type { PortfolioItem, ProfileProject } from "@/lib/validation/schemas/profile";
 
 export default async function ProfilePage() {
   const supabase = await createSupabaseServerClient();
@@ -14,7 +14,7 @@ export default async function ProfilePage() {
   const [profileRes, platformRes] = await Promise.all([
     supabase
       .from("profiles")
-      .select("headline, summary, skills, avatar_url, portfolio")
+      .select("headline, summary, skills, avatar_url, portfolio, projects")
       .eq("user_id", user.id)
       .maybeSingle(),
     supabase
@@ -32,6 +32,7 @@ export default async function ProfilePage() {
         skills: (data.skills as string[]) ?? [],
         avatarUrl: (data.avatar_url as string | null) ?? null,
         portfolio: (data.portfolio as PortfolioItem[]) ?? [],
+        projects: (data.projects as ProfileProject[]) ?? [],
       }
     : null;
 

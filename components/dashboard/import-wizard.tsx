@@ -11,11 +11,11 @@ import { Button } from "@/components/ui/button";
 import { ImageLightbox, type LightboxImage } from "@/components/image-lightbox";
 import { ChipsInput } from "./chips-input";
 import type { ProfileDraft } from "@/lib/validation/schemas/profile-import";
-import type { PortfolioItem } from "@/lib/validation/schemas/profile";
+import type { PortfolioItem, ProfileProject } from "@/lib/validation/schemas/profile";
 
 type Channel = "url" | "text" | "file";
-// Yapılandırılmış içe aktarmada (Bionluk/LinkedIn) taslakla gelen görseller (opsiyonel).
-type ImportExtras = { avatarUrl: string | null; portfolio: PortfolioItem[] };
+// Yapılandırılmış içe aktarmada (Bionluk/LinkedIn/Upwork) taslakla gelen görseller + projeler.
+type ImportExtras = { avatarUrl: string | null; portfolio: PortfolioItem[]; projects?: ProfileProject[] };
 
 interface ImportWizardProps {
   // Tarayıcı eklentisi akışı: sunucu sayfası bekleyen taslağı okuyup buraya geçirir —
@@ -108,9 +108,10 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...draft,
-        // Görseller yalnız varsa gönderilir (avatar_url geçerli URL olmalı).
+        // Görseller/projeler yalnız varsa gönderilir (avatar_url geçerli URL olmalı).
         ...(extras?.avatarUrl ? { avatar_url: extras.avatarUrl } : {}),
         ...(extras?.portfolio?.length ? { portfolio: extras.portfolio } : {}),
+        ...(extras?.projects?.length ? { projects: extras.projects } : {}),
       }),
     });
     const data = await res.json().catch(() => null);
@@ -174,7 +175,44 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
             <span className="text-xs font-semibold text-muted-foreground">{t("skillsLabel")}</span>
             <ChipsInput values={draft.skills} onChange={(next) => setDraft({ ...draft, skills: next })} placeholder={t("addSkill")} removeTitle={t("removeSkill")} max={50} />
           </div>
-          {extras && extras.portfolio.length > 0 && (
+          {/* Yapılandırılmış projeler (Upwork) — her proje ayrı: başlık/rol/açıklama/beceri/görsel. */}
+          {extras && extras.projects && extras.projects.length > 0 && (
+            <div className="space-y-2">
+              <span className="text-xs font-semibold text-muted-foreground">{t("projectsLabel", { count: extras.projects.length })}</span>
+              <div className="space-y-3">
+                {extras.projects.map((p, pi) => {
+                  const imgs: LightboxImage[] = p.images.filter((im) => im.url).map((im) => ({ src: im.url, alt: im.caption || p.title }));
+                  return (
+                    <div key={pi} className="rounded-xl border border-border p-3 space-y-2">
+                      <div>
+                        <p className="text-sm font-bold leading-snug">{p.title}</p>
+                        {p.role && <p className="text-[11px] font-semibold text-[#00F0FF]/80">{p.role}</p>}
+                      </div>
+                      {p.description && <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">{p.description}</p>}
+                      {p.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {p.skills.map((s) => (
+                            <span key={s} className="rounded-full border border-border bg-muted/50 px-1.5 py-0.5 text-[10px] text-muted-foreground">{s}</span>
+                          ))}
+                        </div>
+                      )}
+                      {imgs.length > 0 && (
+                        <div className="grid grid-cols-4 gap-1.5">
+                          {imgs.map((img, k) => (
+                            <button key={img.src + k} type="button" onClick={() => setLightbox({ images: imgs, index: k })} title={img.alt} className="cursor-zoom-in">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={img.src} alt={img.alt} className="aspect-square w-full rounded-md object-cover border border-border transition-transform hover:scale-105" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {extras && extras.portfolio.length > 0 && !(extras.projects && extras.projects.length) && (
             <div className="space-y-1.5">
               <span className="text-xs font-semibold text-muted-foreground">{t("portfolioLabel", { count: extras.portfolio.length })}</span>
               <div className="grid grid-cols-4 gap-2">

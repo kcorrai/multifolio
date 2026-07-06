@@ -35,7 +35,6 @@ function DemoMedia({ caption, buttonLabel, host }: { caption: string; buttonLabe
             className="h-full w-full"
           />
         ) : (
-          // eslint-disable-next-line jsx-a11y/media-has-caption
           <video src={EXTENSION_DEMO_VIDEO_URL} controls className="h-full w-full" />
         )}
       </div>

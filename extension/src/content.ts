@@ -190,6 +190,7 @@ async function closeModal(): Promise<boolean> {
 export interface ScrapedProject {
   title: string;
   description: string;
+  role: string;
   skills: string[];
   images: { url: string; caption: string }[];
 }
@@ -231,6 +232,7 @@ const SKILLS_LABEL = /skills.*deliverables|skills|beceri/i;
 function scrapeProjectModal(modal: HTMLElement, fallbackTitle: string): ScrapedProject {
   const title = ((modal.querySelector("h1")?.textContent || modal.querySelector("h2")?.textContent || fallbackTitle) || "").trim().slice(0, 200);
   const description = textAfterLabel(modal, /project description|proje açıklaması|description|açıklama/i);
+  const role = textAfterLabel(modal, /my role|rol/i).slice(0, 200);
 
   // Beceriler: "Skills and deliverables" etiketli bölümdeki çip metinleri.
   let skills: string[] = [];
@@ -254,7 +256,7 @@ function scrapeProjectModal(modal: HTMLElement, fallbackTitle: string): ScrapedP
     images.push({ url, caption: imageCaption(el) });
   });
 
-  return { title, description, skills, images };
+  return { title, description, role, skills, images };
 }
 
 // Upwork portfolyosunu TÜM sayfalardan + her projenin İÇİNDEKİ zengin verisinden toplar:
