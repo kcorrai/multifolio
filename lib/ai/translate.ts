@@ -131,6 +131,65 @@ export async function translateProposalContent(
   };
 }
 
+/* ── Profil taslağı çevirisi (on-demand) ────────────────────────────── */
+
+const profileTranslateSchema = z.object({
+  headline: z.string(),
+  summary: z.string(),
+  skills: z.array(z.string()),
+});
+
+const PROFILE_TRANSLATE_SYSTEM_PROMPT =
+  "Sen bir çevirmensin. Sana bir freelancer profili verilir: headline, summary, skills. " +
+  "Üçünü de istenen dile çevirirsin. Anlamı ve tonu koru; şirket/ürün/teknoloji adlarını " +
+  "(ör. Python, Figma, React, Blender) ÇEVİRME, aynen bırak. Yorum ekleme; yalnızca çeviriyi döndür.";
+
+/** Profil taslağını (headline/summary/skills) hedef dile çevirir (içe aktarma sonrası
+ *  "kendi dilime çevir" adımı — kaynak dili korunmuş taslağı kullanıcının diline getirir). */
+export async function translateProfileDraft(
+  draft: { headline: string; summary: string; skills: string[] },
+  target: Locale,
+): Promise<{ draft: { headline: string; summary: string; skills: string[] } } & AiUsage> {
+  const client = getOpenAIClient();
+  const targetName = target === "tr" ? "Türkçe" : "İngilizce";
+
+  const completion = await client.chat.completions.parse({
+    model: AI_MODEL,
+    messages: [
+      { role: "system", content: PROFILE_TRANSLATE_SYSTEM_PROMPT },
+      {
+        role: "user",
+        content: `Hedef dil: ${targetName}\n\n${JSON.stringify({
+          headline: draft.headline.slice(0, 400),
+          summary: draft.summary.slice(0, 4000),
+          skills: draft.skills.slice(0, 50),
+        })}`,
+      },
+    ],
+    response_format: zodResponseFormat(profileTranslateSchema, "profile_translation"),
+  });
+
+  const parsed = completion.choices[0].message.parsed;
+  if (!parsed) {
+    throw new InternalError("Profil çevirisi ayrıştırılamadı.", {
+      context: { finish_reason: completion.choices[0].finish_reason },
+    });
+  }
+
+  const usage = {
+    prompt_tokens: completion.usage?.prompt_tokens ?? 0,
+    completion_tokens: completion.usage?.completion_tokens ?? 0,
+  };
+
+  return {
+    draft: parsed,
+    model: AI_MODEL,
+    inputTokens: usage.prompt_tokens,
+    outputTokens: usage.completion_tokens,
+    costUsd: computeCostUsd(AI_MODEL, usage),
+  };
+}
+
 /** Tek ilan açıklamasını hedef dile çevirir; düz metin döner. */
 export async function translateJobDescription(
   text: string,

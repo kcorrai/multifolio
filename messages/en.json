@@ -981,7 +981,13 @@
     "saving": "Saving…",
     "startOver": "Try another source",
     "skip": "I'll fill it in myself",
-    "saveError": "Profile could not be saved."
+    "saveError": "Profile could not be saved.",
+    "translateHint": "Imported in its original language.",
+    "translatedNote": "Translated to your language.",
+    "translateToMine": "Translate to my language",
+    "showOriginal": "Show original",
+    "translating": "Translating…",
+    "translateError": "Couldn't translate. Please try again."
   },
   "extensionPrivacy": {
     "metaTitle": "Extension Privacy Policy — Multifolio",

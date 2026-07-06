@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Sparkles, Link2, ClipboardPaste, FileUp, ArrowRight } from "lucide-react";
+import { Sparkles, Link2, ClipboardPaste, FileUp, ArrowRight, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChipsInput } from "./chips-input";
 import type { ProfileDraft } from "@/lib/validation/schemas/profile-import";
@@ -35,6 +35,11 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
   const [error, setError] = useState("");
   const [draft, setDraft] = useState<ProfileDraft | null>(initialDraft);
   const [extras, setExtras] = useState<ImportExtras | null>(initialExtras);
+  // Veri kaynak dilinde aktarılır; kullanıcı isterse kendi diline çevirir (orijinal
+  // korunur, "orijinali göster" ile geri döner).
+  const [original, setOriginal] = useState<ProfileDraft | null>(initialDraft);
+  const [translating, setTranslating] = useState(false);
+  const [isTranslated, setIsTranslated] = useState(false);
   // Kaynak banner'ı yalnız eklentiden gelen taslakta gösterilir; kullanıcı
   // baştan başlayıp yeni içe aktarma yaparsa kapanır.
   const [fromExtension, setFromExtension] = useState(!!initialDraft && !!initialPlatformLabel);
@@ -63,11 +68,35 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
         return;
       }
       setDraft(data.draft as ProfileDraft);
+      setOriginal(data.draft as ProfileDraft);
+      setIsTranslated(false);
       setExtras((data.media as ImportExtras | undefined) ?? null);
       setFromExtension(false);
     } finally {
       setBusy(false);
     }
+  }
+
+  // İçe aktarılan taslağı kullanıcının UI diline çevirir (ücretsiz; orijinal saklı kalır).
+  async function translateDraft() {
+    if (!draft) return;
+    setTranslating(true); setError("");
+    try {
+      const res = await fetch("/api/profile/import/translate", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ headline: draft.headline, summary: draft.summary, skills: draft.skills }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) { setError(data?.error?.message ?? t("translateError")); return; }
+      setDraft({ ...draft, ...(data.draft as ProfileDraft) });
+      setIsTranslated(true);
+    } finally {
+      setTranslating(false);
+    }
+  }
+
+  function showOriginal() {
+    if (original) { setDraft(original); setIsTranslated(false); }
   }
 
   async function saveDraft() {
@@ -116,6 +145,19 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
           )}
         </div>
         <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
+          {/* Veri kaynak dilinde geldi — kullanıcı isterse kendi diline çevirir. */}
+          <div className="flex items-center justify-between gap-2 rounded-lg bg-muted/40 px-3 py-2">
+            <p className="text-[11px] text-muted-foreground">{isTranslated ? t("translatedNote") : t("translateHint")}</p>
+            {isTranslated ? (
+              <button onClick={showOriginal} className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[#00F0FF] hover:underline cursor-pointer">
+                <Languages className="h-3.5 w-3.5" />{t("showOriginal")}
+              </button>
+            ) : (
+              <button onClick={translateDraft} disabled={translating} className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[#00F0FF] hover:underline cursor-pointer disabled:opacity-50">
+                <Languages className="h-3.5 w-3.5" />{translating ? t("translating") : t("translateToMine")}
+              </button>
+            )}
+          </div>
           <label className="block space-y-1">
             <span className="text-xs font-semibold text-muted-foreground">{t("headlineLabel")}</span>
             <input value={draft.headline} onChange={(e) => setDraft({ ...draft, headline: e.target.value })} className={input} />
@@ -143,7 +185,7 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
           )}
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex items-center justify-between pt-1">
-            <button onClick={() => { setDraft(null); setExtras(null); setError(""); setFromExtension(false); }} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2">{t("startOver")}</button>
+            <button onClick={() => { setDraft(null); setOriginal(null); setExtras(null); setError(""); setFromExtension(false); setIsTranslated(false); }} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2">{t("startOver")}</button>
             <Button onClick={saveDraft} disabled={saving} className="gap-2">{saving ? t("saving") : t("save")}<ArrowRight className="h-4 w-4" /></Button>
           </div>
         </div>

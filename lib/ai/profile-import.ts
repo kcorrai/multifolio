@@ -2,11 +2,9 @@ import "server-only";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
-import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
 import { profileDraftSchema, type ProfileDraft } from "@/lib/validation/schemas/profile-import";
 import { clampImportText } from "@/lib/import/text";
-import type { Locale } from "@/i18n/detect";
 
 export interface ProfileImportResult {
   draft: ProfileDraft;
@@ -21,19 +19,16 @@ const SYSTEM_PROMPT =
   "profil sayfası metni verilir. Bu metinden kişinin profesyonel profilini çıkarırsın: " +
   "headline (rol + değer önerisi, en çok 120 karakter), summary (3-5 cümlelik özgün özet " +
   "— metni kopyalama, damıt), skills (somut beceri etiketleri, en çok 20 adet). " +
-  "Metinde profil bilgisi yoksa alanları boş bırak; ASLA uydurma.";
+  "Metinde profil bilgisi yoksa alanları boş bırak; ASLA uydurma. " +
+  // Dili KORU: çıktı kaynak metnin dilinde olsun (çeviri sonradan ayrı adımda yapılır).
+  "ÖNEMLİ: Çıktıyı KAYNAK METNİN DİLİNDE üret — başka bir dile ÇEVİRME.";
 
-/** Serbest metinden profil taslağı çıkarır. Boş taslak da dönebilir —
- *  anlamlılık kararı çağırana (route) aittir. */
-export async function extractProfile(text: string, locale: Locale = "en"): Promise<ProfileImportResult> {
+/** Serbest metinden profil taslağı çıkarır (kaynak dilini KORUR — çeviri ayrı adım).
+ *  Boş taslak da dönebilir — anlamlılık kararı çağırana (route) aittir. */
+export async function extractProfile(text: string): Promise<ProfileImportResult> {
   const client = getOpenAIClient();
 
-  const userContent = [
-    "Kaynak metin:",
-    clampImportText(text),
-    "",
-    languageDirective(locale),
-  ].join("\n");
+  const userContent = ["Kaynak metin:", clampImportText(text)].join("\n");
 
   const completion = await client.chat.completions.parse({
     model: AI_MODEL,

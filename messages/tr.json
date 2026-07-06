@@ -981,7 +981,13 @@
     "saving": "Kaydediliyor…",
     "startOver": "Başka kaynak dene",
     "skip": "Kendim doldururum",
-    "saveError": "Profil kaydedilemedi."
+    "saveError": "Profil kaydedilemedi.",
+    "translateHint": "Orijinal dilinde aktarıldı.",
+    "translatedNote": "Kendi diline çevrildi.",
+    "translateToMine": "Kendi dilime çevir",
+    "showOriginal": "Orijinali göster",
+    "translating": "Çevriliyor…",
+    "translateError": "Çevrilemedi. Lütfen tekrar dene."
   },
   "extensionPrivacy": {
     "metaTitle": "Uzantı Gizlilik Politikası — Multifolio",

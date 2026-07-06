@@ -4,7 +4,6 @@
 // rate-limit için sayılır. Taslak DB'ye YAZILMAZ; kayıt /api/profile'da.
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
-import { getUserLocale } from "@/i18n/locale";
 import { AuthError, ValidationError, RateLimitError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { importRequestSchema, type ImportRequest, type ProfileImportMedia } from "@/lib/validation/schemas/profile-import";
@@ -114,8 +113,8 @@ export const POST = withErrorHandler(async (req) => {
   } else if (linkedin) {
     result = { draft: linkedin.draft, model: "linkedin-structured", inputTokens: 0, outputTokens: 0, costUsd: 0 };
   } else {
-    const locale = await getUserLocale();
-    result = await extractProfile(text, locale);
+    // Kaynak dilini KORUR (çeviri wizard'da ayrı "kendi dilime çevir" adımıyla).
+    result = await extractProfile(text);
   }
 
   // Anlamlılık: taslak tamamen boşsa kullanılabilir bir profil yok demektir.
