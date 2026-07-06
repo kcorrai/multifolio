@@ -115,8 +115,12 @@ XMLHttpRequest.prototype.open = function (this: XMLHttpRequest, ...a: unknown[])
   return (_open as (...a: unknown[]) => void).apply(this, a);
 } as typeof XMLHttpRequest.prototype.open;
 
+// content.ts her sayfa geçişinde tetikler → o anki store'u biriktir (store yalnız
+// mevcut sayfayı tutabildiği için sayfa-sayfa biriktirmek gerekir).
+document.addEventListener("mf-scan", () => { try { collectRoots().forEach(absorb); } catch { /* */ } });
+
 document.addEventListener("mf-get-projects", () => {
-  collectRoots().forEach(absorb); // her istekte __NUXT__/store'u da tara (1. sayfa + biriken)
+  collectRoots().forEach(absorb); // son istekte __NUXT__/store'u da tara (1. sayfa + biriken)
   let payload = "[]";
   try { payload = JSON.stringify([...projectsByUid.values()].map(mapProject)); } catch { payload = "[]"; }
   document.dispatchEvent(new CustomEvent("mf-projects", { detail: payload }));

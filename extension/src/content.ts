@@ -118,18 +118,20 @@ function collectUpworkPortfolioDom(): string[] {
   return out;
 }
 
-// Portfolyo pager'ının "sonraki sayfa" düğmesi (heuristik; Upwork DOM'una gevşek bağlı —
-// aria-label/data-test/title'da next|forward|sonraki geçen görünür düğme).
+// Portfolyo pager'ının "sonraki sayfa" düğmesi. Upwork KESİN selector:
+// button[data-ev-label="pagination_next_page"] (Playwright ile doğrulandı — tıklayınca
+// 1/3→2/3). Görünürlük ŞARTI YOK: ikon buton bazı düzenlerde 0 ölçü raporlar ama
+// tıklanabilir. Bulunamazsa genel heuristik (diğer pager'lar).
 function findPortfolioNextButton(): HTMLElement | null {
+  const upwork = Array.from(document.querySelectorAll<HTMLButtonElement>('button[data-ev-label="pagination_next_page"]'))
+    .find((b) => !b.disabled && b.getAttribute("aria-disabled") !== "true");
+  if (upwork) return upwork;
   const cands = Array.from(document.querySelectorAll<HTMLElement>('button, a[role="button"], [role="button"]'));
   for (const el of cands) {
-    if ((el as HTMLButtonElement).disabled) continue;
-    if (el.getAttribute("aria-disabled") === "true") continue;
+    if ((el as HTMLButtonElement).disabled || el.getAttribute("aria-disabled") === "true") continue;
     const meta = [el.getAttribute("aria-label"), el.getAttribute("data-test"), el.getAttribute("data-ev-label"), el.title]
       .filter(Boolean).join(" ").toLowerCase();
-    if (!/next|forward|sonraki/.test(meta)) continue;
-    const r = el.getBoundingClientRect();
-    if (r.width > 0 && r.height > 0) return el;
+    if (/next|forward|sonraki/.test(meta)) return el;
   }
   return null;
 }
@@ -162,11 +164,13 @@ function findOpenModal(): HTMLElement | null {
 // Portfolyo shelf'ini sayfalar arası gezer (modal AÇMAZ) — amaç 2-3. sayfayı API'den
 // yükletmek; MAIN-world nuxt.js o yanıtları yakalayıp projeleri biriktirir. En fazla 12 sayfa.
 async function paginateUpworkPortfolio(): Promise<void> {
+  document.dispatchEvent(new CustomEvent("mf-scan")); // 1. sayfa store'unu biriktir
   for (let page = 0; page < 12; page++) {
     const next = findPortfolioNextButton();
     if (!next) break;
     next.click();
-    await sleep(1300); // sayfa API'den gelsin
+    await sleep(1400);                                 // sayfa API'den/store'a gelsin
+    document.dispatchEvent(new CustomEvent("mf-scan")); // bu sayfanın projelerini biriktir
   }
 }
 
