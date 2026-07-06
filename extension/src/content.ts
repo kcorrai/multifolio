@@ -87,22 +87,78 @@ function findAvatarUrl(): string | undefined {
   return bgAvatar;
 }
 
-function collectPayload(platform: ProfilePlatform) {
+function sleep(ms: number) { return new Promise((r) => setTimeout(r, ms)); }
+
+// Upwork portfolyo görselleri sabit CDN deseninde: /att/download/portfolio/.../files/{id}.
+// Bu desenle, portfolyo bölümü nerede/nasıl render edilirse edilsin güvenle yakalanır.
+function isUpworkPortfolioImg(src: string): boolean {
+  return /\/att\/download\/portfolio\//i.test(src);
+}
+function collectUpworkPortfolioDom(): string[] {
+  const out: string[] = [];
+  for (const img of Array.from(document.querySelectorAll("img"))) {
+    const src = img.currentSrc || img.src;
+    if (src && isUpworkPortfolioImg(src)) out.push(src.split("?")[0]);
+  }
+  return out;
+}
+
+// Portfolyo pager'ının "sonraki sayfa" düğmesi (heuristik; Upwork DOM'una gevşek bağlı —
+// aria-label/data-test/title'da next|forward|sonraki geçen görünür düğme).
+function findPortfolioNextButton(): HTMLElement | null {
+  const cands = Array.from(document.querySelectorAll<HTMLElement>('button, a[role="button"], [role="button"]'));
+  for (const el of cands) {
+    if ((el as HTMLButtonElement).disabled) continue;
+    if (el.getAttribute("aria-disabled") === "true") continue;
+    const meta = [el.getAttribute("aria-label"), el.getAttribute("data-test"), el.getAttribute("data-ev-label"), el.title]
+      .filter(Boolean).join(" ").toLowerCase();
+    if (!/next|forward|sonraki/.test(meta)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) return el;
+  }
+  return null;
+}
+
+// Upwork portfolyosunu SAYFALAR ARASI gezerek tüm görselleri toplar (best-effort; tek
+// tıkta çalışır). Görseller URL deseniyle güvenle toplanır; "sonraki" düğmesi
+// bulunamazsa ya da yeni görsel gelmezse durur (en fazla 12 sayfa).
+async function harvestUpworkPortfolio(): Promise<string[]> {
+  const found = new Set<string>();
+  collectUpworkPortfolioDom().forEach((u) => found.add(u));
+  for (let page = 0; page < 12; page++) {
+    const next = findPortfolioNextButton();
+    if (!next) break;
+    const before = found.size;
+    next.click();
+    await sleep(1100); // sayfa görselleri yüklensin
+    collectUpworkPortfolioDom().forEach((u) => found.add(u));
+    if (found.size === before) break; // yeni görsel yok → bitti
+  }
+  return [...found];
+}
+
+async function collectPayload(platform: ProfilePlatform) {
   // Ana içerik bölgesi varsa onu, yoksa tüm gövdeyi al (nav/footer gürültüsünü AI tolere eder).
   const main = document.querySelector("main");
   const text = clampText((main ?? document.body).innerText);
 
   const avatarUrl = findAvatarUrl();
 
-  // Portfolyo: başlığı /portfolio/i geçen bölümün altındaki görseller (best-effort).
-  const portfolioImgs: string[] = [];
-  for (const heading of document.querySelectorAll("h2, h3")) {
-    if (!/portfolio/i.test(heading.textContent ?? "")) continue;
-    const section = heading.closest("section") ?? heading.parentElement;
-    if (!section) continue;
-    for (const img of section.querySelectorAll("img")) portfolioImgs.push(img.src);
+  // Portfolyo görselleri:
+  //  - Upwork: sabit CDN deseni + sayfalar arası gezip TÜMÜNÜ topla.
+  //  - Diğerleri: başlığı /portfolio/i geçen bölümün altındaki görseller (best-effort).
+  let portfolioRaw: string[] = [];
+  if (platform === "upwork") {
+    portfolioRaw = await harvestUpworkPortfolio();
+  } else {
+    for (const heading of document.querySelectorAll("h2, h3")) {
+      if (!/portfolio/i.test(heading.textContent ?? "")) continue;
+      const section = heading.closest("section") ?? heading.parentElement;
+      if (!section) continue;
+      for (const img of section.querySelectorAll("img")) portfolioRaw.push((img as HTMLImageElement).src);
+    }
   }
-  const portfolioImages = pickImageUrls(portfolioImgs, 12);
+  const portfolioImages = pickImageUrls(portfolioRaw, 50);
 
   return {
     type: "import" as const,
@@ -168,11 +224,13 @@ function injectButton(platform: ProfilePlatform) {
     }
   }
 
-  btn.addEventListener("click", () => {
+  btn.addEventListener("click", async () => {
     btn.disabled = true;
     btn.textContent = msg("sending");
     note.hidden = true;
-    chrome.runtime.sendMessage(collectPayload(platform), (res: ImportResponse | undefined) => {
+    // Upwork'te portfolyo sayfaları gezildiği için birkaç saniye sürebilir (buton "gönderiliyor").
+    const payload = await collectPayload(platform);
+    chrome.runtime.sendMessage(payload, (res: ImportResponse | undefined) => {
       btn.disabled = false;
       btn.textContent = msg("button");
       if (res?.ok) {

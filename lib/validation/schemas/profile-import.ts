@@ -23,7 +23,7 @@ export const importRequestSchema = z.discriminatedUnion("mode", [
     sourceUrl: z.string().trim().url().max(2000).refine((u) => /^https:\/\//i.test(u), "Yalnız https"),
     text: z.string().trim().min(80).max(IMPORT_TEXT_MAX),
     avatarUrl: httpUrl(1000).optional(),
-    portfolioImages: z.array(httpUrl(1000)).max(12).optional(),
+    portfolioImages: z.array(httpUrl(1000)).max(50).optional(),
   }),
 ]);
 export type ImportRequest = z.infer<typeof importRequestSchema>;

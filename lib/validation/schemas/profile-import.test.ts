@@ -50,10 +50,10 @@ describe("importRequestSchema — extension modu", () => {
     expect(importRequestSchema.safeParse({ ...valid, avatarUrl: "javascript:alert(1)" }).success).toBe(false);
     expect(importRequestSchema.safeParse({ ...valid, portfolioImages: ["data:image/png;base64,x"] }).success).toBe(false);
   });
-  it("12'den fazla portfolyo görselini reddeder", () => {
-    const urls = Array.from({ length: 13 }, (_, i) => `https://cdn.example.com/p${i}.jpg`);
+  it("50'den fazla portfolyo görselini reddeder", () => {
+    const urls = Array.from({ length: 51 }, (_, i) => `https://cdn.example.com/p${i}.jpg`);
     expect(importRequestSchema.safeParse({ ...valid, portfolioImages: urls }).success).toBe(false);
-    expect(importRequestSchema.safeParse({ ...valid, portfolioImages: urls.slice(0, 12) }).success).toBe(true);
+    expect(importRequestSchema.safeParse({ ...valid, portfolioImages: urls.slice(0, 50) }).success).toBe(true);
   });
 });
 
