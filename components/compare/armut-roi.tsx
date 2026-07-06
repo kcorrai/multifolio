@@ -3,20 +3,18 @@
 // Armut "teklif ver / geç" ROI hesaplayıcı: teklif ücreti + proje değeri + kazanma
 // olasılığı → beklenen değer + break-even eşiği + karar. Tamamen istemcide (lib/armut/roi.ts),
 // AI/API/kredi yok. Armut'un "kaybettiğin lead'e de ödeme" acısına doğrudan yanıt.
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { TicketPercent, Check, X, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { computeArmutRoi } from "@/lib/armut/roi";
-
-function numOr(v: string, fallback = 0): number {
-  const n = parseFloat(v.replace(/[.\s]/g, "").replace(",", "."));
-  return Number.isFinite(n) ? n : fallback;
-}
+import { parseLocaleNumber } from "@/lib/format/parse-number";
 
 export function ArmutRoi() {
   const t = useTranslations("compare.armutRoi");
   const locale = useLocale();
+  // Locale-farkında ayrıştırma: TR "50.000"→50000, EN "10.5"→10.5.
+  const numOr = useCallback((v: string, fallback = 0) => parseLocaleNumber(v, locale, fallback), [locale]);
 
   const [leadFee, setLeadFee] = useState("190");
   const [projectValue, setProjectValue] = useState("2500");
@@ -26,7 +24,7 @@ export function ArmutRoi() {
     leadFee: numOr(leadFee),
     projectValue: numOr(projectValue),
     winProbPct: numOr(winProb),
-  }), [leadFee, projectValue, winProb]);
+  }), [leadFee, projectValue, winProb, numOr]);
 
   const fmt = useMemo(
     () => new Intl.NumberFormat(locale, { style: "currency", currency: "TRY", maximumFractionDigits: 0 }),

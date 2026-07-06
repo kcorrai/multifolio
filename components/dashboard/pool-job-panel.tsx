@@ -27,6 +27,7 @@ export function PoolJobPanel({
   const locale = useLocale();
   const [scoring, setScoring] = useState(false);
   const [applied, setApplied] = useState(false);
+  const [applying, setApplying] = useState(false);
   const [error, setError] = useState("");
   // Düşük-alaka skorlama uyarısı (kredi israfını önler); ilan değişince RENDER'da sıfırlanır.
   const [gate, setGate] = useState({ jobId: job.id, warned: false });
@@ -66,23 +67,36 @@ export function PoolJobPanel({
       body: JSON.stringify({ force }),
     });
     const body = await res.json().catch(() => null);
-    if (!res.ok) { setError(body?.error?.message ?? "Error"); setScoring(false); return; }
+    if (!res.ok) { setError(body?.error?.message ?? t("actionFailed")); setScoring(false); return; }
     onScored(job.id, body.score, body.result);
     if (body.credits) onCreditsUpdate(body.credits);
     setScoring(false);
   }
 
   async function apply() {
+    // Çift-tık koruması: uçuşta ikinci tık mükerrer job_listings satırı açar (idempotency yok).
+    if (applying || applied) return;
+    setApplying(true); setError("");
     // Upwork'te aç + mevcut job_listings pipeline'ına köprü.
     if (job.url) window.open(job.url, "_blank", "noopener");
-    const res = await fetch("/api/jobs", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: job.title, description: job.description, platform: job.source,
-        url: job.url ?? undefined, budget: job.budget ?? undefined, source_pool_id: job.id,
-      }),
-    });
-    if (res.ok) { setApplied(true); onApplied(job.id); }
+    try {
+      const res = await fetch("/api/jobs", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: job.title, description: job.description, platform: job.source,
+          url: job.url ?? undefined, budget: job.budget ?? undefined, source_pool_id: job.id,
+        }),
+      });
+      if (res.ok) { setApplied(true); onApplied(job.id); }
+      else {
+        const body = await res.json().catch(() => null);
+        setError(body?.error?.message ?? t("actionFailed"));
+      }
+    } catch {
+      setError(t("actionFailed"));
+    } finally {
+      setApplying(false);
+    }
   }
 
   const result = job.scoreResult;
@@ -187,7 +201,7 @@ export function PoolJobPanel({
             <a href={job.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4" />{t("openOnPlatform")}</a>
           </Button>
         )}
-        <Button onClick={apply} disabled={applied} className="gap-2 flex-1">
+        <Button onClick={apply} disabled={applied || applying} className="gap-2 flex-1">
           {applied ? <><Check className="h-4 w-4" />{t("applied")}</> : t("markApplied")}
         </Button>
       </div>

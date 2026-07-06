@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Briefcase, Plus, Trash2, Rss, Layers, Sparkles, ArrowRight } from "lucide-react";
@@ -39,6 +39,12 @@ export function FeedView({
   const [showLowScores, setShowLowScores] = useState(false);
   // Optimistic mutasyon başarısız olursa gösterilen kısa hata bildirimi.
   const [actionError, setActionError] = useState("");
+  // Hata bildirimi 5 sn sonra kendiliğinden kapanır (klavye kullanıcısını kilitlemez).
+  useEffect(() => {
+    if (!actionError) return;
+    const id = setTimeout(() => setActionError(""), 5000);
+    return () => clearTimeout(id);
+  }, [actionError]);
 
   // Feed'ler değişince (oluştur/düzenle/sil) hem feed listesini hem eşleşen işleri
   // tazele; sayfalama baştan başlar (offset=0).
@@ -139,13 +145,15 @@ export function FeedView({
     <div className="grid gap-4 lg:grid-cols-[230px_minmax(0,1fr)]">
       {/* Optimistic mutasyon hatası bildirimi (star/sil başarısız olursa). */}
       {actionError && (
-        <div
+        <button
+          type="button"
           role="alert"
+          title={t("close")}
           className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-500 shadow-lg backdrop-blur cursor-pointer"
           onClick={() => setActionError("")}
         >
           {actionError}
-        </div>
+        </button>
       )}
       {/* ── Sol ray: kayıtlı feed'ler ─────────────────────────────────── */}
       <aside className="space-y-1 lg:sticky lg:top-3 lg:self-start">
@@ -238,8 +246,8 @@ export function FeedView({
                   ))
                 )}
                 {hasMore && (
-                  <Button variant="outline" size="sm" onClick={loadMore} disabled={loadingMore} className="w-full mt-1">
-                    {t("loadMore")}
+                  <Button variant="outline" size="sm" onClick={loadMore} disabled={loadingMore} aria-busy={loadingMore} className="w-full mt-1">
+                    {loadingMore ? t("loadingMore") : t("loadMore")}
                   </Button>
                 )}
               </div>
@@ -259,8 +267,8 @@ export function FeedView({
               <PoolJobRow key={job.id} job={job} selected={job.id === selectedJobId} onStar={toggleStar} onOpen={(j) => setSelectedJobId(j.id)} />
             ))}
             {hasMore && (
-              <Button variant="outline" size="sm" onClick={loadMore} disabled={loadingMore} className="w-full mt-1">
-                {t("loadMore")}
+              <Button variant="outline" size="sm" onClick={loadMore} disabled={loadingMore} aria-busy={loadingMore} className="w-full mt-1">
+                {loadingMore ? t("loadingMore") : t("loadMore")}
               </Button>
             )}
           </div>

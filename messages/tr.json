@@ -814,6 +814,7 @@
       "footnote": "Otomatik uyarı, kesin hüküm değil — ilana yanıt vermeden önce dikkatle incele."
     },
     "loadMore": "Daha fazla",
+    "loadingMore": "Yükleniyor…",
     "minShort": "{count}dk",
     "hourShort": "{count}sa",
     "dayShort": "{count}g",

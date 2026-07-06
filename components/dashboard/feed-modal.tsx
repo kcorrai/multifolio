@@ -86,7 +86,7 @@ export function FeedModal({
       body: JSON.stringify(body),
     });
     const data = await res.json().catch(() => null);
-    if (!res.ok) { setError(data?.error?.message ?? "Error"); setSaving(false); return; }
+    if (!res.ok) { setError(data?.error?.message ?? t("actionFailed")); setSaving(false); return; }
     setSaving(false); onSaved(); onClose();
   }
 

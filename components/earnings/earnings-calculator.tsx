@@ -3,7 +3,7 @@
 // Net kazanç hesaplayıcı formu: tamamen istemcide, canlı hesap (AI/API yok).
 // Tüm oranlar varsayılanla önceden doldurulur ve DÜZENLENEBİLİR — platform/
 // vergi oranları zamanla değişir; sorumluluk kullanıcıya bırakılır (uyarı notu).
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Wallet, Info, ArrowRight } from "lucide-react";
@@ -12,6 +12,7 @@ import {
   computeNetEarnings, PLATFORM_FEE_DEFAULTS, TRANSFER_METHOD_DEFAULTS, TAX_PRESETS,
   type EarningsPlatform, type TransferMethod,
 } from "@/lib/earnings/calculator";
+import { parseLocaleNumber } from "@/lib/format/parse-number";
 
 const PLATFORM_LABELS: Record<EarningsPlatform, string> = {
   upwork: "Upwork",
@@ -22,14 +23,11 @@ const PLATFORM_LABELS: Record<EarningsPlatform, string> = {
 
 type Currency = "USD" | "TRY";
 
-function numOr(v: string, fallback = 0): number {
-  const n = parseFloat(v.replace(",", "."));
-  return Number.isFinite(n) ? n : fallback;
-}
-
 export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = useTranslations("earnings");
   const locale = useLocale();
+  // Locale-farkında ayrıştırma: TR "50.000"→50000, EN "10.5"→10.5.
+  const numOr = useCallback((v: string, fallback = 0) => parseLocaleNumber(v, locale, fallback), [locale]);
 
   const [platform, setPlatform] = useState<EarningsPlatform>("upwork");
   const [gross, setGross] = useState("1000");
@@ -61,7 +59,7 @@ export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolea
     transferFeeFixed: numOr(transferFixed),
     taxPct: numOr(taxPct),
     fxRate: currency === "USD" ? numOr(fxRate) || null : null,
-  }), [gross, platformFee, transferPct, transferFixed, taxPct, fxRate, currency]);
+  }), [gross, platformFee, transferPct, transferFixed, taxPct, fxRate, currency, numOr]);
 
   const fmt = useMemo(
     () => new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 2 }),
@@ -90,7 +88,7 @@ export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolea
           <p className={labelCls}>{t("platform")}</p>
           <div className="flex flex-wrap gap-2">
             {(Object.keys(PLATFORM_FEE_DEFAULTS) as EarningsPlatform[]).map((p) => (
-              <button key={p} onClick={() => pickPlatform(p)} className={chipCls(platform === p)}>
+              <button key={p} type="button" aria-pressed={platform === p} onClick={() => pickPlatform(p)} className={chipCls(platform === p)}>
                 {p === "custom" ? t("platformCustom") : PLATFORM_LABELS[p]}
               </button>
             ))}
@@ -107,7 +105,7 @@ export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolea
             <p className={labelCls}>{t("currency")}</p>
             <div className="flex gap-2">
               {(["USD", "TRY"] as Currency[]).map((c) => (
-                <button key={c} onClick={() => setCurrency(c)} className={chipCls(currency === c)}>{c}</button>
+                <button key={c} type="button" aria-pressed={currency === c} onClick={() => setCurrency(c)} className={chipCls(currency === c)}>{c}</button>
               ))}
             </div>
           </div>
@@ -124,7 +122,7 @@ export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolea
           <p className={labelCls}>{t("transferMethod")}</p>
           <div className="flex flex-wrap gap-2">
             {(Object.keys(TRANSFER_METHOD_DEFAULTS) as TransferMethod[]).map((m) => (
-              <button key={m} onClick={() => pickMethod(m)} className={chipCls(method === m)}>
+              <button key={m} type="button" aria-pressed={method === m} onClick={() => pickMethod(m)} className={chipCls(method === m)}>
                 {t(`method.${m}`)}
               </button>
             ))}
@@ -146,7 +144,7 @@ export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolea
           <label className={labelCls} htmlFor="earn-tax">{t("tax")}</label>
           <div className="flex flex-wrap items-center gap-2">
             {TAX_PRESETS.map((p) => (
-              <button key={p} onClick={() => setTaxPct(String(p))} className={chipCls(numOr(taxPct) === p)}>%{p}</button>
+              <button key={p} type="button" aria-pressed={numOr(taxPct) === p} onClick={() => setTaxPct(String(p))} className={chipCls(numOr(taxPct) === p)}>%{p}</button>
             ))}
             <Input id="earn-tax" inputMode="decimal" value={taxPct} onChange={(e) => setTaxPct(e.target.value)} className={`${inputCls} w-20`} />
           </div>

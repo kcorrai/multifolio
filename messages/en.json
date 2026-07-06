@@ -814,6 +814,7 @@
       "footnote": "Automated heads-up, not a verdict — review the listing carefully before engaging."
     },
     "loadMore": "Load more",
+    "loadingMore": "Loading…",
     "minShort": "{count}m",
     "hourShort": "{count}h",
     "dayShort": "{count}d",

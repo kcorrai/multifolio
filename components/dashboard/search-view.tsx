@@ -55,6 +55,12 @@ export function SearchView() {
   const [minFixed, setMinFixed] = useState("");
   const [saveModal, setSaveModal] = useState(false);
   const [actionError, setActionError] = useState("");
+  // Hata bildirimi 5 sn sonra kendiliğinden kapanır (klavye kullanıcısını kilitlemez).
+  useEffect(() => {
+    if (!actionError) return;
+    const id = setTimeout(() => setActionError(""), 5000);
+    return () => clearTimeout(id);
+  }, [actionError]);
 
   // Canlı arama: q/platform değişince debounce'lu çek. Boş q = tüm pool (açılışta hepsi).
   // Yeni arama listeyi DEĞİŞTİRİR (sayfalama sıfırlanır); loadedAt yalnız burada sabitlenir.
@@ -150,13 +156,15 @@ export function SearchView() {
   return (
     <div className="space-y-3">
       {actionError && (
-        <div
+        <button
+          type="button"
           role="alert"
+          title={t("close")}
           className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-500 shadow-lg backdrop-blur cursor-pointer"
           onClick={() => setActionError("")}
         >
           {actionError}
-        </div>
+        </button>
       )}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
@@ -169,6 +177,8 @@ export function SearchView() {
           {TIME_KEYS.map((k) => (
             <button
               key={k}
+              type="button"
+              aria-pressed={time === k}
               onClick={() => setTime(k)}
               className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors cursor-pointer ${
                 time === k ? "bg-[#00F0FF]/15 text-foreground" : "text-muted-foreground hover:text-foreground"
@@ -263,8 +273,8 @@ export function SearchView() {
         ))}
         {/* Ham yüklenen sayıya bakılır — istemci filtresi gizlese de sunucudaki kalan çekilebilmeli. */}
         {loaded && jobs.length < total && (
-          <Button variant="outline" size="sm" onClick={loadMore} disabled={loadingMore} className="w-full mt-1">
-            {t("loadMore")}
+          <Button variant="outline" size="sm" onClick={loadMore} disabled={loadingMore} aria-busy={loadingMore} className="w-full mt-1">
+            {loadingMore ? t("loadingMore") : t("loadMore")}
           </Button>
         )}
       </div>

@@ -3,13 +3,14 @@
 // Çok-platform net gelir karşılaştırıcı formu: tek proje tutarını 5 platformda
 // yan yana koyar (SAF lib/compare/platforms.ts). Tamamen istemcide, AI/API/kredi yok.
 // Transfer + vergi tüm platformlara eşit uygulanır → fark platform komisyonundan.
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Trophy, Info, ArrowRight, TicketPercent } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { TRANSFER_METHOD_DEFAULTS, TAX_PRESETS, type TransferMethod } from "@/lib/earnings/calculator";
 import { comparePlatforms, type ComparePlatform } from "@/lib/compare/platforms";
+import { parseLocaleNumber } from "@/lib/format/parse-number";
 
 const PLATFORM_LABELS: Record<ComparePlatform, string> = {
   direct: "", // i18n platform.direct
@@ -20,14 +21,11 @@ const PLATFORM_LABELS: Record<ComparePlatform, string> = {
 
 type Currency = "USD" | "TRY";
 
-function numOr(v: string, fallback = 0): number {
-  const n = parseFloat(v.replace(",", "."));
-  return Number.isFinite(n) ? n : fallback;
-}
-
 export function PlatformCompare({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = useTranslations("compare");
   const locale = useLocale();
+  // Locale-farkında ayrıştırma: TR "50.000"→50000, EN "10.5"→10.5.
+  const numOr = useCallback((v: string, fallback = 0) => parseLocaleNumber(v, locale, fallback), [locale]);
 
   const [gross, setGross] = useState("1000");
   const [currency, setCurrency] = useState<Currency>("USD");
@@ -47,7 +45,7 @@ export function PlatformCompare({ isLoggedIn = false }: { isLoggedIn?: boolean }
     transferFeePct: numOr(transferPct),
     transferFeeFixed: numOr(transferFixed),
     taxPct: numOr(taxPct),
-  }), [gross, transferPct, transferFixed, taxPct]);
+  }), [gross, transferPct, transferFixed, taxPct, numOr]);
 
   const fmt = useMemo(
     () => new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 0 }),
@@ -80,7 +78,7 @@ export function PlatformCompare({ isLoggedIn = false }: { isLoggedIn?: boolean }
               <p className={labelCls}>{t("currency")}</p>
               <div className="flex gap-2">
                 {(["USD", "TRY"] as Currency[]).map((c) => (
-                  <button key={c} onClick={() => setCurrency(c)} className={chipCls(currency === c)}>{c}</button>
+                  <button key={c} type="button" aria-pressed={currency === c} onClick={() => setCurrency(c)} className={chipCls(currency === c)}>{c}</button>
                 ))}
               </div>
             </div>
@@ -90,7 +88,7 @@ export function PlatformCompare({ isLoggedIn = false }: { isLoggedIn?: boolean }
             <p className={labelCls}>{t("transferMethod")}</p>
             <div className="flex flex-wrap gap-2">
               {(Object.keys(TRANSFER_METHOD_DEFAULTS) as TransferMethod[]).map((m) => (
-                <button key={m} onClick={() => pickMethod(m)} className={chipCls(method === m)}>{t(`method.${m}`)}</button>
+                <button key={m} type="button" aria-pressed={method === m} onClick={() => pickMethod(m)} className={chipCls(method === m)}>{t(`method.${m}`)}</button>
               ))}
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -109,7 +107,7 @@ export function PlatformCompare({ isLoggedIn = false }: { isLoggedIn?: boolean }
             <label className={labelCls} htmlFor="cmp-tax">{t("tax")}</label>
             <div className="flex flex-wrap items-center gap-2">
               {TAX_PRESETS.map((p) => (
-                <button key={p} onClick={() => setTaxPct(String(p))} className={chipCls(numOr(taxPct) === p)}>%{p}</button>
+                <button key={p} type="button" aria-pressed={numOr(taxPct) === p} onClick={() => setTaxPct(String(p))} className={chipCls(numOr(taxPct) === p)}>%{p}</button>
               ))}
               <Input id="cmp-tax" inputMode="decimal" value={taxPct} onChange={(e) => setTaxPct(e.target.value)} className={`${inputCls} w-20`} />
             </div>

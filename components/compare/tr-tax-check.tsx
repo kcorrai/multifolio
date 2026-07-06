@@ -3,7 +3,7 @@
 // TR vergi avantajı uygunluk checker'ı: 4 evet/hayır soru → hizmet ihracı indirimi +
 // genç girişimci istisnası uygunluğu + KABA matrah indirimi tahmini. Tamamen istemcide,
 // AI/API/kredi yok. GÜÇLÜ "mali müşavire danış" uyarısı + GİB linki; vergi danışmanlığı değil.
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Check, X, Info, ArrowRight, ExternalLink, ShieldCheck } from "lucide-react";
@@ -12,6 +12,7 @@ import {
   assessTrTax, estimateTrTaxBase, TR_TAX_RATES, TR_TAX_YEARS, TR_TAX_YEAR_DEFAULT,
   type TrTaxAnswers,
 } from "@/lib/compare/tr-tax";
+import { parseLocaleNumber } from "@/lib/format/parse-number";
 
 const QUESTION_KEYS: (keyof TrTaxAnswers)[] = [
   "foreignClients",
@@ -22,14 +23,11 @@ const QUESTION_KEYS: (keyof TrTaxAnswers)[] = [
 
 const GIB_URL = "https://www.gib.gov.tr";
 
-function numOr(v: string, fallback = 0): number {
-  const n = parseFloat(v.replace(/[.\s]/g, "").replace(",", "."));
-  return Number.isFinite(n) ? n : fallback;
-}
-
 export function TrTaxCheck({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = useTranslations("trTax");
   const locale = useLocale();
+  // Locale-farkında ayrıştırma: TR "50.000"→50000, EN "10.5"→10.5.
+  const numOr = useCallback((v: string, fallback = 0) => parseLocaleNumber(v, locale, fallback), [locale]);
 
   const [year, setYear] = useState<number>(TR_TAX_YEAR_DEFAULT);
   const [answers, setAnswers] = useState<TrTaxAnswers>({
@@ -44,7 +42,7 @@ export function TrTaxCheck({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const result = useMemo(() => assessTrTax(answers), [answers]);
   const estimate = useMemo(
     () => estimateTrTaxBase(numOr(income), rates, result),
-    [income, rates, result],
+    [income, rates, result, numOr],
   );
 
   const fmt = useMemo(
@@ -72,7 +70,7 @@ export function TrTaxCheck({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           <p className={labelCls}>{t("yearLabel")}</p>
           <div className="flex gap-2">
             {TR_TAX_YEARS.map((y) => (
-              <button key={y} onClick={() => setYear(y)} className={chipCls(year === y)}>{y}</button>
+              <button key={y} type="button" aria-pressed={year === y} onClick={() => setYear(y)} className={chipCls(year === y)}>{y}</button>
             ))}
           </div>
         </div>
@@ -82,8 +80,8 @@ export function TrTaxCheck({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             <div key={k} className="flex items-start justify-between gap-3">
               <p className="text-sm leading-snug flex-1">{t(`q.${k}`)}</p>
               <div className="flex gap-1.5 shrink-0">
-                <button onClick={() => setAnswer(k, true)} className={chipCls(answers[k])}>{t("yes")}</button>
-                <button onClick={() => setAnswer(k, false)} className={chipCls(!answers[k])}>{t("no")}</button>
+                <button type="button" aria-pressed={answers[k]} onClick={() => setAnswer(k, true)} className={chipCls(answers[k])}>{t("yes")}</button>
+                <button type="button" aria-pressed={!answers[k]} onClick={() => setAnswer(k, false)} className={chipCls(!answers[k])}>{t("no")}</button>
               </div>
             </div>
           ))}
