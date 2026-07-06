@@ -144,14 +144,20 @@ function findOpenModal(): HTMLElement | null {
   return document.querySelector<HTMLElement>('[role="dialog"], [aria-modal="true"]');
 }
 
-// Route-tabanlı modal (?p=) → history.back ile kapanır; olmazsa Escape.
-async function closeModal(): Promise<void> {
-  if (!findOpenModal()) return;
-  history.back();
-  await sleep(900);
-  if (!findOpenModal()) return;
-  document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
-  await sleep(500);
+// Modalı GÜVENLE kapat. history.back KULLANMA — tarayıcı geçmişinde fazla geri gidip
+// kullanıcıyı SİTEDEN ATABİLİYOR. Sırasıyla: modal kapat (X) düğmesi → Escape. Kapatamazsa
+// false döner (çağıran daha fazla modal açmayı durdurur).
+async function closeModal(): Promise<boolean> {
+  const modal = findOpenModal();
+  if (!modal) return true;
+  // YALNIZ modal İÇİNDEKİ kapat düğmesi (dışarıdaki yanlış "close"a tıklama = navigasyon riski).
+  const btn = modal.querySelector<HTMLElement>('[aria-label*="close" i],[aria-label*="kapat" i],button[title*="close" i],[data-test*="close" i],[data-ev-label*="close" i]');
+  if (btn) { btn.click(); await sleep(700); if (!findOpenModal()) return true; }
+  for (const target of [document, document.body] as (Document | HTMLElement)[]) {
+    target.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true }));
+  }
+  await sleep(600);
+  return !findOpenModal();
 }
 
 // ── Proje modalı kazıyıcı (başlık + açıklama + beceriler + görsel altyazıları) ──
@@ -250,9 +256,11 @@ async function harvestUpworkPortfolio(): Promise<{ images: string[]; projects: S
           if (proj.images.length || proj.title) projects.push(proj);
         }
         grab();
-        await closeModal();
+        const closed = await closeModal();
         await sleep(300);
-      } catch { /* bu projeyi atla — kapaklar yine toplandı */ }
+        // Modal kapanmadıysa dur: sonraki kart overlay'in altında kalır + takılma riski.
+        if (!closed) return;
+      } catch { return; }
     }
   }
 
