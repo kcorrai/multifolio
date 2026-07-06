@@ -120,16 +120,8 @@ XMLHttpRequest.prototype.open = function (this: XMLHttpRequest, ...a: unknown[])
 document.addEventListener("mf-scan", () => { try { collectRoots().forEach(absorb); } catch { /* */ } });
 
 document.addEventListener("mf-get-projects", () => {
-  const roots = collectRoots();
-  roots.forEach(absorb); // son istekte __NUXT__/store'u da tara (1. sayfa + biriken)
+  collectRoots().forEach(absorb); // son istekte __NUXT__/store'u da tara (1. sayfa + biriken)
   let payload = "[]";
   try { payload = JSON.stringify([...projectsByUid.values()].map(mapProject)); } catch { payload = "[]"; }
-  // Debug (geçici): izole content script buton notunda gösterir → sorun kaynağını görürüz.
-  const w = window as unknown as { __NUXT__?: unknown };
-  try {
-    document.documentElement.setAttribute("data-mf-debug", JSON.stringify({
-      hasNuxt: !!w.__NUXT__, roots: roots.length, found: projectsByUid.size,
-    }));
-  } catch { /* */ }
   document.dispatchEvent(new CustomEvent("mf-projects", { detail: payload }));
 });
