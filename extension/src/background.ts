@@ -3,6 +3,13 @@
 // eklenir — spike ile doğrulandı). Başarıda inceleme wizard'ını yeni sekmede açar.
 import { IMPORT_ENDPOINT, WIZARD_URL, LOGIN_URL } from "./config";
 
+interface ImportProject {
+  title: string;
+  description: string;
+  role: string;
+  skills: string[];
+  images: { url: string; caption: string }[];
+}
 interface ImportMessage {
   type: "import";
   platform: "upwork" | "fiverr" | "linkedin";
@@ -10,6 +17,7 @@ interface ImportMessage {
   text: string;
   avatarUrl?: string;
   portfolioImages?: string[];
+  portfolioProjects?: ImportProject[];
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -36,6 +44,7 @@ async function handleImport(msg: ImportMessage) {
         text: msg.text,
         ...(msg.avatarUrl ? { avatarUrl: msg.avatarUrl } : {}),
         ...(msg.portfolioImages?.length ? { portfolioImages: msg.portfolioImages } : {}),
+        ...(msg.portfolioProjects?.length ? { portfolioProjects: msg.portfolioProjects } : {}),
       }),
     });
 
