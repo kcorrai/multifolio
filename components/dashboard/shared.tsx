@@ -1,5 +1,6 @@
 import {
-  User, Layers, Globe, Briefcase, Target, Sparkles, LayoutDashboard, Languages, BellRing, Wand2,
+  User, Layers, Globe, Briefcase, Target, LayoutDashboard, Languages, BellRing, Wand2,
+  FileText, Download, RefreshCw, Gauge,
 } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
@@ -84,15 +85,21 @@ export const PLATFORM_URL_PLACEHOLDERS: Record<PlatformId, string> = {
 };
 
 // Tür etiketleri i18n'de: analytics.kind.<kind>. İkonlar locale-nötr.
+// Her kullanım türüne ÖZELLİKLE ilgili ikon (jenerik şimşek/Zap yok). Çeviri türleri
+// bilinçli olarak aynı Languages ikonunu paylaşır (tutarlı iconografi).
 export const KIND_ICONS: Record<string, React.ElementType> = {
-  adaptation: Layers,
-  portfolio_generation: Globe,
-  job_match: Target,
-  proposal: Sparkles,
+  adaptation: Layers,              // platform katmanlarına uyarlama
+  portfolio_generation: Globe,     // public portfolyo sitesi
+  job_match: Target,               // ilan × profil eşleştirme
+  proposal: FileText,              // yazılı teklif metni
   job_translate: Languages,
-  followup: BellRing,
   proposal_translate: Languages,
-  profile_suggest: Wand2,
+  profile_translate: Languages,
+  followup: BellRing,              // takip hatırlatıcısı
+  profile_suggest: Wand2,          // AI profil önerisi
+  profile_import: Download,        // profil içe aktarma
+  platform_sync: RefreshCw,        // bağlı profil çekimi
+  public_analyze: Gauge,           // profil analiz skoru
 };
 
 /* ── Helpers ────────────────────────────────────────────────────────── */
