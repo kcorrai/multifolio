@@ -119,22 +119,77 @@ function findPortfolioNextButton(): HTMLElement | null {
   return null;
 }
 
-// Upwork portfolyosunu SAYFALAR ARASI gezerek tüm görselleri toplar (best-effort; tek
-// tıkta çalışır). Görseller URL deseniyle güvenle toplanır; "sonraki" düğmesi
-// bulunamazsa ya da yeni görsel gelmezse durur (en fazla 12 sayfa).
+// Portfolyo proje kartları: kapak görselinin (portfolyo CDN) makul boyutlu tıklanabilir
+// ata öğesi. Kart tıklanınca Upwork SPA proje modalını açar (route push ?p=).
+function findProjectCards(): { el: HTMLElement; cover: string }[] {
+  const out: { el: HTMLElement; cover: string }[] = [];
+  const seen = new Set<HTMLElement>();
+  for (const img of Array.from(document.querySelectorAll<HTMLImageElement>("img"))) {
+    const cover = (img.currentSrc || img.src || "").split("?")[0];
+    if (!isUpworkPortfolioImg(cover)) continue;
+    let el: HTMLElement | null = img.parentElement;
+    for (let up = 0; up < 6 && el; up++, el = el.parentElement) {
+      const r = el.getBoundingClientRect();
+      if (r.width > 120 && r.height > 100 && r.width < 800) break;
+    }
+    const card = el ?? img;
+    if (seen.has(card)) continue;
+    seen.add(card);
+    out.push({ el: card, cover });
+  }
+  return out;
+}
+
+function findOpenModal(): HTMLElement | null {
+  return document.querySelector<HTMLElement>('[role="dialog"], [aria-modal="true"]');
+}
+
+// Route-tabanlı modal (?p=) → history.back ile kapanır; olmazsa Escape.
+async function closeModal(): Promise<void> {
+  if (!findOpenModal()) return;
+  history.back();
+  await sleep(900);
+  if (!findOpenModal()) return;
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  await sleep(500);
+}
+
+// Upwork portfolyosunu TÜM sayfalardan + her projenin İÇİNDEKİ görsellerden toplar.
+// Kapaklar URL deseniyle güvenle toplanır (Phase-safe); her proje modalı açılınca iç
+// görseller de DOM'a gelip toplanır. Modal aç/kapa BEST-EFFORT + guard'lı — patlarsa
+// kapaklar yine gelir (çalışan davranış korunur). En fazla 12 sayfa; ilerleme yoksa durur.
 async function harvestUpworkPortfolio(): Promise<string[]> {
-  const found = new Set<string>();
-  collectUpworkPortfolioDom().forEach((u) => found.add(u));
+  const images = new Set<string>();
+  const openedCovers = new Set<string>();
+  const grab = () => collectUpworkPortfolioDom().forEach((u) => images.add(u));
+  grab();
+
+  async function openProjectsHere() {
+    for (const { el, cover } of findProjectCards()) {
+      if (openedCovers.has(cover)) continue;
+      openedCovers.add(cover);
+      try {
+        (el.querySelector("img") ?? el).click(); // proje modalını aç
+        await sleep(1500);                        // iç görseller yüklensin
+        grab();
+        await closeModal();
+        await sleep(300);
+      } catch { /* bu projeyi atla — kapaklar yine toplandı */ }
+    }
+  }
+
+  await openProjectsHere();
   for (let page = 0; page < 12; page++) {
     const next = findPortfolioNextButton();
     if (!next) break;
-    const before = found.size;
+    const before = images.size + openedCovers.size;
     next.click();
-    await sleep(1100); // sayfa görselleri yüklensin
-    collectUpworkPortfolioDom().forEach((u) => found.add(u));
-    if (found.size === before) break; // yeni görsel yok → bitti
+    await sleep(1200);
+    grab();
+    await openProjectsHere();
+    if (images.size + openedCovers.size === before) break; // ilerleme yok → dur
   }
-  return [...found];
+  return [...images];
 }
 
 async function collectPayload(platform: ProfilePlatform) {
