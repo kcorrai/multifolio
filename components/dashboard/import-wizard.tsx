@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Sparkles, Link2, ClipboardPaste, FileUp, ArrowRight, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ImageLightbox, type LightboxImage } from "@/components/image-lightbox";
 import { ChipsInput } from "./chips-input";
 import type { ProfileDraft } from "@/lib/validation/schemas/profile-import";
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
@@ -40,6 +41,7 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
   const [original, setOriginal] = useState<ProfileDraft | null>(initialDraft);
   const [translating, setTranslating] = useState(false);
   const [isTranslated, setIsTranslated] = useState(false);
+  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
   // Kaynak banner'ı yalnız eklentiden gelen taslakta gösterilir; kullanıcı
   // baştan başlayıp yeni içe aktarma yaparsa kapanır.
   const [fromExtension, setFromExtension] = useState(!!initialDraft && !!initialPlatformLabel);
@@ -131,9 +133,11 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
       <div className="mx-auto max-w-xl space-y-5">
         <div className="text-center space-y-2">
           {extras?.avatarUrl ? (
-            // Bionluk dış görseli — next/image remotePatterns'a gerek kalmasın.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={extras.avatarUrl} alt={t("photoAlt")} className="mx-auto h-16 w-16 rounded-2xl object-cover ring-2 ring-[#00F0FF]/30" />
+            // Bionluk dış görseli — tıklanınca lightbox'ta büyür.
+            <button type="button" onClick={() => setLightbox({ images: [{ src: extras.avatarUrl as string, alt: t("photoAlt") }], index: 0 })} className="mx-auto block cursor-zoom-in">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={extras.avatarUrl} alt={t("photoAlt")} className="h-16 w-16 rounded-2xl object-cover ring-2 ring-[#00F0FF]/30" />
+            </button>
           ) : (
             <div className="mx-auto h-12 w-12 rounded-2xl bg-[#00F0FF]/10 flex items-center justify-center"><Sparkles className="h-6 w-6 text-[#00F0FF]" /></div>
           )}
@@ -174,12 +178,15 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
             <div className="space-y-1.5">
               <span className="text-xs font-semibold text-muted-foreground">{t("portfolioLabel", { count: extras.portfolio.length })}</span>
               <div className="grid grid-cols-4 gap-2">
-                {extras.portfolio.slice(0, 8).map((item, i) =>
-                  item.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img key={i} src={item.imageUrl} alt={item.title} title={item.title} className="aspect-square w-full rounded-lg object-cover border border-border" />
-                  ) : null,
-                )}
+                {(() => {
+                  const imgs: LightboxImage[] = extras.portfolio.filter((p) => p.imageUrl).map((p) => ({ src: p.imageUrl as string, alt: p.title }));
+                  return imgs.slice(0, 8).map((img, i) => (
+                    <button key={img.src + i} type="button" onClick={() => setLightbox({ images: imgs, index: i })} title={img.alt} className="cursor-zoom-in">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.src} alt={img.alt} className="aspect-square w-full rounded-lg object-cover border border-border transition-transform hover:scale-105" />
+                    </button>
+                  ));
+                })()}
               </div>
             </div>
           )}
@@ -189,6 +196,9 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
             <Button onClick={saveDraft} disabled={saving} className="gap-2">{saving ? t("saving") : t("save")}<ArrowRight className="h-4 w-4" /></Button>
           </div>
         </div>
+        {lightbox && (
+          <ImageLightbox images={lightbox.images} index={lightbox.index} onClose={() => setLightbox(null)} />
+        )}
       </div>
     );
   }

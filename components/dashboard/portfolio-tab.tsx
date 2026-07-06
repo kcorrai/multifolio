@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CreditCost } from "@/components/credit-cost";
+import { ImageLightbox, type LightboxImage } from "@/components/image-lightbox";
 import {
   PORTFOLIO_PRESETS, PORTFOLIO_ACCENTS, ACCENT_HEX, portfolioTheme,
   type PortfolioPreset,
@@ -33,6 +34,7 @@ export function PortfolioTab({
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState("");
+  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
 
   // İçerik alanını değiştir + kaydedilmemiş işaretle.
   function patch(next: Partial<PortfolioContent>) {
@@ -169,20 +171,26 @@ export function PortfolioTab({
                   <Label>{t("galleryTitle", { count: content.media.gallery.length })}</Label>
                   <p className="text-xs text-muted-foreground">{t("galleryHint")}</p>
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                    {content.media.gallery.map((item) => (
-                      <div key={item.url} className="relative group aspect-square">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={item.url} alt={item.caption} title={item.caption}
-                          className="h-full w-full rounded-lg object-cover border border-border" />
-                        <button
-                          onClick={() => patch({ media: { ...content.media, gallery: content.media.gallery.filter((g) => g.url !== item.url) } })}
-                          aria-label={t("removeImage")}
-                          className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-background border border-border shadow flex items-center justify-center text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))}
+                    {(() => {
+                      const imgs: LightboxImage[] = content.media.gallery.map((g) => ({ src: g.url, alt: g.caption || "" }));
+                      return content.media.gallery.map((item, i) => (
+                        <div key={item.url} className="relative group aspect-square">
+                          {/* Tıklanınca lightbox'ta büyür + galeri içinde gezinme. */}
+                          <button type="button" onClick={() => setLightbox({ images: imgs, index: i })} title={item.caption} className="block h-full w-full cursor-zoom-in">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={item.url} alt={item.caption}
+                              className="h-full w-full rounded-lg object-cover border border-border" />
+                          </button>
+                          <button
+                            onClick={() => patch({ media: { ...content.media, gallery: content.media.gallery.filter((g) => g.url !== item.url) } })}
+                            aria-label={t("removeImage")}
+                            className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-background border border-border shadow flex items-center justify-center text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ));
+                    })()}
                   </div>
                 </div>
               )}
@@ -229,6 +237,11 @@ export function PortfolioTab({
         </CardContent>
       </Card>
       {content && <TestimonialsManager slug={slug} published={published} />}
+
+      {/* Galeri fotosu lightbox (ileri/geri gezinme). */}
+      {lightbox && (
+        <ImageLightbox images={lightbox.images} index={lightbox.index} onClose={() => setLightbox(null)} />
+      )}
     </div>
   );
 }

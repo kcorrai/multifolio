@@ -15,6 +15,12 @@ import { JobDetailPanel } from "@/components/job-detail-panel";
 import { PLATFORMS, type PlatformId } from "@/lib/ai/platforms";
 import { EXTENSION_STORE_URL } from "@/lib/extension";
 import { ExtensionGuideModal } from "./extension-guide-modal";
+import { ImageLightbox, type LightboxImage } from "@/components/image-lightbox";
+
+// Portfolyo öğelerini (görselli) lightbox dizisine çevirir (index eşleşmesi için süz).
+function toLightbox(items: { imageUrl: string | null; title: string }[]): LightboxImage[] {
+  return items.filter((p) => p.imageUrl).map((p) => ({ src: p.imageUrl as string, alt: p.title }));
+}
 import type { AdaptSource } from "@/lib/validation/schemas/adapt";
 import type { PlatformProfileRow } from "@/lib/validation/schemas/platform-profile";
 import type { ProposalRow } from "@/lib/validation/schemas/proposal";
@@ -98,6 +104,7 @@ export function PlatformDetailTab({
   const [syncing, setSyncing] = useState(false);
   const [syncError, setSyncError] = useState("");
   const [guideOpen, setGuideOpen] = useState(false);
+  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
   const canFetch = SERVER_FETCHABLE.includes(platform);
   const isExtensionOnly = EXTENSION_ONLY.includes(platform);
 
@@ -187,13 +194,15 @@ export function PlatformDetailTab({
             <>
               <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                 {platformProfile.avatar_url ? (
-                  // Platformdan gelen dış görsel — next/image remotePatterns'a gerek kalmasın.
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={platformProfile.avatar_url}
-                    alt={PLATFORMS[platform].label}
-                    className={`h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover ring-4 ${style.ring} shadow-xl shrink-0`}
-                  />
+                  // Platformdan gelen dış görsel — tıklanınca lightbox'ta büyür.
+                  <button type="button" onClick={() => setLightbox({ images: [{ src: platformProfile.avatar_url as string, alt: PLATFORMS[platform].label }], index: 0 })} className="shrink-0 cursor-zoom-in">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={platformProfile.avatar_url}
+                      alt={PLATFORMS[platform].label}
+                      className={`h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover ring-4 ${style.ring} shadow-xl`}
+                    />
+                  </button>
                 ) : (
                   <div className={`h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-card flex items-center justify-center ring-4 ${style.ring} shrink-0`}>
                     <PlatformLogo platform={platform} size={34} />
@@ -246,23 +255,30 @@ export function PlatformDetailTab({
                 </div>
               )}
 
-              {platformProfile.portfolio.length > 0 && (
-                <div className="flex flex-wrap gap-2.5">
-                  {(heroExpanded ? platformProfile.portfolio : platformProfile.portfolio.slice(0, 8)).map((item, i) =>
-                    item.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        key={i}
-                        src={item.imageUrl}
-                        alt={item.title}
-                        title={item.title}
-                        className="pd-chip h-20 w-20 sm:h-24 sm:w-24 rounded-xl object-cover border border-border transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+              {platformProfile.portfolio.length > 0 && (() => {
+                const imgs = toLightbox(heroExpanded ? platformProfile.portfolio : platformProfile.portfolio.slice(0, 8));
+                return (
+                  <div className="flex flex-wrap gap-2.5">
+                    {imgs.map((img, i) => (
+                      <button
+                        key={img.src + i}
+                        type="button"
+                        onClick={() => setLightbox({ images: imgs, index: i })}
+                        title={img.alt}
+                        className="pd-chip cursor-zoom-in"
                         style={{ animationDelay: `${240 + i * 60}ms` }}
-                      />
-                    ) : null,
-                  )}
-                </div>
-              )}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={img.src}
+                          alt={img.alt}
+                          className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl object-cover border border-border transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                );
+              })()}
             </>
           ) : (
             <div className="flex flex-col items-center py-8 text-center">
@@ -414,13 +430,15 @@ export function PlatformDetailTab({
               <CardContent className="pt-6 space-y-3">
                 <div className="flex items-start gap-3.5">
                   {profile.avatarUrl ? (
-                    // İçe aktarmadan gelen dış görsel — next/image remotePatterns'a gerek kalmasın.
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={profile.avatarUrl}
-                      alt={t("detail.sourceProfileSection")}
-                      className="h-14 w-14 rounded-full object-cover ring-2 ring-[#00F0FF]/30 shrink-0"
-                    />
+                    // İçe aktarmadan gelen dış görsel — tıklanınca lightbox'ta büyür.
+                    <button type="button" onClick={() => setLightbox({ images: [{ src: profile.avatarUrl as string, alt: t("detail.sourceProfileSection") }], index: 0 })} className="shrink-0 cursor-zoom-in">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={profile.avatarUrl}
+                        alt={t("detail.sourceProfileSection")}
+                        className="h-14 w-14 rounded-full object-cover ring-2 ring-[#00F0FF]/30"
+                      />
+                    </button>
                   ) : (
                     <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center shrink-0">
                       <User className="h-6 w-6 text-muted-foreground/40" />
@@ -451,22 +469,23 @@ export function PlatformDetailTab({
                     )}
                   </div>
                 )}
-                {profile.portfolio.length > 0 && (
-                  <div className="flex gap-2">
-                    {profile.portfolio.slice(0, 5).map((item, i) =>
-                      item.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          key={i}
-                          src={item.imageUrl}
-                          alt={item.title}
-                          title={item.title}
-                          className="h-14 w-14 rounded-lg object-cover border border-border"
-                        />
-                      ) : null,
-                    )}
-                  </div>
-                )}
+                {profile.portfolio.length > 0 && (() => {
+                  const imgs = toLightbox(profile.portfolio.slice(0, 5));
+                  return (
+                    <div className="flex gap-2">
+                      {imgs.map((img, i) => (
+                        <button key={img.src + i} type="button" onClick={() => setLightbox({ images: imgs, index: i })} title={img.alt} className="cursor-zoom-in">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={img.src}
+                            alt={img.alt}
+                            className="h-14 w-14 rounded-lg object-cover border border-border transition-transform hover:scale-105"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  );
+                })()}
                 <p className="text-[11px] text-muted-foreground/70 border-t border-border pt-2.5">{t("detail.sourceProfileHint")}</p>
               </CardContent>
             </Card>
@@ -649,6 +668,11 @@ export function PlatformDetailTab({
           </ul>
         </div>
       </section>
+
+      {/* Foto lightbox (avatar + portfolyo görselleri; ileri/geri gezinme). */}
+      {lightbox && (
+        <ImageLightbox images={lightbox.images} index={lightbox.index} onClose={() => setLightbox(null)} />
+      )}
     </div>
   );
 }

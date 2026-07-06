@@ -6,13 +6,14 @@
 // (derin kartlarda fixed overlay hapsolmasın). Site genelinde yeniden kullanılabilir.
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface LightboxImage { src: string; alt?: string }
 
 export function ImageLightbox({
   images, index = 0, onClose,
-  closeLabel = "Close", prevLabel = "Previous", nextLabel = "Next",
+  closeLabel, prevLabel, nextLabel,
 }: {
   images: LightboxImage[];
   index?: number;
@@ -21,6 +22,11 @@ export function ImageLightbox({
   prevLabel?: string;
   nextLabel?: string;
 }) {
+  // Etiket verilmezse common namespace'inden (çağıranlar her yerde geçmek zorunda kalmaz).
+  const tc = useTranslations("common");
+  const cLabel = closeLabel ?? tc("close");
+  const pLabel = prevLabel ?? tc("prev");
+  const nLabel = nextLabel ?? tc("next");
   const count = images.length;
   const hasNav = count > 1;
   // index yalnız mount'ta okunur — çağıranlar kapanınca unmount eder, açınca taze mount.
@@ -54,8 +60,8 @@ export function ImageLightbox({
     >
       <button
         onClick={onClose}
-        title={closeLabel}
-        aria-label={closeLabel}
+        title={cLabel}
+        aria-label={cLabel}
         className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
       >
         <X className="h-5 w-5" />
@@ -65,16 +71,16 @@ export function ImageLightbox({
         <>
           <button
             onClick={(e) => go(-1, e)}
-            title={prevLabel}
-            aria-label={prevLabel}
+            title={pLabel}
+            aria-label={pLabel}
             className="absolute left-2 sm:left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
           <button
             onClick={(e) => go(1, e)}
-            title={nextLabel}
-            aria-label={nextLabel}
+            title={nLabel}
+            aria-label={nLabel}
             className="absolute right-2 sm:right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
           >
             <ChevronRight className="h-6 w-6" />

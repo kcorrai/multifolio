@@ -7,6 +7,9 @@
     "switchToLight": "Switch to light mode",
     "switchToDark": "Switch to dark mode",
     "copy": "Copy",
+    "close": "Close",
+    "prev": "Previous",
+    "next": "Next",
     "toggleLanguage": "Toggle language",
     "metaDescription": "Multi-platform freelancer career tool — enter your profile once, optimize it for every platform."
   },
