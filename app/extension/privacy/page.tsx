@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { EXTENSION_STORE_URL } from "@/lib/extension";
 
 // Chrome Web Store yayını için zorunlu gizlilik politikası sayfası.
 // İçerik i18n kataloglarında (extensionPrivacy) — EN varsayılan + TR.
@@ -29,6 +30,14 @@ export default async function ExtensionPrivacyPage() {
           <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight">{t("title")}</h1>
           <p className="text-sm text-slate-500 dark:text-[#94A3B8] font-medium">{t("updated")}</p>
           <p className="text-lg text-slate-600 dark:text-[#94A3B8] leading-relaxed font-medium">{t("intro")}</p>
+          <a
+            href={EXTENSION_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#00F0FF] px-4 py-2 text-sm font-bold text-black transition-opacity hover:opacity-90"
+          >
+            {t("installCta")}
+          </a>
         </div>
 
         {SECTIONS.map((key) => (

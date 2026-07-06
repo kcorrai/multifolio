@@ -107,12 +107,14 @@ Prod'da tanımlı olmalı (`.env.example` referans; **güncellendi**):
 
 ---
 
-## 6. Chrome Web Store — uzantı yayını — ⏳ İNCELEMEDE (2026-07-05)
+## 6. Chrome Web Store — uzantı yayını — ✅ YAYINDA (2026-07-06)
 
 - [x] `cd extension && npm run build` → `npm run package` (store zip) + dashboard'a yüklendi.
 - [x] Gizlilik sayfası URL'i: `https://multifolio-ecru.vercel.app/extension/privacy` (hazır).
 - [x] İzin gerekçeleri girildi (cookie'li fetch — `docs/EXTENSION.md`).
-- [ ] **Google incelemesinin bitmesi bekleniyor** (onaylanınca canlı; kullanıcı takip ediyor).
+- [x] **Google onayladı — canlı.** Mağaza URL'i: `https://chromewebstore.google.com/detail/iccpbihjghfekoodcjpddcnfbnnilpbp`
+      (uzantı ID `iccpbihjghfekoodcjpddcnfbnnilpbp`; sabit `lib/extension.ts` `EXTENSION_STORE_URL`).
+- [x] Uygulama içi "Uzantıyı yükle" CTA'ları bağlandı: platform detay (Upwork/Fiverr boş durumu) + `/extension/privacy`.
 
 ---
 
