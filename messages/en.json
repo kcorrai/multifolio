@@ -560,6 +560,7 @@
       "syncFailedCta": "Import manually instead",
       "extensionLearnMore": "About the extension",
       "extensionInstall": "Install the extension",
+      "extensionHowTo": "How to use it",
       "regenerateWarn": "Regenerating replaces the current text — copy it first if you want to keep it.",
       "sourceLabel": "Generate from:",
       "source_both": "{platform} + your profile",
@@ -721,6 +722,19 @@
       "compare": { "title": "Compare platforms", "desc": "Find which platform pays you most." },
       "extension": { "title": "Browser extension", "desc": "Import Upwork & Fiverr profiles." }
     }
+  },
+  "extensionGuide": {
+    "title": "How to use the extension",
+    "subtitle": "Import your Upwork & Fiverr profile in seconds.",
+    "close": "Close",
+    "demoCaption": "Click this button that appears at the bottom-right of your profile page.",
+    "importButton": "Import to Multifolio",
+    "install": "Install the extension",
+    "privacyLink": "About the extension & privacy",
+    "step1": { "title": "Install the extension", "desc": "Add the Multifolio extension from the Chrome Web Store." },
+    "step2": { "title": "Sign in to Multifolio", "desc": "Make sure you're logged into your account in the same browser." },
+    "step3": { "title": "Open your profile & import", "desc": "Open your Upwork/Fiverr profile page and click the “Import to Multifolio” button at the bottom-right." },
+    "step4": { "title": "Review & save the draft", "desc": "A wizard opens with your headline, summary and skills — review and save." }
   },
   "publicAnalysis": {
     "metaTitle": "Free Freelancer Profile Check — Multifolio",

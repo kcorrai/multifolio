@@ -560,6 +560,7 @@
       "syncFailedCta": "Bunun yerine elle içe aktar",
       "extensionLearnMore": "Uzantı hakkında",
       "extensionInstall": "Uzantıyı yükle",
+      "extensionHowTo": "Nasıl kullanılır?",
       "regenerateWarn": "Yeniden üretmek mevcut metnin üzerine yazar — korumak istiyorsan önce kopyala.",
       "sourceLabel": "Şundan üret:",
       "source_both": "{platform} + profilin",
@@ -721,6 +722,19 @@
       "compare": { "title": "Platform karşılaştır", "desc": "Hangi platform sana en çok kazandırıyor." },
       "extension": { "title": "Tarayıcı uzantısı", "desc": "Upwork & Fiverr profillerini içe aktar." }
     }
+  },
+  "extensionGuide": {
+    "title": "Uzantı nasıl kullanılır?",
+    "subtitle": "Upwork ve Fiverr profilini saniyeler içinde içe aktar.",
+    "close": "Kapat",
+    "demoCaption": "Profil sayfanın sağ altında çıkan bu butona tıkla.",
+    "importButton": "Multifolio'ya aktar",
+    "install": "Uzantıyı yükle",
+    "privacyLink": "Uzantı & gizlilik hakkında",
+    "step1": { "title": "Uzantıyı yükle", "desc": "Chrome Web Store'dan Multifolio uzantısını ekle." },
+    "step2": { "title": "Multifolio'ya giriş yap", "desc": "Aynı tarayıcıda hesabına giriş yaptığından emin ol." },
+    "step3": { "title": "Profilini aç ve içe aktar", "desc": "Upwork/Fiverr profil sayfanı aç, sağ alttaki “Multifolio'ya aktar” butonuna tıkla." },
+    "step4": { "title": "Taslağı incele ve kaydet", "desc": "Açılan sihirbazda başlık, özet ve becerilerini incele ve kaydet." }
   },
   "publicAnalysis": {
     "metaTitle": "Ücretsiz Freelancer Profil Analizi — Multifolio",

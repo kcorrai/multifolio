@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   ArrowLeft, Sparkles, Save, ExternalLink, Trash2, AlertCircle,
-  Briefcase, Clock, Lightbulb, User, Pencil, Download, RefreshCw, Puzzle, ChevronDown,
+  Briefcase, Clock, Lightbulb, User, Pencil, Download, RefreshCw, Puzzle, ChevronDown, PlayCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
@@ -14,6 +14,7 @@ import { PlatformLogo } from "@/components/platform-logo";
 import { JobDetailPanel } from "@/components/job-detail-panel";
 import { PLATFORMS, type PlatformId } from "@/lib/ai/platforms";
 import { EXTENSION_STORE_URL } from "@/lib/extension";
+import { ExtensionGuideModal } from "./extension-guide-modal";
 import type { AdaptSource } from "@/lib/validation/schemas/adapt";
 import type { PlatformProfileRow } from "@/lib/validation/schemas/platform-profile";
 import type { ProposalRow } from "@/lib/validation/schemas/proposal";
@@ -96,6 +97,7 @@ export function PlatformDetailTab({
   const [platformProfile, setPlatformProfile] = useState<PlatformProfileRow | null>(initialPlatformProfile);
   const [syncing, setSyncing] = useState(false);
   const [syncError, setSyncError] = useState("");
+  const [guideOpen, setGuideOpen] = useState(false);
   const canFetch = SERVER_FETCHABLE.includes(platform);
   const isExtensionOnly = EXTENSION_ONLY.includes(platform);
 
@@ -287,17 +289,18 @@ export function PlatformDetailTab({
                   <p className="text-sm text-muted-foreground max-w-md">
                     {t("detail.syncExtensionHint", { platform: PLATFORMS[platform].label })}
                   </p>
-                  {/* Uzantı Chrome Web Store'da canlı: birincil "Yükle" + ikincil bilgi linki. */}
+                  {/* Uzantı canlı: birincil "Yükle" + "Nasıl kullanılır?" rehber modalı. */}
                   <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                     <Button asChild size="sm" className="gap-1.5">
                       <a href={EXTENSION_STORE_URL} target="_blank" rel="noopener noreferrer">
                         <Puzzle className="h-3.5 w-3.5" />{t("detail.extensionInstall")}
                       </a>
                     </Button>
-                    <Button asChild size="sm" variant="outline" className="gap-1.5">
-                      <Link href="/extension/privacy">{t("detail.extensionLearnMore")}</Link>
+                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setGuideOpen(true)}>
+                      <PlayCircle className="h-3.5 w-3.5" />{t("detail.extensionHowTo")}
                     </Button>
                   </div>
+                  {guideOpen && <ExtensionGuideModal onClose={() => setGuideOpen(false)} />}
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground max-w-md">
