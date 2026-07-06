@@ -24,6 +24,17 @@ export const importRequestSchema = z.discriminatedUnion("mode", [
     text: z.string().trim().min(80).max(IMPORT_TEXT_MAX),
     avatarUrl: httpUrl(1000).optional(),
     portfolioImages: z.array(httpUrl(1000)).max(50).optional(),
+    // Upwork: proje modallarından kazınan ZENGİN veri (başlık/açıklama/beceriler +
+    // görsel-başına altyazı). Route bunları portfolyo öğelerine düzleştirir.
+    portfolioProjects: z.array(z.object({
+      title: z.string().trim().max(200).default(""),
+      description: z.string().trim().max(2000).default(""),
+      skills: z.array(z.string().trim().min(1).max(60)).max(20).default([]),
+      images: z.array(z.object({
+        url: httpUrl(1000),
+        caption: z.string().trim().max(400).default(""),
+      })).max(20).default([]),
+    })).max(30).optional(),
   }),
 ]);
 export type ImportRequest = z.infer<typeof importRequestSchema>;

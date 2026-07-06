@@ -7,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { AuthError, ValidationError, RateLimitError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { importRequestSchema, type ImportRequest, type ProfileImportMedia } from "@/lib/validation/schemas/profile-import";
+import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import { htmlToText, detectPlatformFromUrl, isSafeExternalUrl, fetchExternalHtml } from "@/lib/import/text";
 import { pdfToText } from "@/lib/import/pdf";
 import { parseBionlukUsername, fetchBionlukProfile, type BionlukProfile } from "@/lib/import/bionluk";
@@ -19,6 +20,25 @@ import type { PlatformId } from "@/lib/ai/platforms";
 const HOURLY_LIMIT = 10;
 const PDF_MAX_BYTES = 5 * 1024 * 1024;
 const FETCH_TIMEOUT_MS = 10_000;
+
+// Eklentiden gelen zengin projeleri (başlık/açıklama/beceriler + görsel-altyazı) portfolyo
+// öğelerine düzleştirir: her görsel bir öğe; ilk görsel proje açıklaması+becerilerini,
+// diğerleri kendi altyazısını taşır. Toplam en fazla 50 öğe (portfolyo şema tavanı).
+type ExtProject = NonNullable<Extract<ImportRequest, { mode: "extension" }>["portfolioProjects"]>[number];
+function projectsToPortfolio(projects: ExtProject[]): PortfolioItem[] {
+  const items: PortfolioItem[] = [];
+  for (const p of projects) {
+    const skillsLine = p.skills.length ? `Skills: ${p.skills.join(", ")}` : "";
+    const projDesc = [p.description, skillsLine].filter(Boolean).join("\n\n").slice(0, 1000);
+    p.images.forEach((im, i) => {
+      if (items.length >= 50) return;
+      const desc = (im.caption || (i === 0 ? projDesc : "")).slice(0, 1000);
+      items.push({ title: p.title.slice(0, 200), description: desc, imageUrl: im.url, category: null });
+    });
+    if (items.length >= 50) break;
+  }
+  return items;
+}
 
 export const POST = withErrorHandler(async (req) => {
   const supabase = await createSupabaseServerClient();
@@ -155,12 +175,13 @@ export const POST = withErrorHandler(async (req) => {
   } else if (linkedin) {
     media = { avatarUrl: linkedin.avatarUrl, portfolio: [] };
   } else if (extensionInput) {
-    media = {
-      avatarUrl: extensionInput.avatarUrl ?? null,
-      portfolio: (extensionInput.portfolioImages ?? []).map((u) => ({
-        title: "", description: "", imageUrl: u, category: null,
-      })),
-    };
+    // Zengin projeler varsa (Upwork proje modalları) onları düzleştir; yoksa düz görseller.
+    const portfolio = extensionInput.portfolioProjects?.length
+      ? projectsToPortfolio(extensionInput.portfolioProjects)
+      : (extensionInput.portfolioImages ?? []).map((u) => ({
+          title: "", description: "", imageUrl: u, category: null,
+        }));
+    media = { avatarUrl: extensionInput.avatarUrl ?? null, portfolio };
     // Eklenti akışında inceleme web'de yapılır: taslak + medya bekleyen-taslak satırına
     // upsert edilir (kullanıcı başına tek satır, RLS'li istemci); uzantı sonrasında
     // /dashboard/import?source=extension açar. created_at tazelik penceresi için yenilenir.

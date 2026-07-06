@@ -154,12 +154,84 @@ async function closeModal(): Promise<void> {
   await sleep(500);
 }
 
-// Upwork portfolyosunu TÜM sayfalardan + her projenin İÇİNDEKİ görsellerden toplar.
-// Kapaklar URL deseniyle güvenle toplanır (Phase-safe); her proje modalı açılınca iç
-// görseller de DOM'a gelip toplanır. Modal aç/kapa BEST-EFFORT + guard'lı — patlarsa
-// kapaklar yine gelir (çalışan davranış korunur). En fazla 12 sayfa; ilerleme yoksa durur.
-async function harvestUpworkPortfolio(): Promise<string[]> {
+// ── Proje modalı kazıyıcı (başlık + açıklama + beceriler + görsel altyazıları) ──
+export interface ScrapedProject {
+  title: string;
+  description: string;
+  skills: string[];
+  images: { url: string; caption: string }[];
+}
+
+// Etiketli bölümden sonraki metin (ör. "Project description" → sonraki paragraf).
+function textAfterLabel(root: HTMLElement, labelRe: RegExp): string {
+  const nodes = Array.from(root.querySelectorAll<HTMLElement>("h1,h2,h3,h4,dt,strong,label,p,span,div"));
+  for (let i = 0; i < nodes.length; i++) {
+    const t = (nodes[i].textContent || "").trim();
+    if (t.length <= 40 && labelRe.test(t)) {
+      for (let j = i + 1; j < Math.min(i + 8, nodes.length); j++) {
+        const nt = (nodes[j].textContent || "").trim();
+        if (nt.length > 15 && !labelRe.test(nt)) return nt.slice(0, 2000);
+      }
+    }
+  }
+  return "";
+}
+
+// Bir görselin altyazısı: figcaption → yoksa yakın ata öğedeki kısa düz metin.
+function imageCaption(img: HTMLImageElement): string {
+  const cap = img.closest("figure")?.querySelector("figcaption")?.textContent?.trim();
+  if (cap) return cap.slice(0, 300);
+  let el: HTMLElement | null = img.parentElement;
+  for (let up = 0; up < 3 && el; up++, el = el.parentElement) {
+    const own = Array.from(el.childNodes)
+      .filter((n) => n.nodeType === 3)
+      .map((n) => (n.textContent || "").trim())
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+    if (own && own.length >= 2 && own.length <= 200) return own;
+  }
+  return "";
+}
+
+const SKILLS_LABEL = /skills.*deliverables|skills|beceri/i;
+
+function scrapeProjectModal(modal: HTMLElement, fallbackTitle: string): ScrapedProject {
+  const title = ((modal.querySelector("h1")?.textContent || modal.querySelector("h2")?.textContent || fallbackTitle) || "").trim().slice(0, 200);
+  const description = textAfterLabel(modal, /project description|proje açıklaması|description|açıklama/i);
+
+  // Beceriler: "Skills and deliverables" etiketli bölümdeki çip metinleri.
+  let skills: string[] = [];
+  const labelNode = Array.from(modal.querySelectorAll<HTMLElement>("h2,h3,h4,dt,strong,label,p,span,div"))
+    .find((n) => { const t = (n.textContent || "").trim(); return t.length <= 40 && SKILLS_LABEL.test(t); });
+  if (labelNode?.parentElement) {
+    const chips = Array.from(labelNode.parentElement.querySelectorAll<HTMLElement>("*"))
+      .filter((e) => e.childElementCount === 0)
+      .map((e) => (e.textContent || "").trim())
+      .filter((s) => s.length >= 2 && s.length <= 40 && !SKILLS_LABEL.test(s));
+    skills = [...new Set(chips)].slice(0, 15);
+  }
+
+  const images: { url: string; caption: string }[] = [];
+  const seen = new Set<string>();
+  modal.querySelectorAll("img").forEach((im) => {
+    const el = im as HTMLImageElement;
+    const url = (el.currentSrc || el.src || "").split("?")[0];
+    if (!isUpworkPortfolioImg(url) || seen.has(url)) return;
+    seen.add(url);
+    images.push({ url, caption: imageCaption(el) });
+  });
+
+  return { title, description, skills, images };
+}
+
+// Upwork portfolyosunu TÜM sayfalardan + her projenin İÇİNDEKİ zengin verisinden toplar:
+// her proje modalını açar, başlık/açıklama/beceriler/görsel-altyazılarını kazır, kapatır.
+// Kapak görselleri URL deseniyle güvenle toplanır; modal aç/kapa BEST-EFFORT + guard'lı —
+// patlarsa kapaklar yine gelir. En fazla 12 sayfa; ilerleme yoksa durur.
+async function harvestUpworkPortfolio(): Promise<{ images: string[]; projects: ScrapedProject[] }> {
   const images = new Set<string>();
+  const projects: ScrapedProject[] = [];
   const openedCovers = new Set<string>();
   const grab = () => collectUpworkPortfolioDom().forEach((u) => images.add(u));
   grab();
@@ -169,8 +241,14 @@ async function harvestUpworkPortfolio(): Promise<string[]> {
       if (openedCovers.has(cover)) continue;
       openedCovers.add(cover);
       try {
-        (el.querySelector("img") ?? el).click(); // proje modalını aç
-        await sleep(1500);                        // iç görseller yüklensin
+        (el.querySelector("img") ?? el).click(); // proje modalını aç (SPA route ?p=)
+        await sleep(1600);                        // iç görseller + veri yüklensin
+        const modal = findOpenModal();
+        if (modal) {
+          const proj = scrapeProjectModal(modal, (el.textContent || "").trim().slice(0, 200));
+          proj.images.forEach((im) => images.add(im.url));
+          if (proj.images.length || proj.title) projects.push(proj);
+        }
         grab();
         await closeModal();
         await sleep(300);
@@ -189,7 +267,7 @@ async function harvestUpworkPortfolio(): Promise<string[]> {
     await openProjectsHere();
     if (images.size + openedCovers.size === before) break; // ilerleme yok → dur
   }
-  return [...images];
+  return { images: [...images], projects };
 }
 
 async function collectPayload(platform: ProfilePlatform) {
@@ -199,21 +277,26 @@ async function collectPayload(platform: ProfilePlatform) {
 
   const avatarUrl = findAvatarUrl();
 
-  // Portfolyo görselleri:
-  //  - Upwork: sabit CDN deseni + sayfalar arası gezip TÜMÜNÜ topla.
+  // Portfolyo:
+  //  - Upwork: sayfalar arası gez + her projeyi açıp ZENGİN veri kazı (başlık/açıklama/
+  //    beceriler/görsel-altyazıları) → portfolioProjects; kapak+iç görseller → portfolioImages.
   //  - Diğerleri: başlığı /portfolio/i geçen bölümün altındaki görseller (best-effort).
-  let portfolioRaw: string[] = [];
+  let portfolioImages: string[] = [];
+  let portfolioProjects: ScrapedProject[] = [];
   if (platform === "upwork") {
-    portfolioRaw = await harvestUpworkPortfolio();
+    const h = await harvestUpworkPortfolio();
+    portfolioImages = pickImageUrls(h.images, 50);
+    portfolioProjects = h.projects.slice(0, 30);
   } else {
+    const raw: string[] = [];
     for (const heading of document.querySelectorAll("h2, h3")) {
       if (!/portfolio/i.test(heading.textContent ?? "")) continue;
       const section = heading.closest("section") ?? heading.parentElement;
       if (!section) continue;
-      for (const img of section.querySelectorAll("img")) portfolioRaw.push((img as HTMLImageElement).src);
+      for (const img of section.querySelectorAll("img")) raw.push((img as HTMLImageElement).src);
     }
+    portfolioImages = pickImageUrls(raw, 50);
   }
-  const portfolioImages = pickImageUrls(portfolioRaw, 50);
 
   return {
     type: "import" as const,
@@ -222,6 +305,7 @@ async function collectPayload(platform: ProfilePlatform) {
     text,
     ...(avatarUrl ? { avatarUrl } : {}),
     ...(portfolioImages.length ? { portfolioImages } : {}),
+    ...(portfolioProjects.length ? { portfolioProjects } : {}),
   };
 }
 
