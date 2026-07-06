@@ -7,24 +7,25 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 
 const LINKS = [
-  { key: "nav.features",    href: "/#features" },
-  { key: "nav.howItWorks",  href: "/#how" },
   { key: "nav.analyze",     href: "/analyze" },
   { key: "nav.earnings",    href: "/earnings" },
   { key: "nav.compare",     href: "/compare" },
-  { key: "nav.trTax",       href: "/vergi" },
+  // TR vergi rehberi yalnız Türk kullanıcılara (masaüstü nav ile aynı kural).
+  { key: "nav.trTax",       href: "/vergi", trOnly: true },
   { key: "nav.pricing",     href: "/pricing" },
 ];
 
 export function MobileNav({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = useTranslations("landing");
   const tc = useTranslations("common");
+  const locale = useLocale();
+  const links = LINKS.filter((l) => !l.trOnly || locale.startsWith("tr"));
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
@@ -68,7 +69,7 @@ export function MobileNav({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </div>
 
             <nav className="flex flex-col">
-              {LINKS.map(({ key, href }) => (
+              {links.map(({ key, href }) => (
                 <Link
                   key={href}
                   href={href}

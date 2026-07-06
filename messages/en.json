@@ -476,6 +476,8 @@
     "preview": "Preview",
     "completion": "Core profile",
     "photoAlt": "Profile photo",
+    "avatarCurrent": "Current photo",
+    "avatarPick": "Choose profile photo",
     "portfolioTitle": "Portfolio ({count})",
     "identityEyebrow": "Your professional identity",
     "identityUntitled": "Add a headline to define your identity",
@@ -982,6 +984,7 @@
     "taxHint": "Simplified estimate on the remaining amount — pick 0 if you handle tax separately (e.g. young entrepreneur exemption).",
     "fxRate": "USD → TRY rate (optional)",
     "fxPlaceholder": "e.g. 40.5",
+    "fxAuto": "Live rate filled in automatically — you can edit it.",
     "resultTitle": "Your net take-home",
     "netPct": "{pct}% of gross stays with you",
     "rows": {

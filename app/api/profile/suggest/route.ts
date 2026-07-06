@@ -1,13 +1,14 @@
 // POST /api/profile/suggest → kullanıcının bağlı public profillerinden (platform_profiles)
-// AI ile master profil önerisi üretir (ÜCRETSİZDİR — aktivasyon yardımcısı; import/analyze
-// deseni). Öneri KAYDEDİLMEZ; kullanıcı alan bazlı "Uygula" ile forma taşır. Saatte 10 limit
-// (usage_events kind='profile_suggest'). Bağlı public veri yoksa 400 → önce platform çek.
+// AI ile master profil önerisi üretir. KREDİLİDİR (CREDIT_COSTS.profile_suggest — çok-platform
+// sentezi bir AI çağrısı). Öneri KAYDEDİLMEZ; kullanıcı alan bazlı "Uygula" ile forma taşır.
+// Saatte 10 limit (kaçak döngü koruması). Bağlı public veri yoksa 400 → önce platform çek.
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, ValidationError, RateLimitError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { spendCredits } from "@/lib/credits/spend";
 import { suggestProfile, type SuggestPlatformProfile } from "@/lib/ai/profile-suggest";
 
 const HOURLY_LIMIT = 10;
@@ -59,16 +60,20 @@ export const POST = withErrorHandler(async () => {
       }
     : null;
 
-  const result = await suggestProfile({ platformProfiles, current, locale });
+  // Kredi ATOMİK düşülür; AI patlarsa iade (spendCredits). Yetersiz kredide
+  // InsufficientCreditsError → withErrorHandler düzgün 4xx döner.
+  const { result, balance, spent } = await spendCredits(user.id, "profile_suggest", () =>
+    suggestProfile({ platformProfiles, current, locale }),
+  );
 
-  // Rate-limit + gözlemlenebilirlik kaydı (ücretsiz — kredi düşmez, server-otoritatif).
+  // Gözlemlenebilirlik kaydı (analitik — kredi iadesi kapsamı dışında).
   const admin = createSupabaseAdminClient();
   const { error: usageError } = await admin.from("usage_events").insert({
     user_id: user.id, kind: "profile_suggest", model: result.model,
     input_tokens: result.inputTokens, output_tokens: result.outputTokens,
-    cost_usd: result.costUsd, credits_spent: 0,
+    cost_usd: result.costUsd, credits_spent: spent,
   });
   if (usageError) throw usageError;
 
-  return NextResponse.json({ suggestion: result.draft });
+  return NextResponse.json({ suggestion: result.draft, credits: { balance, spent } });
 });

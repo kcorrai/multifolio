@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
@@ -14,40 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PlatformLogo } from "@/components/platform-logo";
+import { CreditCost } from "@/components/credit-cost";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import { ChipsInput } from "./chips-input";
-import { isHeadlineComplete, isSummaryComplete, areSkillsComplete } from "@/lib/profile-strength";
 import { ELEVATED, type InitialProfile, type ConnectedProfile } from "./shared";
 
 interface Suggestion { headline: string; summary: string; skills: string[] }
 type Field = "headline" | "summary" | "skills";
-
-// Hero'daki dairesel tamamlanma göstergesi (SVG halka).
-function CompletionRing({ percent }: { percent: number }) {
-  const r = 26;
-  const c = 2 * Math.PI * r;
-  const off = c - (percent / 100) * c;
-  return (
-    <div className="relative h-[72px] w-[72px] shrink-0">
-      <svg viewBox="0 0 64 64" className="h-full w-full -rotate-90">
-        <circle cx="32" cy="32" r={r} fill="none" stroke="currentColor" strokeWidth="5" className="text-muted/40" />
-        <circle
-          cx="32" cy="32" r={r} fill="none" stroke="url(#pgrad)" strokeWidth="5" strokeLinecap="round"
-          strokeDasharray={c} strokeDashoffset={off} className="transition-[stroke-dashoffset] duration-700"
-        />
-        <defs>
-          <linearGradient id="pgrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#00F0FF" />
-            <stop offset="100%" stopColor="#8b5cf6" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-sm font-extrabold tabular-nums">
-        {percent}%
-      </span>
-    </div>
-  );
-}
 
 export function ProfileTab({
   initialProfile, connectedProfiles = [],
@@ -61,10 +34,24 @@ export function ProfileTab({
   const [headline, setHeadline] = useState(initialProfile?.headline ?? "");
   const [summary, setSummary] = useState(initialProfile?.summary ?? "");
   const [skills, setSkills] = useState<string[]>(initialProfile?.skills ?? []);
-  // Görseller içe aktarmadan gelir; burada salt-okunur gösterilir (kaydetme ezmez).
-  // Çekirdek profilde foto yoksa bağlı public profillerden (en son çekilen) foto'ya düş.
-  const avatarUrl = initialProfile?.avatarUrl ?? connectedProfiles.find((c) => c.avatarUrl)?.avatarUrl ?? null;
   const portfolio = initialProfile?.portfolio ?? [];
+
+  // Seçilebilir profil fotoğrafları: çekirdek avatar + bağlı her platformun avatarı
+  // (URL bazında tekilleştirilir). Kullanıcı hangisini kullanacağını seçer; Kaydet'te
+  // avatar_url olarak persist edilir → istediği kaynağın fotosunu kullanabilir.
+  const availableAvatars = useMemo(() => {
+    const list: { url: string; label: string }[] = [];
+    const seen = new Set<string>();
+    const push = (url: string | null, label: string) => {
+      if (url && !seen.has(url)) { seen.add(url); list.push({ url, label }); }
+    };
+    push(initialProfile?.avatarUrl ?? null, t("avatarCurrent"));
+    connectedProfiles.forEach((c) => push(c.avatarUrl, PLATFORMS[c.platform].label));
+    return list;
+  }, [initialProfile?.avatarUrl, connectedProfiles, t]);
+  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(
+    initialProfile?.avatarUrl ?? availableAvatars[0]?.url ?? null,
+  );
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">(
     initialProfile !== null ? "saved" : "idle",
   );
@@ -79,22 +66,12 @@ export function ProfileTab({
   const profileSaved = saveState === "saved";
   const hasConnected = connectedProfiles.length > 0;
 
-  // Tamamlanma yüzdesi (hero halkası): 4 eşit ağırlıklı adım. Alan eşikleri
-  // Overview "Kurulum ilerlemesi" ile AYNI predicate'lerden (lib/profile-strength)
-  // → iki gösterge çelişmez.
-  const steps = [
-    isHeadlineComplete(headline),
-    isSummaryComplete(summary),
-    areSkillsComplete(skills),
-    profileSaved,
-  ];
-  const percent = Math.round((steps.filter(Boolean).length / steps.length) * 100);
-
   async function saveProfile() {
     setSaveState("saving"); setProfileError("");
     const res = await fetch("/api/profile", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ headline, summary, skills }),
+      // Seçilen avatar da persist edilir (foto seçimi Kaydet'te kalıcı olur).
+      body: JSON.stringify({ headline, summary, skills, avatar_url: selectedAvatar }),
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
@@ -116,6 +93,7 @@ export function ProfileTab({
     }
     setSuggestion(body.suggestion as Suggestion);
     setSuggesting(false);
+    router.refresh(); // kredi düştü → shell'deki bakiye rozetini tazele
   }
 
   function applyField(field: Field) {
@@ -143,15 +121,38 @@ export function ProfileTab({
       <div className={`relative overflow-hidden rounded-2xl border border-border bg-card ${ELEVATED}`}>
         <div className="h-1 bg-gradient-to-r from-[#00F0FF] via-violet-500 to-[#00F0FF]/30" />
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 p-6">
-          {avatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={avatarUrl} alt={t("photoAlt")}
-              className="h-20 w-20 shrink-0 rounded-2xl object-cover ring-2 ring-[#00F0FF]/30" />
-          ) : (
-            <div className="h-20 w-20 shrink-0 rounded-2xl bg-gradient-to-br from-[#00F0FF]/15 to-violet-500/15 border border-[#00F0FF]/20 flex items-center justify-center">
-              <User className="h-9 w-9 text-[#00F0FF]/70" />
-            </div>
-          )}
+          <div className="flex flex-col items-center gap-2 shrink-0">
+            {selectedAvatar ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={selectedAvatar} alt={t("photoAlt")}
+                className="h-20 w-20 rounded-2xl object-cover ring-2 ring-[#00F0FF]/30" />
+            ) : (
+              <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#00F0FF]/15 to-violet-500/15 border border-[#00F0FF]/20 flex items-center justify-center">
+                <User className="h-9 w-9 text-[#00F0FF]/70" />
+              </div>
+            )}
+            {/* Birden çok kaynaktan foto varsa hangisini kullanacağını seçtir (Kaydet'te persist). */}
+            {availableAvatars.length > 1 && (
+              <div className="flex items-center gap-1.5" role="group" aria-label={t("avatarPick")}>
+                {availableAvatars.map((a) => (
+                  <button
+                    key={a.url}
+                    type="button"
+                    onClick={() => { setSelectedAvatar(a.url); setSaveState("idle"); }}
+                    title={a.label}
+                    aria-label={a.label}
+                    aria-pressed={selectedAvatar === a.url}
+                    className={`h-7 w-7 rounded-full overflow-hidden border-2 transition cursor-pointer ${
+                      selectedAvatar === a.url ? "border-[#00F0FF]" : "border-transparent opacity-50 hover:opacity-100"
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={a.url} alt="" className="h-full w-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">
@@ -179,11 +180,6 @@ export function ProfileTab({
                 </span>
               </div>
             )}
-          </div>
-
-          <div className="flex flex-col items-center gap-1 shrink-0">
-            <CompletionRing percent={percent} />
-            <span className="text-[11px] text-muted-foreground">{t("completion")}</span>
           </div>
         </div>
       </div>
@@ -263,8 +259,8 @@ export function ProfileTab({
                   </h3>
                   <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">{t("aiDesc")}</p>
                 </div>
-                <span className="shrink-0 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide">
-                  {t("free")}
+                <span className="shrink-0 text-[#00F0FF]">
+                  <CreditCost kind="profile_suggest" />
                 </span>
               </div>
 
@@ -387,28 +383,6 @@ export function ProfileTab({
               </CardContent>
             </Card>
           )}
-
-          {/* Tamamlanma */}
-          <Card className={`shadow-sm ${ELEVATED}`}>
-            <CardContent className="pt-4 space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t("completion")}</p>
-              <div className="space-y-2">
-                {[
-                  { label: t("headlineLabel"), done: headline.trim().length > 0 },
-                  { label: t("summaryLabel"),  done: summary.trim().length > 0 },
-                  { label: t("skillsLabel"),   done: skills.length > 0 },
-                  { label: t("saved"),         done: profileSaved },
-                ].map(({ label, done }) => (
-                  <div key={label} className="flex items-center gap-2">
-                    <div className={`h-4 w-4 rounded-full flex items-center justify-center shrink-0 ${done ? "bg-green-500" : "bg-muted"}`}>
-                      {done && <Check className="h-2.5 w-2.5 text-white" />}
-                    </div>
-                    <span className={`text-xs font-medium ${done ? "text-foreground" : "text-muted-foreground"}`}>{label}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

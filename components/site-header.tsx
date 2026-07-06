@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
@@ -9,6 +9,7 @@ import { MobileNav } from "@/components/mobile-nav";
 export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = await getTranslations("landing");
   const tc = await getTranslations("common");
+  const locale = await getLocale();
 
   return (
     <header className="border-b border-slate-200 dark:border-white/5 anim-fade-in anim-d0">
@@ -22,12 +23,11 @@ export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean 
 
         <nav className="hidden md:flex items-center gap-7">
           {[
-            { label: t("nav.features"),   href: "/#features" },
-            { label: t("nav.howItWorks"), href: "/#how" },
             { label: t("nav.analyze"),    href: "/analyze" },
             { label: t("nav.earnings"),   href: "/earnings" },
             { label: t("nav.compare"),    href: "/compare" },
-            { label: t("nav.trTax"),      href: "/vergi" },
+            // TR vergi rehberi yalnız Türk kullanıcılara (global kitleye alakasız).
+            ...(locale.startsWith("tr") ? [{ label: t("nav.trTax"), href: "/vergi" }] : []),
             { label: t("nav.pricing"),    href: "/pricing" },
           ].map(({ label, href }) => (
             <Link key={href} href={href} className="text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium">

@@ -3,7 +3,7 @@
 // Net kazanç hesaplayıcı formu: tamamen istemcide, canlı hesap (AI/API yok).
 // Tüm oranlar varsayılanla önceden doldurulur ve DÜZENLENEBİLİR — platform/
 // vergi oranları zamanla değişir; sorumluluk kullanıcıya bırakılır (uyarı notu).
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Wallet, Info, ArrowRight } from "lucide-react";
@@ -38,6 +38,26 @@ export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolea
   const [transferFixed, setTransferFixed] = useState(String(TRANSFER_METHOD_DEFAULTS.payoneer.fixed));
   const [taxPct, setTaxPct] = useState("0");
   const [fxRate, setFxRate] = useState("");
+  const [fxAuto, setFxAuto] = useState(false);
+
+  // Güncel USD→TRY kurunu bir kez API'den çek (public /api/fx, 6 saat cache).
+  // Yalnız alan boşsa doldur → kullanıcının elle girdiğini EZMEZ. API düşerse
+  // (rate:null) sessizce elle girişe düşülür. Locale-farkında biçimlendirilir.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/fx")
+      .then((r) => r.json())
+      .then((d) => {
+        if (cancelled || typeof d?.rate !== "number") return;
+        setFxRate((prev) => {
+          if (prev.trim() !== "") return prev; // elle girilmişse dokunma
+          setFxAuto(true);
+          return new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(d.rate);
+        });
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [locale]);
 
   function pickPlatform(p: EarningsPlatform) {
     setPlatform(p);
@@ -151,11 +171,12 @@ export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolea
           <p className="text-[11px] text-muted-foreground/70">{t("taxHint")}</p>
         </div>
 
-        {/* Kur (yalnız USD) */}
+        {/* Kur (yalnız USD) — açılışta güncel kur otomatik dolar, düzenlenebilir. */}
         {currency === "USD" && (
           <div className="space-y-1.5">
             <label className={labelCls} htmlFor="earn-fx">{t("fxRate")}</label>
-            <Input id="earn-fx" inputMode="decimal" value={fxRate} onChange={(e) => setFxRate(e.target.value)} placeholder={t("fxPlaceholder")} className={inputCls} />
+            <Input id="earn-fx" inputMode="decimal" value={fxRate} onChange={(e) => { setFxRate(e.target.value); setFxAuto(false); }} placeholder={t("fxPlaceholder")} className={inputCls} />
+            {fxAuto && <p className="text-[11px] text-muted-foreground/70">{t("fxAuto")}</p>}
           </div>
         )}
       </div>

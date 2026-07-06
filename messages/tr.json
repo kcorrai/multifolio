@@ -476,6 +476,8 @@
     "preview": "Önizleme",
     "completion": "Çekirdek profil",
     "photoAlt": "Profil fotoğrafı",
+    "avatarCurrent": "Mevcut fotoğraf",
+    "avatarPick": "Profil fotoğrafı seç",
     "portfolioTitle": "Portfolyo ({count})",
     "identityEyebrow": "Profesyonel kimliğin",
     "identityUntitled": "Kimliğini tanımlamak için bir başlık ekle",
@@ -982,6 +984,7 @@
     "taxHint": "Kalan tutar üzerinden basitleştirilmiş tahmin — vergini ayrı yönetiyorsan (ör. genç girişimci istisnası) 0 seç.",
     "fxRate": "USD → TRY kuru (opsiyonel)",
     "fxPlaceholder": "ör. 40,5",
+    "fxAuto": "Güncel kur otomatik dolduruldu — düzenleyebilirsin.",
     "resultTitle": "Eline net geçen",
     "netPct": "Brütün %{pct}'i sende kalıyor",
     "rows": {

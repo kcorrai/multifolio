@@ -6,13 +6,14 @@ describe("CREDIT_COSTS", () => {
     expect(CREDIT_COSTS.adaptation).toBe(1);
     expect(CREDIT_COSTS.job_match).toBe(1);
     expect(CREDIT_COSTS.proposal).toBe(2);
+    expect(CREDIT_COSTS.profile_suggest).toBe(2);
     expect(CREDIT_COSTS.portfolio_generation).toBe(3);
     expect(CREDIT_COSTS.followup).toBe(1);
   });
 
   it("usage_events.kind ile birebir anahtar kullanır", () => {
     expect(Object.keys(CREDIT_COSTS).sort()).toEqual(
-      ["adaptation", "followup", "job_match", "portfolio_generation", "proposal"],
+      ["adaptation", "followup", "job_match", "portfolio_generation", "profile_suggest", "proposal"],
     );
   });
 });
