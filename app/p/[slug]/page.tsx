@@ -15,6 +15,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
 import { portfolioTheme } from "@/lib/portfolio/theme";
 import { buildPersonJsonLd } from "@/lib/portfolio/json-ld";
+import { PublicGallery } from "@/components/portfolio/public-gallery";
+import { ZoomableImage } from "@/components/portfolio/zoomable-image";
 
 // Uygulamanın mutlak taban URL'i (canonical + JSON-LD + og:url için). NEXT_PUBLIC_APP_URL
 // kesin; yoksa proxy header'larından türetilir (app-url.ts deseni, next/headers ile).
@@ -143,9 +145,8 @@ export default async function PortfolioPage({ params }: PageProps) {
       <header className="mx-auto max-w-5xl px-6 pt-14 pb-10 sm:pt-24 sm:pb-14">
         <div className="flex flex-col items-start gap-6 sm:gap-8">
           {media.avatarUrl ? (
-            // Dış görsel (bağlı platformdan) — next/image remotePatterns gerektirmesin.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            // Dış görsel (bağlı platformdan). Tıklanınca lightbox'ta büyür (ZoomableImage).
+            <ZoomableImage
               src={media.avatarUrl}
               alt={headline}
               className="anim-fade-in anim-d0 h-24 w-24 sm:h-28 sm:w-28 rounded-2xl object-cover ring-1 ring-[var(--pf-border)] shadow-xl"
@@ -199,28 +200,8 @@ export default async function PortfolioPage({ params }: PageProps) {
       {media.gallery.length > 0 && (
         <section className="mx-auto max-w-5xl px-6 py-8">
           <SectionLabel style={heading}>{t("gallery")}</SectionLabel>
-          <div className="mt-5 gap-4 [column-fill:_balance] columns-1 sm:columns-2 lg:columns-3">
-            {media.gallery.map((item, i) => (
-              <figure
-                key={item.url}
-                className="anim-fade-up mb-4 break-inside-avoid overflow-hidden rounded-xl border border-[var(--pf-border)] bg-[var(--pf-surface)] group"
-                style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.url}
-                  alt={item.caption || headline}
-                  loading="lazy"
-                  decoding="async"
-                  /* aspect-ratio yükleme öncesi yer ayırır → sütun akışı kaymaz (CLS). */
-                  className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                />
-                {item.caption && (
-                  <figcaption className="px-3 py-2 text-xs text-[var(--pf-muted)]">{item.caption}</figcaption>
-                )}
-              </figure>
-            ))}
-          </div>
+          {/* Tıklanınca lightbox + foto arası ileri/geri (PublicGallery, client). */}
+          <PublicGallery images={media.gallery} fallbackAlt={headline} />
         </section>
       )}
 
