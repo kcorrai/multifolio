@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Save, CheckCircle2, AlertCircle, Check, User, Wand2, Sparkles,
-  ExternalLink, ArrowUpRight, Layers, Plus, X, Languages,
+  ExternalLink, ArrowUpRight, Layers, Plus, X, Languages, RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -88,6 +88,14 @@ export function ProfileTab({
     initialProfile !== null ? "saved" : "idle",
   );
   const [profileError, setProfileError] = useState("");
+  // Son KAYDEDİLEN durumun anlık görüntüsü — "Sıfırla" buna geri döndürür (kayıtta güncellenir).
+  const [savedSnapshot, setSavedSnapshot] = useState(() => ({
+    headline: initialProfile?.headline ?? "",
+    summary: initialProfile?.summary ?? "",
+    skills: initialProfile?.skills ?? [],
+    avatar: initialProfile?.avatarUrl ?? null as string | null,
+    portfolio: initialProfile?.portfolio ?? [],
+  }));
 
   // ── AI önerisi (public profillerden) ──────────────────────────────────
   const [suggesting, setSuggesting] = useState(false);
@@ -116,7 +124,22 @@ export function ProfileTab({
       return;
     }
     setSaveState("saved");
+    setSavedSnapshot({ headline, summary, skills, avatar: selectedAvatar, portfolio }); // Sıfırla referansı
+    setIsTranslated(false); setPreTranslate(null);
     if (body?.referralBonus === true) router.refresh();
+  }
+
+  // Kaydedilmemiş tüm değişiklikleri son kaydedilen hale geri al (Sıfırla).
+  function resetProfile() {
+    setHeadline(savedSnapshot.headline);
+    setSummary(savedSnapshot.summary);
+    setSkills(savedSnapshot.skills);
+    setSelectedAvatar(savedSnapshot.avatar);
+    setPortfolio(savedSnapshot.portfolio);
+    setIsTranslated(false); setPreTranslate(null);
+    setSuggestion(null); setApplied({ headline: false, summary: false, skills: false });
+    setProfileError(""); setSuggestError("");
+    setSaveState(initialProfile !== null ? "saved" : "idle");
   }
 
   async function generateSuggestion() {
@@ -330,6 +353,13 @@ export function ProfileTab({
                 <Save className="h-4 w-4" />
                 {saveState === "saving" ? t("saving") : t("save")}
               </Button>
+              {/* Sıfırla: kaydedilmemiş değişiklikleri son kaydedilen hale döndür. */}
+              {saveState === "idle" && (
+                <Button type="button" variant="ghost" size="sm" onClick={resetProfile}
+                  className="gap-1.5 text-muted-foreground hover:text-foreground">
+                  <RotateCcw className="h-3.5 w-3.5" />{t("reset")}
+                </Button>
+              )}
               {profileSaved && (
                 <span className="flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400">
                   <CheckCircle2 className="h-4 w-4" /> {t("saved")}
