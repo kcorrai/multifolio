@@ -19,7 +19,7 @@ export default async function ProfilePage() {
       .maybeSingle(),
     supabase
       .from("platform_profiles")
-      .select("platform, headline, summary, skills, avatar_url, source_url, fetched_at")
+      .select("platform, headline, summary, skills, avatar_url, portfolio, source_url, fetched_at")
       .eq("user_id", user.id)
       .order("fetched_at", { ascending: false }),
   ]);
@@ -46,6 +46,7 @@ export default async function ProfilePage() {
       avatarUrl: (r.avatar_url as string | null) ?? null,
       sourceUrl: (r.source_url as string | null) ?? null,
       fetchedAt: r.fetched_at as string,
+      portfolio: (r.portfolio as PortfolioItem[]) ?? [],
     }));
 
   return <ProfileTab initialProfile={initialProfile} connectedProfiles={connectedProfiles} />;

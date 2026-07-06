@@ -28,6 +28,7 @@ export interface ConnectedProfile {
   avatarUrl: string | null;
   sourceUrl: string | null;
   fetchedAt: string;
+  portfolio: PortfolioItem[];
 }
 export interface JobRow {
   id: string; title: string; company: string | null; platform: string | null;

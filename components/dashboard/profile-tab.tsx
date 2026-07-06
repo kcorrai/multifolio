@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Save, CheckCircle2, AlertCircle, Check, User, Wand2, Sparkles,
-  ExternalLink, ArrowUpRight, Layers,
+  ExternalLink, ArrowUpRight, Layers, Plus, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -15,7 +16,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PlatformLogo } from "@/components/platform-logo";
 import { CreditCost } from "@/components/credit-cost";
+import { ImageLightbox } from "@/components/image-lightbox";
 import { PLATFORMS } from "@/lib/ai/platforms";
+import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import { ChipsInput } from "./chips-input";
 import { ELEVATED, type InitialProfile, type ConnectedProfile } from "./shared";
 
@@ -34,7 +37,12 @@ export function ProfileTab({
   const [headline, setHeadline] = useState(initialProfile?.headline ?? "");
   const [summary, setSummary] = useState(initialProfile?.summary ?? "");
   const [skills, setSkills] = useState<string[]>(initialProfile?.skills ?? []);
-  const portfolio = initialProfile?.portfolio ?? [];
+  // Portfolyo görselleri düzenlenebilir: bağlı profillerden (Bionluk) foto EKLENEBİLİR
+  // (galeri "+"); Kaydet'te persist. Lightbox: foto tıklanınca ortada büyür.
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>(initialProfile?.portfolio ?? []);
+  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [picked, setPicked] = useState<Set<string>>(new Set());
 
   // Seçilebilir profil fotoğrafları: çekirdek avatar + bağlı her platformun avatarı
   // (URL bazında tekilleştirilir). Kullanıcı hangisini kullanacağını seçer; Kaydet'te
@@ -49,6 +57,22 @@ export function ProfileTab({
     connectedProfiles.forEach((c) => push(c.avatarUrl, PLATFORMS[c.platform].label));
     return list;
   }, [initialProfile?.avatarUrl, connectedProfiles, t]);
+
+  // Bağlı profillerdeki (Bionluk) portfolyo görsellerinden çekirdek portfolyoda
+  // OLMAYANLAR = "+" galerisinden eklenebilecek "diğer fotoğraflar" (URL bazında tekil).
+  const extraPhotos = useMemo(() => {
+    const existing = new Set(portfolio.map((p) => p.imageUrl).filter(Boolean));
+    const seen = new Set<string>();
+    const out: PortfolioItem[] = [];
+    for (const c of connectedProfiles) {
+      for (const item of c.portfolio ?? []) {
+        if (!item.imageUrl || existing.has(item.imageUrl) || seen.has(item.imageUrl)) continue;
+        seen.add(item.imageUrl);
+        out.push(item);
+      }
+    }
+    return out;
+  }, [connectedProfiles, portfolio]);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(
     initialProfile?.avatarUrl ?? availableAvatars[0]?.url ?? null,
   );
@@ -70,8 +94,8 @@ export function ProfileTab({
     setSaveState("saving"); setProfileError("");
     const res = await fetch("/api/profile", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      // Seçilen avatar da persist edilir (foto seçimi Kaydet'te kalıcı olur).
-      body: JSON.stringify({ headline, summary, skills, avatar_url: selectedAvatar }),
+      // Seçilen avatar + portfolyo (galeriden eklenenler dahil) Kaydet'te persist edilir.
+      body: JSON.stringify({ headline, summary, skills, avatar_url: selectedAvatar, portfolio }),
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
@@ -114,6 +138,21 @@ export function ProfileTab({
     setSaveState("idle");
   }
 
+  // ── Galeri "+" (bağlı profillerdeki diğer fotoğraflardan ekleme) ─────────
+  function togglePick(url: string) {
+    setPicked((prev) => {
+      const next = new Set(prev);
+      if (next.has(url)) next.delete(url); else next.add(url);
+      return next;
+    });
+  }
+  function closePicker() { setPickerOpen(false); setPicked(new Set()); }
+  function addPicked() {
+    const toAdd = extraPhotos.filter((p) => p.imageUrl && picked.has(p.imageUrl));
+    if (toAdd.length) { setPortfolio((prev) => [...prev, ...toAdd]); setSaveState("idle"); }
+    closePicker();
+  }
+
   return (
     <div className="space-y-6">
 
@@ -123,9 +162,11 @@ export function ProfileTab({
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 p-6">
           <div className="flex flex-col items-center gap-2 shrink-0">
             {selectedAvatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={selectedAvatar} alt={t("photoAlt")}
-                className="h-20 w-20 rounded-2xl object-cover ring-2 ring-[#00F0FF]/30" />
+              <button type="button" onClick={() => setLightbox(selectedAvatar)} title={t("viewPhoto")} aria-label={t("viewPhoto")} className="cursor-zoom-in">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={selectedAvatar} alt={t("photoAlt")}
+                  className="h-20 w-20 rounded-2xl object-cover ring-2 ring-[#00F0FF]/30" />
+              </button>
             ) : (
               <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#00F0FF]/15 to-violet-500/15 border border-[#00F0FF]/20 flex items-center justify-center">
                 <User className="h-9 w-9 text-[#00F0FF]/70" />
@@ -364,20 +405,42 @@ export function ProfileTab({
             </CardContent>
           </Card>
 
-          {/* Portfolyo görselleri (içe aktarmadan) */}
-          {portfolio.length > 0 && (
+          {/* Portfolyo görselleri — tıklanınca lightbox; "+" ile bağlı profillerden ekle. */}
+          {(portfolio.length > 0 || extraPhotos.length > 0) && (
             <Card className={`shadow-sm ${ELEVATED}`}>
               <CardContent className="pt-4 space-y-2.5">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                   {t("portfolioTitle", { count: portfolio.length })}
                 </p>
                 <div className="grid grid-cols-3 gap-2">
-                  {portfolio.slice(0, 9).map((item, i) =>
-                    item.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img key={i} src={item.imageUrl} alt={item.title} title={item.title}
-                        className="aspect-square w-full rounded-lg object-cover border border-border" />
-                    ) : null,
+                  {portfolio.map((item, i) => {
+                    const url = item.imageUrl;
+                    if (!url) return null;
+                    return (
+                      <button
+                        key={url + i}
+                        type="button"
+                        onClick={() => setLightbox(url)}
+                        title={item.title || t("viewPhoto")}
+                        className="group relative aspect-square w-full overflow-hidden rounded-lg border border-border cursor-zoom-in"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt={item.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                      </button>
+                    );
+                  })}
+                  {/* "+" galerisi: bağlı profillerdeki diğer fotoğraflardan ekle. */}
+                  {extraPhotos.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setPickerOpen(true)}
+                      title={t("addPhotos")}
+                      aria-label={t("addPhotos")}
+                      className="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-colors cursor-pointer"
+                    >
+                      <Plus className="h-5 w-5" />
+                      <span className="text-[10px] font-semibold">{t("addPhotosShort", { count: extraPhotos.length })}</span>
+                    </button>
                   )}
                 </div>
               </CardContent>
@@ -385,6 +448,62 @@ export function ProfileTab({
           )}
         </div>
       </div>
+
+      {/* Lightbox: avatar/portfolyo fotosu tıklanınca ortada büyür. */}
+      {lightbox && (
+        <ImageLightbox src={lightbox} alt={t("photoAlt")} closeLabel={t("lightboxClose")} onClose={() => setLightbox(null)} />
+      )}
+
+      {/* Galeri seçici: bağlı profillerdeki diğer fotoğraflardan tekli/çoklu ekle. */}
+      {pickerOpen && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closePicker} />
+          <div role="dialog" aria-modal="true" className="relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
+            <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+              <div className="min-w-0">
+                <h2 className="text-sm font-bold">{t("addPhotos")}</h2>
+                <p className="text-[11px] text-muted-foreground">{t("addPhotosDesc")}</p>
+              </div>
+              <button onClick={closePicker} title={t("lightboxClose")} aria-label={t("lightboxClose")} className="shrink-0 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="grid grid-cols-3 gap-2">
+                {extraPhotos.map((item, i) => {
+                  const url = item.imageUrl;
+                  if (!url) return null;
+                  const isPicked = picked.has(url);
+                  return (
+                    <button
+                      key={url + i}
+                      type="button"
+                      onClick={() => togglePick(url)}
+                      aria-pressed={isPicked}
+                      className={`group relative aspect-square w-full overflow-hidden rounded-lg border-2 transition ${isPicked ? "border-[#00F0FF]" : "border-transparent hover:border-border"}`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={url} alt={item.title} className={`h-full w-full object-cover transition ${isPicked ? "" : "opacity-80 group-hover:opacity-100"}`} />
+                      {isPicked && (
+                        <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#00F0FF] text-[#031014]">
+                          <Check className="h-3 w-3" />
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-3 border-t border-border px-5 py-3">
+              <button onClick={closePicker} className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{t("cancel")}</button>
+              <Button onClick={addPicked} disabled={picked.size === 0} className="gap-1.5">
+                <Plus className="h-4 w-4" />{t("addSelected", { count: picked.size })}
+              </Button>
+            </div>
+          </div>
+        </div>,
+        document.body,
+      )}
     </div>
   );
 }
