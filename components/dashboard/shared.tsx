@@ -6,6 +6,7 @@ import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
 import type { PortfolioItem, ProfileProject } from "@/lib/validation/schemas/profile";
 import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
+import type { CvContent } from "@/lib/validation/schemas/cv";
 
 export type { PoolJob } from "@/lib/validation/schemas/feed";
 
@@ -21,6 +22,9 @@ export interface InitialProfile {
 }
 export interface AdaptOutput { headline: string; body: string }
 export interface InitialPortfolio { slug: string; published: boolean; content: PortfolioContent | null }
+export interface InitialCv { content: CvContent | null }
+/** CV'yi uyarlamak için ilan seçici seçeneği. */
+export interface CvJobOption { id: string; title: string }
 /** Profil sayfasında gösterilen, bir platformdan çekilmiş public profil özeti. */
 export interface ConnectedProfile {
   platform: PlatformId;
@@ -52,6 +56,7 @@ export const NAV_ITEMS: { href: string; labelKey: string; icon: React.ElementTyp
   { href: "/dashboard/profile",   labelKey: "profile",   icon: User },
   { href: "/dashboard/platforms", labelKey: "platforms", icon: Layers,     badge: "connections" },
   { href: "/dashboard/portfolio", labelKey: "portfolio", icon: Globe },
+  { href: "/dashboard/cv",        labelKey: "cv",        icon: FileText },
   { href: "/dashboard/jobs",      labelKey: "jobs",      icon: Briefcase, badge: "jobs" },
 ];
 
@@ -101,6 +106,9 @@ export const KIND_ICONS: Record<string, React.ElementType> = {
   profile_import: Download,        // profil içe aktarma
   platform_sync: RefreshCw,        // bağlı profil çekimi
   public_analyze: Gauge,           // profil analiz skoru
+  cv_generation: FileText,         // CV üretimi
+  cv_tailor: Wand2,                // CV işe uyarlama
+  cv_import: Download,             // CV içe aktarma
 };
 
 /* ── Helpers ────────────────────────────────────────────────────────── */

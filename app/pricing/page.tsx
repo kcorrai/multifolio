@@ -21,6 +21,8 @@ const COST_ROWS: { kind: CreditKind; icon: typeof Layers }[] = [
   { kind: "job_match",            icon: Briefcase },
   { kind: "proposal",             icon: FileText  },
   { kind: "portfolio_generation", icon: Globe     },
+  { kind: "cv_generation",        icon: FileText  },
+  { kind: "cv_tailor",            icon: FileText  },
 ];
 
 export default async function PricingPage() {
