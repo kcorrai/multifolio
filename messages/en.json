@@ -251,12 +251,14 @@
       "credits": "Credits",
       "buyCredits": "Buy",
       "logout": "Sign out",
+      "gettingStarted": "Getting started",
       "comingSoonTitle": "Payments coming soon!",
       "comingSoonBody": "Credit purchasing goes live very soon."
     },
     "overview": {
       "welcome": "Welcome to Multifolio!",
       "welcomeSub": "Let's set up your freelance profile in 2 steps.",
+      "openGuide": "Open setup guide",
       "close": "Close",
       "step1Label": "Fill in profile",
       "step1Desc": "Enter your headline, summary and skills.",
@@ -692,6 +694,33 @@
     "moderationNote": "Recommendations are reviewed before they appear.",
     "error": "Couldn't send your recommendation. Please try again.",
     "poweredBy": "Powered by"
+  },
+  "gettingStarted": {
+    "eyebrow": "Getting started",
+    "title": "Welcome to Multifolio",
+    "subtitle": "Complete these steps to get the most out of Multifolio.",
+    "nextUp": "Next up",
+    "checklistTitle": "Your setup checklist",
+    "progress": "{done}/{total} completed",
+    "doneTitle": "You're all set! 🎉",
+    "doneBody": "You've completed every step — you're ready to win more freelance work.",
+    "bonusJustEarned": "You just earned +{count} bonus credits!",
+    "bonusEarned": "+{count} bonus credits earned",
+    "exploreTitle": "Explore free tools",
+    "steps": {
+      "verifyEmail": { "title": "Verify your email", "desc": "Confirm your address to secure your account.", "cta": "Verify" },
+      "profile": { "title": "Build your profile", "desc": "Import or write your headline, summary and skills once.", "cta": "Start" },
+      "connect": { "title": "Connect a platform", "desc": "Link LinkedIn, Upwork, Fiverr, Bionluk or Armut.", "cta": "Connect" },
+      "adapt": { "title": "Generate a platform version", "desc": "Turn your profile into optimized text for a platform.", "cta": "Generate" },
+      "feed": { "title": "Set up a job feed", "desc": "Create a filtered feed of matching freelance jobs.", "cta": "Create" },
+      "portfolio": { "title": "Publish your portfolio", "desc": "Spin up a shareable portfolio site in one click.", "cta": "Publish" }
+    },
+    "explore": {
+      "analyze": { "title": "Profile analysis", "desc": "Free AI score for your profile." },
+      "earnings": { "title": "Net earnings", "desc": "See what you really take home." },
+      "compare": { "title": "Compare platforms", "desc": "Find which platform pays you most." },
+      "extension": { "title": "Browser extension", "desc": "Import Upwork & Fiverr profiles." }
+    }
   },
   "publicAnalysis": {
     "metaTitle": "Free Freelancer Profile Check — Multifolio",

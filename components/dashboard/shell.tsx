@@ -67,13 +67,13 @@ export function DashboardShell({
         {/* ── SIDEBAR (desktop) ──────────────────────────────────────── */}
         <aside className="hidden lg:flex w-60 flex-col shrink-0 border-r border-border bg-background">
 
-          {/* Brand */}
-          <div className="flex items-center gap-2.5 px-5 h-14 border-b border-border shrink-0">
-            <div className="relative h-7 w-7 rounded-lg bg-gradient-to-br from-[#00F0FF]/25 to-[#00F0FF]/5 border border-[#00F0FF]/30 flex items-center justify-center shadow-sm shadow-[#00F0FF]/20">
+          {/* Brand → Getting Started (onboarding görev listesi) */}
+          <Link href="/dashboard/start" title={t("shell.gettingStarted")} className="group flex items-center gap-2.5 px-5 h-14 border-b border-border shrink-0 hover:bg-muted/50 transition-colors">
+            <div className="relative h-7 w-7 rounded-lg bg-gradient-to-br from-[#00F0FF]/25 to-[#00F0FF]/5 border border-[#00F0FF]/30 flex items-center justify-center shadow-sm shadow-[#00F0FF]/20 group-hover:scale-105 transition-transform">
               <span className="text-[#00F0FF] text-sm font-extrabold drop-shadow-[0_0_6px_rgba(0,240,255,0.4)]">M</span>
             </div>
             <span className="font-bold tracking-tight text-sm bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">Multifolio</span>
-          </div>
+          </Link>
 
           {/* Nav */}
           <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
@@ -139,8 +139,8 @@ export function DashboardShell({
 
           {/* Top bar */}
           <header className="h-14 flex items-center justify-between px-4 sm:px-6 border-b border-border shrink-0 bg-background/80 backdrop-blur-sm">
-            {/* Mobile: logo */}
-            <Link href="/dashboard" className="flex items-center gap-2 lg:hidden">
+            {/* Mobile: logo → Getting Started */}
+            <Link href="/dashboard/start" className="flex items-center gap-2 lg:hidden">
               <div className="h-6 w-6 rounded-md bg-[#00F0FF]/20 border border-[#00F0FF]/30 flex items-center justify-center">
                 <span className="text-[#00F0FF] text-xs font-extrabold">M</span>
               </div>

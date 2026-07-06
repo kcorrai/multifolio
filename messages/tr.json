@@ -251,12 +251,14 @@
       "credits": "Kredi",
       "buyCredits": "Satın Al",
       "logout": "Çıkış Yap",
+      "gettingStarted": "Başlangıç rehberi",
       "comingSoonTitle": "Ödeme sistemi yakında!",
       "comingSoonBody": "Kredi satın alma çok yakında açılıyor."
     },
     "overview": {
       "welcome": "Multifolio'ya hoş geldin!",
       "welcomeSub": "2 adımda freelancer profilini kuralım.",
+      "openGuide": "Kurulum rehberini aç",
       "close": "Kapat",
       "step1Label": "Profil doldur",
       "step1Desc": "Başlık, özet ve becerileri gir.",
@@ -692,6 +694,33 @@
     "moderationNote": "Yorumlar görünmeden önce incelenir.",
     "error": "Yorumun gönderilemedi. Lütfen tekrar dene.",
     "poweredBy": "Destekleyen"
+  },
+  "gettingStarted": {
+    "eyebrow": "Başlangıç",
+    "title": "Multifolio'ya hoş geldin",
+    "subtitle": "Multifolio'dan en iyi şekilde faydalanmak için bu adımları tamamla.",
+    "nextUp": "Sıradaki adım",
+    "checklistTitle": "Kurulum görev listen",
+    "progress": "{done}/{total} tamamlandı",
+    "doneTitle": "Her şey hazır! 🎉",
+    "doneBody": "Tüm adımları tamamladın — artık daha çok freelance iş kazanmaya hazırsın.",
+    "bonusJustEarned": "+{count} bonus kredi kazandın!",
+    "bonusEarned": "+{count} bonus kredi kazanıldı",
+    "exploreTitle": "Ücretsiz araçları keşfet",
+    "steps": {
+      "verifyEmail": { "title": "E-postanı doğrula", "desc": "Hesabını güvene almak için adresini onayla.", "cta": "Doğrula" },
+      "profile": { "title": "Profilini oluştur", "desc": "Başlığını, özetini ve becerilerini bir kez içe aktar ya da yaz.", "cta": "Başla" },
+      "connect": { "title": "Bir platform bağla", "desc": "LinkedIn, Upwork, Fiverr, Bionluk ya da Armut'u bağla.", "cta": "Bağla" },
+      "adapt": { "title": "Platforma özel metin üret", "desc": "Profilini bir platform için optimize metne dönüştür.", "cta": "Üret" },
+      "feed": { "title": "İş feed'i kur", "desc": "Sana uyan işlerden filtreli bir feed oluştur.", "cta": "Oluştur" },
+      "portfolio": { "title": "Portfolyonu yayınla", "desc": "Tek tıkla paylaşılabilir bir portfolyo sitesi kur.", "cta": "Yayınla" }
+    },
+    "explore": {
+      "analyze": { "title": "Profil analizi", "desc": "Profilin için ücretsiz AI skoru." },
+      "earnings": { "title": "Net kazanç", "desc": "Eline net ne geçtiğini gör." },
+      "compare": { "title": "Platform karşılaştır", "desc": "Hangi platform sana en çok kazandırıyor." },
+      "extension": { "title": "Tarayıcı uzantısı", "desc": "Upwork & Fiverr profillerini içe aktar." }
+    }
   },
   "publicAnalysis": {
     "metaTitle": "Ücretsiz Freelancer Profil Analizi — Multifolio",

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  Sparkles, X, Check, AlertCircle, BarChart3,
+  Sparkles, X, AlertCircle, BarChart3,
   Wallet, Zap, Briefcase, ShoppingCart, ArrowRight, TrendingUp,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
@@ -65,38 +65,13 @@ export function OverviewTab({
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { step: 1, label: t("step1Label"), desc: t("step1Desc"), href: "/dashboard/import" },
-                { step: 2, label: t("step2Label"), desc: t("step2Desc"), href: "/dashboard/platforms" },
-              ].map(({ step, label, desc, href }) => {
-                const done = onboardingStep > step;
-                const active = onboardingStep === step;
-                return (
-                  <Link
-                    key={step}
-                    href={href}
-                    className={`text-left rounded-xl p-3 border transition-all cursor-pointer ${
-                      done
-                        ? "border-green-200 bg-green-50 dark:border-green-800/40 dark:bg-green-950/20"
-                        : active
-                        ? "border-[#00F0FF]/30 bg-white dark:border-[#00F0FF]/20 dark:bg-[#00F0FF]/5 shadow-sm"
-                        : "border-border opacity-50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 text-[10px] font-extrabold ${
-                        done ? "bg-green-500 text-white" : active ? "bg-[#00F0FF] text-[#090A0F]" : "bg-muted text-muted-foreground"
-                      }`}>
-                        {done ? <Check className="h-3 w-3" /> : step}
-                      </div>
-                      <span className={`text-xs font-semibold ${done ? "text-green-700 dark:text-green-400" : active ? "text-foreground" : "text-muted-foreground"}`}>{label}</span>
-                    </div>
-                    <p className="text-[11px] text-muted-foreground/70 leading-snug pl-7">{desc}</p>
-                  </Link>
-                );
-              })}
-            </div>
+            {/* Adımların tamamı yeni /dashboard/start rehberinde — buradan oraya yönlendir. */}
+            <Link
+              href="/dashboard/start"
+              className="group inline-flex items-center gap-1.5 rounded-xl bg-[#00F0FF]/10 hover:bg-[#00F0FF]/15 text-[#00F0FF] font-semibold text-sm px-4 py-2 transition-colors"
+            >
+              {t("openGuide")}<ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
           </div>
         </div>
       )}
