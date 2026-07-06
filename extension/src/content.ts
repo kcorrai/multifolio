@@ -159,6 +159,17 @@ function findOpenModal(): HTMLElement | null {
   return document.querySelector<HTMLElement>('[role="dialog"], [aria-modal="true"]');
 }
 
+// Portfolyo shelf'ini sayfalar arası gezer (modal AÇMAZ) — amaç 2-3. sayfayı API'den
+// yükletmek; MAIN-world nuxt.js o yanıtları yakalayıp projeleri biriktirir. En fazla 12 sayfa.
+async function paginateUpworkPortfolio(): Promise<void> {
+  for (let page = 0; page < 12; page++) {
+    const next = findPortfolioNextButton();
+    if (!next) break;
+    next.click();
+    await sleep(1300); // sayfa API'den gelsin
+  }
+}
+
 // Modalı GÜVENLE kapat. history.back KULLANMA — tarayıcı geçmişinde fazla geri gidip
 // kullanıcıyı SİTEDEN ATABİLİYOR. Sırasıyla: modal kapat (X) düğmesi → Escape. Kapatamazsa
 // false döner (çağıran daha fazla modal açmayı durdurur).
@@ -310,6 +321,7 @@ async function collectPayload(platform: ProfilePlatform) {
     // ÖNCE window.__NUXT__'tan KESİN+TAM proje verisi (MAIN-world nuxt.js): başlık/açıklama/
     // rol/beceriler + tüm görseller ve altyazıları — modal/sayfalama gerekmez. Boşsa
     // (login'de veri Vue store'da değilse) DOM/modal harvest'e düş (best-effort).
+    await paginateUpworkPortfolio();          // 2-3. sayfayı API'den yüklet (MAIN yakalar)
     const nuxt = await requestNuxtProjects();
     if (nuxt.length) {
       portfolioProjects = nuxt.slice(0, 30);
