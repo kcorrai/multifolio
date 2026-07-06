@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PlatformLogo } from "@/components/platform-logo";
 import { CreditCost } from "@/components/credit-cost";
-import { ImageLightbox } from "@/components/image-lightbox";
+import { ImageLightbox, type LightboxImage } from "@/components/image-lightbox";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import { ChipsInput } from "./chips-input";
@@ -40,7 +40,7 @@ export function ProfileTab({
   // Portfolyo görselleri düzenlenebilir: bağlı profillerden (Bionluk) foto EKLENEBİLİR
   // (galeri "+"); Kaydet'te persist. Lightbox: foto tıklanınca ortada büyür.
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>(initialProfile?.portfolio ?? []);
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [picked, setPicked] = useState<Set<string>>(new Set());
 
@@ -73,6 +73,12 @@ export function ProfileTab({
     }
     return out;
   }, [connectedProfiles, portfolio]);
+
+  // Lightbox galerisi: portfolyodaki görselli öğeler (index eşleşmesi için önceden süz).
+  const portfolioImages = useMemo<LightboxImage[]>(
+    () => portfolio.filter((p) => p.imageUrl).map((p) => ({ src: p.imageUrl as string, alt: p.title })),
+    [portfolio],
+  );
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(
     initialProfile?.avatarUrl ?? availableAvatars[0]?.url ?? null,
   );
@@ -162,7 +168,7 @@ export function ProfileTab({
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 p-6">
           <div className="flex flex-col items-center gap-2 shrink-0">
             {selectedAvatar ? (
-              <button type="button" onClick={() => setLightbox(selectedAvatar)} title={t("viewPhoto")} aria-label={t("viewPhoto")} className="cursor-zoom-in">
+              <button type="button" onClick={() => setLightbox({ images: [{ src: selectedAvatar, alt: t("photoAlt") }], index: 0 })} title={t("viewPhoto")} aria-label={t("viewPhoto")} className="cursor-zoom-in">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={selectedAvatar} alt={t("photoAlt")}
                   className="h-20 w-20 rounded-2xl object-cover ring-2 ring-[#00F0FF]/30" />
@@ -413,22 +419,18 @@ export function ProfileTab({
                   {t("portfolioTitle", { count: portfolio.length })}
                 </p>
                 <div className="grid grid-cols-3 gap-2">
-                  {portfolio.map((item, i) => {
-                    const url = item.imageUrl;
-                    if (!url) return null;
-                    return (
-                      <button
-                        key={url + i}
-                        type="button"
-                        onClick={() => setLightbox(url)}
-                        title={item.title || t("viewPhoto")}
-                        className="group relative aspect-square w-full overflow-hidden rounded-lg border border-border cursor-zoom-in"
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={url} alt={item.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
-                      </button>
-                    );
-                  })}
+                  {portfolioImages.map((img, k) => (
+                    <button
+                      key={img.src + k}
+                      type="button"
+                      onClick={() => setLightbox({ images: portfolioImages, index: k })}
+                      title={img.alt || t("viewPhoto")}
+                      className="group relative aspect-square w-full overflow-hidden rounded-lg border border-border cursor-zoom-in"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.src} alt={img.alt} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                    </button>
+                  ))}
                   {/* "+" galerisi: bağlı profillerdeki diğer fotoğraflardan ekle. */}
                   {extraPhotos.length > 0 && (
                     <button
@@ -449,9 +451,16 @@ export function ProfileTab({
         </div>
       </div>
 
-      {/* Lightbox: avatar/portfolyo fotosu tıklanınca ortada büyür. */}
+      {/* Lightbox: avatar/portfolyo fotosu tıklanınca ortada büyür + ileri/geri gezinme. */}
       {lightbox && (
-        <ImageLightbox src={lightbox} alt={t("photoAlt")} closeLabel={t("lightboxClose")} onClose={() => setLightbox(null)} />
+        <ImageLightbox
+          images={lightbox.images}
+          index={lightbox.index}
+          onClose={() => setLightbox(null)}
+          closeLabel={t("lightboxClose")}
+          prevLabel={t("prev")}
+          nextLabel={t("next")}
+        />
       )}
 
       {/* Galeri seçici: bağlı profillerdeki diğer fotoğraflardan tekli/çoklu ekle. */}

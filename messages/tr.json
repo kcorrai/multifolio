@@ -482,6 +482,8 @@
     "avatarPick": "Profil fotoğrafı seç",
     "viewPhoto": "Fotoğrafı büyüt",
     "lightboxClose": "Kapat",
+    "prev": "Önceki",
+    "next": "Sonraki",
     "addPhotos": "Fotoğraf ekle",
     "addPhotosShort": "{count} daha",
     "addPhotosDesc": "Bağlı profillerinden fotoğraf seç",

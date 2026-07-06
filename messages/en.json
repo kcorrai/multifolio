@@ -482,6 +482,8 @@
     "avatarPick": "Choose profile photo",
     "viewPhoto": "View photo",
     "lightboxClose": "Close",
+    "prev": "Previous",
+    "next": "Next",
     "addPhotos": "Add photos",
     "addPhotosShort": "{count} more",
     "addPhotosDesc": "Pick photos from your connected profiles",
