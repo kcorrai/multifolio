@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { ArrowLeft, Quote } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { RecommendForm } from "@/components/testimonials/recommend-form";
 import { portfolioTheme, ACCENT_HEX, type PortfolioAccent, type PortfolioPreset } from "@/lib/portfolio/theme";
@@ -47,16 +48,48 @@ export default async function RecommendPage({ params }: PageProps) {
   const accentHex = ACCENT_HEX[owner.accent] ?? ACCENT_HEX.blue;
 
   return (
-    <div style={vars} className="min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)]">
-      <div className="mx-auto max-w-xl px-6 py-16 space-y-6">
-        <div className="text-center space-y-2">
-          <Link href={`/p/${slug}`} className="text-xs font-bold uppercase tracking-[0.2em] hover:underline" style={{ color: accentHex }}>
-            {owner.headline}
-          </Link>
-          <h1 className="text-3xl font-extrabold tracking-tight">{t("title")}</h1>
-          <p className="text-sm" style={{ color: "var(--pf-muted)" }}>{t("subtitle")}</p>
+    <div
+      style={{ ...vars, fontFamily: "var(--pf-body-font)" }}
+      className="min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)]"
+    >
+      <div className="mx-auto flex max-w-lg flex-col px-6 py-14 sm:py-20">
+        {/* Portfolyoya dönüş — uzun headline tek satıra kırpılır (taşma bug'ı düzeldi). */}
+        <Link
+          href={`/p/${slug}`}
+          className="group mb-8 inline-flex max-w-full items-center gap-1.5 text-xs font-semibold hover:underline"
+          style={{ color: accentHex }}
+        >
+          <ArrowLeft className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:-translate-x-0.5" />
+          <span className="truncate">{owner.headline}</span>
+        </Link>
+
+        {/* Cilalı kart: portfolyo yüzey/kenarlık tokenları → görsel kopukluk yok. */}
+        <div
+          className="rounded-3xl border p-6 shadow-xl sm:p-8"
+          style={{ background: "var(--pf-surface)", borderColor: "var(--pf-border)" }}
+        >
+          <div className="mb-6 space-y-3">
+            <span
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl"
+              style={{ background: `${accentHex}1f`, color: accentHex }}
+            >
+              <Quote className="h-5 w-5" />
+            </span>
+            <h1
+              className="text-2xl font-extrabold tracking-tight sm:text-3xl"
+              style={{ fontFamily: "var(--pf-heading-font)" }}
+            >
+              {t("title")}
+            </h1>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--pf-muted)" }}>{t("subtitle")}</p>
+          </div>
+          <RecommendForm slug={slug} accentHex={accentHex} />
         </div>
-        <RecommendForm slug={slug} accentHex={accentHex} />
+
+        <p className="mt-6 text-center text-[11px]" style={{ color: "var(--pf-muted)" }}>
+          {t("poweredBy")}{" "}
+          <Link href="/" className="font-semibold hover:underline" style={{ color: accentHex }}>Multifolio</Link>
+        </p>
       </div>
     </div>
   );

@@ -2,13 +2,12 @@
 
 // Public müşteri yorum formu: /p/[slug]/recommend'de gösterilir. Gönderim owner
 // onayına düşer (pending). Honeypot (website) + owner başına saatlik limit spam'i azaltır.
+// Stil PORTFOLYO tema tokenlarıyla (--pf-*) → sayfayla görsel tutarlı (app token'ı yok).
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Send, Check } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
-export function RecommendForm({ slug, accentHex }: { slug: string; accentHex?: string }) {
+export function RecommendForm({ slug, accentHex = "#2563EB" }: { slug: string; accentHex?: string }) {
   const t = useTranslations("recommend");
   const [authorName, setAuthorName] = useState("");
   const [authorRole, setAuthorRole] = useState("");
@@ -43,35 +42,50 @@ export function RecommendForm({ slug, accentHex }: { slug: string; accentHex?: s
 
   if (status === "sent") {
     return (
-      <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-950/20 p-6 text-center space-y-2">
-        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-white">
+      <div
+        className="rounded-2xl border p-6 text-center space-y-2"
+        style={{ background: `${accentHex}12`, borderColor: `${accentHex}40` }}
+      >
+        <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full text-white" style={{ background: accentHex }}>
           <Check className="h-5 w-5" />
         </div>
         <p className="font-bold">{t("successTitle")}</p>
-        <p className="text-sm text-muted-foreground">{t("successBody")}</p>
+        <p className="text-sm" style={{ color: "var(--pf-muted)" }}>{t("successBody")}</p>
       </div>
     );
   }
 
-  const label = "text-xs font-semibold text-muted-foreground";
+  const labelCls = "text-xs font-semibold";
+  const labelStyle = { color: "var(--pf-muted)" };
+  // Alanlar portfolyo tema tokenlarıyla + accent odak halkası (app token'ı yok).
+  const fieldCls = "w-full rounded-xl border px-3 py-2.5 text-sm leading-relaxed transition placeholder:opacity-50 focus:outline-none focus:ring-2";
+  const fieldStyle = {
+    background: "var(--pf-bg)",
+    borderColor: "var(--pf-border)",
+    color: "var(--pf-text)",
+    "--tw-ring-color": `${accentHex}55`,
+  } as React.CSSProperties;
+
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-2xl border border-border bg-card p-6">
+    <form onSubmit={submit} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <label className={label} htmlFor="rec-name">{t("nameLabel")}</label>
-          <Input id="rec-name" value={authorName} onChange={(e) => setAuthorName(e.target.value)} maxLength={80} required />
+          <label className={labelCls} style={labelStyle} htmlFor="rec-name">{t("nameLabel")}</label>
+          <input id="rec-name" value={authorName} onChange={(e) => setAuthorName(e.target.value)} maxLength={80} required
+            className={fieldCls} style={fieldStyle} />
         </div>
         <div className="space-y-1.5">
-          <label className={label} htmlFor="rec-role">{t("roleLabel")}</label>
-          <Input id="rec-role" value={authorRole} onChange={(e) => setAuthorRole(e.target.value)} maxLength={80} placeholder={t("rolePlaceholder")} />
+          <label className={labelCls} style={labelStyle} htmlFor="rec-role">{t("roleLabel")}</label>
+          <input id="rec-role" value={authorRole} onChange={(e) => setAuthorRole(e.target.value)} maxLength={80}
+            placeholder={t("rolePlaceholder")} className={fieldCls} style={fieldStyle} />
         </div>
       </div>
       <div className="space-y-1.5">
-        <label className={label} htmlFor="rec-quote">{t("quoteLabel")}</label>
+        <label className={labelCls} style={labelStyle} htmlFor="rec-quote">{t("quoteLabel")}</label>
         <textarea
           id="rec-quote" value={quote} onChange={(e) => setQuote(e.target.value)} rows={5} maxLength={600} required
           placeholder={t("quotePlaceholder")}
-          className="w-full rounded-xl border border-border bg-muted/40 px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#00F0FF]/30 resize-y"
+          className={`${fieldCls} resize-y`} style={fieldStyle}
         />
       </div>
       {/* Honeypot — gizli; botlar doldurur, gerçek kullanıcı görmez. */}
@@ -80,16 +94,16 @@ export function RecommendForm({ slug, accentHex }: { slug: string; accentHex?: s
         name="website" tabIndex={-1} autoComplete="off" aria-hidden
         className="absolute left-[-9999px] h-0 w-0 opacity-0"
       />
-      {status === "error" && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      <Button
+      {status === "error" && <p role="alert" className="text-sm text-red-500">{error}</p>}
+      <button
         type="submit"
         disabled={!canSubmit || status === "sending"}
-        className="w-full gap-2 font-semibold text-white hover:opacity-90"
-        style={accentHex ? { backgroundColor: accentHex } : undefined}
+        className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{ backgroundColor: accentHex }}
       >
         <Send className="h-4 w-4" />{status === "sending" ? t("sending") : t("submit")}
-      </Button>
-      <p className="text-center text-[11px] text-muted-foreground/70">{t("moderationNote")}</p>
+      </button>
+      <p className="text-center text-[11px]" style={{ color: "var(--pf-muted)" }}>{t("moderationNote")}</p>
     </form>
   );
 }

@@ -690,7 +690,8 @@
     "successTitle": "Teşekkürler!",
     "successBody": "Yorumun gönderildi, onaylandıktan sonra görünecek.",
     "moderationNote": "Yorumlar görünmeden önce incelenir.",
-    "error": "Yorumun gönderilemedi. Lütfen tekrar dene."
+    "error": "Yorumun gönderilemedi. Lütfen tekrar dene.",
+    "poweredBy": "Destekleyen"
   },
   "publicAnalysis": {
     "metaTitle": "Ücretsiz Freelancer Profil Analizi — Multifolio",

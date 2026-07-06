@@ -690,7 +690,8 @@
     "successTitle": "Thank you!",
     "successBody": "Your recommendation was sent and will appear once approved.",
     "moderationNote": "Recommendations are reviewed before they appear.",
-    "error": "Couldn't send your recommendation. Please try again."
+    "error": "Couldn't send your recommendation. Please try again.",
+    "poweredBy": "Powered by"
   },
   "publicAnalysis": {
     "metaTitle": "Free Freelancer Profile Check — Multifolio",
