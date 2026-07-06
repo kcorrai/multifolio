@@ -1,31 +1,54 @@
-// Content script: Upwork/Fiverr profil sayfasına buton enjekte eder; tıklanınca
+// Content script: Upwork/Fiverr/LinkedIn profil sayfasına buton enjekte eder; tıklanınca
 // görünür metni + best-effort medya URL'lerini toplayıp background'a yollar.
 // Alan-alan CSS seçici parse YOK (bilinçli karar) — metin AI'a, görseller URL olarak.
-import { detectProfilePage, clampText, pickImageUrls } from "./extract";
+import { detectProfilePage, clampText, pickImageUrls, type ProfilePlatform } from "./extract";
 import { msg } from "./messages";
 
-const platform = detectProfilePage(location.hostname, location.pathname);
-
-// Çift kapı: URL deseni + sayfada gerçek bir profil başlığı (h1) olması.
-// SPA gecikmesine karşı kısa aralıklarla birkaç kez denenir.
-if (platform) {
-  let tries = 0;
-  const timer = setInterval(() => {
-    tries += 1;
-    if (document.querySelector("h1")) {
-      clearInterval(timer);
-      injectButton();
-    } else if (tries >= 20) {
-      clearInterval(timer); // profil işareti yok — buton gösterilmez
-    }
-  }, 500);
-}
+const HOST_ID = "mf-import-host";
+let injectedForPath = ""; // buton hangi pathname için enjekte edildi (çift enjeksiyon guard)
 
 type ImportResponse =
   | { ok: true }
   | { ok: false; reason: "auth" | "rate" | "invalid" | "error"; message?: string };
 
-function collectPayload() {
+function removeButton() {
+  document.getElementById(HOST_ID)?.remove();
+  injectedForPath = "";
+}
+
+// Profil sayfası mı + içerik yüklendi mi → butonu enjekte et. `<h1>` tek başına yeterli
+// DEĞİL (bazı profiller ismi/başlıkları h2/div'de tutar) → h1|h2 VEYA "yeterli metin"
+// kabul edilir; hiçbiri gelmezse uzun beklemeden sonra dolu içerik varsa yine gösterilir.
+// Cloudflare "insan mısın" sayfaları kısa metinlidir → yanlışlıkla tetiklenmez.
+function maybeInit() {
+  const platform = detectProfilePage(location.hostname, location.pathname);
+  const path = location.pathname;
+
+  if (!platform) { removeButton(); return; }                       // profil sayfası değil
+  if (injectedForPath === path && document.getElementById(HOST_ID)) return; // zaten var
+  removeButton(); // URL değişmiş olabilir → eski butonu temizle
+
+  let tries = 0;
+  const timer = setInterval(() => {
+    tries += 1;
+    // Bu arada başka sayfaya geçtiysek bırak.
+    if (detectProfilePage(location.hostname, location.pathname) !== platform || location.pathname !== path) {
+      clearInterval(timer);
+      return;
+    }
+    const hasHeading = !!document.querySelector("h1, h2");
+    const enoughText = (document.body?.innerText?.trim().length ?? 0) > 500;
+    if (hasHeading && enoughText) {
+      clearInterval(timer);
+      injectButton(platform);
+    } else if (tries >= 30) {          // ~15 sn: başlık gelmediyse bile dolu içerik varsa göster
+      clearInterval(timer);
+      if (enoughText) injectButton(platform);
+    }
+  }, 500);
+}
+
+function collectPayload(platform: ProfilePlatform) {
   // Ana içerik bölgesi varsa onu, yoksa tüm gövdeyi al (nav/footer gürültüsünü AI tolere eder).
   const main = document.querySelector("main");
   const text = clampText((main ?? document.body).innerText);
@@ -54,9 +77,13 @@ function collectPayload() {
   };
 }
 
-function injectButton() {
+function injectButton(platform: ProfilePlatform) {
+  if (document.getElementById(HOST_ID)) return; // çift guard
+  injectedForPath = location.pathname;
+
   // Closed shadow root: host sayfa CSS'i butonu bozamasın.
   const host = document.createElement("div");
+  host.id = HOST_ID;
   const root = host.attachShadow({ mode: "closed" });
   document.documentElement.appendChild(host);
 
@@ -108,7 +135,7 @@ function injectButton() {
     btn.disabled = true;
     btn.textContent = msg("sending");
     note.hidden = true;
-    chrome.runtime.sendMessage(collectPayload(), (res: ImportResponse | undefined) => {
+    chrome.runtime.sendMessage(collectPayload(platform), (res: ImportResponse | undefined) => {
       btn.disabled = false;
       btn.textContent = msg("button");
       if (res?.ok) {
@@ -124,3 +151,14 @@ function injectButton() {
     });
   });
 }
+
+// İlk çalıştırma + SPA URL değişimini izle: Upwork/Fiverr SPA'dır; client-side geçişte
+// content script yeniden ÇALIŞMAZ (aynı doküman) → URL'i pollayıp yeniden dener.
+maybeInit();
+let lastUrl = location.href;
+setInterval(() => {
+  if (location.href !== lastUrl) {
+    lastUrl = location.href;
+    maybeInit();
+  }
+}, 1000);
