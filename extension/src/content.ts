@@ -6,6 +6,7 @@ import { msg } from "./messages";
 
 const HOST_ID = "mf-import-host";
 let injectedForPath = ""; // buton hangi pathname için enjekte edildi (çift enjeksiyon guard)
+let lastDebug = ""; // GEÇİCİ: son harvest özeti (buton notunda gösterilir → teşhis)
 
 type ImportResponse =
   | { ok: true }
@@ -329,14 +330,18 @@ async function collectPayload(platform: ProfilePlatform) {
     // (login'de veri Vue store'da değilse) DOM/modal harvest'e düş (best-effort).
     await paginateUpworkPortfolio();          // 2-3. sayfayı API'den yüklet (MAIN yakalar)
     const nuxt = await requestNuxtProjects();
+    const nuxtDbg = document.documentElement.getAttribute("data-mf-debug") || "?";
     if (nuxt.length) {
       portfolioProjects = nuxt.slice(0, 30);
       portfolioImages = pickImageUrls(nuxt.flatMap((p) => p.images.map((i) => i.url)), 50);
+      lastDebug = `NUXT ${nuxt.length} proje | ${nuxtDbg}`;
     } else {
       const h = await harvestUpworkPortfolio();
       portfolioImages = pickImageUrls(h.images, 50);
       portfolioProjects = h.projects.slice(0, 30);
+      lastDebug = `NUXT 0 (${nuxtDbg}) → DOM ${h.projects.length} proje / ${h.images.length} görsel`;
     }
+    lastDebug += ` → final ${portfolioProjects.length} proje, ${portfolioImages.length} görsel`;
   } else {
     const raw: string[] = [];
     for (const heading of document.querySelectorAll("h2, h3")) {
@@ -422,15 +427,16 @@ function injectButton(platform: ProfilePlatform) {
     chrome.runtime.sendMessage(payload, (res: ImportResponse | undefined) => {
       btn.disabled = false;
       btn.textContent = msg("button");
+      const dbg = lastDebug ? ` — ${lastDebug}` : "";
       if (res?.ok) {
-        show(msg("success"));
+        show(msg("success") + dbg);
         return;
       }
       switch (res?.reason) {
         case "auth": show(msg("authNeeded"), true); break;
-        case "rate": show(msg("rateLimited")); break;
-        case "invalid": show(res.message || msg("emptyPage")); break;
-        default: show(msg("genericError"));
+        case "rate": show(msg("rateLimited") + dbg); break;
+        case "invalid": show((res.message || msg("emptyPage")) + dbg); break;
+        default: show(msg("genericError") + dbg);
       }
     });
   });
