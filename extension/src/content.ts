@@ -48,14 +48,51 @@ function maybeInit() {
   }, 500);
 }
 
+// Üst bölgede, kabaca kare, makul boyutlu bir görsel = profil fotosu (en olası).
+function isAvatarRect(r: DOMRect): boolean {
+  if (r.top < 0 || r.top > 1000) return false;           // hero/üst bölge
+  if (r.width < 40 || r.height < 40) return false;        // ikon değil
+  if (r.width > 460 || r.height > 460) return false;      // banner/kapak değil
+  const ratio = r.width / r.height;
+  return ratio >= 0.7 && ratio <= 1.4;                    // kareye yakın
+}
+
+// Avatar tespiti (Upwork/Fiverr'da og:image çoğu zaman kullanıcı fotosu DEĞİL):
+// 1) og:image (LinkedIn güvenilir) → 2) üst bölgede kare <img> → 3) arka-plan görseli.
+function findAvatarUrl(): string | undefined {
+  const og = document.querySelector<HTMLMetaElement>('meta[property="og:image"]');
+  const [ogUrl] = pickImageUrls(og?.content ? [og.content] : [], 1);
+  if (ogUrl) return ogUrl;
+
+  const imgUrls: string[] = [];
+  for (const img of Array.from(document.querySelectorAll("img"))) {
+    if (!isAvatarRect(img.getBoundingClientRect())) continue;
+    const src = img.currentSrc || img.src;
+    if (src) imgUrls.push(src);
+  }
+  const [imgAvatar] = pickImageUrls(imgUrls, 1);
+  if (imgAvatar) return imgAvatar;
+
+  // Fallback: avatar CSS background-image ise (öğe taramasını sınırla — tek tıkta çalışır).
+  const bgUrls: string[] = [];
+  let scanned = 0;
+  for (const el of Array.from(document.querySelectorAll<HTMLElement>("*"))) {
+    if (++scanned > 2500) break;
+    if (!isAvatarRect(el.getBoundingClientRect())) continue;
+    const m = /url\(["']?(https:\/\/[^"')]+)["']?\)/i.exec(getComputedStyle(el).backgroundImage);
+    if (m) bgUrls.push(m[1]);
+    if (bgUrls.length >= 8) break;
+  }
+  const [bgAvatar] = pickImageUrls(bgUrls, 1);
+  return bgAvatar;
+}
+
 function collectPayload(platform: ProfilePlatform) {
   // Ana içerik bölgesi varsa onu, yoksa tüm gövdeyi al (nav/footer gürültüsünü AI tolere eder).
   const main = document.querySelector("main");
   const text = clampText((main ?? document.body).innerText);
 
-  // Avatar: og:image en güvenilir aday (her iki platform da koyar).
-  const og = document.querySelector<HTMLMetaElement>('meta[property="og:image"]');
-  const [avatarUrl] = pickImageUrls(og?.content ? [og.content] : [], 1);
+  const avatarUrl = findAvatarUrl();
 
   // Portfolyo: başlığı /portfolio/i geçen bölümün altındaki görseller (best-effort).
   const portfolioImgs: string[] = [];
