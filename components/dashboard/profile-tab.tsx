@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Save, CheckCircle2, AlertCircle, Check, User, Wand2, Sparkles,
-  ExternalLink, ArrowUpRight, Layers, Plus, X,
+  ExternalLink, ArrowUpRight, Layers, Plus, X, Languages,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -93,6 +93,11 @@ export function ProfileTab({
   const [suggestError, setSuggestError] = useState("");
   const [applied, setApplied] = useState<Record<Field, boolean>>({ headline: false, summary: false, skills: false });
 
+  // Çekirdek profil çevirisi (kendi diline): orijinal saklanır, geri alınabilir; Kaydet'te kalıcı.
+  const [translating, setTranslating] = useState(false);
+  const [isTranslated, setIsTranslated] = useState(false);
+  const [preTranslate, setPreTranslate] = useState<{ headline: string; summary: string; skills: string[] } | null>(null);
+
   const profileSaved = saveState === "saved";
   const hasConnected = connectedProfiles.length > 0;
 
@@ -142,6 +147,30 @@ export function ProfileTab({
     setSkills(suggestion.skills);
     setApplied({ headline: true, summary: true, skills: true });
     setSaveState("idle");
+  }
+
+  // ── Çekirdek profil çevirisi (kendi dilime çevir / orijinali göster) ─────
+  async function translateCore() {
+    setTranslating(true); setProfileError("");
+    try {
+      setPreTranslate({ headline, summary, skills });
+      const res = await fetch("/api/profile/import/translate", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ headline, summary, skills }),
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok) { setProfileError(body?.error?.message ?? t("translateError")); setPreTranslate(null); return; }
+      const d = body.draft as { headline: string; summary: string; skills: string[] };
+      setHeadline(d.headline); setSummary(d.summary); setSkills(d.skills);
+      setIsTranslated(true); setSaveState("idle");
+    } finally {
+      setTranslating(false);
+    }
+  }
+  function showOriginalCore() {
+    if (!preTranslate) return;
+    setHeadline(preTranslate.headline); setSummary(preTranslate.summary); setSkills(preTranslate.skills);
+    setIsTranslated(false); setSaveState("idle");
   }
 
   // ── Galeri "+" (bağlı profillerdeki diğer fotoğraflardan ekleme) ─────────
@@ -241,6 +270,23 @@ export function ProfileTab({
             <CardDescription>{t("coreProfileDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
+            {/* Çeviri: alanları kendi diline çevir (Kaydet'te kalıcı; orijinal geri alınabilir). */}
+            <div className="flex items-center justify-between gap-2 rounded-lg bg-muted/40 px-3 py-2">
+              <p className="text-[11px] text-muted-foreground">{isTranslated ? t("translatedNote") : t("translateHint")}</p>
+              {isTranslated ? (
+                <button onClick={showOriginalCore} className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[#00F0FF] hover:underline cursor-pointer">
+                  <Languages className="h-3.5 w-3.5" />{t("showOriginal")}
+                </button>
+              ) : (
+                <button
+                  onClick={translateCore}
+                  disabled={translating || (!headline.trim() && !summary.trim() && skills.length === 0)}
+                  className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[#00F0FF] hover:underline cursor-pointer disabled:opacity-50"
+                >
+                  <Languages className="h-3.5 w-3.5" />{translating ? t("translating") : t("translateToMine")}
+                </button>
+              )}
+            </div>
             <div className="space-y-1.5">
               <Label htmlFor="headline">{t("headlineLabel")}</Label>
               <Input id="headline" value={headline}
