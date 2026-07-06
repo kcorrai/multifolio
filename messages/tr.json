@@ -706,6 +706,16 @@
     "downloading": "PDF hazırlanıyor…",
     "downloadError": "PDF oluşturulamadı.",
     "empty": "Henüz CV yok. Profilinden üret ya da var olan bir CV yükleyerek başla.",
+    "designTitle": "Tasarım",
+    "designHint": "Bir şablon ve vurgu rengi seç. Görsel şablonlar renkli sütun kullanır; “Sade” şablonu tek sütundur ve katı ATS ayrıştırıcıları için en güvenlisidir.",
+    "previewTitle": "Canlı önizleme",
+    "accentLabel": "Vurgu",
+    "template": {
+      "sidebar": "Kenar çubuğu",
+      "banner": "Banner",
+      "monogram": "Monogram",
+      "clean": "Sade (ATS)"
+    },
     "sectionContact": "İletişim",
     "sectionSummary": "Profesyonel özet",
     "sectionSkills": "Beceriler",

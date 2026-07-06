@@ -11,7 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CreditCost } from "@/components/credit-cost";
+import { CvPreview } from "./cv-preview";
 import { scoreCv, atsVerdict } from "@/lib/cv/ats";
+import { CV_TEMPLATES, CV_ACCENTS, CV_ACCENT_HEX, type CvTemplate } from "@/lib/cv/theme";
 import type {
   CvContent, CvExperience, CvEducation, CvProject, CvCertification, CvLanguage,
 } from "@/lib/validation/schemas/cv";
@@ -187,6 +189,9 @@ export function CvTab({
 
       {content && (
         <>
+          {/* ── Tasarım (şablon + vurgu) + canlı önizleme ───────── */}
+          <DesignAndPreview content={content} patch={patch} />
+
           <AtsPanel ats={ats!} />
 
           {/* ── İşe göre uyarla ──────────────────────────────────── */}
@@ -238,6 +243,124 @@ export function CvTab({
           </Card>
         </>
       )}
+    </div>
+  );
+}
+
+/* ── Tasarım seçici + canlı önizleme ──────────────────────────────── */
+function DesignAndPreview({ content, patch }: { content: CvContent; patch: (n: Partial<CvContent>) => void }) {
+  const t = useTranslations("cv");
+  return (
+    <Card className={`shadow-sm ${ELEVATED}`}>
+      <CardHeader>
+        <CardTitle className="text-base">{t("designTitle")}</CardTitle>
+        <CardDescription>{t("designHint")}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        {/* Şablon kartları */}
+        <div className="grid grid-cols-3 gap-2">
+          {CV_TEMPLATES.map((tpl) => (
+            <TemplateCard
+              key={tpl}
+              template={tpl}
+              label={t(`template.${tpl}`)}
+              accent={CV_ACCENT_HEX[content.theme.accent] ?? CV_ACCENT_HEX.blue}
+              selected={content.theme.template === tpl}
+              onSelect={() => patch({ theme: { ...content.theme, template: tpl } })}
+            />
+          ))}
+        </div>
+        {/* Vurgu rengi */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">{t("accentLabel")}</span>
+          <div className="flex gap-1.5">
+            {CV_ACCENTS.map((a) => (
+              <button
+                key={a}
+                type="button"
+                onClick={() => patch({ theme: { ...content.theme, accent: a } })}
+                aria-label={a}
+                className={`h-6 w-6 rounded-full transition-transform hover:scale-110 cursor-pointer ${
+                  content.theme.accent === a ? "ring-2 ring-offset-2 ring-offset-background ring-foreground/40" : ""
+                }`}
+                style={{ backgroundColor: CV_ACCENT_HEX[a] }}
+              />
+            ))}
+          </div>
+        </div>
+        {/* Canlı önizleme */}
+        <div className="rounded-xl border border-border bg-muted/40 p-4 overflow-x-auto">
+          <p className="mb-3 text-xs font-medium text-muted-foreground">{t("previewTitle")}</p>
+          <CvPreview content={content} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Şablon seçim kartı: her şablonu temsil eden mini görsel + ad.
+function TemplateCard({
+  template, label, accent, selected, onSelect,
+}: {
+  template: CvTemplate; label: string; accent: string; selected: boolean; onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`rounded-xl border p-2 text-left transition-all cursor-pointer ${
+        selected ? "border-primary ring-2 ring-primary/30" : "border-border hover:border-border/80"
+      }`}
+    >
+      <div className="h-16 overflow-hidden rounded-lg border border-border bg-white">
+        <TemplateThumb template={template} accent={accent} />
+      </div>
+      <span className="mt-1.5 block text-xs font-medium text-center">{label}</span>
+    </button>
+  );
+}
+
+// 4 şablonun mini temsili (PDF düzenini yansıtır).
+function TemplateThumb({ template, accent }: { template: CvTemplate; accent: string }) {
+  const line = (w: string, c = "#cbd5e1") => <span className="block h-1 rounded" style={{ width: w, backgroundColor: c }} />;
+  if (template === "sidebar") {
+    return (
+      <div className="flex h-full">
+        <div className="w-1/3 p-1.5 space-y-1" style={{ backgroundColor: accent }}>
+          {line("80%", "rgba(255,255,255,0.7)")}{line("60%", "rgba(255,255,255,0.5)")}{line("70%", "rgba(255,255,255,0.5)")}
+        </div>
+        <div className="flex-1 p-1.5 space-y-1">{line("70%", accent)}{line("100%")}{line("90%")}{line("100%")}</div>
+      </div>
+    );
+  }
+  if (template === "banner") {
+    return (
+      <div className="h-full">
+        <div className="p-1.5" style={{ backgroundColor: accent }}>{line("60%", "rgba(255,255,255,0.85)")}</div>
+        <div className="flex gap-1 p-1.5">
+          <div className="w-1/3 space-y-1">{line("100%")}{line("80%")}</div>
+          <div className="flex-1 space-y-1">{line("90%", accent)}{line("100%")}{line("90%")}</div>
+        </div>
+      </div>
+    );
+  }
+  if (template === "monogram") {
+    return (
+      <div className="flex h-full">
+        <div className="flex-1 p-1.5 space-y-1">{line("70%", accent)}{line("100%")}{line("90%")}{line("100%")}</div>
+        <div className="w-1/3 p-1.5 space-y-1" style={{ backgroundColor: `${accent}1a` }}>
+          <span className="mx-auto block h-3 w-3 rounded-full" style={{ backgroundColor: accent }} />
+          {line("80%")}{line("60%")}
+        </div>
+      </div>
+    );
+  }
+  // clean
+  return (
+    <div className="flex h-full flex-col items-center gap-1 p-2">
+      {line("50%", accent)}{line("35%")}
+      <span className="mt-0.5 block w-full space-y-1">{line("100%")}</span>
+      {line("100%")}{line("90%")}
     </div>
   );
 }

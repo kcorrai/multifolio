@@ -706,6 +706,16 @@
     "downloading": "Preparing PDF…",
     "downloadError": "Could not create the PDF.",
     "empty": "No CV yet. Generate one from your profile or upload an existing CV to get started.",
+    "designTitle": "Design",
+    "designHint": "Pick a template and accent color. Visual templates use a colored column; the “Clean” template is single-column and the safest for strict ATS parsers.",
+    "previewTitle": "Live preview",
+    "accentLabel": "Accent",
+    "template": {
+      "sidebar": "Sidebar",
+      "banner": "Banner",
+      "monogram": "Monogram",
+      "clean": "Clean (ATS)"
+    },
     "sectionContact": "Contact",
     "sectionSummary": "Professional summary",
     "sectionSkills": "Skills",

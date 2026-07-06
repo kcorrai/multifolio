@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  // CV PDF fontları (lib/cv/fonts/*.ttf) runtime'da process.cwd() ile okunur; Vercel
+  // trace'i bunları otomatik dahil etmez → export route'a açıkça dahil et.
+  outputFileTracingIncludes: {
+    "/api/cv/export": ["./lib/cv/fonts/**"],
+  },
 };
 
 // Sentry sarmalayıcısı: source map yüklemesi yalnızca SENTRY_AUTH_TOKEN

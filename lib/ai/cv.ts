@@ -6,7 +6,7 @@ import { computeCostUsd } from "./pricing";
 import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
 import { clampImportText } from "@/lib/import/text";
-import { cvContentSchema, type CvContent } from "@/lib/validation/schemas/cv";
+import { cvContentSchema, type CvContent, type CvTheme } from "@/lib/validation/schemas/cv";
 import type { ProfileInput, ProfileProject } from "@/lib/validation/schemas/profile";
 import type { Locale } from "@/i18n/detect";
 
@@ -70,9 +70,11 @@ const httpOrEmpty = (s: string | null | undefined, n: number) => {
   return /^https?:\/\//i.test(u) ? u.slice(0, n) : "";
 };
 
+const DEFAULT_THEME: CvTheme = { template: "sidebar", accent: "blue" };
+
 // AI ham çıktısını geçerli, kırpılmış CvContent'e çevirir (depolama şeması sınırlarını
-// asla ihlal etmez). locale route'tan gelir (AI üretmez).
-function mapCvContent(raw: CvGen, locale: Locale): CvContent {
+// asla ihlal etmez). locale + theme route'tan gelir (AI üretmez; yeniden üretimde korunur).
+function mapCvContent(raw: CvGen, locale: Locale, theme: CvTheme): CvContent {
   const draft = {
     fullName: clamp(raw.fullName, 120),
     title: clamp(raw.title, 160),
@@ -128,6 +130,7 @@ function mapCvContent(raw: CvGen, locale: Locale): CvContent {
       .map((l) => ({ name: clamp(l.name, 80), level: clamp(l.level, 60) }))
       .filter((l) => l.name),
     locale,
+    theme,
   };
   // Depolama şemasıyla son doğrulama (kırpma sonrası geçerli olmalı).
   return cvContentSchema.parse(draft);
@@ -163,6 +166,7 @@ export async function generateCv(
   profile: Pick<ProfileInput, "headline" | "summary" | "skills">,
   projects: ProfileProject[],
   locale: Locale = "en",
+  theme: CvTheme = DEFAULT_THEME,
 ): Promise<CvAiResult> {
   const client = getOpenAIClient();
 
@@ -190,7 +194,7 @@ export async function generateCv(
   ].join("\n");
 
   const parsed = await runCvCompletion(client, GEN_SYSTEM, userContent);
-  return finalize(parsed.raw, parsed.usage, locale);
+  return finalize(parsed.raw, parsed.usage, locale, theme);
 }
 
 const EXTRACT_SYSTEM =
@@ -204,12 +208,16 @@ const EXTRACT_SYSTEM =
   "- ÖNEMLİ: Çıktıyı KAYNAK METNİN DİLİNDE üret — çevirme.";
 
 /** Ham CV metnini (PDF/DOCX'ten) yapılandırılmış CvContent'e çıkarır. Kaynak dilini korur. */
-export async function extractCvFromText(text: string, locale: Locale = "en"): Promise<CvAiResult> {
+export async function extractCvFromText(
+  text: string,
+  locale: Locale = "en",
+  theme: CvTheme = DEFAULT_THEME,
+): Promise<CvAiResult> {
   const client = getOpenAIClient();
   const userContent = ["Ham CV metni:", clampImportText(text)].join("\n");
   const parsed = await runCvCompletion(client, EXTRACT_SYSTEM, userContent);
   // locale: depolamada bölüm başlığı dili için; kaynak dil bilinmediğinden UI locale kullanılır.
-  return finalize(parsed.raw, parsed.usage, locale);
+  return finalize(parsed.raw, parsed.usage, locale, theme);
 }
 
 export interface TailorJobContext {
@@ -252,7 +260,8 @@ export async function tailorCv(
     .join("\n");
 
   const parsed = await runCvCompletion(client, TAILOR_SYSTEM, userContent, 2000);
-  return finalize(parsed.raw, parsed.usage, locale);
+  // Uyarlamada kullanıcının seçtiği tema KORUNUR.
+  return finalize(parsed.raw, parsed.usage, locale, content.theme);
 }
 
 /* ── Ortak yardımcılar ──────────────────────────────────────────────── */
@@ -288,9 +297,14 @@ async function runCvCompletion(
   };
 }
 
-function finalize(raw: CvGen, usage: { prompt_tokens: number; completion_tokens: number }, locale: Locale): CvAiResult {
+function finalize(
+  raw: CvGen,
+  usage: { prompt_tokens: number; completion_tokens: number },
+  locale: Locale,
+  theme: CvTheme,
+): CvAiResult {
   return {
-    content: mapCvContent(raw, locale),
+    content: mapCvContent(raw, locale, theme),
     model: AI_MODEL,
     inputTokens: usage.prompt_tokens,
     outputTokens: usage.completion_tokens,

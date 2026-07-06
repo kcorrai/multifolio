@@ -10,6 +10,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { generateCv } from "@/lib/ai/cv";
 import { spendCredits } from "@/lib/credits/spend";
 import { profileProjectSchema, type ProfileProject } from "@/lib/validation/schemas/profile";
+import { cvThemeSchema } from "@/lib/validation/schemas/cv";
 
 export const POST = withErrorHandler(async () => {
   const supabase = await createSupabaseServerClient();
@@ -37,6 +38,15 @@ export const POST = withErrorHandler(async () => {
   const locale = await getUserLocale();
   const admin = createSupabaseAdminClient();
 
+  // Yeniden üretimde kullanıcının seçtiği tema KORUNUR (AI tema üretmez).
+  const { data: existingCv } = await supabase
+    .from("cvs")
+    .select("content")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const existingTheme = (existingCv?.content as { theme?: unknown } | null)?.theme;
+  const theme = cvThemeSchema.parse(existingTheme);
+
   const { result, balance, spent } = await spendCredits(user.id, "cv_generation", async () => {
     const ai = await generateCv(
       {
@@ -46,6 +56,7 @@ export const POST = withErrorHandler(async () => {
       },
       projects,
       locale,
+      theme,
     );
     // İletişim e-postası boşsa hesap e-postasına varsayılan (kullanıcı editörde değiştirir).
     const content = {

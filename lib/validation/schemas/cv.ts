@@ -9,8 +9,20 @@
 // (ABD/UK/AB ayrımcılık riski + ATS uyumu). Yüklenen TR CV'sinde bu alanlar görülse bile
 // çıkarımda dışlanır.
 import { z } from "zod";
+import { CV_TEMPLATES, CV_ACCENTS } from "@/lib/cv/theme";
 
 /* ── Depolama şeması (katı) ─────────────────────────────────────────── */
+
+// Görsel tema: şablon + vurgu rengi. `.default()` → temasız eski kayıtlar; `.catch()` →
+// eski/geçersiz şablon-renk değerleri (ör. kaldırılmış "modern") default'a düşer, kayıt kaybolmaz.
+export const cvThemeSchema = z
+  .object({
+    template: z.enum(CV_TEMPLATES).catch("sidebar").default("sidebar"),
+    accent: z.enum(CV_ACCENTS).catch("blue").default("blue"),
+  })
+  .catch({ template: "sidebar", accent: "blue" })
+  .default({ template: "sidebar", accent: "blue" });
+export type CvTheme = z.infer<typeof cvThemeSchema>;
 
 export const cvContactSchema = z
   .object({
@@ -79,6 +91,8 @@ export const cvContentSchema = z.object({
   languages: z.array(cvLanguageSchema).max(12).default([]),
   // Üretim/çıktı dili (UI locale'i). Render/PDF bölüm başlıklarını buna göre seçer.
   locale: z.enum(["en", "tr"]).default("en"),
+  // Görsel şablon + vurgu rengi (AI üretmez; kullanıcı seçer, yeniden üretimde korunur).
+  theme: cvThemeSchema,
 });
 
 export type CvContact = z.infer<typeof cvContactSchema>;
