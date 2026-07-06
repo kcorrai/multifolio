@@ -4,9 +4,9 @@
 // (public ld+json). Upwork/Fiverr bot duvarı → tarayıcı uzantısı yazar (profile/import).
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
-import { AuthError, ValidationError, RateLimitError, withErrorHandler } from "@/lib/errors";
+import { AuthError, ValidationError, NotFoundError, RateLimitError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
-import { platformProfileSyncSchema } from "@/lib/validation/schemas/platform-profile";
+import { platformProfileSyncSchema, platformProfileUpdateSchema } from "@/lib/validation/schemas/platform-profile";
 import { parseBionlukUsername, fetchBionlukProfile } from "@/lib/import/bionluk";
 import { parseLinkedinUsername, fetchLinkedinProfile } from "@/lib/import/linkedin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -99,6 +99,30 @@ export const POST = withErrorHandler(async (req) => {
     input_tokens: 0, output_tokens: 0, cost_usd: 0, credits_spent: 0,
   });
   if (usageError) throw usageError;
+
+  return NextResponse.json({ profile: saved });
+});
+
+// PATCH /api/platform-profiles → çekilmiş profilin metnini (headline/summary/skills)
+// günceller — çeviri sonrası kalıcı kaydetmek için. Avatar/portfolyo/kaynak KORUNUR.
+// RLS'li istemci (kullanıcının kendi satırı); satır yoksa 404. Uyarı: sonraki POST
+// (yeniden çek) platformdan orijinal dilde geri çeker → çeviri kaybolur (beklenen).
+export const PATCH = withErrorHandler(async (req) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new AuthError();
+
+  const input = await parseJson(req, platformProfileUpdateSchema);
+
+  const { data: saved, error } = await supabase
+    .from("platform_profiles")
+    .update({ headline: input.headline, summary: input.summary, skills: input.skills })
+    .eq("user_id", user.id)
+    .eq("platform", input.platform)
+    .select(ROW_COLS)
+    .maybeSingle();
+  if (error) throw error;
+  if (!saved) throw new NotFoundError((await getTranslations("errors"))("syncNoConnection"));
 
   return NextResponse.json({ profile: saved });
 });

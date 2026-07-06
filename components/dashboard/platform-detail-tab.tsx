@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   ArrowLeft, Sparkles, Save, ExternalLink, Trash2, AlertCircle,
-  Briefcase, Clock, Lightbulb, User, Pencil, Download, RefreshCw, Puzzle, ChevronDown, PlayCircle,
+  Briefcase, Clock, Lightbulb, User, Pencil, Download, RefreshCw, Puzzle, ChevronDown, PlayCircle, Languages,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
@@ -103,6 +103,7 @@ export function PlatformDetailTab({
   const [platformProfile, setPlatformProfile] = useState<PlatformProfileRow | null>(initialPlatformProfile);
   const [syncing, setSyncing] = useState(false);
   const [syncError, setSyncError] = useState("");
+  const [ppTranslating, setPpTranslating] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
   const canFetch = SERVER_FETCHABLE.includes(platform);
@@ -136,6 +137,31 @@ export function PlatformDetailTab({
     setSyncing(false);
   }
 
+  // Bağlı profili UI diline çevir + KALICI kaydet (PATCH platform_profiles).
+  // Uyarı: sonraki "Yenile" platformdan orijinal dilde geri çeker (beklenen davranış).
+  async function translateConnected() {
+    if (!platformProfile) return;
+    setPpTranslating(true); setSyncError("");
+    try {
+      const tr = await fetch("/api/profile/import/translate", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ headline: platformProfile.headline, summary: platformProfile.summary, skills: platformProfile.skills }),
+      });
+      const trBody = await tr.json().catch(() => null);
+      if (!tr.ok) { setSyncError(trBody?.error?.message ?? tc("errorSave")); return; }
+      const d = trBody.draft as { headline: string; summary: string; skills: string[] };
+      const save = await fetch("/api/platform-profiles", {
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ platform, headline: d.headline, summary: d.summary, skills: d.skills }),
+      });
+      const saveBody = await save.json().catch(() => null);
+      if (!save.ok) { setSyncError(saveBody?.error?.message ?? tc("errorSave")); return; }
+      setPlatformProfile(saveBody.profile as PlatformProfileRow);
+    } finally {
+      setPpTranslating(false);
+    }
+  }
+
   // ── Eşleşen işler (platform-filtreli) ────────────────────────────────
   const [jobs, setJobs] = useState<JobRow[]>(initialJobs);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
@@ -167,16 +193,25 @@ export function PlatformDetailTab({
                 <span className="text-[10px] text-muted-foreground/60">{tc("notConnected")}</span>
               )}
             </div>
-            {platformProfile && (canFetch ? (
-              <Button size="sm" variant="outline" onClick={syncPlatformProfile} disabled={syncing} className="gap-1.5 h-8 text-xs bg-card/70">
-                <RefreshCw className={`h-3.5 w-3.5 ${syncing ? "animate-spin" : ""}`} />
-                {syncing ? t("detail.syncing") : t("detail.syncRefresh")}
-              </Button>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/70">
-                <Puzzle className="h-3.5 w-3.5" />{t("detail.syncExtensionUpdated")}
-              </span>
-            ))}
+            {platformProfile && (
+              <div className="flex items-center gap-2">
+                {/* Çeviri: bağlı profili UI diline çevir + kalıcı kaydet. */}
+                <Button size="sm" variant="outline" onClick={translateConnected} disabled={ppTranslating} title={t("detail.translateSaveHint")} className="gap-1.5 h-8 text-xs bg-card/70">
+                  <Languages className={`h-3.5 w-3.5 ${ppTranslating ? "animate-pulse" : ""}`} />
+                  {ppTranslating ? t("detail.translating") : t("detail.translateSave")}
+                </Button>
+                {canFetch ? (
+                  <Button size="sm" variant="outline" onClick={syncPlatformProfile} disabled={syncing} className="gap-1.5 h-8 text-xs bg-card/70">
+                    <RefreshCw className={`h-3.5 w-3.5 ${syncing ? "animate-spin" : ""}`} />
+                    {syncing ? t("detail.syncing") : t("detail.syncRefresh")}
+                  </Button>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/70">
+                    <Puzzle className="h-3.5 w-3.5" />{t("detail.syncExtensionUpdated")}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {syncError && (

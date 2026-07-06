@@ -7,6 +7,15 @@ export const platformProfileSyncSchema = z.object({
   platform: platformIdSchema,
 });
 
+// PATCH /api/platform-profiles — çekilmiş profil metnini güncelle (çeviri sonrası kalıcı).
+// Yalnız metin alanları; avatar/portfolyo/kaynak korunur.
+export const platformProfileUpdateSchema = z.object({
+  platform: platformIdSchema,
+  headline: z.string().trim().max(400).default(""),
+  summary: z.string().trim().max(4000).default(""),
+  skills: z.array(z.string().trim().min(1).max(60)).max(50).default([]),
+});
+
 // platform_profiles satırı (istemciye dönen şekil).
 export interface PlatformProfileRow {
   platform: string;
