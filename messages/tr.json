@@ -498,6 +498,8 @@
     "addPhotosShort": "{count} daha",
     "addPhotosDesc": "Bağlı profillerinden fotoğraf seç",
     "addSelected": "Ekle ({count})",
+    "removePhoto": "Kaldır",
+    "viewAllPhotos": "Tüm fotoğrafları gör",
     "cancel": "Vazgeç",
     "portfolioTitle": "Portfolyo ({count})",
     "projectsEyebrow": "İçe aktarılan projeler",

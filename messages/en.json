@@ -498,6 +498,8 @@
     "addPhotosShort": "{count} more",
     "addPhotosDesc": "Pick photos from your connected profiles",
     "addSelected": "Add ({count})",
+    "removePhoto": "Remove",
+    "viewAllPhotos": "View all photos",
     "cancel": "Cancel",
     "portfolioTitle": "Portfolio ({count})",
     "projectsEyebrow": "Imported projects",

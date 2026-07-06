@@ -183,6 +183,10 @@ export function ProfileTab({
       return next;
     });
   }
+  function removePortfolioImage(url: string) {
+    setPortfolio((prev) => prev.filter((p) => p.imageUrl !== url));
+    setSaveState("idle");
+  }
   function closePicker() { setPickerOpen(false); setPicked(new Set()); }
   function addPicked() {
     const toAdd = extraPhotos.filter((p) => p.imageUrl && picked.has(p.imageUrl));
@@ -467,18 +471,42 @@ export function ProfileTab({
                   {t("portfolioTitle", { count: portfolio.length })}
                 </p>
                 <div className="grid grid-cols-3 gap-2">
-                  {portfolioImages.map((img, k) => (
-                    <button
-                      key={img.src + k}
-                      type="button"
-                      onClick={() => setLightbox({ images: portfolioImages, index: k })}
-                      title={img.alt || t("viewPhoto")}
-                      className="group relative aspect-square w-full overflow-hidden rounded-lg border border-border cursor-zoom-in"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={img.src} alt={img.alt} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
-                    </button>
+                  {/* Yalnız ilk 6 görsel + kaldır (X); gerisi "…" ile lightbox'ta. */}
+                  {portfolioImages.slice(0, 6).map((img, k) => (
+                    <div key={img.src + k} className="group relative aspect-square w-full">
+                      <button
+                        type="button"
+                        onClick={() => setLightbox({ images: portfolioImages, index: k })}
+                        title={img.alt || t("viewPhoto")}
+                        className="block h-full w-full overflow-hidden rounded-lg border border-border cursor-zoom-in"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={img.src} alt={img.alt} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removePortfolioImage(img.src)}
+                        title={t("removePhoto")}
+                        aria-label={t("removePhoto")}
+                        className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-background border border-border shadow flex items-center justify-center text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
                   ))}
+                  {/* Kalan görseller: "…" → lightbox'ta tümü (ileri/geri). */}
+                  {portfolioImages.length > 6 && (
+                    <button
+                      type="button"
+                      onClick={() => setLightbox({ images: portfolioImages, index: 6 })}
+                      title={t("viewAllPhotos")}
+                      aria-label={t("viewAllPhotos")}
+                      className="flex aspect-square w-full flex-col items-center justify-center gap-0.5 rounded-lg border border-dashed border-border text-muted-foreground hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-colors cursor-pointer"
+                    >
+                      <span className="text-xl font-bold leading-none">…</span>
+                      <span className="text-[10px] font-semibold">+{portfolioImages.length - 6}</span>
+                    </button>
+                  )}
                   {/* "+" galerisi: bağlı profillerdeki diğer fotoğraflardan ekle. */}
                   {extraPhotos.length > 0 && (
                     <button
