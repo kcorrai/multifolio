@@ -9,14 +9,20 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { X, Puzzle, LogIn, MousePointerClick, FileCheck2, Download, MousePointer2, type LucideIcon } from "lucide-react";
+import { X, Puzzle, LogIn, MousePointerClick, FileCheck2, Download, MousePointer2, BadgeCheck, Star, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EXTENSION_STORE_URL, EXTENSION_DEMO_VIDEO_URL, isEmbedVideoUrl } from "@/lib/extension";
 
 const STEP_ICONS: LucideIcon[] = [Download, LogIn, MousePointerClick, FileCheck2];
 
+// Modalı açan platforma göre gerçekçi profil URL'i (mock tarayıcı adres çubuğu).
+const PROFILE_HOST: Record<string, string> = {
+  upwork: "upwork.com/freelancers/~you",
+  fiverr: "fiverr.com/you",
+};
+
 // Gerçek video hazır olduğunda gösterilen oynatıcı; yoksa animasyonlu mock.
-function DemoMedia({ caption, buttonLabel }: { caption: string; buttonLabel: string }) {
+function DemoMedia({ caption, buttonLabel, host }: { caption: string; buttonLabel: string; host: string }) {
   if (EXTENSION_DEMO_VIDEO_URL) {
     return (
       <div className="aspect-video w-full overflow-hidden rounded-xl border border-border bg-black">
@@ -36,44 +42,58 @@ function DemoMedia({ caption, buttonLabel }: { caption: string; buttonLabel: str
     );
   }
 
-  // Animasyonlu mock: mini tarayıcı + profilde çıkan "içe aktar" butonu (pulse + imleç).
+  // Animasyonlu mock: mini tarayıcı + GERÇEKÇİ (beyaz zeminli) profil + yüzen "içe aktar"
+  // butonu (pulse + imleç). Gerçek profil sayfası gibi görünsün — koyu iskelet değil.
   return (
     <div className="space-y-2">
-      <div className="overflow-hidden rounded-xl border border-border bg-muted/30">
-        {/* Tarayıcı çubuğu */}
-        <div className="flex items-center gap-2 border-b border-border bg-muted/50 px-3 py-2">
+      <div className="overflow-hidden rounded-xl border border-border shadow-sm">
+        {/* Tarayıcı çubuğu (açık gri — gerçek tarayıcı) */}
+        <div className="flex items-center gap-2 bg-slate-200 px-3 py-2">
           <span className="flex gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
-            <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+            <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
           </span>
-          <span className="ml-1 flex-1 truncate rounded-md bg-background/70 px-2 py-1 text-[11px] text-muted-foreground">
-            upwork.com/freelancers/~you
+          <span className="ml-1 flex-1 truncate rounded-md bg-white px-2 py-1 text-[11px] text-slate-500">
+            {host}
           </span>
         </div>
-        {/* Profil iskeleti + yüzen import butonu */}
-        <div className="relative h-40 p-4">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-muted-foreground/15" />
-            <div className="space-y-2">
-              <div className="h-2.5 w-40 rounded bg-muted-foreground/15" />
-              <div className="h-2 w-28 rounded bg-muted-foreground/10" />
+
+        {/* Gerçekçi profil (beyaz zemin, koyu metin) */}
+        <div className="relative bg-white p-4 text-slate-900">
+          <div className="flex items-start gap-3">
+            <div className="h-14 w-14 shrink-0 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white font-bold text-base">AR</div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5">
+                <p className="font-bold text-sm truncate">Alex Rivera</p>
+                <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
+              </div>
+              <p className="text-xs text-slate-600 truncate">Senior Product &amp; 3D Designer</p>
+              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-slate-500">
+                <span className="inline-flex items-center gap-0.5"><Star className="h-3 w-3 fill-amber-400 text-amber-400" />5.0 (48)</span>
+                <span aria-hidden>·</span>
+                <span className="font-semibold text-slate-700">$45/hr</span>
+                <span aria-hidden>·</span>
+                <span>Istanbul, TR</span>
+              </div>
             </div>
           </div>
-          <div className="mt-4 space-y-2">
-            <div className="h-2 w-full rounded bg-muted-foreground/10" />
-            <div className="h-2 w-5/6 rounded bg-muted-foreground/10" />
-            <div className="h-2 w-2/3 rounded bg-muted-foreground/10" />
+          <p className="mt-3 text-[11px] leading-relaxed text-slate-600 line-clamp-2">
+            I design and build polished digital products — from brand identity to interactive 3D experiences that help teams ship faster.
+          </p>
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {["UI/UX", "Figma", "Blender", "Webflow", "3D"].map((s) => (
+              <span key={s} className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-700">{s}</span>
+            ))}
           </div>
 
-          {/* Yüzen "Import to Multifolio" butonu — dikkat çekmek için pulse + halka */}
+          {/* Yüzen "içe aktar" butonu — dikkat çekmek için pulse + halka + imleç */}
           <div className="absolute bottom-3 right-3">
-            <span className="absolute inset-0 rounded-lg bg-[#00F0FF]/40 animate-ping motion-reduce:hidden" />
+            <span className="absolute inset-0 rounded-lg bg-[#00F0FF]/50 animate-ping motion-reduce:hidden" />
             <span className="relative inline-flex items-center gap-1.5 rounded-lg bg-[#00F0FF] px-2.5 py-1.5 text-[11px] font-bold text-[#031014] shadow-lg">
               <Puzzle className="h-3.5 w-3.5" />{buttonLabel}
             </span>
-            {/* İmleç işareti */}
-            <MousePointer2 className="absolute -bottom-2 -right-1 h-4 w-4 text-foreground drop-shadow motion-safe:animate-bounce" />
+            <MousePointer2 className="absolute -bottom-2 -right-1 h-4 w-4 text-slate-900 drop-shadow motion-safe:animate-bounce" />
           </div>
         </div>
       </div>
@@ -82,8 +102,9 @@ function DemoMedia({ caption, buttonLabel }: { caption: string; buttonLabel: str
   );
 }
 
-export function ExtensionGuideModal({ onClose }: { onClose: () => void }) {
+export function ExtensionGuideModal({ platform = "upwork", onClose }: { platform?: string; onClose: () => void }) {
   const t = useTranslations("extensionGuide");
+  const host = PROFILE_HOST[platform] ?? PROFILE_HOST.upwork;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -117,7 +138,7 @@ export function ExtensionGuideModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="p-5 space-y-5">
-          <DemoMedia caption={t("demoCaption")} buttonLabel={t("importButton")} />
+          <DemoMedia caption={t("demoCaption")} buttonLabel={t("importButton")} host={host} />
 
           {/* Adım adım */}
           <ol className="space-y-3">

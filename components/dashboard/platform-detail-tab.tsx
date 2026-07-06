@@ -300,7 +300,7 @@ export function PlatformDetailTab({
                       <PlayCircle className="h-3.5 w-3.5" />{t("detail.extensionHowTo")}
                     </Button>
                   </div>
-                  {guideOpen && <ExtensionGuideModal onClose={() => setGuideOpen(false)} />}
+                  {guideOpen && <ExtensionGuideModal platform={platform} onClose={() => setGuideOpen(false)} />}
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground max-w-md">
