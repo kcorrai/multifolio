@@ -821,7 +821,12 @@
     "summaryGenerate": "AI ile yaz",
     "summaryGenerating": "Yazılıyor…",
     "summaryError": "Özet üretilemedi.",
-    "summaryPick": "Kullanmak için bir varyant seç:"
+    "summaryPick": "Kullanmak için bir varyant seç:",
+    "summaryWords": "{count, plural, one {# kelime} other {# kelime}} · 50–100 hedefle",
+    "bulletTooLong": "Uzun — maddeleri 1–2 satırda tut.",
+    "reorderDrag": "Sıralamak için sürükle",
+    "reorderUp": "Yukarı taşı",
+    "reorderDown": "Aşağı taşı"
   },
   "accounts": {
     "title": "Platform Hesaplarım",

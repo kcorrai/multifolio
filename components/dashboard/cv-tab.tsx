@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Sparkles, Upload, Save, Check, AlertCircle, Download, Wand2, Plus, X, Gauge, Target,
+  GripVertical, ArrowUp, ArrowDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,6 +15,7 @@ import { CreditCost } from "@/components/credit-cost";
 import { CvPreview } from "./cv-preview";
 import { scoreCv, atsVerdict, hasFillerPhrase } from "@/lib/cv/ats";
 import { extractKeywordsFromText, matchKeywords } from "@/lib/cv/keywords";
+import { arrayMove } from "@/lib/cv/reorder";
 import { CV_TEMPLATES, CV_ACCENTS, CV_ACCENT_HEX, type CvTemplate } from "@/lib/cv/theme";
 import type {
   CvContent, CvExperience, CvEducation, CvProject, CvCertification, CvLanguage,
@@ -732,35 +734,45 @@ function CvEditor({
 
       {/* Deneyim */}
       <SectionCard id="cv-section-experience" title={t("sectionExperience")} onAdd={() => patch({ experience: [...c.experience, { ...emptyExperience }] })} addLabel={t("addExperience")}>
-        {c.experience.map((e, i) => (
-          <ItemBlock key={i} onRemove={() => patch({ experience: c.experience.filter((_, idx) => idx !== i) })} removeLabel={t("removeExperience")}>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label={t("role")} value={e.role} onChange={(v) => updateExp(i, { role: v })} />
-              <Field label={t("company")} value={e.company} onChange={(v) => updateExp(i, { company: v })} />
-              <Field label={t("location")} value={e.location} onChange={(v) => updateExp(i, { location: v })} />
-              <div className="flex items-end gap-2">
-                <Field label={t("startDate")} value={e.startDate} onChange={(v) => updateExp(i, { startDate: v })} className="flex-1" />
-                <Field label={t("endDate")} value={e.endDate} onChange={(v) => updateExp(i, { endDate: v })} className="flex-1" disabled={e.current} />
+        <SortableSection
+          items={c.experience}
+          onReorder={(from, to) => patch({ experience: arrayMove(c.experience, from, to) })}
+          onRemove={(i) => patch({ experience: c.experience.filter((_, idx) => idx !== i) })}
+          removeLabel={t("removeExperience")}
+          renderItem={(e, i) => (
+            <>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label={t("role")} value={e.role} onChange={(v) => updateExp(i, { role: v })} />
+                <Field label={t("company")} value={e.company} onChange={(v) => updateExp(i, { company: v })} />
+                <Field label={t("location")} value={e.location} onChange={(v) => updateExp(i, { location: v })} />
+                <div className="flex items-end gap-2">
+                  <Field label={t("startDate")} value={e.startDate} onChange={(v) => updateExp(i, { startDate: v })} className="flex-1" />
+                  <Field label={t("endDate")} value={e.endDate} onChange={(v) => updateExp(i, { endDate: v })} className="flex-1" disabled={e.current} />
+                </div>
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={e.current} onChange={(ev) => updateExp(i, { current: ev.target.checked })} />
+                  {t("current")}
+                </label>
               </div>
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={e.current} onChange={(ev) => updateExp(i, { current: ev.target.checked })} />
-                {t("current")}
-              </label>
-            </div>
-            <BulletsEditor
-              bullets={e.bullets}
-              onChange={(b) => updateExp(i, { bullets: b })}
-              onEnhance={onEnhance}
-              enhanceCtx={{ role: e.role, company: e.company }}
-            />
-          </ItemBlock>
-        ))}
+              <BulletsEditor
+                bullets={e.bullets}
+                onChange={(b) => updateExp(i, { bullets: b })}
+                onEnhance={onEnhance}
+                enhanceCtx={{ role: e.role, company: e.company }}
+              />
+            </>
+          )}
+        />
       </SectionCard>
 
       {/* Eğitim */}
       <SectionCard title={t("sectionEducation")} onAdd={() => patch({ education: [...c.education, { ...emptyEducation }] })} addLabel={t("addEducation")}>
-        {c.education.map((e, i) => (
-          <ItemBlock key={i} onRemove={() => patch({ education: c.education.filter((_, idx) => idx !== i) })} removeLabel={t("removeEducation")}>
+        <SortableSection
+          items={c.education}
+          onReorder={(from, to) => patch({ education: arrayMove(c.education, from, to) })}
+          onRemove={(i) => patch({ education: c.education.filter((_, idx) => idx !== i) })}
+          removeLabel={t("removeEducation")}
+          renderItem={(e, i) => (
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label={t("degree")} value={e.degree} onChange={(v) => updateEdu(i, { degree: v })} />
               <Field label={t("field")} value={e.field} onChange={(v) => updateEdu(i, { field: v })} />
@@ -770,55 +782,69 @@ function CvEditor({
                 <Field label={t("endDate")} value={e.endDate} onChange={(v) => updateEdu(i, { endDate: v })} className="flex-1" />
               </div>
             </div>
-          </ItemBlock>
-        ))}
+          )}
+        />
       </SectionCard>
 
       {/* Projeler */}
       <SectionCard title={t("sectionProjects")} onAdd={() => patch({ projects: [...c.projects, { ...emptyProject }] })} addLabel={t("addProject")}>
-        {c.projects.map((p, i) => (
-          <ItemBlock key={i} onRemove={() => patch({ projects: c.projects.filter((_, idx) => idx !== i) })} removeLabel={t("removeProject")}>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label={t("projName")} value={p.name} onChange={(v) => updateProj(i, { name: v })} />
-              <Field label={t("projUrl")} value={p.url} onChange={(v) => updateProj(i, { url: v })} />
-            </div>
-            <div className="space-y-1.5 mt-3">
-              <Label>{t("projDescription")}</Label>
-              <Textarea rows={2} value={p.description} className="resize-none" onChange={(e) => updateProj(i, { description: e.target.value })} />
-            </div>
-            <BulletsEditor
-              bullets={p.bullets}
-              onChange={(b) => updateProj(i, { bullets: b })}
-              onEnhance={onEnhance}
-              enhanceCtx={{ role: p.name, company: "" }}
-            />
-          </ItemBlock>
-        ))}
+        <SortableSection
+          items={c.projects}
+          onReorder={(from, to) => patch({ projects: arrayMove(c.projects, from, to) })}
+          onRemove={(i) => patch({ projects: c.projects.filter((_, idx) => idx !== i) })}
+          removeLabel={t("removeProject")}
+          renderItem={(p, i) => (
+            <>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label={t("projName")} value={p.name} onChange={(v) => updateProj(i, { name: v })} />
+                <Field label={t("projUrl")} value={p.url} onChange={(v) => updateProj(i, { url: v })} />
+              </div>
+              <div className="space-y-1.5 mt-3">
+                <Label>{t("projDescription")}</Label>
+                <Textarea rows={2} value={p.description} className="resize-none" onChange={(e) => updateProj(i, { description: e.target.value })} />
+              </div>
+              <BulletsEditor
+                bullets={p.bullets}
+                onChange={(b) => updateProj(i, { bullets: b })}
+                onEnhance={onEnhance}
+                enhanceCtx={{ role: p.name, company: "" }}
+              />
+            </>
+          )}
+        />
       </SectionCard>
 
       {/* Sertifikalar */}
       <SectionCard title={t("sectionCertifications")} onAdd={() => patch({ certifications: [...c.certifications, { ...emptyCert }] })} addLabel={t("addCertification")}>
-        {c.certifications.map((x, i) => (
-          <ItemBlock key={i} onRemove={() => patch({ certifications: c.certifications.filter((_, idx) => idx !== i) })} removeLabel={t("removeCertification")}>
+        <SortableSection
+          items={c.certifications}
+          onReorder={(from, to) => patch({ certifications: arrayMove(c.certifications, from, to) })}
+          onRemove={(i) => patch({ certifications: c.certifications.filter((_, idx) => idx !== i) })}
+          removeLabel={t("removeCertification")}
+          renderItem={(x, i) => (
             <div className="grid gap-3 sm:grid-cols-3">
               <Field label={t("certName")} value={x.name} onChange={(v) => updateCert(i, { name: v })} />
               <Field label={t("certIssuer")} value={x.issuer} onChange={(v) => updateCert(i, { issuer: v })} />
               <Field label={t("certDate")} value={x.date} onChange={(v) => updateCert(i, { date: v })} />
             </div>
-          </ItemBlock>
-        ))}
+          )}
+        />
       </SectionCard>
 
       {/* Diller */}
       <SectionCard title={t("sectionLanguages")} onAdd={() => patch({ languages: [...c.languages, { ...emptyLang }] })} addLabel={t("addLanguage")}>
-        {c.languages.map((x, i) => (
-          <ItemBlock key={i} onRemove={() => patch({ languages: c.languages.filter((_, idx) => idx !== i) })} removeLabel={t("removeLanguage")}>
+        <SortableSection
+          items={c.languages}
+          onReorder={(from, to) => patch({ languages: arrayMove(c.languages, from, to) })}
+          onRemove={(i) => patch({ languages: c.languages.filter((_, idx) => idx !== i) })}
+          removeLabel={t("removeLanguage")}
+          renderItem={(x, i) => (
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label={t("langName")} value={x.name} onChange={(v) => updateLang(i, { name: v })} />
               <Field label={t("langLevel")} value={x.level} onChange={(v) => updateLang(i, { level: v })} />
             </div>
-          </ItemBlock>
-        ))}
+          )}
+        />
       </SectionCard>
     </div>
   );
@@ -860,19 +886,67 @@ function SectionCard({
   );
 }
 
-function ItemBlock({
-  onRemove, removeLabel, children,
+// Sıralanabilir bölüm: her girdi sürükle-bırak (masaüstü) + yukarı/aşağı buton
+// (erişilebilir/mobil) ile yeniden sıralanır. Dizi sırası = render sırası.
+function SortableSection<T>({
+  items, onReorder, onRemove, removeLabel, renderItem,
 }: {
-  onRemove: () => void; removeLabel: string; children: React.ReactNode;
+  items: T[];
+  onReorder: (from: number, to: number) => void;
+  onRemove: (i: number) => void;
+  removeLabel: string;
+  renderItem: (item: T, index: number) => React.ReactNode;
 }) {
+  const t = useTranslations("cv");
+  const [drag, setDrag] = useState<number | null>(null);
+  const [over, setOver] = useState<number | null>(null);
+  const many = items.length > 1;
+  const ctrl =
+    "h-6 w-6 rounded-full bg-background border border-border shadow flex items-center justify-center text-muted-foreground cursor-pointer";
+
   return (
-    <div className="relative rounded-xl border border-border p-4">
-      <button type="button" onClick={onRemove} aria-label={removeLabel}
-        className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-background border border-border shadow flex items-center justify-center text-muted-foreground hover:text-destructive cursor-pointer">
-        <X className="h-3.5 w-3.5" />
-      </button>
-      {children}
-    </div>
+    <>
+      {items.map((item, i) => (
+        <div
+          key={i}
+          onDragOver={many ? (e) => { e.preventDefault(); if (over !== i) setOver(i); } : undefined}
+          onDrop={many ? (e) => { e.preventDefault(); if (drag !== null && drag !== i) onReorder(drag, i); setDrag(null); setOver(null); } : undefined}
+          className={`relative rounded-xl border p-4 pt-7 transition-colors ${
+            over === i && drag !== null && drag !== i ? "border-primary ring-2 ring-primary/30" : "border-border"
+          } ${drag === i ? "opacity-40" : ""}`}
+        >
+          <div className="absolute -top-2.5 right-3 flex items-center gap-1">
+            {many && (
+              <>
+                <button
+                  type="button"
+                  draggable
+                  onDragStart={() => setDrag(i)}
+                  onDragEnd={() => { setDrag(null); setOver(null); }}
+                  aria-label={t("reorderDrag")}
+                  title={t("reorderDrag")}
+                  className={`${ctrl} hover:text-foreground cursor-grab active:cursor-grabbing`}
+                >
+                  <GripVertical className="h-3.5 w-3.5" />
+                </button>
+                <button type="button" onClick={() => i > 0 && onReorder(i, i - 1)} disabled={i === 0}
+                  aria-label={t("reorderUp")} className={`${ctrl} hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed`}>
+                  <ArrowUp className="h-3.5 w-3.5" />
+                </button>
+                <button type="button" onClick={() => i < items.length - 1 && onReorder(i, i + 1)} disabled={i === items.length - 1}
+                  aria-label={t("reorderDown")} className={`${ctrl} hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed`}>
+                  <ArrowDown className="h-3.5 w-3.5" />
+                </button>
+              </>
+            )}
+            <button type="button" onClick={() => onRemove(i)} aria-label={removeLabel} className={`${ctrl} hover:text-destructive`}>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          {renderItem(item, i)}
+        </div>
+      ))}
+    </>
   );
 }
 
@@ -887,6 +961,8 @@ function SummaryEditor({
   const t = useTranslations("cv");
   const [busy, setBusy] = useState(false);
   const [variants, setVariants] = useState<string[] | null>(null);
+  const words = summary.trim() ? summary.trim().split(/\s+/).length : 0;
+  const wordsOk = words >= 50 && words <= 100;
 
   async function generate() {
     setBusy(true);
@@ -899,6 +975,9 @@ function SummaryEditor({
     <div className="space-y-3">
       <Textarea rows={4} value={summary} maxLength={2000} className="resize-none"
         onChange={(e) => onChange(e.target.value)} />
+      <p className={`text-xs ${wordsOk ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}>
+        {t("summaryWords", { count: words })}
+      </p>
       <Button variant="outline" size="sm" onClick={generate} disabled={busy} className="gap-2">
         <Sparkles className={`h-4 w-4 ${busy ? "animate-pulse" : ""}`} />
         {busy ? t("summaryGenerating") : t("summaryGenerate")}
@@ -964,8 +1043,20 @@ function BulletsEditor({
       </div>
       {bullets.map((b, i) => (
         <div key={i} className="space-y-1">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Input value={b} onChange={(e) => onChange(bullets.map((x, idx) => (idx === i ? e.target.value : x)))} />
+            {bullets.length > 1 && (
+              <>
+                <button type="button" onClick={() => onChange(arrayMove(bullets, i, i - 1))} disabled={i === 0}
+                  aria-label={t("reorderUp")} className="text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer">
+                  <ArrowUp className="h-3.5 w-3.5" />
+                </button>
+                <button type="button" onClick={() => onChange(arrayMove(bullets, i, i + 1))} disabled={i === bullets.length - 1}
+                  aria-label={t("reorderDown")} className="text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer">
+                  <ArrowDown className="h-3.5 w-3.5" />
+                </button>
+              </>
+            )}
             <button type="button" onClick={() => onChange(bullets.filter((_, idx) => idx !== i))}
               aria-label={t("remove")} className="text-muted-foreground hover:text-destructive cursor-pointer">
               <X className="h-4 w-4" />
@@ -974,6 +1065,11 @@ function BulletsEditor({
           {hasFillerPhrase(b) && (
             <p className="flex items-center gap-1 pl-1 text-xs text-amber-600 dark:text-amber-400">
               <AlertCircle className="h-3 w-3 shrink-0" />{t("weakPhrase")}
+            </p>
+          )}
+          {b.trim().length > 220 && (
+            <p className="flex items-center gap-1 pl-1 text-xs text-amber-600 dark:text-amber-400">
+              <AlertCircle className="h-3 w-3 shrink-0" />{t("bulletTooLong")}
             </p>
           )}
         </div>

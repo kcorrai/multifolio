@@ -821,7 +821,12 @@
     "summaryGenerate": "Write with AI",
     "summaryGenerating": "Writing…",
     "summaryError": "Could not generate a summary.",
-    "summaryPick": "Pick a variant to use:"
+    "summaryPick": "Pick a variant to use:",
+    "summaryWords": "{count, plural, one {# word} other {# words}} · aim for 50–100",
+    "bulletTooLong": "Long — keep bullets to 1–2 lines.",
+    "reorderDrag": "Drag to reorder",
+    "reorderUp": "Move up",
+    "reorderDown": "Move down"
   },
   "accounts": {
     "title": "My Platform Accounts",
