@@ -79,12 +79,16 @@ function mapProject(p: Record<string, unknown>): NuxtProject {
       images.push({ url: u, caption: (typeof caption === "string" ? caption : "").slice(0, 300) });
     }
   };
-  pushImg(p.thumbnailOriginal || p.thumbnail, "");
+  // Kapak (thumbnail) zaten attachments'ın ilk görselidir; ayrıca eklersek ilk foto iki
+  // kez görünür (thumbnailOriginal ile attachment link URL biçimi birebir eşleşmediğinden
+  // seenU dedup'ı da yakalamaz). Bu yüzden ekleri kaynak al; thumbnail'i YALNIZ hiç görsel
+  // eki yoksa fallback olarak kullan.
   if (Array.isArray(p.attachments)) {
     for (const a of p.attachments as Array<Record<string, unknown>>) {
       if (a?.type === "image") pushImg(a.link, a.title || a.description || "");
     }
   }
+  if (!images.length) pushImg(p.thumbnailOriginal || p.thumbnail, "");
 
   return {
     title: String(p.title || "").slice(0, 200),
