@@ -1,8 +1,12 @@
 // SAF Fiverr çıkarım yardımcıları — DOM'a dokunmaz, vitest ile test edilir.
-// Fiverr profil sayfası tüm veriyi window.__PERSEUS__initialProps (JSON string) içinde
-// tutar: seller.{oneLinerTitle,description,rating,sellerLevel,activeStructuredSkills,
-// certifications,activeEducations,workExperiences,user...} + gigsData[] (başlık+görseller).
-// fiverr.ts (MAIN world) bu modülü çağırır; content.ts sonucu köprüyle alır.
+// İki veri kaynağı:
+//  1) window.__PERSEUS__initialProps (JSON): seller profili (headline/summary/skills/
+//     rating/level/dil/eğitim/sertifika/iş-deneyimi) + gigsData[] (hizmet ilanları).
+//     → mapFiverrProps: AI'a verilecek TEMİZ metin bloğu + avatar + skills.
+//  2) /portfolio/api/sellers/{u}/portfolio yanıtı (lazy; fiverr.ts hook'lar/fetch'ler):
+//     gerçek PROJELER (portföy) — başlık + görseller + açıklama + etiketler.
+//     → portfolioProjectsFromResponse + rawToProject.
+// Gig'ler PROJE değildir (hizmet ilanı) → yalnız metin sinyali olarak eklenir.
 
 export interface FiverrImage { url: string; caption: string }
 export interface FiverrProject {
@@ -12,18 +16,35 @@ export interface FiverrProject {
   skills: string[];
   images: FiverrImage[];
 }
-export interface FiverrExtract {
-  text: string; // AI çıkarımına verilecek TEMİZ yapılandırılmış blok
-  avatarUrl: string; // seller.user.profileImageUrl
+// mapFiverrProps çıktısı (profil kısmı; projeler portföyden ayrı gelir).
+export interface FiverrProfile {
+  text: string; // AI çıkarımına verilecek temiz yapılandırılmış blok
+  avatarUrl: string;
   skills: string[];
-  projects: FiverrProject[]; // gig'ler (başlık + görsel + açıklama)
-  images: string[]; // gig kapak görselleri (portfolyo görselleri content.ts'te DOM'dan eklenir)
+}
+// content.ts'e köprüyle giden birleşik çıktı (fiverr.ts assemble eder).
+export interface FiverrExtract extends FiverrProfile {
+  projects: FiverrProject[]; // portföy projeleri
+  images: string[]; // portföy görselleri
+}
+// Portföy projesinin ara (merge edilebilir) hâli — id ile tekilleştirilir; detailed=firstProject.
+export interface PortfolioProjectRaw {
+  id: string;
+  title: string;
+  description: string;
+  skills: string[];
+  images: FiverrImage[];
+  detailed: boolean;
 }
 
 type Obj = Record<string, unknown>;
 const isObj = (v: unknown): v is Obj => !!v && typeof v === "object";
 const str = (v: unknown): string => (typeof v === "string" ? v : "");
-const num = (v: unknown): number | null => (typeof v === "number" && isFinite(v) ? v : null);
+const num = (v: unknown): number | null => {
+  if (typeof v === "number" && isFinite(v)) return v;
+  if (typeof v === "string" && v.trim() && isFinite(Number(v))) return Number(v);
+  return null;
+};
 
 // Cloudinary dönüşüm/versiyon segmentlerini eleyerek görseli KİMLİĞİNE indirger:
 // aynı görselin farklı thumbnail biçimleri (t_portfolio_project_card vs _grid, t_main1…)
@@ -71,54 +92,102 @@ function langLevel(level: unknown): string {
   return "";
 }
 
-// gigsData[] öğesini portfolyo projesine çevirir: başlık + metadata'dan açıklama +
-// asset görselleri (cloud_img_main_gig). Video asset'ler atlanır (yalnız görsel).
-function mapGig(g: Obj): FiverrProject | null {
-  const title = str(g.title).slice(0, 200);
-  const images: FiverrImage[] = [];
-  const seen = new Set<string>();
-  if (Array.isArray(g.assets)) {
-    for (const a of g.assets as Obj[]) {
-      const url = str(a?.cloud_img_main_gig);
-      if (!url) continue; // VideoAsset vb.
-      const key = fiverrImageKey(url);
-      if (seen.has(key)) continue;
-      seen.add(key);
-      images.push({ url, caption: title });
-    }
-  }
-  if (!title && !images.length) return null;
-
-  // metadata: [{type:'programming_language', value:[...]}, ...] → açıklama + skills.
-  const meta = Array.isArray(g.metadata) ? (g.metadata as Obj[]) : [];
-  const metaVals = (type: RegExp): string[] => {
-    const m = meta.find((x) => type.test(str(x?.type)));
-    return Array.isArray(m?.value) ? (m!.value as unknown[]).map(str).filter(Boolean) : [];
+// Fiverr süre enum'u → okunur (ONE_TO_THREE_MONTHS → "1-3 months").
+function humanDuration(d: string): string {
+  const map: Record<string, string> = {
+    LESS_THAN_ONE_MONTH: "under 1 month",
+    ONE_TO_THREE_MONTHS: "1-3 months",
+    THREE_TO_SIX_MONTHS: "3-6 months",
+    MORE_THAN_SIX_MONTHS: "6+ months",
   };
-  const tech = metaVals(/programming_language|tech/i);
-  const features = metaVals(/feature/i);
-  const kinds = metaVals(/type/i);
-  const price = num(g.price_i);
-  const rating = num(g.buying_review_rating);
-  const descParts = [
-    kinds.length ? `Type: ${kinds.join(", ")}` : "",
-    features.length ? `Features: ${features.join(", ").replace(/_/g, " ")}` : "",
-    tech.length ? `Tech: ${tech.join(", ").replace(/_/g, " ")}` : "",
-    price ? `Starting at $${price}` : "",
-    rating ? `Rating ${rating}` : "",
-  ].filter(Boolean);
-
-  return {
-    title,
-    description: descParts.join(". ").slice(0, 1000),
-    role: "",
-    skills: [...new Set(tech.map((t) => t.replace(/_/g, " ")))].slice(0, 15),
-    images: images.slice(0, 10),
-  };
+  return map[d] || d.replace(/_/g, " ").toLowerCase();
 }
 
-// __PERSEUS__initialProps (parse edilmiş) → yapılandırılmış Fiverr çıkarımı. Seller yoksa null.
-export function mapFiverrProps(props: unknown): FiverrExtract | null {
+// ── Portföy (gerçek projeler) ──
+
+// Bir portföy proje objesindeki tüm görsel previewUrl'lerini toplar (video posteri dahil).
+function projectImages(node: Obj, caption: string): FiverrImage[] {
+  const items = isObj(node.items) && Array.isArray(node.items.nodes) ? (node.items.nodes as Obj[]) : [];
+  const out: FiverrImage[] = [];
+  const seen = new Set<string>();
+  for (const it of items) {
+    const url = isObj(it?.attachment) ? str(it.attachment.previewUrl) : "";
+    if (!/^https:\/\//i.test(url)) continue;
+    const key = fiverrImageKey(url);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ url, caption });
+  }
+  return out;
+}
+
+// firstProject (tam detaylı) → PortfolioProjectRaw: açıklama + etiketler + süre/bütçe/yıl.
+function mapDetailedProject(fp: Obj): PortfolioProjectRaw | null {
+  const id = str(fp.id);
+  const title = str(fp.title).slice(0, 200);
+  if (!id && !title) return null;
+  const skills = (Array.isArray(fp.industries) ? (fp.industries as Obj[]) : [])
+    .map((i) => str(i?.name))
+    .filter(Boolean);
+  const duration = str(fp.duration);
+  const price = num(isObj(fp.price) ? fp.price.amount : null);
+  const startedYear = num(fp.projectStartedAt);
+  const metaLine = [
+    duration ? `Duration: ${humanDuration(duration)}` : "",
+    price ? `Budget: $${Math.round(price)}` : "",
+    startedYear ? `Started ${new Date(startedYear * 1000).getUTCFullYear()}` : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const description = [str(fp.description), metaLine].filter(Boolean).join("\n\n").slice(0, 4000);
+  return { id, title, description, skills: [...new Set(skills)].slice(0, 15), images: projectImages(fp, title), detailed: true };
+}
+
+// Liste öğesi (sığ) → PortfolioProjectRaw: başlık + kapak görseli (açıklama/etiket yok).
+function mapListProject(p: Obj): PortfolioProjectRaw | null {
+  const id = str(p.id);
+  const title = str(p.title).slice(0, 200);
+  if (!id && !title) return null;
+  return { id, title, description: "", skills: [], images: projectImages(p, title), detailed: false };
+}
+
+// Portföy API yanıtından proje kayıtlarını çıkarır: projects[] (sığ) + firstProject (derin).
+// Aynı proje iki kez görünebilir (id ile merge çağıranın işi — mergePortfolio).
+export function portfolioProjectsFromResponse(json: unknown): PortfolioProjectRaw[] {
+  const root = isObj(json) ? json : null;
+  if (!root) return [];
+  const out: PortfolioProjectRaw[] = [];
+  for (const p of Array.isArray(root.projects) ? (root.projects as Obj[]) : []) {
+    const m = mapListProject(p);
+    if (m) out.push(m);
+  }
+  if (isObj(root.firstProject)) {
+    const d = mapDetailedProject(root.firstProject);
+    if (d) out.push(d);
+  }
+  return out;
+}
+
+// Yeni kayıtları id bazında biriktirir; daha ZENGİN sürüm (detailed / daha çok görsel) kazanır.
+export function mergePortfolio(store: Map<string, PortfolioProjectRaw>, incoming: PortfolioProjectRaw[]): void {
+  for (const p of incoming) {
+    const key = p.id || p.title;
+    if (!key) continue;
+    const prev = store.get(key);
+    if (!prev) { store.set(key, p); continue; }
+    const better = (p.detailed && !prev.detailed) || p.images.length > prev.images.length || p.description.length > prev.description.length;
+    if (better) store.set(key, p);
+  }
+}
+
+// PortfolioProjectRaw → sunucuya gidecek FiverrProject (id atılır).
+export function rawToProject(r: PortfolioProjectRaw): FiverrProject {
+  return { title: r.title, description: r.description, role: "", skills: r.skills, images: r.images.slice(0, 20) };
+}
+
+// __PERSEUS__initialProps (parse edilmiş) → profil kısmı (metin + avatar + skills). Seller yoksa null.
+// Projeler portföyden ayrı gelir (bkz portfolioProjectsFromResponse).
+export function mapFiverrProps(props: unknown): FiverrProfile | null {
   const root = isObj(props) ? props : null;
   const seller = root && isObj(root.seller) ? root.seller : null;
   if (!seller) return null;
@@ -130,19 +199,10 @@ export function mapFiverrProps(props: unknown): FiverrExtract | null {
   const description = str(seller.description);
   const avatarUrl = str(user.profileImageUrl);
 
-  // Skills: activeStructuredSkills[].name
   const skills = (Array.isArray(seller.activeStructuredSkills) ? (seller.activeStructuredSkills as Obj[]) : [])
     .map((s) => str(s?.name))
     .filter(Boolean);
 
-  // Gig'ler: yapılandırılmış proje verisi gigsData[]'da (görselli).
-  const gigs = (Array.isArray(root!.gigsData) ? (root!.gigsData as Obj[]) : [])
-    .map(mapGig)
-    .filter((p): p is FiverrProject => !!p);
-
-  const images = dedupeFiverrImages(gigs.flatMap((p) => p.images.map((i) => i.url)));
-
-  // ── AI'a verilecek TEMİZ metin bloğu (DOM innerText'ten çok daha az gürültülü) ──
   const rating = isObj(seller.rating) ? seller.rating : {};
   const ratingScore = num(rating.score);
   const ratingCount = num(rating.count);
@@ -184,6 +244,10 @@ export function mapFiverrProps(props: unknown): FiverrExtract | null {
     })
     .filter(Boolean);
 
+  const gigTitles = (Array.isArray(root!.gigsData) ? (root!.gigsData as Obj[]) : [])
+    .map((g) => str(g?.title))
+    .filter(Boolean);
+
   const summaryLine = [
     level ? `Fiverr seller level: ${level}` : "",
     ratingScore ? `Rating: ${ratingScore}${ratingCount ? ` (${ratingCount} reviews)` : ""}` : "",
@@ -201,14 +265,12 @@ export function mapFiverrProps(props: unknown): FiverrExtract | null {
     educations.length ? `Education:\n- ${educations.join("\n- ")}` : "",
     certifications.length ? `Certifications:\n- ${certifications.join("\n- ")}` : "",
     work.length ? `Work experience:\n- ${work.join("\n- ")}` : "",
-    gigs.length ? `Services / gigs:\n- ${gigs.map((g) => g.title).filter(Boolean).join("\n- ")}` : "",
+    gigTitles.length ? `Services / gigs:\n- ${gigTitles.join("\n- ")}` : "",
   ].filter(Boolean);
 
   return {
     text: sections.join("\n\n").slice(0, 50_000),
     avatarUrl,
     skills: [...new Set(skills)].slice(0, 40),
-    projects: gigs.slice(0, 30),
-    images: images.slice(0, 50),
   };
 }

@@ -32,14 +32,18 @@ sekmesini açar ve kullanıcı taslağı wizard'da inceleyip kaydeder (otomatik 
   okur, saf mapper'la yapılandırıp CustomEvent köprüsüyle content.ts'e verir:
   - `src/nuxt.ts` (Upwork) — `window.__NUXT__`/Vue store + fetch/XHR hook'u ile TÜM portfolyo
     projelerini (sayfalar arası biriktirerek) çıkarır. `mf-get-projects` → `mf-projects`.
-  - `src/fiverr.ts` (Fiverr) — `window.__PERSEUS__initialProps` (JSON) → saf `fiverr-map.ts`
-    `mapFiverrProps`: profil (headline=`oneLinerTitle`, summary=`description`, skills,
-    rating/level/dil/eğitim/sertifika/iş-deneyimi → TEMİZ metin bloğu) + gig'ler
-    (`gigsData[]` → başlık+görsel proje) + avatar (`profileImageUrl`). `mf-get-fiverr` →
-    `mf-fiverr`. Fiverr sayfalama gerektirmez (tek okuma). Portfolyo görselleri lazy →
-    content.ts DOM'u kaydırıp `/attachments/project_item/` desenli görselleri ekler.
-    `fiverr-map.ts` PURE + vitest'li (`fiverrImageKey`/`dedupeFiverrImages` cloudinary
-    thumbnail biçimlerini tek kimliğe toplar → çift görsel önlenir).
+  - `src/fiverr.ts` (Fiverr) — İKİ kaynak: (1) `window.__PERSEUS__initialProps` (JSON) →
+    saf `mapFiverrProps`: profil (headline=`oneLinerTitle`, summary=`description`, skills,
+    rating/level/dil/eğitim/sertifika/iş-deneyimi + **gig başlıkları hizmet sinyali olarak**
+    → TEMİZ metin bloğu) + avatar (`profileImageUrl`). (2) Gerçek PROJELER portföy
+    API'sinde (`/portfolio/api/sellers/{u}/portfolio` → `projects[]` sığ başlık+kapak +
+    `firstProject` derin açıklama/görseller/`industries`=etiket/süre/bütçe). Portföy LAZY
+    + PerimeterX korumalı: fiverr.ts hem PASİF fetch/XHR hook'u ile sayfanın kendi isteğini
+    yakalar (PX'i tetiklemez) hem istek anında AKTİF fetch dener (gerçek tarayıcıda tüm
+    projeleri çeker; PX 403'lerse pasif veriye düşer); `mergePortfolio` id bazında zengin
+    sürümü tutar. content.ts önce portföye kaydırıp (lazy tetikler) sonra veriyi ister.
+    `mf-get-fiverr` → `mf-fiverr`. `fiverr-map.ts` PURE + vitest'li (`fiverrImageKey`/
+    `dedupeFiverrImages` cloudinary thumbnail biçimlerini tek kimliğe toplar → çift görsel önlenir).
 - API tabanı build-time gömülür (`--define:__API_BASE__`): `build` → prod, `build:dev` → localhost.
 - **UI dili:** `_locales/{en,tr}/messages.json` + `chrome.i18n` (`src/messages.ts` sarmalayıcı,
   EN fallback); tarayıcı diline göre otomatik.
@@ -78,9 +82,10 @@ sürüm öncesi bu liste elle geçilir:
    yeni sekmede wizard taslakla açılır (başlık/özet/beceriler + varsa avatar) +
    "eklentiyle içe aktarıldı" banner'ı → düzenle → kaydet → dashboard profili güncel.
 3. Aynısını Fiverr (`fiverr.com/<kullanıcı>`) ve LinkedIn (`linkedin.com/in/<kullanıcı>`)
-   profilinde tekrarla; Fiverr'da taslakta headline/summary/skills + gig'lerin PROJE olarak
-   (başlık+görsel) geldiğini, avatar'ın doğru profil fotosu olduğunu doğrula; LinkedIn'de
-   taslakta skills'in dolu geldiğini doğrula.
+   profilinde tekrarla; Fiverr'da taslakta headline/summary/skills geldiğini, PORTFÖY
+   projelerinin (başlık+görsel; ilkinin açıklama+etiketi) proje olarak geldiğini, avatar'ın
+   doğru profil fotosu olduğunu doğrula (portföyün lazy yüklenmesi için buton birkaç saniye
+   sürebilir); LinkedIn'de taslakta skills'in dolu geldiğini doğrula.
 4. Negatifler: buton `fiverr.com/search/...`, `upwork.com/nx/...`, ilan sayfalarında ÇIKMAZ.
 5. Hata yolları: Multifolio'dan çıkış yap → butona bas → "log in" notu + login sekmesi;
    1 saatte 10 import → 11.'de rate-limit mesajı; Supabase'de `usage_events`

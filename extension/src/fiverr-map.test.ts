@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { mapFiverrProps, fiverrImageKey, dedupeFiverrImages } from "./fiverr-map";
+import {
+  mapFiverrProps,
+  fiverrImageKey,
+  dedupeFiverrImages,
+  portfolioProjectsFromResponse,
+  mergePortfolio,
+  rawToProject,
+  type PortfolioProjectRaw,
+} from "./fiverr-map";
 
 // Gerçek Fiverr __PERSEUS__initialProps yapısından türetilmiş küçük fixture.
 const props = {
@@ -19,33 +27,15 @@ const props = {
     sellerLevel: "LEVEL_TWO",
     responseTime: { inHours: 1 },
     hourlyRate: { priceInCents: 5000 },
-    activeStructuredSkills: [
-      { name: "Python Django", level: "PRO" },
-      { name: "Machine learning" },
-      { name: "Python Django" }, // tekrar
-    ],
+    portfolios: { totalCount: 11 },
+    activeStructuredSkills: [{ name: "Python Django", level: "PRO" }, { name: "Machine learning" }, { name: "Python Django" }],
     activeEducations: [{ degree: "data science", toYear: 2025, school: "NUST-Islamabad", degreeTitle: "MSC" }],
     certifications: [{ receivedFrom: "Google Cloud", certificationName: "Web Development", year: 2024 }],
     workExperiences: {
       nodes: [{ title: "Founder & CEO", company: { name: "BrainDev" }, description: "Leading full stack delivery." }],
     },
   },
-  gigsData: [
-    {
-      gig_id: 438919053,
-      title: "be your full stack web developer for custom ai integrated websites",
-      price_i: 300,
-      buying_review_rating: 4.9,
-      metadata: [
-        { type: "website_type", value: ["saas"] },
-        { type: "programming_language", value: ["html_css", "javascript", "react"] },
-      ],
-      assets: [
-        { type: "ImageAsset", cloud_img_main_gig: "https://fiverr-res.cloudinary.com/t_main1,q_auto,f_auto/gigs/438919053/original/aaa.png" },
-        { type: "VideoAsset", attachment_id: "x" }, // görsel yok → atlanır
-      ],
-    },
-  ],
+  gigsData: [{ title: "be your full stack web developer for custom ai integrated websites" }],
 };
 
 describe("mapFiverrProps", () => {
@@ -57,22 +47,13 @@ describe("mapFiverrProps", () => {
     expect(mapFiverrProps({ seller: null })).toBeNull();
   });
 
-  it("avatar + skills (tekrarsız) çıkarır", () => {
+  it("avatar + skills (tekrarsız) çıkarır, projeler DÖNDÜRMEZ (portföyden ayrı)", () => {
     expect(r.avatarUrl).toContain("attachments/profile/photo");
     expect(r.skills).toEqual(["Python Django", "Machine learning"]);
+    expect("projects" in r).toBe(false);
   });
 
-  it("gig'i proje olarak çıkarır (yalnız görsel asset)", () => {
-    expect(r.projects).toHaveLength(1);
-    const p = r.projects[0];
-    expect(p.title).toContain("full stack web developer");
-    expect(p.images).toHaveLength(1); // VideoAsset atlandı
-    expect(p.images[0].url).toContain("/gigs/438919053/");
-    expect(p.skills).toContain("html css"); // alt çizgi boşluğa
-    expect(p.description).toContain("Starting at $300");
-  });
-
-  it("temiz metin bloğunda tüm bölümler yer alır", () => {
+  it("temiz metin bloğunda tüm bölümler + gig başlığı (hizmet sinyali) yer alır", () => {
     expect(r.text).toContain("Saad Rehman");
     expect(r.text).toContain("Headline: AI Powered");
     expect(r.text).toContain("full stack developer and AI specialist");
@@ -84,6 +65,59 @@ describe("mapFiverrProps", () => {
     expect(r.text).toContain("Web Development — Google Cloud — (2024)");
     expect(r.text).toContain("Founder & CEO @ BrainDev");
     expect(r.text).toContain("Services / gigs:");
+    expect(r.text).toContain("full stack web developer for custom ai");
+  });
+});
+
+// Gerçek /portfolio/api yanıt yapısından türetilmiş fixture (liste sığ + firstProject derin).
+const CDN = "https://fiverr-res.cloudinary.com/image/upload";
+const imgNode = (transform: string, tail: string) => ({ attachment: { previewUrl: `${CDN}/${transform}/v1/attachments/project_item/attachment/${tail}` } });
+const portfolioResponse = {
+  projects: [
+    { id: "p1", title: "FiberFlow-Textile PLM", items: { nodes: [imgNode("t_portfolio_project_grid", "h1-1/a.png")] } },
+    { id: "p2", title: "Monaarch Studio", items: { nodes: [imgNode("t_portfolio_project_grid", "h2-1/b.png")] } },
+  ],
+  firstProject: {
+    id: "p1",
+    title: "FiberFlow-Textile PLM Digitalization",
+    description: "Client: A textile company. Goal: build a PLM system.",
+    duration: "ONE_TO_THREE_MONTHS",
+    price: { amount: "1500.0" },
+    projectStartedAt: 1706745600, // 2024
+    industries: [{ name: "Textile Manufacturing" }, { name: "Data Analytics" }],
+    items: {
+      nodes: [imgNode("t_portfolio_project_card", "h1-1/a.png"), imgNode("t_portfolio_project_card", "h1-2/pic2.png")],
+    },
+  },
+  totalProjects: 11,
+};
+
+describe("portfolioProjectsFromResponse + mergePortfolio", () => {
+  it("liste sığ + firstProject derin projeleri çıkarır", () => {
+    const raws = portfolioProjectsFromResponse(portfolioResponse);
+    expect(raws).toHaveLength(3); // p1(sığ) + p2(sığ) + p1(derin)
+    const detailed = raws.find((p) => p.detailed)!;
+    expect(detailed.id).toBe("p1");
+    expect(detailed.skills).toEqual(["Textile Manufacturing", "Data Analytics"]);
+    expect(detailed.description).toContain("Duration: 1-3 months");
+    expect(detailed.description).toContain("Budget: $1500");
+    expect(detailed.description).toContain("Started 2024");
+    expect(detailed.images).toHaveLength(2);
+  });
+
+  it("merge id bazında ZENGİN sürümü (detailed) tutar", () => {
+    const store = new Map<string, PortfolioProjectRaw>();
+    mergePortfolio(store, portfolioProjectsFromResponse(portfolioResponse));
+    expect(store.size).toBe(2); // p1 + p2 (p1'in iki sürümü birleşti)
+    const p1 = store.get("p1")!;
+    expect(p1.detailed).toBe(true); // derin sürüm kazandı
+    expect(rawToProject(p1).description).toContain("PLM system");
+    expect(rawToProject(store.get("p2")!).description).toBe(""); // sığ: açıklama yok
+  });
+
+  it("portföy yanıtı değilse boş döner", () => {
+    expect(portfolioProjectsFromResponse(null)).toEqual([]);
+    expect(portfolioProjectsFromResponse({ foo: 1 })).toEqual([]);
   });
 });
 

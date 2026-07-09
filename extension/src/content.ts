@@ -380,11 +380,12 @@ async function collectPayload(platform: ProfilePlatform) {
       portfolioProjects = h.projects.slice(0, 30);
     }
   } else if (platform === "fiverr") {
-    // Fiverr: TÜM yapılandırılmış veri window.__PERSEUS__initialProps'ta (MAIN-world
-    // fiverr.js okur): temiz profil metni + gig'ler (görselli) + avatar. Portfolyo
-    // görselleri lazy → DOM'u kaydırıp topla. Yapılandırılmış çıkarım varsa onu tercih et.
-    const fData = await requestFiverrData();
+    // Fiverr: profil verisi window.__PERSEUS__initialProps'ta; gerçek PROJELER portföy
+    // API'sinde (lazy). ÖNCE portföye kaydır — bu hem lazy görselleri DOM'a getirir hem
+    // sayfanın portföy API isteğini tetikler (MAIN-world fiverr.js pasif hook'u yakalar).
+    // SONRA fiverr verisini iste (fiverr.js aktif fetch + biriken hook verisini birleştirir).
     const domPortfolio = await collectFiverrPortfolioDom();
+    const fData = await requestFiverrData();
     if (fData) {
       if (fData.text) text = clampText(fData.text);         // gürültüsüz yapılandırılmış blok
       if (fData.avatarUrl) avatarUrl = fData.avatarUrl;      // profileImageUrl (og:image tahminine gerek yok)
