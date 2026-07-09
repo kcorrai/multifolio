@@ -2,6 +2,7 @@
 // görünür metni + best-effort medya URL'lerini toplayıp background'a yollar.
 // Alan-alan CSS seçici parse YOK (bilinçli karar) — metin AI'a, görseller URL olarak.
 import { detectProfilePage, clampText, pickImageUrls, type ProfilePlatform } from "./extract";
+import { dedupeFiverrImages, type FiverrExtract } from "./fiverr-map";
 import { msg } from "./messages";
 
 const HOST_ID = "mf-import-host";
@@ -102,6 +103,45 @@ function requestNuxtProjects(): Promise<ScrapedProject[]> {
     document.dispatchEvent(new CustomEvent("mf-get-projects"));
     setTimeout(() => finish([]), 2500); // MAIN yanıt vermezse (login'de veri yoksa) boş
   });
+}
+
+// MAIN-world fiverr.js'ten window.__PERSEUS__initialProps yapılandırılmış çıkarımını ister.
+// İzole content script page global'ine erişemez → MAIN script okuyup JSON döner.
+function requestFiverrData(): Promise<FiverrExtract | null> {
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (v: FiverrExtract | null) => { if (done) return; done = true; document.removeEventListener("mf-fiverr", onResp); resolve(v); };
+    const onResp = (e: Event) => {
+      try { finish(JSON.parse((e as CustomEvent).detail || "null") as FiverrExtract | null); } catch { finish(null); }
+    };
+    document.addEventListener("mf-fiverr", onResp);
+    document.dispatchEvent(new CustomEvent("mf-get-fiverr"));
+    setTimeout(() => finish(null), 2500); // MAIN yanıt vermezse (initialProps yoksa) null
+  });
+}
+
+// Fiverr portfolyo görselleri lazy yüklenir (kaydırınca gelir); cloudinary /project_item/
+// deseninde. Sayfayı birkaç kez kaydırıp portfolyo proje görsellerini toplar.
+function isFiverrPortfolioImg(src: string): boolean {
+  return /res\.cloudinary\.com\/.*\/attachments\/project_item\//i.test(src);
+}
+async function collectFiverrPortfolioDom(): Promise<string[]> {
+  const out = new Set<string>();
+  const grab = () => {
+    for (const img of Array.from(document.querySelectorAll("img"))) {
+      const src = img.currentSrc || img.src;
+      if (src && isFiverrPortfolioImg(src)) out.add(src);
+    }
+  };
+  grab();
+  const h = document.body.scrollHeight;
+  for (let i = 1; i <= 4; i++) {
+    window.scrollTo(0, (h * i) / 5);
+    await sleep(800);
+    grab();
+  }
+  window.scrollTo(0, 0);
+  return [...out];
 }
 
 // Upwork portfolyo görselleri sabit CDN deseninde: /att/download/portfolio/.../files/{id}.
@@ -313,9 +353,9 @@ async function harvestUpworkPortfolio(): Promise<{ images: string[]; projects: S
 async function collectPayload(platform: ProfilePlatform) {
   // Ana içerik bölgesi varsa onu, yoksa tüm gövdeyi al (nav/footer gürültüsünü AI tolere eder).
   const main = document.querySelector("main");
-  const text = clampText((main ?? document.body).innerText);
+  let text = clampText((main ?? document.body).innerText);
 
-  const avatarUrl = findAvatarUrl();
+  let avatarUrl = findAvatarUrl();
 
   // Portfolyo:
   //  - Upwork: sayfalar arası gez + her projeyi açıp ZENGİN veri kazı (başlık/açıklama/
@@ -338,6 +378,20 @@ async function collectPayload(platform: ProfilePlatform) {
       const h = await harvestUpworkPortfolio();
       portfolioImages = pickImageUrls(h.images, 50);
       portfolioProjects = h.projects.slice(0, 30);
+    }
+  } else if (platform === "fiverr") {
+    // Fiverr: TÜM yapılandırılmış veri window.__PERSEUS__initialProps'ta (MAIN-world
+    // fiverr.js okur): temiz profil metni + gig'ler (görselli) + avatar. Portfolyo
+    // görselleri lazy → DOM'u kaydırıp topla. Yapılandırılmış çıkarım varsa onu tercih et.
+    const fData = await requestFiverrData();
+    const domPortfolio = await collectFiverrPortfolioDom();
+    if (fData) {
+      if (fData.text) text = clampText(fData.text);         // gürültüsüz yapılandırılmış blok
+      if (fData.avatarUrl) avatarUrl = fData.avatarUrl;      // profileImageUrl (og:image tahminine gerek yok)
+      portfolioProjects = fData.projects.slice(0, 30);
+      portfolioImages = pickImageUrls(dedupeFiverrImages([...fData.images, ...domPortfolio]), 50);
+    } else {
+      portfolioImages = pickImageUrls(dedupeFiverrImages(domPortfolio), 50);
     }
   } else {
     const raw: string[] = [];

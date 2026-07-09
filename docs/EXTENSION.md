@@ -27,6 +27,19 @@ sekmesini açar ve kullanıcı taslağı wizard'da inceleyip kaydeder (otomatik 
 - Alan-alan CSS seçici parse bilinçli olarak YOK — DOM değişse de kırılmaz; metni AI çıkarır.
   LinkedIn'de bunun bonusu: login'li sayfa metni skills bölümünü içerir → AI skills'i de
   çıkarır (public ld+json yolu veremiyordu).
+- **MAIN-world çıkarıcılar (yapılandırılmış veri, gürültüsüz):** izole content.ts sayfanın
+  JS global'lerine erişemez → ayrı MAIN-world script'ler (`world:"MAIN"`) global state'i
+  okur, saf mapper'la yapılandırıp CustomEvent köprüsüyle content.ts'e verir:
+  - `src/nuxt.ts` (Upwork) — `window.__NUXT__`/Vue store + fetch/XHR hook'u ile TÜM portfolyo
+    projelerini (sayfalar arası biriktirerek) çıkarır. `mf-get-projects` → `mf-projects`.
+  - `src/fiverr.ts` (Fiverr) — `window.__PERSEUS__initialProps` (JSON) → saf `fiverr-map.ts`
+    `mapFiverrProps`: profil (headline=`oneLinerTitle`, summary=`description`, skills,
+    rating/level/dil/eğitim/sertifika/iş-deneyimi → TEMİZ metin bloğu) + gig'ler
+    (`gigsData[]` → başlık+görsel proje) + avatar (`profileImageUrl`). `mf-get-fiverr` →
+    `mf-fiverr`. Fiverr sayfalama gerektirmez (tek okuma). Portfolyo görselleri lazy →
+    content.ts DOM'u kaydırıp `/attachments/project_item/` desenli görselleri ekler.
+    `fiverr-map.ts` PURE + vitest'li (`fiverrImageKey`/`dedupeFiverrImages` cloudinary
+    thumbnail biçimlerini tek kimliğe toplar → çift görsel önlenir).
 - API tabanı build-time gömülür (`--define:__API_BASE__`): `build` → prod, `build:dev` → localhost.
 - **UI dili:** `_locales/{en,tr}/messages.json` + `chrome.i18n` (`src/messages.ts` sarmalayıcı,
   EN fallback); tarayıcı diline göre otomatik.
@@ -65,7 +78,9 @@ sürüm öncesi bu liste elle geçilir:
    yeni sekmede wizard taslakla açılır (başlık/özet/beceriler + varsa avatar) +
    "eklentiyle içe aktarıldı" banner'ı → düzenle → kaydet → dashboard profili güncel.
 3. Aynısını Fiverr (`fiverr.com/<kullanıcı>`) ve LinkedIn (`linkedin.com/in/<kullanıcı>`)
-   profilinde tekrarla; LinkedIn'de taslakta skills'in dolu geldiğini doğrula.
+   profilinde tekrarla; Fiverr'da taslakta headline/summary/skills + gig'lerin PROJE olarak
+   (başlık+görsel) geldiğini, avatar'ın doğru profil fotosu olduğunu doğrula; LinkedIn'de
+   taslakta skills'in dolu geldiğini doğrula.
 4. Negatifler: buton `fiverr.com/search/...`, `upwork.com/nx/...`, ilan sayfalarında ÇIKMAZ.
 5. Hata yolları: Multifolio'dan çıkış yap → butona bas → "log in" notu + login sekmesi;
    1 saatte 10 import → 11.'de rate-limit mesajı; Supabase'de `usage_events`
