@@ -8,11 +8,14 @@ export const httpUrl = (max: number) =>
   z.string().trim().max(max).refine((u) => /^https?:\/\//i.test(u), "Yalnız http(s) URL.");
 
 // Platform içe aktarmasından gelen tek portfolyo öğesi (görsel + başlık/açıklama).
+// `platform`: öğenin kaynak platformu — içe aktarma save'inde platform bazlı merge için
+// (aynı platform değişir, diğerleri korunur). null = manuel/bilinmeyen kaynak.
 export const portfolioItemSchema = z.object({
   title: z.string().trim().max(200),
   description: z.string().trim().max(1000).default(""),
   imageUrl: httpUrl(1000).nullable(),
   category: z.string().trim().max(120).nullable().default(null),
+  platform: z.string().trim().max(40).nullable().optional(),
 });
 export type PortfolioItem = z.infer<typeof portfolioItemSchema>;
 
@@ -28,6 +31,8 @@ export const profileProjectSchema = z.object({
   role: z.string().trim().max(200).default(""),
   skills: z.array(z.string().trim().min(1).max(60)).max(30).default([]),
   images: z.array(projectImageSchema).max(20).default([]),
+  // Kaynak platform — içe aktarma save'inde platform bazlı merge için (bkz portfolioItemSchema).
+  platform: z.string().trim().max(40).nullable().optional(),
 });
 export type ProfileProject = z.infer<typeof profileProjectSchema>;
 
@@ -44,6 +49,10 @@ export const profileInputSchema = z.object({
   portfolio: z.array(portfolioItemSchema).max(50).optional(),
   // Yapılandırılmış projeler (opsiyonel — gönderildiyse yazılır, yoksa korunur).
   projects: z.array(profileProjectSchema).max(30).optional(),
+  // İçe aktarma save'i bunu gönderir → sunucu portfolio/projects'i PLATFORM BAZLI merge
+  // eder (bu platformun öğeleri değişir, diğer platformlarınki korunur). Düz profil
+  // düzenlemesi (ProfileTab) GÖNDERMEZ → tam-durum replace (mevcut davranış). null = manuel.
+  sourcePlatform: z.string().trim().max(40).nullable().optional(),
 });
 
 export type ProfileInput = z.infer<typeof profileInputSchema>;

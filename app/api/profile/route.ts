@@ -9,10 +9,15 @@ import type { User } from "@supabase/supabase-js";
 import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { profileInputSchema } from "@/lib/validation/schemas/profile";
+import { mergeByPlatform } from "@/lib/profile/merge";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 const REFERRAL_BONUS = 20;
+// Platform bazlı merge sonrası birikimli üst sınır (birden çok platform sığsın; jsonb
+// büyümesini de sınırlar). İçe aktarma başına giriş şeması zaten 30/50 ile sınırlı.
+const MERGED_PROJECTS_CAP = 60;
+const MERGED_PORTFOLIO_CAP = 120;
 
 // Referral aktivasyon tetiği: kayıtta ?ref= ile gelen kullanıcı İLK profilini
 // kaydettiğinde iki tarafa da bonus verilir. referrals.referred_id UNIQUE =
@@ -88,8 +93,24 @@ export const POST = withErrorHandler(async (req) => {
     skills: input.skills,
   };
   if (input.avatar_url !== undefined) row.avatar_url = input.avatar_url;
-  if (input.portfolio !== undefined) row.portfolio = input.portfolio;
-  if (input.projects !== undefined) row.projects = input.projects;
+
+  // İçe aktarma save'i sourcePlatform gönderir → portfolio/projects PLATFORM BAZLI merge
+  // edilir (diğer platformların öğeleri korunur). ProfileTab göndermez → tam-durum replace.
+  const mergeMode = input.sourcePlatform !== undefined;
+  const src = input.sourcePlatform ?? null;
+  let existing: { portfolio?: unknown; projects?: unknown } | null = null;
+  if (mergeMode && (input.portfolio !== undefined || input.projects !== undefined)) {
+    const { data: existingRow, error: existingError } = await supabase
+      .from("profiles").select("portfolio, projects").eq("user_id", user.id).maybeSingle();
+    if (existingError) throw existingError;
+    existing = existingRow;
+  }
+  if (input.portfolio !== undefined) {
+    row.portfolio = mergeMode ? mergeByPlatform(existing?.portfolio, input.portfolio, src, MERGED_PORTFOLIO_CAP) : input.portfolio;
+  }
+  if (input.projects !== undefined) {
+    row.projects = mergeMode ? mergeByPlatform(existing?.projects, input.projects, src, MERGED_PROJECTS_CAP) : input.projects;
+  }
 
   const { data, error } = await supabase
     .from("profiles")

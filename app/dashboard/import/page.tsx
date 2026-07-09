@@ -27,6 +27,7 @@ export default async function ImportPage({
   let initialDraft = null;
   let initialExtras = null;
   let initialPlatformLabel: string | null = null;
+  let initialPlatform: string | null = null;
   const { source } = await searchParams;
   if (source === "extension") {
     const { data: row } = await supabase
@@ -42,6 +43,7 @@ export default async function ImportPage({
         initialDraft = draft.data;
         initialExtras = media.success ? media.data : null;
         initialPlatformLabel = platform.success ? PLATFORMS[platform.data].label : null;
+        initialPlatform = platform.success ? platform.data : null;
       }
     }
   }
@@ -52,6 +54,7 @@ export default async function ImportPage({
         initialDraft={initialDraft}
         initialExtras={initialExtras}
         initialPlatformLabel={initialPlatformLabel}
+        initialPlatform={initialPlatform}
       />
     </div>
   );

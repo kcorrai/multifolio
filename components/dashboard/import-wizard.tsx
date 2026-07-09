@@ -23,9 +23,12 @@ interface ImportWizardProps {
   initialDraft?: ProfileDraft | null;
   initialExtras?: ImportExtras | null;
   initialPlatformLabel?: string | null;
+  // Kaynak platform id'si (upwork/fiverr/…): save'de platform bazlı merge için gönderilir
+  // (bu platformun projeleri yenilenir, diğer platformlarınki korunur). null = manuel kaynak.
+  initialPlatform?: string | null;
 }
 
-export function ImportWizard({ initialDraft = null, initialExtras = null, initialPlatformLabel = null }: ImportWizardProps = {}) {
+export function ImportWizard({ initialDraft = null, initialExtras = null, initialPlatformLabel = null, initialPlatform = null }: ImportWizardProps = {}) {
   const t = useTranslations("import");
   const router = useRouter();
   const [channel, setChannel] = useState<Channel>("url");
@@ -45,6 +48,9 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
   // Kaynak banner'ı yalnız eklentiden gelen taslakta gösterilir; kullanıcı
   // baştan başlayıp yeni içe aktarma yaparsa kapanır.
   const [fromExtension, setFromExtension] = useState(!!initialDraft && !!initialPlatformLabel);
+  // Save'de platform bazlı merge için kaynak platform (extension'dan gelir; URL/metin
+  // içe aktarmasında import yanıtındaki data.platform ile güncellenir).
+  const [sourcePlatform, setSourcePlatform] = useState<string | null>(initialPlatform);
   const [saving, setSaving] = useState(false);
 
   async function runImport() {
@@ -73,6 +79,7 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
       setOriginal(data.draft as ProfileDraft);
       setIsTranslated(false);
       setExtras((data.media as ImportExtras | undefined) ?? null);
+      setSourcePlatform((data.platform as string | null) ?? null); // merge kaynağı
       setFromExtension(false);
     } finally {
       setBusy(false);
@@ -112,6 +119,9 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
         ...(extras?.avatarUrl ? { avatar_url: extras.avatarUrl } : {}),
         ...(extras?.portfolio?.length ? { portfolio: extras.portfolio } : {}),
         ...(extras?.projects?.length ? { projects: extras.projects } : {}),
+        // Bu bir İÇE AKTARMA save'i → sunucu platform bazlı merge etsin (null=manuel de
+        // gönderilir ki diğer platformların projeleri korunsun, ezilmesin).
+        sourcePlatform,
       }),
     });
     const data = await res.json().catch(() => null);
