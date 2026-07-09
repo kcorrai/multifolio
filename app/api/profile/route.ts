@@ -92,18 +92,25 @@ export const POST = withErrorHandler(async (req) => {
     summary: input.summary,
     skills: input.skills,
   };
-  if (input.avatar_url !== undefined) row.avatar_url = input.avatar_url;
 
   // İçe aktarma save'i sourcePlatform gönderir → portfolio/projects PLATFORM BAZLI merge
   // edilir (diğer platformların öğeleri korunur). ProfileTab göndermez → tam-durum replace.
   const mergeMode = input.sourcePlatform !== undefined;
   const src = input.sourcePlatform ?? null;
-  let existing: { portfolio?: unknown; projects?: unknown } | null = null;
-  if (mergeMode && (input.portfolio !== undefined || input.projects !== undefined)) {
+  let existing: { avatar_url?: string | null; portfolio?: unknown; projects?: unknown } | null = null;
+  if (mergeMode && (input.portfolio !== undefined || input.projects !== undefined || input.avatar_url !== undefined)) {
     const { data: existingRow, error: existingError } = await supabase
-      .from("profiles").select("portfolio, projects").eq("user_id", user.id).maybeSingle();
+      .from("profiles").select("avatar_url, portfolio, projects").eq("user_id", user.id).maybeSingle();
     if (existingError) throw existingError;
     existing = existingRow;
+  }
+
+  // Avatar: import modunda kullanıcının SEÇTİĞİ avatar VARSA korunur (yeni platform onu
+  // ezmesin); yoksa (ilk import) set edilir. Tüm platform avatarları platform_profiles'ta
+  // durur → ProfileTab seçicisinden istediği zaman değiştirebilir. ProfileTab save'i
+  // (mergeMode false) her zaman yazar — kullanıcı orada açıkça seçti.
+  if (input.avatar_url !== undefined && (!mergeMode || !existing?.avatar_url)) {
+    row.avatar_url = input.avatar_url;
   }
   if (input.portfolio !== undefined) {
     row.portfolio = mergeMode ? mergeByPlatform(existing?.portfolio, input.portfolio, src, MERGED_PORTFOLIO_CAP) : input.portfolio;
