@@ -418,7 +418,9 @@
       "public_analyze": "Profil Analizi",
       "cv_generation": "CV Üretimi",
       "cv_tailor": "CV Uyarlama",
-      "cv_import": "CV İçe Aktarma"
+      "cv_import": "CV İçe Aktarma",
+      "cv_bullets": "CV Madde Güçlendirme",
+      "cv_summary": "CV Özeti"
     },
     "creditsSub": "{count} kredi",
     "dailyTitle": "Son 30 gün — günlük kredi kullanımı",
@@ -809,7 +811,14 @@
     "weakPhrase": "Zayıf ifade — bir aksiyon fiiliyle başla.",
     "jumpToSection": "Bölüme git",
     "atsSafeBadge": "ATS-güvenli",
-    "atsVisualWarning": "Bu şablon renkli bir sütun kullanır — insanlar için harika ama katı ATS ayrıştırıcıları en iyi tek sütunu okur. ATS ile taranan başvurular için “Sade”ye geç."
+    "atsVisualWarning": "Bu şablon renkli bir sütun kullanır — insanlar için harika ama katı ATS ayrıştırıcıları en iyi tek sütunu okur. ATS ile taranan başvurular için “Sade”ye geç.",
+    "bulletsEnhance": "AI ile güçlendir",
+    "bulletsEnhancing": "Güçlendiriliyor…",
+    "bulletsError": "Maddeler güçlendirilemedi.",
+    "summaryGenerate": "AI ile yaz",
+    "summaryGenerating": "Yazılıyor…",
+    "summaryError": "Özet üretilemedi.",
+    "summaryPick": "Kullanmak için bir varyant seç:"
   },
   "accounts": {
     "title": "Platform Hesaplarım",
@@ -972,7 +981,9 @@
       "proposal": "Teklif",
       "portfolio_generation": "Tam portfolyo sitesi",
       "cv_generation": "CV üretimi",
-      "cv_tailor": "CV uyarlama"
+      "cv_tailor": "CV uyarlama",
+      "cv_bullets": "CV madde güçlendirme",
+      "cv_summary": "CV özeti"
     },
     "actionsNote": "Örnek: 500 kredi = 500 uyarlama, ya da 250 teklif, ya da ~166 tam portfolyo.",
     "ctaTitle": "100 ücretsiz krediyle başla",

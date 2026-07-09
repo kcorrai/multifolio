@@ -8,6 +8,8 @@ export const CREDIT_COSTS = {
   portfolio_generation: 3,
   cv_generation: 3,
   cv_tailor: 2,
+  cv_bullets: 2,
+  cv_summary: 1,
 } as const;
 
 export type CreditKind = keyof typeof CREDIT_COSTS;

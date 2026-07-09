@@ -264,7 +264,137 @@ export async function tailorCv(
   return finalize(parsed.raw, parsed.usage, locale, content.theme);
 }
 
+/* ── Madde güçlendirme (batch, rol başına) ──────────────────────────── */
+
+const bulletsGenSchema = z.object({ bullets: z.array(z.string()) });
+
+const ENHANCE_SYSTEM =
+  "Sen bir uzman özgeçmiş (CV) yazarısın. Sana bir iş deneyimi/proje için madde " +
+  "işaretleri (bullets) verilir; her birini daha güçlü, ATS-uyumlu hale getirirsin. " +
+  ATS_RULES +
+  "\nEK KURALLAR:\n" +
+  "- Girdideki her madde için TAM OLARAK bir çıktı maddesi döndür, AYNI SIRADA. Madde ekleme/çıkarma/birleştirme.\n" +
+  "- Mevcut rakamları KORU; OLMAYAN rakam/metrik/yüzde UYDURMA. Nicel veri yoksa fiili ve kapsamı güçlendir, sahte sayı ekleme.\n" +
+  "- Her maddeyi güçlü bir aksiyon fiiliyle başlat; dolgu ifadeleri (responsible for/helped/assisted) at.\n" +
+  "- Çıktı, girdi maddesinin DİLİNDE olsun (çevirme).";
+
+export interface CvTextMeta {
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  costUsd: number;
+}
+
+/** Bir deneyim/proje girdisindeki tüm madde işaretlerini tek çağrıda güçlendirir. */
+export async function enhanceBullets(
+  bullets: string[],
+  ctx: { role: string; company: string },
+): Promise<{ bullets: string[] } & CvTextMeta> {
+  const clean = bullets.map((b) => b.trim()).filter(Boolean);
+  if (clean.length === 0) throw new InternalError("Güçlendirilecek madde yok.");
+
+  const userContent = [
+    ctx.role || ctx.company ? `Bağlam: ${[ctx.role, ctx.company].filter(Boolean).join(" @ ")}` : "",
+    "Madde işaretleri (aynı sırada, aynı sayıda geri döndür):",
+    ...clean.map((b, i) => `${i + 1}. ${b}`),
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const { parsed, usage } = await runStructured(ENHANCE_SYSTEM, userContent, bulletsGenSchema, "bullets", 1200);
+  // Yapıyı koru: orijinal sayıda kal, boş dönen maddede orijinali tut (veri kaybı yok).
+  const out = clean.map((orig, i) => clamp(parsed.bullets[i] ?? "", 400) || orig);
+  return {
+    bullets: out,
+    model: AI_MODEL,
+    inputTokens: usage.prompt_tokens,
+    outputTokens: usage.completion_tokens,
+    costUsd: computeCostUsd(AI_MODEL, usage),
+  };
+}
+
+/* ── Özet üretimi (2 varyant) ───────────────────────────────────────── */
+
+const summaryGenSchema = z.object({ summaries: z.array(z.string()) });
+
+const SUMMARY_SYSTEM =
+  "Sen bir uzman özgeçmiş (CV) yazarısın. Sana bir CV'nin yapılandırılmış içeriği verilir; " +
+  "2 farklı profesyonel ÖZET (summary) varyantı üretirsin. " +
+  ATS_RULES +
+  "\nHer varyant 2-3 cümle (≈50-90 kelime): deneyim alanı/yılı + en güçlü teknik beceriler + " +
+  "varsa bir öne çıkan (nicel) başarı; ilgili anahtar kelimelerle.\n" +
+  "- Birinci tekil şahıs zamiri (I/my/ben) KULLANMA; fiil-öncüllü yaz.\n" +
+  "- CV'de OLMAYAN bilgi/rakam UYDURMA.";
+
+/** Mevcut CV içeriğinden 2 özet varyantı üretir (kullanıcı birini seçer). */
+export async function generateSummary(
+  content: CvContent,
+  locale: Locale = "en",
+): Promise<{ summaries: string[] } & CvTextMeta> {
+  const brief = {
+    title: content.title,
+    skills: content.skills.hard.slice(0, 15),
+    experience: content.experience.slice(0, 6).map((e) => ({
+      role: e.role, company: e.company, bullets: e.bullets.slice(0, 3),
+    })),
+    projects: content.projects.slice(0, 4).map((p) => ({ name: p.name, description: p.description })),
+  };
+  const userContent = [
+    "CV içeriği (özet üret):",
+    JSON.stringify(brief),
+    "",
+    "2 özet varyantı döndür.",
+    languageDirective(locale),
+  ].join("\n");
+
+  const { parsed, usage } = await runStructured(SUMMARY_SYSTEM, userContent, summaryGenSchema, "summaries", 900);
+  const summaries = parsed.summaries.map((s) => clamp(s, 800)).filter(Boolean).slice(0, 3);
+  if (summaries.length === 0) throw new InternalError("Özet üretilemedi.");
+  return {
+    summaries,
+    model: AI_MODEL,
+    inputTokens: usage.prompt_tokens,
+    outputTokens: usage.completion_tokens,
+    costUsd: computeCostUsd(AI_MODEL, usage),
+  };
+}
+
 /* ── Ortak yardımcılar ──────────────────────────────────────────────── */
+
+// Genel yapılandırılmış tamamlama (cvGenSchema dışındaki küçük şemalar için).
+async function runStructured<T extends z.ZodType>(
+  system: string,
+  userContent: string,
+  schema: T,
+  name: string,
+  maxTokens: number,
+): Promise<{ parsed: z.infer<T>; usage: { prompt_tokens: number; completion_tokens: number } }> {
+  const client = getOpenAIClient();
+  const completion = await client.chat.completions.parse({
+    model: AI_MODEL,
+    temperature: 0.4,
+    max_tokens: maxTokens,
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: userContent },
+    ],
+    response_format: zodResponseFormat(schema, name),
+  });
+  const parsed = completion.choices[0].message.parsed;
+  if (!parsed) {
+    throw new InternalError("AI çıktısı ayrıştırılamadı.", {
+      context: { finish_reason: completion.choices[0].finish_reason },
+    });
+  }
+  return {
+    parsed,
+    usage: {
+      prompt_tokens: completion.usage?.prompt_tokens ?? 0,
+      completion_tokens: completion.usage?.completion_tokens ?? 0,
+    },
+  };
+}
+
 
 async function runCvCompletion(
   client: ReturnType<typeof getOpenAIClient>,

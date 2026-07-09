@@ -1,6 +1,6 @@
 import {
   User, Layers, Globe, Briefcase, Target, LayoutDashboard, Languages, BellRing, Wand2,
-  FileText, Download, RefreshCw, Gauge,
+  FileText, Download, RefreshCw, Gauge, Sparkles,
 } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
@@ -109,6 +109,8 @@ export const KIND_ICONS: Record<string, React.ElementType> = {
   cv_generation: FileText,         // CV üretimi
   cv_tailor: Wand2,                // CV işe uyarlama
   cv_import: Download,             // CV içe aktarma
+  cv_bullets: Wand2,               // CV madde güçlendirme
+  cv_summary: Sparkles,            // CV özet üretimi
 };
 
 /* ── Helpers ────────────────────────────────────────────────────────── */

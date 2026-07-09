@@ -113,6 +113,45 @@ export function CvTab({
     setTailoring(false);
   }
 
+  // Bir deneyim/proje girdisinin maddelerini AI ile güçlendirir (2 kredi). Enhanced döner.
+  async function enhanceBulletsApi(
+    bullets: string[],
+    ctx: { role: string; company: string },
+  ): Promise<string[] | null> {
+    setError("");
+    const res = await fetch("/api/cv/bullets", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bullets, role: ctx.role, company: ctx.company }),
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) {
+      setError(body?.error?.message ?? t("bulletsError"));
+      if (res.status === 402) triggerComingSoon();
+      return null;
+    }
+    if (body.credits) applyCredits(body.credits);
+    setDirty(true);
+    return body.bullets as string[];
+  }
+
+  // Güncel içerikten 2 özet varyantı üretir (1 kredi).
+  async function generateSummaryApi(): Promise<string[] | null> {
+    if (!content) return null;
+    setError("");
+    const res = await fetch("/api/cv/summary", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) {
+      setError(body?.error?.message ?? t("summaryError"));
+      if (res.status === 402) triggerComingSoon();
+      return null;
+    }
+    if (body.credits) applyCredits(body.credits);
+    return body.summaries as string[];
+  }
+
   async function download() {
     if (!content) return;
     setDownloading(true); setError("");
@@ -230,7 +269,7 @@ export function CvTab({
           </Card>
 
           {/* ── Editör ───────────────────────────────────────────── */}
-          <CvEditor content={content} patch={patch} />
+          <CvEditor content={content} patch={patch} onEnhance={enhanceBulletsApi} onGenSummary={generateSummaryApi} />
 
           {/* ── Kaydet / indir ───────────────────────────────────── */}
           <Card className={`shadow-sm ${ELEVATED}`}>
@@ -575,7 +614,16 @@ function KeywordMatchCard({ content, patch }: { content: CvContent; patch: (n: P
 }
 
 /* ── Editör ───────────────────────────────────────────────────────── */
-function CvEditor({ content, patch }: { content: CvContent; patch: (n: Partial<CvContent>) => void }) {
+type EnhanceFn = (bullets: string[], ctx: { role: string; company: string }) => Promise<string[] | null>;
+
+function CvEditor({
+  content, patch, onEnhance, onGenSummary,
+}: {
+  content: CvContent;
+  patch: (n: Partial<CvContent>) => void;
+  onEnhance: EnhanceFn;
+  onGenSummary: () => Promise<string[] | null>;
+}) {
   const t = useTranslations("cv");
   const c = content;
 
@@ -615,8 +663,7 @@ function CvEditor({ content, patch }: { content: CvContent; patch: (n: Partial<C
       <Card id="cv-section-summary" className={`shadow-sm ${ELEVATED} scroll-mt-20`}>
         <CardHeader><CardTitle className="text-base">{t("sectionSummary")}</CardTitle></CardHeader>
         <CardContent>
-          <Textarea rows={4} value={c.summary} maxLength={2000} className="resize-none"
-            onChange={(e) => patch({ summary: e.target.value })} />
+          <SummaryEditor summary={c.summary} onChange={(v) => patch({ summary: v })} onGenerate={onGenSummary} />
         </CardContent>
       </Card>
 
@@ -655,7 +702,12 @@ function CvEditor({ content, patch }: { content: CvContent; patch: (n: Partial<C
                 {t("current")}
               </label>
             </div>
-            <BulletsEditor bullets={e.bullets} onChange={(b) => updateExp(i, { bullets: b })} />
+            <BulletsEditor
+              bullets={e.bullets}
+              onChange={(b) => updateExp(i, { bullets: b })}
+              onEnhance={onEnhance}
+              enhanceCtx={{ role: e.role, company: e.company }}
+            />
           </ItemBlock>
         ))}
       </SectionCard>
@@ -689,7 +741,12 @@ function CvEditor({ content, patch }: { content: CvContent; patch: (n: Partial<C
               <Label>{t("projDescription")}</Label>
               <Textarea rows={2} value={p.description} className="resize-none" onChange={(e) => updateProj(i, { description: e.target.value })} />
             </div>
-            <BulletsEditor bullets={p.bullets} onChange={(b) => updateProj(i, { bullets: b })} />
+            <BulletsEditor
+              bullets={p.bullets}
+              onChange={(b) => updateProj(i, { bullets: b })}
+              onEnhance={onEnhance}
+              enhanceCtx={{ role: p.name, company: "" }}
+            />
           </ItemBlock>
         ))}
       </SectionCard>
@@ -774,15 +831,91 @@ function ItemBlock({
   );
 }
 
-function BulletsEditor({ bullets, onChange }: { bullets: string[]; onChange: (b: string[]) => void }) {
+// Özet: düz metin + "AI ile yaz" (1 kredi) → 2 varyant → tıkla-uygula.
+function SummaryEditor({
+  summary, onChange, onGenerate,
+}: {
+  summary: string;
+  onChange: (v: string) => void;
+  onGenerate: () => Promise<string[] | null>;
+}) {
   const t = useTranslations("cv");
+  const [busy, setBusy] = useState(false);
+  const [variants, setVariants] = useState<string[] | null>(null);
+
+  async function generate() {
+    setBusy(true);
+    const res = await onGenerate();
+    setBusy(false);
+    if (res) setVariants(res);
+  }
+
+  return (
+    <div className="space-y-3">
+      <Textarea rows={4} value={summary} maxLength={2000} className="resize-none"
+        onChange={(e) => onChange(e.target.value)} />
+      <Button variant="outline" size="sm" onClick={generate} disabled={busy} className="gap-2">
+        <Sparkles className={`h-4 w-4 ${busy ? "animate-pulse" : ""}`} />
+        {busy ? t("summaryGenerating") : t("summaryGenerate")}
+        <CreditCost kind="cv_summary" />
+      </Button>
+      {variants && variants.length > 0 && (
+        <div className="space-y-2 border-t pt-3">
+          <p className="text-xs font-medium text-muted-foreground">{t("summaryPick")}</p>
+          {variants.map((v, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => { onChange(v); setVariants(null); }}
+              className="block w-full rounded-lg border border-border p-3 text-left text-sm hover:border-primary hover:bg-muted/50 cursor-pointer transition-colors"
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BulletsEditor({
+  bullets, onChange, onEnhance, enhanceCtx,
+}: {
+  bullets: string[];
+  onChange: (b: string[]) => void;
+  onEnhance?: EnhanceFn;
+  enhanceCtx?: { role: string; company: string };
+}) {
+  const t = useTranslations("cv");
+  const [busy, setBusy] = useState(false);
+  const canEnhance = !!onEnhance && !!enhanceCtx && bullets.some((b) => b.trim());
+
+  async function enhance() {
+    if (!onEnhance || !enhanceCtx) return;
+    const nonEmpty = bullets.filter((b) => b.trim());
+    if (nonEmpty.length === 0) return;
+    setBusy(true);
+    const res = await onEnhance(nonEmpty, enhanceCtx);
+    setBusy(false);
+    if (res) onChange(res);
+  }
+
   return (
     <div className="space-y-2 mt-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <Label>{t("bullets")}</Label>
-        <Button variant="ghost" size="sm" onClick={() => onChange([...bullets, ""])} className="gap-1 h-7">
-          <Plus className="h-3.5 w-3.5" />{t("addBullet")}
-        </Button>
+        <div className="flex items-center gap-1">
+          {canEnhance && (
+            <Button variant="ghost" size="sm" onClick={enhance} disabled={busy} className="gap-1 h-7 text-primary">
+              <Wand2 className={`h-3.5 w-3.5 ${busy ? "animate-pulse" : ""}`} />
+              {busy ? t("bulletsEnhancing") : t("bulletsEnhance")}
+              <CreditCost kind="cv_bullets" />
+            </Button>
+          )}
+          <Button variant="ghost" size="sm" onClick={() => onChange([...bullets, ""])} className="gap-1 h-7">
+            <Plus className="h-3.5 w-3.5" />{t("addBullet")}
+          </Button>
+        </div>
       </div>
       {bullets.map((b, i) => (
         <div key={i} className="space-y-1">

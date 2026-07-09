@@ -418,7 +418,9 @@
       "public_analyze": "Profile Analysis",
       "cv_generation": "CV Generation",
       "cv_tailor": "CV Tailoring",
-      "cv_import": "CV Import"
+      "cv_import": "CV Import",
+      "cv_bullets": "CV Bullet Boost",
+      "cv_summary": "CV Summary"
     },
     "creditsSub": "{count} credits",
     "dailyTitle": "Last 30 days — daily credit usage",
@@ -809,7 +811,14 @@
     "weakPhrase": "Weak phrasing — lead with an action verb.",
     "jumpToSection": "Go to section",
     "atsSafeBadge": "ATS-safe",
-    "atsVisualWarning": "This template uses a colored column — great for humans, but strict ATS parsers read a single column best. Switch to “Clean” for applications parsed by ATS."
+    "atsVisualWarning": "This template uses a colored column — great for humans, but strict ATS parsers read a single column best. Switch to “Clean” for applications parsed by ATS.",
+    "bulletsEnhance": "Boost with AI",
+    "bulletsEnhancing": "Boosting…",
+    "bulletsError": "Could not boost the bullets.",
+    "summaryGenerate": "Write with AI",
+    "summaryGenerating": "Writing…",
+    "summaryError": "Could not generate a summary.",
+    "summaryPick": "Pick a variant to use:"
   },
   "accounts": {
     "title": "My Platform Accounts",
@@ -972,7 +981,9 @@
       "proposal": "Proposal",
       "portfolio_generation": "Full portfolio site",
       "cv_generation": "CV generation",
-      "cv_tailor": "CV tailoring"
+      "cv_tailor": "CV tailoring",
+      "cv_bullets": "CV bullet boost",
+      "cv_summary": "CV summary"
     },
     "actionsNote": "Example: 500 credits = 500 adaptations, or 250 proposals, or ~166 full portfolios.",
     "ctaTitle": "Start with 100 free credits",

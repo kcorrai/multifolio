@@ -124,3 +124,19 @@ export const cvExportSchema = z.object({
   content: cvContentSchema,
 });
 export type CvExport = z.infer<typeof cvExportSchema>;
+
+/* ── Madde güçlendirme (batch) girdisi ──────────────────────────────── */
+// Bir deneyim/proje girdisinin tüm maddeleri tek çağrıda güçlendirilir.
+export const cvBulletsSchema = z.object({
+  role: z.string().trim().max(200).default(""),
+  company: z.string().trim().max(200).default(""),
+  bullets: z.array(z.string().trim().max(400)).min(1).max(12),
+});
+export type CvBullets = z.infer<typeof cvBulletsSchema>;
+
+/* ── Özet üretimi girdisi ───────────────────────────────────────────── */
+// İstemci güncel (kaydedilmemiş olabilir) içeriği yollar → özet varyantları üretilir.
+export const cvSummarySchema = z.object({
+  content: cvContentSchema,
+});
+export type CvSummaryInput = z.infer<typeof cvSummarySchema>;

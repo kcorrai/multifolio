@@ -11,11 +11,13 @@ describe("CREDIT_COSTS", () => {
     expect(CREDIT_COSTS.followup).toBe(1);
     expect(CREDIT_COSTS.cv_generation).toBe(3);
     expect(CREDIT_COSTS.cv_tailor).toBe(2);
+    expect(CREDIT_COSTS.cv_bullets).toBe(2);
+    expect(CREDIT_COSTS.cv_summary).toBe(1);
   });
 
   it("usage_events.kind ile birebir anahtar kullanır", () => {
     expect(Object.keys(CREDIT_COSTS).sort()).toEqual(
-      ["adaptation", "cv_generation", "cv_tailor", "followup", "job_match", "portfolio_generation", "profile_suggest", "proposal"],
+      ["adaptation", "cv_bullets", "cv_generation", "cv_summary", "cv_tailor", "followup", "job_match", "portfolio_generation", "profile_suggest", "proposal"],
     );
   });
 });

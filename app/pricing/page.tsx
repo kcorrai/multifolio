@@ -23,6 +23,8 @@ const COST_ROWS: { kind: CreditKind; icon: typeof Layers }[] = [
   { kind: "portfolio_generation", icon: Globe     },
   { kind: "cv_generation",        icon: FileText  },
   { kind: "cv_tailor",            icon: FileText  },
+  { kind: "cv_bullets",           icon: FileText  },
+  { kind: "cv_summary",           icon: FileText  },
 ];
 
 export default async function PricingPage() {
