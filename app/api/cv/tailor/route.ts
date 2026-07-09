@@ -34,32 +34,34 @@ export const POST = withErrorHandler(async (req) => {
   const parsedCv = cvContentSchema.safeParse(cvRow.content);
   if (!parsedCv.success) throw new NotFoundError(te("cvNotGenerated"));
 
-  // Hedef ilan (owner-only).
-  const { data: job, error: jobError } = await supabase
-    .from("job_listings")
-    .select("title, description, match_result")
-    .eq("id", input.jobId)
-    .eq("user_id", user.id)
-    .maybeSingle();
-  if (jobError) throw jobError;
-  if (!job) throw new NotFoundError(te("jobNotFound"));
+  // Hedef ilan bağlamı: kayıtlı ilan (jobId) VEYA serbest metin (jobText).
+  let jobContext: { title: string; description: string; requirements?: string[] };
+  if ("jobId" in input) {
+    const { data: job, error: jobError } = await supabase
+      .from("job_listings")
+      .select("title, description, match_result")
+      .eq("id", input.jobId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (jobError) throw jobError;
+    if (!job) throw new NotFoundError(te("jobNotFound"));
 
-  // İlan gereksinimleri (varsa) — eski/rubriksiz satırlar için opsiyonel.
-  const match = job.match_result ? jobMatchResultSchema.safeParse(job.match_result) : null;
-  const requirements = match?.success ? match.data.requirements : undefined;
+    // İlan gereksinimleri (varsa) — eski/rubriksiz satırlar için opsiyonel.
+    const match = job.match_result ? jobMatchResultSchema.safeParse(job.match_result) : null;
+    jobContext = {
+      title: (job.title as string) ?? "",
+      description: (job.description as string | null) ?? "",
+      requirements: match?.success ? match.data.requirements : undefined,
+    };
+  } else {
+    // Serbest yapıştırılmış ilan metni (kaydetmeye gerek yok).
+    jobContext = { title: "", description: input.jobText };
+  }
 
   const locale = await getUserLocale();
 
   const { result, balance, spent } = await spendCredits(user.id, "cv_tailor", async () =>
-    tailorCv(
-      parsedCv.data,
-      {
-        title: (job.title as string) ?? "",
-        description: (job.description as string | null) ?? "",
-        requirements,
-      },
-      locale,
-    ),
+    tailorCv(parsedCv.data, jobContext, locale),
   );
 
   const admin = createSupabaseAdminClient();

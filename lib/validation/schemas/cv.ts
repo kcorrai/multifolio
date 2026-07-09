@@ -112,10 +112,11 @@ export const cvUpdateSchema = z.object({
 export type CvUpdate = z.infer<typeof cvUpdateSchema>;
 
 /* ── Uyarla (tailor) girdisi ────────────────────────────────────────── */
-
-export const cvTailorSchema = z.object({
-  jobId: z.string().uuid(),
-});
+// İki mod: kayıtlı ilan (jobId) VEYA serbest yapıştırılmış ilan metni (jobText).
+export const cvTailorSchema = z.union([
+  z.object({ jobId: z.string().uuid() }),
+  z.object({ jobText: z.string().trim().min(20).max(12000) }),
+]);
 export type CvTailor = z.infer<typeof cvTailorSchema>;
 
 /* ── Export girdisi (PDF) ───────────────────────────────────────────── */

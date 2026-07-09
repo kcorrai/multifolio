@@ -47,6 +47,8 @@ export function CvTab({
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState("");
   const [selectedJob, setSelectedJob] = useState("");
+  const [tailorMode, setTailorMode] = useState<"saved" | "paste">("saved");
+  const [jobText, setJobText] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const ats = useMemo(() => (content ? scoreCv(content) : null), [content]);
@@ -95,12 +97,11 @@ export function CvTab({
     setSaving(false);
   }
 
-  async function tailor() {
-    if (!selectedJob) return;
+  async function tailor(payload: { jobId: string } | { jobText: string }) {
     setTailoring(true); setError("");
     const res = await fetch("/api/cv/tailor", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jobId: selectedJob }),
+      body: JSON.stringify(payload),
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
@@ -243,22 +244,66 @@ export function CvTab({
               <CardTitle className="text-base flex items-center gap-2"><Wand2 className="h-4 w-4" />{t("tailorTitle")}</CardTitle>
               <CardDescription>{t("tailorHint")}</CardDescription>
             </CardHeader>
-            <CardContent>
-              {jobs.length === 0 ? (
-                <p className="text-sm text-muted-foreground">{t("tailorNoJobs")}</p>
+            <CardContent className="space-y-3">
+              {/* Mod seçici: kayıtlı ilan / ilan metni yapıştır */}
+              <div className="inline-flex rounded-lg border border-border p-0.5 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setTailorMode("saved")}
+                  className={`rounded-md px-3 py-1 font-medium transition-colors cursor-pointer ${
+                    tailorMode === "saved" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t("tailorModeSaved")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTailorMode("paste")}
+                  className={`rounded-md px-3 py-1 font-medium transition-colors cursor-pointer ${
+                    tailorMode === "paste" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t("tailorModePaste")}
+                </button>
+              </div>
+
+              {tailorMode === "saved" ? (
+                jobs.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">{t("tailorNoJobs")}</p>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <select
+                      value={selectedJob}
+                      onChange={(e) => setSelectedJob(e.target.value)}
+                      className="h-9 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring max-w-xs"
+                    >
+                      <option value="">{t("tailorSelectJob")}</option>
+                      {jobs.map((j) => (
+                        <option key={j.id} value={j.id}>{j.title || j.id.slice(0, 8)}</option>
+                      ))}
+                    </select>
+                    <Button onClick={() => selectedJob && tailor({ jobId: selectedJob })} disabled={tailoring || !selectedJob} className="gap-2">
+                      <Wand2 className="h-4 w-4" />
+                      {tailoring ? t("tailoring") : t("tailorCta")}
+                      <CreditCost kind="cv_tailor" />
+                    </Button>
+                  </div>
+                )
               ) : (
-                <div className="flex flex-wrap items-center gap-3">
-                  <select
-                    value={selectedJob}
-                    onChange={(e) => setSelectedJob(e.target.value)}
-                    className="h-9 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring max-w-xs"
+                <div className="space-y-3">
+                  <Textarea
+                    rows={5}
+                    value={jobText}
+                    maxLength={12000}
+                    placeholder={t("tailorPastePlaceholder")}
+                    className="resize-none"
+                    onChange={(e) => setJobText(e.target.value)}
+                  />
+                  <Button
+                    onClick={() => jobText.trim().length >= 20 && tailor({ jobText: jobText.trim() })}
+                    disabled={tailoring || jobText.trim().length < 20}
+                    className="gap-2"
                   >
-                    <option value="">{t("tailorSelectJob")}</option>
-                    {jobs.map((j) => (
-                      <option key={j.id} value={j.id}>{j.title || j.id.slice(0, 8)}</option>
-                    ))}
-                  </select>
-                  <Button onClick={tailor} disabled={tailoring || !selectedJob} className="gap-2">
                     <Wand2 className="h-4 w-4" />
                     {tailoring ? t("tailoring") : t("tailorCta")}
                     <CreditCost kind="cv_tailor" />
