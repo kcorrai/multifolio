@@ -18,9 +18,10 @@ import {
 
 const portfolioStore = new Map<string, PortfolioProjectRaw>();
 
-// Bir metin gövdesi portföy yanıtına benziyorsa parse edip biriktir (yan-etki, bulletproof).
+// Portföy yanıt gövdesini (liste VEYA per-proje detay) parse edip biriktir (yan-etki,
+// bulletproof). Yalnız /portfolio/api/ URL'lerinden çağrılır → içerik-guard gereksiz.
 function absorbPortfolioText(t: string): void {
-  if (!t || (t.indexOf('"firstProject"') === -1 && t.indexOf('"totalProjects"') === -1)) return;
+  if (!t || t.charCodeAt(0) !== 123 /* '{' */) return;
   try {
     mergePortfolio(portfolioStore, portfolioProjectsFromResponse(JSON.parse(t)));
   } catch {
@@ -70,33 +71,45 @@ function sellerUsername(): string {
   return location.pathname.replace(/^\/(users\/)?/, "").replace(/\/.*$/, "");
 }
 
-// Sayfanın portföy isteğini AKTİF tekrarla (tüm projeler için limit=totalCount).
-// Gerçek tarayıcıda site cookie/token'larıyla geçer; PX 403'lerse sessizce vazgeç (pasif
-// hook'tan gelen veriyle yetin). Site'nin başlıklarını taklit et (x-requested-with şart).
-async function activeFetchPortfolio(username: string, total: number | null): Promise<void> {
-  if (!username) return;
-  try {
-    const w = window as unknown as {
-      initialData?: { FiverrContext?: { csrfToken?: string } };
-      bigQueryEnrichment?: { page?: { ctx_id?: string } };
-    };
-    const headers: Record<string, string> = { accept: "application/json", "x-requested-with": "XMLHttpRequest" };
-    const csrf = w.initialData?.FiverrContext?.csrfToken;
-    if (csrf) headers["x-csrf-token"] = csrf;
-    const ctx = w.bigQueryEnrichment?.page?.ctx_id;
-    if (ctx) headers["fvrr-page-ctx-id"] = ctx;
+// Site'nin XHR başlıklarını taklit eder (PerimeterX için x-requested-with şart).
+function portfolioHeaders(): Record<string, string> {
+  const w = window as unknown as {
+    initialData?: { FiverrContext?: { csrfToken?: string } };
+    bigQueryEnrichment?: { page?: { ctx_id?: string } };
+  };
+  const headers: Record<string, string> = { accept: "application/json", "x-requested-with": "XMLHttpRequest" };
+  const csrf = w.initialData?.FiverrContext?.csrfToken;
+  if (csrf) headers["x-csrf-token"] = csrf;
+  const ctx = w.bigQueryEnrichment?.page?.ctx_id;
+  if (ctx) headers["fvrr-page-ctx-id"] = ctx;
+  return headers;
+}
 
-    const limit = Math.min(Math.max(total ?? 50, 5), 50); // API tavanı belirsiz → 50'de sınırla
-    const res = await _fetch(`/portfolio/api/sellers/${encodeURIComponent(username)}/portfolio?roleIds=&limit=${limit}`, {
-      credentials: "include",
-      headers,
-    });
+// Bir portföy URL'ini AKTİF fetch'le, yanıtı biriktir. Gerçek tarayıcıda site cookie/
+// token'larıyla geçer; PX 403'lerse sessizce vazgeç (pasif hook'tan gelen veriyle yetin).
+async function fetchPortfolio(path: string): Promise<void> {
+  try {
+    const res = await _fetch(path, { credentials: "include", headers: portfolioHeaders() });
     if (!res.ok) return; // 403 = PX bloğu → pasif hook'a güven
     const json = await res.json();
     if (json && !json.appId) mergePortfolio(portfolioStore, portfolioProjectsFromResponse(json));
   } catch {
     /* ağ/parse hatası → pasif hook'a güven */
   }
+}
+
+// TÜM projeleri tam detayıyla çeker: (1) liste (id+başlık+kapak, tüm projeler) →
+// (2) her projenin per-proje detay endpoint'i (/portfolio/{id}: açıklama+etiket+tüm
+// görseller). Liste boşsa (PX bloğu) pasif hook'un yakaladığıyla yetin.
+async function harvestPortfolio(username: string, total: number | null): Promise<void> {
+  if (!username) return;
+  const base = `/portfolio/api/sellers/${encodeURIComponent(username)}/portfolio`;
+  const limit = Math.min(Math.max(total ?? 50, 5), 50); // API tavanı belirsiz → 50'de sınırla
+  await fetchPortfolio(`${base}?roleIds=&limit=${limit}`);
+
+  // Detaysız (sığ) projeleri per-proje endpoint'ten zenginleştir (en çok 30, ölçekli).
+  const ids = [...portfolioStore.values()].filter((p) => p.id && !p.detailed).map((p) => p.id).slice(0, 30);
+  await Promise.all(ids.map((id) => fetchPortfolio(`${base}/${encodeURIComponent(id)}`)));
 }
 
 document.addEventListener("mf-get-fiverr", () => {
@@ -113,7 +126,7 @@ document.addEventListener("mf-get-fiverr", () => {
         props && typeof props === "object"
           ? ((props as { seller?: { portfolios?: { totalCount?: number } } }).seller?.portfolios?.totalCount ?? null)
           : null;
-      await activeFetchPortfolio(sellerUsername(), total);
+      await harvestPortfolio(sellerUsername(), total);
 
       const projects = [...portfolioStore.values()].map(rawToProject);
       const images = dedupeFiverrImages(projects.flatMap((p) => p.images.map((i) => i.url)));

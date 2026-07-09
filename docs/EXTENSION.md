@@ -36,12 +36,14 @@ sekmesini açar ve kullanıcı taslağı wizard'da inceleyip kaydeder (otomatik 
     saf `mapFiverrProps`: profil (headline=`oneLinerTitle`, summary=`description`, skills,
     rating/level/dil/eğitim/sertifika/iş-deneyimi + **gig başlıkları hizmet sinyali olarak**
     → TEMİZ metin bloğu) + avatar (`profileImageUrl`). (2) Gerçek PROJELER portföy
-    API'sinde (`/portfolio/api/sellers/{u}/portfolio` → `projects[]` sığ başlık+kapak +
-    `firstProject` derin açıklama/görseller/`industries`=etiket/süre/bütçe). Portföy LAZY
-    + PerimeterX korumalı: fiverr.ts hem PASİF fetch/XHR hook'u ile sayfanın kendi isteğini
-    yakalar (PX'i tetiklemez) hem istek anında AKTİF fetch dener (gerçek tarayıcıda tüm
-    projeleri çeker; PX 403'lerse pasif veriye düşer); `mergePortfolio` id bazında zengin
-    sürümü tutar. content.ts önce portföye kaydırıp (lazy tetikler) sonra veriyi ister.
+    API'sinde: LİSTE `/portfolio/api/sellers/{u}/portfolio?limit=N` (`projects[]` sığ
+    başlık+kapak + `firstProject` derin) + per-proje DETAY `/portfolio/{id}` (her projenin
+    açıklama/tüm görseller/`industries`=etiket/süre/bütçe). `harvestPortfolio` önce listeyi
+    (tüm id'ler), sonra her sığ projenin detay endpoint'ini çeker → TÜM projeler tam detay.
+    Portföy LAZY + PerimeterX korumalı: fiverr.ts hem PASİF fetch/XHR hook'u ile sayfanın
+    kendi isteklerini yakalar (PX'i tetiklemez) hem AKTİF fetch dener (gerçek tarayıcıda
+    site token'larıyla geçer; PX 403'lerse pasif veriye düşer); `mergePortfolio` id bazında
+    zengin (detailed) sürümü tutar. content.ts önce portföye kaydırıp (lazy tetikler) sonra ister.
     `mf-get-fiverr` → `mf-fiverr`. `fiverr-map.ts` PURE + vitest'li (`fiverrImageKey`/
     `dedupeFiverrImages` cloudinary thumbnail biçimlerini tek kimliğe toplar → çift görsel önlenir).
 - API tabanı build-time gömülür (`--define:__API_BASE__`): `build` → prod, `build:dev` → localhost.

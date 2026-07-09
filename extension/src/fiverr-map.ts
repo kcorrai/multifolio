@@ -151,7 +151,14 @@ function mapListProject(p: Obj): PortfolioProjectRaw | null {
   return { id, title, description: "", skills: [], images: projectImages(p, title), detailed: false };
 }
 
-// Portföy API yanıtından proje kayıtlarını çıkarır: projects[] (sığ) + firstProject (derin).
+// Bir obje tek bir portföy projesine benziyor mu (başlık + görsel düğümleri)?
+function looksLikeProject(o: unknown): o is Obj {
+  return isObj(o) && typeof o.title === "string" && isObj(o.items) && Array.isArray(o.items.nodes);
+}
+
+// Portföy API yanıtından proje kayıtlarını çıkarır. İki yanıt biçimini de tanır:
+//  • LİSTE: {projects:[sığ], firstProject:{derin}, totalProjects}
+//  • DETAY (per-proje /portfolio/{id}): tek proje objesi (root veya root.project/firstProject).
 // Aynı proje iki kez görünebilir (id ile merge çağıranın işi — mergePortfolio).
 export function portfolioProjectsFromResponse(json: unknown): PortfolioProjectRaw[] {
   const root = isObj(json) ? json : null;
@@ -161,9 +168,12 @@ export function portfolioProjectsFromResponse(json: unknown): PortfolioProjectRa
     const m = mapListProject(p);
     if (m) out.push(m);
   }
-  if (isObj(root.firstProject)) {
-    const d = mapDetailedProject(root.firstProject);
-    if (d) out.push(d);
+  // Derin proje adayları: liste'nin firstProject'i VEYA detay yanıtının kendisi/sarmalı.
+  for (const cand of [root.firstProject, root.project, root]) {
+    if (looksLikeProject(cand)) {
+      const d = mapDetailedProject(cand);
+      if (d) out.push(d);
+    }
   }
   return out;
 }

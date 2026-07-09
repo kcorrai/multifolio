@@ -119,6 +119,23 @@ describe("portfolioProjectsFromResponse + mergePortfolio", () => {
     expect(portfolioProjectsFromResponse(null)).toEqual([]);
     expect(portfolioProjectsFromResponse({ foo: 1 })).toEqual([]);
   });
+
+  it("per-proje DETAY yanıtını (tek proje objesi) derin olarak tanır", () => {
+    // /portfolio/{id} yanıtı: liste/firstProject sarmalı YOK, root doğrudan proje.
+    const detail = {
+      id: "p2",
+      title: "Monaarch Studio – AI Music Suite",
+      description: "AI-powered music production suite.",
+      duration: "THREE_TO_SIX_MONTHS",
+      industries: [{ name: "Music" }, { name: "Machine Learning" }],
+      items: { nodes: [imgNode("t_portfolio_project_card", "h2-1/b.png")] },
+    };
+    const raws = portfolioProjectsFromResponse(detail);
+    expect(raws).toHaveLength(1);
+    expect(raws[0].detailed).toBe(true);
+    expect(raws[0].skills).toEqual(["Music", "Machine Learning"]);
+    expect(raws[0].description).toContain("Duration: 3-6 months");
+  });
 });
 
 describe("fiverrImageKey + dedupeFiverrImages", () => {
