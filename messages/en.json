@@ -1346,7 +1346,7 @@
     "intro": "This notice is provided under Article 10 of Turkey's Personal Data Protection Law No. 6698 (\"KVKK\") and explains how your personal data is processed.",
     "draftNotice": "This is a template for informational purposes and is not legal advice. Please have it reviewed by a legal professional before you start taking payments.",
     "controllerTitle": "Data controller",
-    "controllerBody": "The data controller is [Company Name], [Address], [Tax ID / registration number]. Contact: yanlizcakaan@gmail.com.",
+    "controllerBody": "Multifolio is currently in beta and is not yet operated by a legal entity. As such, the data controller is the natural person operating the service. For requests and inquiries: yanlizcakaan@gmail.com. Once commercial operations begin, this text will be updated with the data controller's trade name, address, and tax/registration details.",
     "dataTitle": "Personal data processed",
     "dataBody": "• Identity and contact: email address.\n• Profile content you provide: headline, summary, skills, imported profile text or files.\n• Public profile data from platforms you connect.\n• Transaction and usage records: AI actions and credit usage.",
     "purposeTitle": "Purposes of processing",

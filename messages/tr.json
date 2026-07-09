@@ -1346,7 +1346,7 @@
     "intro": "Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu'nun (\"KVKK\") 10. maddesi uyarınca hazırlanmıştır ve kişisel verilerinizin nasıl işlendiğini açıklar.",
     "draftNotice": "Bu metin bilgilendirme amaçlı bir taslaktır ve hukuki tavsiye değildir. Ödeme almaya başlamadan önce bir hukuk danışmanına inceletmeniz önerilir.",
     "controllerTitle": "Veri sorumlusu",
-    "controllerBody": "Veri sorumlusu [Şirket Ünvanı], [Adres], [VKN / sicil no]'dur. İletişim: yanlizcakaan@gmail.com.",
+    "controllerBody": "Multifolio şu an beta aşamasındadır ve henüz bir tüzel kişilik tarafından işletilmemektedir. Bu kapsamda veri sorumlusu, hizmeti işleten gerçek kişidir. Talep ve başvurularınız için: yanlizcakaan@gmail.com. Ticari faaliyet başladığında bu metin, veri sorumlusunun ticari ünvanı, adresi ve vergi/sicil bilgileriyle güncellenecektir.",
     "dataTitle": "İşlenen kişisel veriler",
     "dataBody": "• Kimlik ve iletişim: e-posta adresi.\n• Sağladığınız profil içeriği: başlık, özet, beceriler, içe aktarılan profil metni veya dosyaları.\n• Bağladığınız platformlardan gelen herkese açık profil verileri.\n• İşlem ve kullanım kayıtları: AI aksiyonları ve kredi kullanımı.",
     "purposeTitle": "İşleme amaçları",
