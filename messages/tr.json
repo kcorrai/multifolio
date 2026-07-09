@@ -794,7 +794,22 @@
     "tailoring": "Uyarlanıyor…",
     "tailorError": "CV uyarlanamadı.",
     "tailorNoJobs": "CV'ni ilanlara uyarlamak için önce ilan ekle.",
-    "tailorApplied": "Uyarlandı — değişiklikleri gözden geçir ve kaydet."
+    "tailorApplied": "Uyarlandı — değişiklikleri gözden geçir ve kaydet.",
+    "keywordTitle": "Anahtar kelime eşleşmesi",
+    "keywordHint": "Bir iş ilanını yapıştır; ilanın önemli becerilerinden hangilerini CV'nin zaten karşıladığını ve nelerin eksik olduğunu gör.",
+    "keywordPlaceholder": "İş ilanını buraya yapıştır…",
+    "keywordAnalyze": "Anahtar kelimeleri kontrol et",
+    "keywordCoverageLabel": "Kapsam",
+    "keywordMatchedLabel": "CV'nde var ({count})",
+    "keywordMissingLabel": "Eksik ({count})",
+    "keywordAddSkill": "Becerilere ekle",
+    "keywordNone": "Bu metinde belirgin beceri anahtar kelimesi bulunamadı. Daha dolu bir ilan metni dene.",
+    "keywordAllCovered": "Harika — CV'n tespit edilen tüm anahtar kelimeleri kapsıyor.",
+    "keywordApprox": "Yaklaşık ipucu. Hassas yeniden yazım için aşağıdaki “İşe göre uyarla”yı kullan.",
+    "weakPhrase": "Zayıf ifade — bir aksiyon fiiliyle başla.",
+    "jumpToSection": "Bölüme git",
+    "atsSafeBadge": "ATS-güvenli",
+    "atsVisualWarning": "Bu şablon renkli bir sütun kullanır — insanlar için harika ama katı ATS ayrıştırıcıları en iyi tek sütunu okur. ATS ile taranan başvurular için “Sade”ye geç."
   },
   "accounts": {
     "title": "Platform Hesaplarım",

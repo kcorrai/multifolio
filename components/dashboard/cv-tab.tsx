@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  Sparkles, Upload, Save, Check, AlertCircle, Download, Wand2, Plus, X, Gauge,
+  Sparkles, Upload, Save, Check, AlertCircle, Download, Wand2, Plus, X, Gauge, Target,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -12,7 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CreditCost } from "@/components/credit-cost";
 import { CvPreview } from "./cv-preview";
-import { scoreCv, atsVerdict } from "@/lib/cv/ats";
+import { scoreCv, atsVerdict, hasFillerPhrase } from "@/lib/cv/ats";
+import { extractKeywordsFromText, matchKeywords } from "@/lib/cv/keywords";
 import { CV_TEMPLATES, CV_ACCENTS, CV_ACCENT_HEX, type CvTemplate } from "@/lib/cv/theme";
 import type {
   CvContent, CvExperience, CvEducation, CvProject, CvCertification, CvLanguage,
@@ -194,6 +195,9 @@ export function CvTab({
 
           <AtsPanel ats={ats!} />
 
+          {/* ── Anahtar kelime eşleşmesi (deterministik, kredisiz) ── */}
+          <KeywordMatchCard content={content} patch={patch} />
+
           {/* ── İşe göre uyarla ──────────────────────────────────── */}
           <Card className={`shadow-sm ${ELEVATED}`}>
             <CardHeader>
@@ -265,11 +269,19 @@ function DesignAndPreview({ content, patch }: { content: CvContent; patch: (n: P
               template={tpl}
               label={t(`template.${tpl}`)}
               accent={CV_ACCENT_HEX[content.theme.accent] ?? CV_ACCENT_HEX.blue}
+              atsSafe={tpl === "clean"}
+              atsSafeLabel={t("atsSafeBadge")}
               selected={content.theme.template === tpl}
               onSelect={() => patch({ theme: { ...content.theme, template: tpl } })}
             />
           ))}
         </div>
+        {/* Görsel şablon → ATS uyarısı (araştırma: çok-sütun ayrıştırıcıyı bozar) */}
+        {content.theme.template !== "clean" && (
+          <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
+            <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />{t("atsVisualWarning")}
+          </div>
+        )}
         {/* Vurgu rengi */}
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">{t("accentLabel")}</span>
@@ -300,18 +312,24 @@ function DesignAndPreview({ content, patch }: { content: CvContent; patch: (n: P
 
 // Şablon seçim kartı: her şablonu temsil eden mini görsel + ad.
 function TemplateCard({
-  template, label, accent, selected, onSelect,
+  template, label, accent, selected, onSelect, atsSafe = false, atsSafeLabel = "",
 }: {
   template: CvTemplate; label: string; accent: string; selected: boolean; onSelect: () => void;
+  atsSafe?: boolean; atsSafeLabel?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onSelect}
-      className={`rounded-xl border p-2 text-left transition-all cursor-pointer ${
+      className={`relative rounded-xl border p-2 text-left transition-all cursor-pointer ${
         selected ? "border-primary ring-2 ring-primary/30" : "border-border hover:border-border/80"
       }`}
     >
+      {atsSafe && (
+        <span className="absolute right-1.5 top-1.5 z-10 rounded-full bg-green-600 px-1.5 py-0.5 text-[9px] font-semibold leading-none text-white shadow">
+          {atsSafeLabel}
+        </span>
+      )}
       <div className="h-16 overflow-hidden rounded-lg border border-border bg-white">
         <TemplateThumb template={template} accent={accent} />
       </div>
@@ -365,6 +383,23 @@ function TemplateThumb({ template, accent }: { template: CvTemplate; accent: str
   );
 }
 
+/* ── Bölüm çapasına yumuşak kaydırma (ATS bulgusuna tıkla → ilgili bölüm) ── */
+const ISSUE_ANCHOR: Record<string, string> = {
+  noName: "cv-section-contact",
+  noEmail: "cv-section-contact",
+  noPhone: "cv-section-contact",
+  noSummary: "cv-section-summary",
+  noSkills: "cv-section-skills",
+  noExperience: "cv-section-experience",
+  fewQuantified: "cv-section-experience",
+  fillerPhrases: "cv-section-experience",
+  inconsistentDates: "cv-section-experience",
+  lowKeywordCoverage: "cv-section-keywords",
+};
+function scrollToSection(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 /* ── ATS skor paneli ──────────────────────────────────────────────── */
 function AtsPanel({ ats }: { ats: ReturnType<typeof scoreCv> }) {
   const t = useTranslations("cv");
@@ -393,16 +428,147 @@ function AtsPanel({ ats }: { ats: ReturnType<typeof scoreCv> }) {
           ) : (
             <ul className="space-y-1.5">
               {ats.issues.map((issue) => (
-                <li key={issue.code} className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${
-                    issue.severity === "high" ? "bg-red-500" : issue.severity === "medium" ? "bg-amber-500" : "bg-slate-400"
-                  }`} />
-                  {issue.code === "lowKeywordCoverage" ? t("issueLowKeywordCoverage") : t(`issue.${issue.code}`)}
+                <li key={issue.code}>
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection(ISSUE_ANCHOR[issue.code] ?? "")}
+                    title={t("jumpToSection")}
+                    className="flex w-full items-start gap-2 text-left text-sm text-muted-foreground rounded-md px-1 -mx-1 py-0.5 hover:bg-muted/60 hover:text-foreground cursor-pointer transition-colors"
+                  >
+                    <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${
+                      issue.severity === "high" ? "bg-red-500" : issue.severity === "medium" ? "bg-amber-500" : "bg-slate-400"
+                    }`} />
+                    {issue.code === "lowKeywordCoverage" ? t("issueLowKeywordCoverage") : t(`issue.${issue.code}`)}
+                  </button>
                 </li>
               ))}
             </ul>
           )}
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+/* ── Anahtar kelime eşleşme kartı (deterministik, kredisiz) ─────────── */
+// Beceri anahtar kelimesini gösterim için düzgün büyük/küçük harfe getirir
+// (kısa harf grupları kısaltma sayılır: aws→AWS, seo→SEO; react→React).
+function prettySkill(k: string): string {
+  return k
+    .split(" ")
+    .map((w) => (w.length <= 3 && /^[a-z]+$/.test(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(" ");
+}
+
+function KeywordMatchCard({ content, patch }: { content: CvContent; patch: (n: Partial<CvContent>) => void }) {
+  const t = useTranslations("cv");
+  const [jd, setJd] = useState("");
+  const [keywords, setKeywords] = useState<string[] | null>(null);
+
+  const result = useMemo(
+    () => (keywords ? matchKeywords(content, keywords) : null),
+    [keywords, content],
+  );
+
+  function analyze() {
+    setKeywords(extractKeywordsFromText(jd));
+  }
+
+  function addSkill(kw: string) {
+    const pretty = prettySkill(kw);
+    const exists = content.skills.hard.some((s) => s.toLowerCase() === pretty.toLowerCase());
+    if (!exists) patch({ skills: { ...content.skills, hard: [...content.skills.hard, pretty] } });
+  }
+
+  return (
+    <Card id="cv-section-keywords" className={`shadow-sm ${ELEVATED} scroll-mt-20`}>
+      <CardHeader>
+        <CardTitle className="text-base flex items-center gap-2"><Target className="h-4 w-4" />{t("keywordTitle")}</CardTitle>
+        <CardDescription>{t("keywordHint")}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Textarea
+          rows={4}
+          value={jd}
+          maxLength={12000}
+          placeholder={t("keywordPlaceholder")}
+          className="resize-none"
+          onChange={(e) => setJd(e.target.value)}
+        />
+        <Button onClick={analyze} disabled={!jd.trim()} variant="outline" size="sm" className="gap-2">
+          <Target className="h-4 w-4" />{t("keywordAnalyze")}
+        </Button>
+
+        {result && keywords && keywords.length === 0 && (
+          <p className="text-sm text-muted-foreground">{t("keywordNone")}</p>
+        )}
+
+        {result && keywords && keywords.length > 0 && (
+          <div className="space-y-4 border-t pt-4">
+            {/* Kapsam yüzdesi */}
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-medium text-muted-foreground">{t("keywordCoverageLabel")}</span>
+              <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    result.coveragePct >= 60 ? "bg-green-500" : result.coveragePct >= 30 ? "bg-amber-500" : "bg-red-500"
+                  }`}
+                  style={{ width: `${result.coveragePct}%` }}
+                />
+              </div>
+              <span className="text-sm font-bold tabular-nums">{result.coveragePct}%</span>
+            </div>
+
+            {/* Eksik anahtar kelimeler (tıkla → becerilere ekle) */}
+            {result.missing.length > 0 && (
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
+                  {t("keywordMissingLabel", { count: result.missing.length })}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {result.missing.map((k) => (
+                    <button
+                      key={k}
+                      type="button"
+                      onClick={() => addSkill(k)}
+                      title={t("keywordAddSkill")}
+                      className="inline-flex items-center gap-1 rounded-full border border-amber-300 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-950/30 px-2.5 py-1 text-xs text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 cursor-pointer transition-colors"
+                    >
+                      <Plus className="h-3 w-3" />{prettySkill(k)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Karşılanan anahtar kelimeler */}
+            {result.matched.length > 0 && (
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium text-green-600 dark:text-green-400">
+                  {t("keywordMatchedLabel", { count: result.matched.length })}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {result.matched.map((k) => (
+                    <span
+                      key={k}
+                      className="inline-flex items-center gap-1 rounded-full border border-green-300 dark:border-green-800/60 bg-green-50 dark:bg-green-950/30 px-2.5 py-1 text-xs text-green-700 dark:text-green-300"
+                    >
+                      <Check className="h-3 w-3" />{prettySkill(k)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {result.missing.length === 0 && (
+              <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1.5">
+                <Check className="h-4 w-4" />{t("keywordAllCovered")}
+              </p>
+            )}
+
+            <p className="text-xs text-muted-foreground">{t("keywordApprox")}</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -433,7 +599,7 @@ function CvEditor({ content, patch }: { content: CvContent; patch: (n: Partial<C
   return (
     <div className="space-y-4">
       {/* İletişim + özet */}
-      <Card className={`shadow-sm ${ELEVATED}`}>
+      <Card id="cv-section-contact" className={`shadow-sm ${ELEVATED} scroll-mt-20`}>
         <CardHeader><CardTitle className="text-base">{t("sectionContact")}</CardTitle></CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <Field label={t("fullName")} value={c.fullName} onChange={(v) => patch({ fullName: v })} />
@@ -446,7 +612,7 @@ function CvEditor({ content, patch }: { content: CvContent; patch: (n: Partial<C
         </CardContent>
       </Card>
 
-      <Card className={`shadow-sm ${ELEVATED}`}>
+      <Card id="cv-section-summary" className={`shadow-sm ${ELEVATED} scroll-mt-20`}>
         <CardHeader><CardTitle className="text-base">{t("sectionSummary")}</CardTitle></CardHeader>
         <CardContent>
           <Textarea rows={4} value={c.summary} maxLength={2000} className="resize-none"
@@ -455,7 +621,7 @@ function CvEditor({ content, patch }: { content: CvContent; patch: (n: Partial<C
       </Card>
 
       {/* Beceriler (virgülle ayrılmış) */}
-      <Card className={`shadow-sm ${ELEVATED}`}>
+      <Card id="cv-section-skills" className={`shadow-sm ${ELEVATED} scroll-mt-20`}>
         <CardHeader><CardTitle className="text-base">{t("sectionSkills")}</CardTitle></CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
@@ -473,7 +639,7 @@ function CvEditor({ content, patch }: { content: CvContent; patch: (n: Partial<C
       </Card>
 
       {/* Deneyim */}
-      <SectionCard title={t("sectionExperience")} onAdd={() => patch({ experience: [...c.experience, { ...emptyExperience }] })} addLabel={t("addExperience")}>
+      <SectionCard id="cv-section-experience" title={t("sectionExperience")} onAdd={() => patch({ experience: [...c.experience, { ...emptyExperience }] })} addLabel={t("addExperience")}>
         {c.experience.map((e, i) => (
           <ItemBlock key={i} onRemove={() => patch({ experience: c.experience.filter((_, idx) => idx !== i) })} removeLabel={t("removeExperience")}>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -575,12 +741,12 @@ function Field({
 }
 
 function SectionCard({
-  title, onAdd, addLabel, children,
+  title, onAdd, addLabel, children, id,
 }: {
-  title: string; onAdd: () => void; addLabel: string; children: React.ReactNode;
+  title: string; onAdd: () => void; addLabel: string; children: React.ReactNode; id?: string;
 }) {
   return (
-    <Card className={`shadow-sm ${ELEVATED}`}>
+    <Card id={id} className={`shadow-sm ${ELEVATED} scroll-mt-20`}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base">{title}</CardTitle>
         <Button variant="outline" size="sm" onClick={onAdd} className="gap-1.5">
@@ -619,12 +785,19 @@ function BulletsEditor({ bullets, onChange }: { bullets: string[]; onChange: (b:
         </Button>
       </div>
       {bullets.map((b, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <Input value={b} onChange={(e) => onChange(bullets.map((x, idx) => (idx === i ? e.target.value : x)))} />
-          <button type="button" onClick={() => onChange(bullets.filter((_, idx) => idx !== i))}
-            aria-label={t("remove")} className="text-muted-foreground hover:text-destructive cursor-pointer">
-            <X className="h-4 w-4" />
-          </button>
+        <div key={i} className="space-y-1">
+          <div className="flex items-center gap-2">
+            <Input value={b} onChange={(e) => onChange(bullets.map((x, idx) => (idx === i ? e.target.value : x)))} />
+            <button type="button" onClick={() => onChange(bullets.filter((_, idx) => idx !== i))}
+              aria-label={t("remove")} className="text-muted-foreground hover:text-destructive cursor-pointer">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          {hasFillerPhrase(b) && (
+            <p className="flex items-center gap-1 pl-1 text-xs text-amber-600 dark:text-amber-400">
+              <AlertCircle className="h-3 w-3 shrink-0" />{t("weakPhrase")}
+            </p>
+          )}
         </div>
       ))}
       {bullets.length === 0 && <p className="text-xs text-muted-foreground">{t("bulletHint")}</p>}

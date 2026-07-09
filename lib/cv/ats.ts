@@ -37,6 +37,16 @@ const FILLER_RE =
 
 const norm = (s: string) => s.trim().toLowerCase();
 
+/** Bir madde işaretinde zayıf/dolgu ifade var mı (editör satır-içi linter'ı için). */
+export function hasFillerPhrase(text: string): boolean {
+  return FILLER_RE.test(text);
+}
+
+/** Madde işaretinde nicelenmiş sonuç sinyali (rakam/%/para) var mı. */
+export function isQuantified(text: string): boolean {
+  return QUANTIFIED_RE.test(text);
+}
+
 // Metinden kaba kelime kümesi (anahtar kelime kapsamı için).
 function contentText(cv: CvContent): string {
   return [

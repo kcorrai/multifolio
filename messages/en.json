@@ -794,7 +794,22 @@
     "tailoring": "Tailoring…",
     "tailorError": "Could not tailor the CV.",
     "tailorNoJobs": "Add jobs first to tailor your CV to them.",
-    "tailorApplied": "Tailored — review the changes and save."
+    "tailorApplied": "Tailored — review the changes and save.",
+    "keywordTitle": "Keyword match",
+    "keywordHint": "Paste a job description to see which of its key skills your CV already covers — and what's missing.",
+    "keywordPlaceholder": "Paste the job description here…",
+    "keywordAnalyze": "Check keywords",
+    "keywordCoverageLabel": "Coverage",
+    "keywordMatchedLabel": "In your CV ({count})",
+    "keywordMissingLabel": "Missing ({count})",
+    "keywordAddSkill": "Add to skills",
+    "keywordNone": "No clear skill keywords found in that text. Try a fuller job description.",
+    "keywordAllCovered": "Great — your CV covers all detected keywords.",
+    "keywordApprox": "Approximate hint. For a precise rewrite, use “Tailor to a job” below.",
+    "weakPhrase": "Weak phrasing — lead with an action verb.",
+    "jumpToSection": "Go to section",
+    "atsSafeBadge": "ATS-safe",
+    "atsVisualWarning": "This template uses a colored column — great for humans, but strict ATS parsers read a single column best. Switch to “Clean” for applications parsed by ATS."
   },
   "accounts": {
     "title": "My Platform Accounts",
