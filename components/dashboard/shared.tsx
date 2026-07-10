@@ -2,6 +2,7 @@ import {
   User, Layers, Globe, Briefcase, Target, LayoutDashboard, Languages, BellRing, Wand2,
   FileText, Download, RefreshCw, Gauge, Sparkles,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PlatformId } from "@/lib/ai/platforms";
 import type { PortfolioItem, ProfileProject } from "@/lib/validation/schemas/profile";
@@ -51,7 +52,7 @@ export interface AnalyticsData {
 export type BadgeKey = "jobs" | "connections";
 
 // labelKey → i18n anahtarı (dashboard.nav.<labelKey>), tüketim noktasında t() ile çözülür.
-export const NAV_ITEMS: { href: string; labelKey: string; icon: React.ElementType; badge?: BadgeKey }[] = [
+export const NAV_ITEMS: { href: string; labelKey: string; icon: LucideIcon; badge?: BadgeKey }[] = [
   { href: "/dashboard",           labelKey: "overview",  icon: LayoutDashboard },
   { href: "/dashboard/profile",   labelKey: "profile",   icon: User },
   { href: "/dashboard/platforms", labelKey: "platforms", icon: Layers,     badge: "connections" },
@@ -93,7 +94,7 @@ export const PLATFORM_URL_PLACEHOLDERS: Record<PlatformId, string> = {
 // Tür etiketleri i18n'de: analytics.kind.<kind>. İkonlar locale-nötr.
 // Her kullanım türüne ÖZELLİKLE ilgili ikon (jenerik şimşek/Zap yok). Çeviri türleri
 // bilinçli olarak aynı Languages ikonunu paylaşır (tutarlı iconografi).
-export const KIND_ICONS: Record<string, React.ElementType> = {
+export const KIND_ICONS: Record<string, LucideIcon> = {
   adaptation: Layers,              // platform katmanlarına uyarlama
   portfolio_generation: Globe,     // public portfolyo sitesi
   job_match: Target,               // ilan × profil eşleştirme
@@ -172,7 +173,7 @@ export const TINT_VIOLET: Tint = {
 export function StatCard({
   icon: Icon, tint, label, value, sub, children,
 }: {
-  icon: React.ElementType;
+  icon: LucideIcon;
   tint: Tint;
   label: string;
   value: React.ReactNode;

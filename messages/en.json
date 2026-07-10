@@ -32,7 +32,7 @@
     "hero": {
       "badge": "Beta — first 100 users free",
       "title": "Manage your freelance career <hl>from one platform</hl>.",
-      "subtitle": "Enter your profile once. Optimize it with AI for LinkedIn, Upwork, Fiverr, Bionluk and Armut; publish your portfolio in seconds.",
+      "subtitle": "Enter your profile once. AI adapts it for LinkedIn, Upwork, Fiverr, Bionluk and Armut, builds your CV and portfolio, and finds jobs that fit — all in one place.",
       "platformsSupported": "5 platforms supported",
       "ctaPrimary": "Get started now",
       "ctaSecondary": "See features",
@@ -67,6 +67,14 @@
         "title": "AI generation",
         "desc": "Generate platform-specific proposals covering the post's requirements, then patch any gaps with one click."
       },
+      "cv": {
+        "title": "AI CV builder",
+        "desc": "Turn your profile into a clean, recruiter-ready CV. Reorder sections by drag-and-drop, pick a template and export to PDF in one click."
+      },
+      "discovery": {
+        "title": "Job discovery",
+        "desc": "A live feed of remote jobs scored against your profile. Save searches, star roles and only spend credits where you actually fit."
+      },
       "secure": {
         "title": "Secure & fast",
         "desc": "Your data is encrypted and only yours — no one else can reach your account. Security is on by default.",
@@ -84,11 +92,44 @@
       },
       "step2": {
         "title": "AI adapts & builds",
-        "desc": "Get optimized text for all five platforms plus a ready-to-share portfolio site."
+        "desc": "Get optimized text for all five platforms plus a ready-to-share portfolio and an exportable CV."
       },
       "step3": {
         "title": "Match, pitch & track",
-        "desc": "Score job posts, generate proposals that fit, and track every application in one place."
+        "desc": "Score job posts, discover new ones, generate proposals that fit, and track every application in one place."
+      }
+    },
+    "tools": {
+      "eyebrow": "Free tools",
+      "title": "Try it before you sign up",
+      "subtitle": "Instant, no account needed. Get a taste of what Multifolio does for your freelance career.",
+      "freeBadge": "Free · no signup",
+      "open": "Open",
+      "analyze": {
+        "title": "Profile check",
+        "desc": "Paste a profile URL and get an instant 0–100 score with concrete fixes."
+      },
+      "earnings": {
+        "title": "Earnings calculator",
+        "desc": "See exactly what lands in your pocket after platform, payment and tax cuts."
+      },
+      "compare": {
+        "title": "Platform comparison",
+        "desc": "Compare fees, audience and payout speed across five platforms to pick where to focus."
+      }
+    },
+    "grow": {
+      "eyebrow": "Less work, faster start",
+      "title": "Set up in minutes, not hours",
+      "import": {
+        "title": "One-click import",
+        "desc": "Bring your Upwork, Fiverr and LinkedIn profile in with our browser extension — or paste a URL, text or PDF. No copy-paste marathon.",
+        "cta": "Get the extension"
+      },
+      "referral": {
+        "title": "Invite & earn",
+        "desc": "Invite a friend and you both get +20 credits when they build their first profile. Everyone starts with 100 free.",
+        "cta": "Start free"
       }
     },
     "pricing": {
@@ -170,7 +211,17 @@
       "interview": "Interview",
       "offer": "Offer",
       "proposal": "Hi! I read your post — I've shipped three similar React dashboards. Here's how I'd approach yours…",
-      "portfolioUrl": "multifolio.app/p/ahmet"
+      "portfolioUrl": "multifolio.app/p/ahmet",
+      "cvRole": "Senior React Developer",
+      "pdf": "PDF",
+      "experience": "Experience",
+      "skills": "Skills",
+      "remote": "Remote",
+      "new": "New",
+      "fit": "fit",
+      "jobA": "React dashboard build",
+      "jobB": "Next.js landing page",
+      "jobC": "UI/UX for SaaS app"
     }
   },
   "auth": {

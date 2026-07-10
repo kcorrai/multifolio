@@ -32,7 +32,7 @@
     "hero": {
       "badge": "Beta — İlk 100 kullanıcı ücretsiz",
       "title": "Freelancer kariyerini <hl>tek platformdan</hl> yönet.",
-      "subtitle": "Profilini bir kez gir. LinkedIn, Upwork, Fiverr, Bionluk ve Armut için AI ile optimize et; portfolyonu saniyeler içinde yayınla.",
+      "subtitle": "Profilini bir kez gir. AI onu LinkedIn, Upwork, Fiverr, Bionluk ve Armut için uyarlasın, CV'ni ve portfolyonu kursun, sana uygun işleri bulsun — hepsi tek yerde.",
       "platformsSupported": "5 platform destekleniyor",
       "ctaPrimary": "Hemen Başla",
       "ctaSecondary": "Özellikleri Gör",
@@ -67,6 +67,14 @@
         "title": "AI ile Üretim",
         "desc": "İlanın gereksinimlerini karşılayan platforma özel teklif metinleri üret, eksik kalanları tek tıkla tamamla."
       },
+      "cv": {
+        "title": "AI CV oluşturucu",
+        "desc": "Profilini temiz, işe hazır bir CV'ye dönüştür. Bölümleri sürükle-bırak ile sırala, şablon seç ve tek tıkla PDF olarak indir."
+      },
+      "discovery": {
+        "title": "İş keşfi",
+        "desc": "Profiline göre puanlanan canlı bir uzaktan iş akışı. Aramaları kaydet, ilanları yıldızla ve krediyi yalnızca gerçekten uyduğun yerde harca."
+      },
       "secure": {
         "title": "Güvenli & Hızlı",
         "desc": "Verilerin şifreli saklanır ve yalnızca sana aittir; hesabına başkası erişemez. Güvenlik varsayılan olarak açık.",
@@ -84,11 +92,44 @@
       },
       "step2": {
         "title": "AI uyarlar & kurar",
-        "desc": "Beş platform için optimize metin, üstüne paylaşıma hazır bir portfolyo sitesi al."
+        "desc": "Beş platform için optimize metin, üstüne paylaşıma hazır bir portfolyo ve dışa aktarılabilir bir CV al."
       },
       "step3": {
         "title": "Eşleştir, teklif ver, takip et",
-        "desc": "İlanları puanla, uygun teklifler üret ve tüm başvurularını tek yerden takip et."
+        "desc": "İlanları puanla, yenilerini keşfet, uygun teklifler üret ve tüm başvurularını tek yerden takip et."
+      }
+    },
+    "tools": {
+      "eyebrow": "Ücretsiz araçlar",
+      "title": "Kaydolmadan dene",
+      "subtitle": "Anında, hesap gerekmez. Multifolio'nun freelancer kariyerin için ne yaptığını tadına bak.",
+      "freeBadge": "Ücretsiz · kayıt yok",
+      "open": "Aç",
+      "analyze": {
+        "title": "Profil kontrolü",
+        "desc": "Profil linkini yapıştır, anında 0–100 skoru ve somut iyileştirmeler al."
+      },
+      "earnings": {
+        "title": "Kazanç hesaplayıcı",
+        "desc": "Platform, transfer ve vergi kesintilerinden sonra elime net ne geçer, tam olarak gör."
+      },
+      "compare": {
+        "title": "Platform karşılaştırma",
+        "desc": "Beş platformun komisyon, kitle ve ödeme hızını karşılaştır, nereye odaklanacağını seç."
+      }
+    },
+    "grow": {
+      "eyebrow": "Daha az emek, hızlı başlangıç",
+      "title": "Saatler değil, dakikalar içinde kur",
+      "import": {
+        "title": "Tek tıkla içe aktar",
+        "desc": "Upwork, Fiverr ve LinkedIn profilini tarayıcı uzantımızla getir — ya da URL, metin veya PDF yapıştır. Kopyala-yapıştır maratonu yok.",
+        "cta": "Uzantıyı al"
+      },
+      "referral": {
+        "title": "Davet et, kazan",
+        "desc": "Bir arkadaşını davet et; ilk profilini oluşturduğunda ikiniz de +20 kredi kazanın. Herkes 100 ücretsiz kredi ile başlar.",
+        "cta": "Ücretsiz başla"
       }
     },
     "pricing": {
@@ -170,7 +211,17 @@
       "interview": "Görüşme",
       "offer": "Teklif",
       "proposal": "İlanınızı okudum — benzer üç React panosu teslim ettim. Sizinkine şöyle yaklaşırdım…",
-      "portfolioUrl": "multifolio.app/p/ahmet"
+      "portfolioUrl": "multifolio.app/p/ahmet",
+      "cvRole": "Senior React Developer",
+      "pdf": "PDF",
+      "experience": "Deneyim",
+      "skills": "Beceriler",
+      "remote": "Uzaktan",
+      "new": "Yeni",
+      "fit": "uyum",
+      "jobA": "React panosu geliştirme",
+      "jobB": "Next.js açılış sayfası",
+      "jobC": "SaaS uygulaması için UI/UX"
     }
   },
   "auth": {

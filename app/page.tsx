@@ -1,12 +1,16 @@
 import Link from "next/link";
 import {
-  Layers, Globe, Briefcase, ArrowRight,
+  Layers, Globe, Briefcase, ArrowRight, ArrowUpRight,
   CheckCircle2, Target, Sparkles, ShieldCheck,
+  FileText, Download, Compass, Gauge, Calculator, Scale, Puzzle, Gift,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { CountUp } from "@/components/count-up";
 import { PlatformLogo } from "@/components/platform-logo";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { ThreeBackground } from "@/components/landing/three-background";
+import { LandingMotion } from "@/components/landing/landing-motion";
+import { Tilt } from "@/components/landing/tilt";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PricingSection } from "@/components/pricing-section";
@@ -141,6 +145,14 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   /* Her adımın yanında yaşayan mini demo — .sr-visible görününce oynar */
   const demoCard = "rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-5 h-44 flex flex-col justify-center";
   const demoLine = "h-2 rounded-full bg-slate-200 dark:bg-white/12 demo-grow";
+  const cardBase = "group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 transition-all";
+
+  /* Ücretsiz araçlar (kayıt gerektirmeyen public sayfalar) */
+  const tools = [
+    { href: "/analyze",  icon: Gauge,      key: "analyze",  accent: "#00F0FF" },
+    { href: "/earnings", icon: Calculator, key: "earnings", accent: "#a78bfa" },
+    { href: "/compare",  icon: Scale,      key: "compare",  accent: "#00F0FF" },
+  ] as const;
 
   const steps = [
     {
@@ -234,15 +246,21 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
+    <div className="relative min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
 
+      {/* Gerçek 3D (WebGL) arka plan — scroll'la döner/kayar; içeriğin ARDINDA (z-0) */}
+      <ThreeBackground />
+      {/* Hareket kontrolcüsü — kök CSS değişkenleri (pointer/scroll) 3D ile paylaşılır */}
+      <LandingMotion />
+
+      <div className="relative z-10">
       <SiteHeader isLoggedIn={isLoggedIn} />
 
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-[#00F0FF]/6 blur-[100px]" />
-          <div className="absolute right-1/4 top-20 h-[400px] w-[400px] rounded-full bg-violet-500/8 blur-[100px]" />
+          <div className="par absolute left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-[#00F0FF]/6 blur-[100px]" style={{ "--par-from": "80px", "--par-to": "-80px" } as React.CSSProperties} />
+          <div className="par absolute right-1/4 top-20 h-[400px] w-[400px] rounded-full bg-violet-500/8 blur-[100px]" style={{ "--par-from": "-60px", "--par-to": "90px" } as React.CSSProperties} />
         </div>
 
         <div className="relative mx-auto max-w-6xl px-8 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -312,7 +330,9 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
 
           <div className="hidden lg:block">
-            <ProductMockup />
+            <Tilt strong>
+              <ProductMockup />
+            </Tilt>
           </div>
         </div>
       </section>
@@ -326,7 +346,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-white/20 mb-8">
           {t("platformsStrip.title")}
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="drift-x flex flex-wrap items-center justify-center gap-3" style={{ "--drift": "26px" } as React.CSSProperties}>
           {([
             { id: "linkedin" as PlatformId, label: "LinkedIn" },
             { id: "upwork"   as PlatformId, label: "Upwork"   },
@@ -354,156 +374,286 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
         </ScrollReveal>
 
-        {/* Bento grid: 2 büyük görsel kart + 4 destek kartı */}
+        {/* Bento grid — kartlar fareyle 3D eğilir (sahneyle aynı pointer) */}
         <div className="grid md:grid-cols-6 gap-5">
 
           {/* Uyarlama — büyük kart: bir profil beş platforma dağılır */}
           <ScrollReveal delay={0} className="md:col-span-4">
-            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md hover:shadow-[#00F0FF]/5 transition-all grid md:grid-cols-2 gap-6 items-center">
-              <div className="space-y-4">
-                <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
-                  <Layers className="h-5 w-5 text-[#00F0FF]" />
+            <Tilt fill>
+              <div className={`${cardBase} hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md hover:shadow-[#00F0FF]/5 grid md:grid-cols-2 gap-6 items-center`}>
+                <div className="space-y-4">
+                  <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
+                    <Layers className="h-5 w-5 text-[#00F0FF]" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <h3 className="font-bold text-slate-900 dark:text-white">{t("features.adapt.title")}</h3>
+                    <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">
+                      {t("features.adapt.desc")}
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  <h3 className="font-bold text-slate-900 dark:text-white">{t("features.adapt.title")}</h3>
-                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">
-                    {t("features.adapt.desc")}
-                  </p>
+                <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] p-4 space-y-3">
+                  <div className="space-y-2">
+                    <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-white/12 demo-grow" style={{ animationDelay: "150ms" }} />
+                    <div className="h-2 w-4/6 rounded-full bg-slate-200 dark:bg-white/12 demo-grow" style={{ animationDelay: "300ms" }} />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-px flex-1 bg-gradient-to-r from-[#00F0FF]/50 to-violet-400/50" />
+                    <Sparkles className="h-3.5 w-3.5 text-[#00F0FF]" />
+                    <div className="h-px flex-1 bg-gradient-to-r from-violet-400/50 to-[#00F0FF]/50" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    {PLATFORMS.map((id, i) => (
+                      <div key={id} className="demo-pop rounded-lg border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.05] p-1.5" style={{ animationDelay: `${500 + i * 120}ms` }}>
+                        <PlatformLogo platform={id} size={16} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] p-4 space-y-3">
-                <div className="space-y-2">
-                  <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-white/12 demo-grow" style={{ animationDelay: "150ms" }} />
-                  <div className="h-2 w-4/6 rounded-full bg-slate-200 dark:bg-white/12 demo-grow" style={{ animationDelay: "300ms" }} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-px flex-1 bg-gradient-to-r from-[#00F0FF]/50 to-violet-400/50" />
-                  <Sparkles className="h-3.5 w-3.5 text-[#00F0FF]" />
-                  <div className="h-px flex-1 bg-gradient-to-r from-violet-400/50 to-[#00F0FF]/50" />
-                </div>
-                <div className="flex items-center justify-between">
-                  {PLATFORMS.map((id, i) => (
-                    <div key={id} className="demo-pop rounded-lg border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.05] p-1.5" style={{ animationDelay: `${500 + i * 120}ms` }}>
-                      <PlatformLogo platform={id} size={16} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            </Tilt>
           </ScrollReveal>
 
           {/* Eşleştirme — skor sayacı */}
           <ScrollReveal delay={80} className="md:col-span-2">
-            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-violet-500/20 hover:shadow-md transition-all">
-              <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
-                <Briefcase className="h-5 w-5 text-[#00F0FF]" />
+            <Tilt fill>
+              <div className={`${cardBase} space-y-4 hover:border-violet-500/20 hover:shadow-md`}>
+                <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
+                  <Briefcase className="h-5 w-5 text-[#00F0FF]" />
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <CountUp value={87} duration={1400} className="text-4xl font-extrabold text-[#00F0FF] tabular-nums" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-white/40">{t("demos.match")}</span>
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("features.matching.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.matching.desc")}</p>
+                </div>
               </div>
-              <div className="flex items-baseline gap-2">
-                <CountUp value={87} duration={1400} className="text-4xl font-extrabold text-[#00F0FF] tabular-nums" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-white/40">{t("demos.match")}</span>
+            </Tilt>
+          </ScrollReveal>
+
+          {/* CV oluşturucu — mini CV + PDF (YENİ) */}
+          <ScrollReveal delay={0} className="md:col-span-3">
+            <Tilt fill>
+              <div className={`${cardBase} space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md`}>
+                <div className="flex items-center justify-between">
+                  <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-[#00F0FF]" />
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#00F0FF] bg-[#00F0FF]/10 border border-[#00F0FF]/25 rounded-full px-2.5 py-1">
+                    <Download className="h-3 w-3" /> {t("demos.pdf")}
+                  </span>
+                </div>
+                <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] p-4 space-y-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-8 w-8 rounded-full bg-indigo-50 dark:bg-white/10 border border-slate-200 dark:border-white/10 flex items-center justify-center shrink-0">
+                      <span className="text-[9px] font-bold text-indigo-600 dark:text-white">AY</span>
+                    </div>
+                    <div className="flex-1 space-y-1.5">
+                      <div className={`${demoLine} w-24`} style={{ animationDelay: "150ms" }} />
+                      <div className={`${demoLine} w-16`} style={{ animationDelay: "280ms" }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/30">{t("demos.experience")}</p>
+                    <div className={`${demoLine} w-full`} style={{ animationDelay: "420ms" }} />
+                    <div className={`${demoLine} w-5/6`}  style={{ animationDelay: "560ms" }} />
+                  </div>
+                  <div className="flex gap-1.5">
+                    {["React", "Next.js", "TS"].map((skill, i) => (
+                      <span key={skill} className="demo-pop rounded-full border border-[#00F0FF]/25 bg-[#00F0FF]/8 px-2 py-0.5 text-[9px] font-bold text-slate-600 dark:text-[#00F0FF]" style={{ animationDelay: `${750 + i * 120}ms` }}>
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("features.cv.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.cv.desc")}</p>
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.matching.title")}</h3>
-                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.matching.desc")}</p>
+            </Tilt>
+          </ScrollReveal>
+
+          {/* İş keşfi — skorlu ilan akışı (YENİ) */}
+          <ScrollReveal delay={80} className="md:col-span-3">
+            <Tilt fill>
+              <div className={`${cardBase} space-y-4 hover:border-violet-500/20 hover:shadow-md`}>
+                <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                  <Compass className="h-5 w-5 text-violet-400" />
+                </div>
+                <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] divide-y divide-slate-200 dark:divide-white/8 overflow-hidden">
+                  {[
+                    { title: t("demos.jobA"), score: 92, tone: "text-emerald-500 dark:text-emerald-400", isNew: true },
+                    { title: t("demos.jobB"), score: 78, tone: "text-[#00F0FF]", isNew: false },
+                    { title: t("demos.jobC"), score: 85, tone: "text-violet-500 dark:text-violet-300", isNew: false },
+                  ].map(({ title, score, tone, isNew }, i) => (
+                    <div key={title} className="demo-pop flex items-center justify-between gap-3 px-3 py-2.5" style={{ animationDelay: `${200 + i * 160}ms` }}>
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-semibold text-slate-700 dark:text-white/80 truncate">{title}</p>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="text-[9px] font-medium text-slate-400 dark:text-white/35">{t("demos.remote")}</span>
+                          {isNew && <span className="rounded-full bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-px text-[8px] font-bold text-emerald-600 dark:text-emerald-400">{t("demos.new")}</span>}
+                        </div>
+                      </div>
+                      <span className={`text-sm font-extrabold tabular-nums shrink-0 ${tone}`}>
+                        {score}<span className="text-[8px] font-bold uppercase tracking-wider ml-0.5 text-slate-400 dark:text-white/35">{t("demos.fit")}</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("features.discovery.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.discovery.desc")}</p>
+                </div>
               </div>
-            </div>
+            </Tilt>
           </ScrollReveal>
 
           {/* AI teklif — daktilo efekti */}
           <ScrollReveal delay={0} className="md:col-span-3">
-            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md transition-all">
-              <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-violet-400" />
+            <Tilt fill>
+              <div className={`${cardBase} space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md`}>
+                <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-violet-400" />
+                </div>
+                <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] p-3.5">
+                  <p className="demo-type text-[12px] text-slate-600 dark:text-white/70 leading-relaxed font-medium">
+                    {t("demos.proposal")}<span className="demo-caret text-[#00F0FF] font-bold">▍</span>
+                  </p>
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("features.ai.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.ai.desc")}</p>
+                </div>
               </div>
-              <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] p-3.5">
-                <p className="demo-type text-[12px] text-slate-600 dark:text-white/70 leading-relaxed font-medium">
-                  {t("demos.proposal")}<span className="demo-caret text-[#00F0FF] font-bold">▍</span>
-                </p>
-              </div>
-              <div className="space-y-1.5">
-                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.ai.title")}</h3>
-                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.ai.desc")}</p>
-              </div>
-            </div>
+            </Tilt>
           </ScrollReveal>
 
           {/* Takip — pipeline rozetleri */}
           <ScrollReveal delay={80} className="md:col-span-3">
-            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-violet-500/20 hover:shadow-md transition-all">
-              <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                <Target className="h-5 w-5 text-violet-400" />
+            <Tilt fill>
+              <div className={`${cardBase} space-y-4 hover:border-violet-500/20 hover:shadow-md`}>
+                <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                  <Target className="h-5 w-5 text-violet-400" />
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { width: "w-32", label: t("demos.applied"),   chip: "border-[#00F0FF]/25 bg-[#00F0FF]/8 text-slate-600 dark:text-[#00F0FF]" },
+                    { width: "w-24", label: t("demos.interview"), chip: "border-violet-500/25 bg-violet-500/8 text-violet-500 dark:text-violet-300" },
+                    { width: "w-28", label: t("demos.offer"),     chip: "border-emerald-500/25 bg-emerald-500/8 text-emerald-600 dark:text-emerald-400" },
+                  ].map(({ width, label, chip }, i) => (
+                    <div key={label} className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] px-3 py-2">
+                      <div className={`h-2 ${width} rounded-full bg-slate-200 dark:bg-white/12 demo-grow`} style={{ animationDelay: `${150 + i * 150}ms` }} />
+                      <span className={`demo-pop rounded-full border px-2 py-0.5 text-[9px] font-bold ${chip}`} style={{ animationDelay: `${400 + i * 150}ms` }}>
+                        {label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("features.tracking.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.tracking.desc")}</p>
+                </div>
               </div>
-              <div className="space-y-2">
-                {[
-                  { width: "w-32", label: t("demos.applied"),   chip: "border-[#00F0FF]/25 bg-[#00F0FF]/8 text-slate-600 dark:text-[#00F0FF]" },
-                  { width: "w-24", label: t("demos.interview"), chip: "border-violet-500/25 bg-violet-500/8 text-violet-500 dark:text-violet-300" },
-                  { width: "w-28", label: t("demos.offer"),     chip: "border-emerald-500/25 bg-emerald-500/8 text-emerald-600 dark:text-emerald-400" },
-                ].map(({ width, label, chip }, i) => (
-                  <div key={label} className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] px-3 py-2">
-                    <div className={`h-2 ${width} rounded-full bg-slate-200 dark:bg-white/12 demo-grow`} style={{ animationDelay: `${150 + i * 150}ms` }} />
-                    <span className={`demo-pop rounded-full border px-2 py-0.5 text-[9px] font-bold ${chip}`} style={{ animationDelay: `${400 + i * 150}ms` }}>
-                      {label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="space-y-1.5">
-                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.tracking.title")}</h3>
-                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.tracking.desc")}</p>
-              </div>
-            </div>
+            </Tilt>
           </ScrollReveal>
 
           {/* Portfolyo — mini tarayıcı penceresi */}
           <ScrollReveal delay={0} className="md:col-span-3">
-            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md transition-all">
-              <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                <Globe className="h-5 w-5 text-violet-400" />
-              </div>
-              <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] overflow-hidden">
-                <div className="flex items-center gap-2 border-b border-slate-200 dark:border-white/8 px-3 py-2">
-                  <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-white/15" />
-                  <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-white/15" />
-                  <span className="ml-1 flex-1 rounded-md bg-white dark:bg-white/[0.06] px-2 py-0.5 text-[9px] font-semibold text-slate-400 dark:text-white/40 truncate">
-                    {t("demos.portfolioUrl")}
-                  </span>
+            <Tilt fill>
+              <div className={`${cardBase} space-y-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md`}>
+                <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                  <Globe className="h-5 w-5 text-violet-400" />
                 </div>
-                <div className="p-3 space-y-2">
-                  <div className="h-2.5 w-24 rounded-full bg-slate-200 dark:bg-white/15 demo-grow" style={{ animationDelay: "200ms" }} />
-                  <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-white/10 demo-grow" style={{ animationDelay: "350ms" }} />
-                  <div className="h-2 w-5/6 rounded-full bg-slate-200 dark:bg-white/10 demo-grow" style={{ animationDelay: "500ms" }} />
+                <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] overflow-hidden">
+                  <div className="flex items-center gap-2 border-b border-slate-200 dark:border-white/8 px-3 py-2">
+                    <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-white/15" />
+                    <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-white/15" />
+                    <span className="ml-1 flex-1 rounded-md bg-white dark:bg-white/[0.06] px-2 py-0.5 text-[9px] font-semibold text-slate-400 dark:text-white/40 truncate">
+                      {t("demos.portfolioUrl")}
+                    </span>
+                  </div>
+                  <div className="p-3 space-y-2">
+                    <div className="h-2.5 w-24 rounded-full bg-slate-200 dark:bg-white/15 demo-grow" style={{ animationDelay: "200ms" }} />
+                    <div className="h-2 w-full rounded-full bg-slate-200 dark:bg-white/10 demo-grow" style={{ animationDelay: "350ms" }} />
+                    <div className="h-2 w-5/6 rounded-full bg-slate-200 dark:bg-white/10 demo-grow" style={{ animationDelay: "500ms" }} />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("features.portfolio.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.portfolio.desc")}</p>
                 </div>
               </div>
-              <div className="space-y-1.5">
-                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.portfolio.title")}</h3>
-                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.portfolio.desc")}</p>
-              </div>
-            </div>
+            </Tilt>
           </ScrollReveal>
 
           {/* Güvenlik */}
           <ScrollReveal delay={80} className="md:col-span-3">
-            <div className="group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-4 hover:border-violet-500/20 hover:shadow-md transition-all">
-              <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
-                <ShieldCheck className="h-5 w-5 text-[#00F0FF]" />
+            <Tilt fill>
+              <div className={`${cardBase} space-y-4 hover:border-violet-500/20 hover:shadow-md`}>
+                <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
+                  <ShieldCheck className="h-5 w-5 text-[#00F0FF]" />
+                </div>
+                <div className="flex gap-1.5 flex-wrap">
+                  {[t("features.secure.badge1"), t("features.secure.badge2"), t("features.secure.badge3")].map((tech, i) => (
+                    <span
+                      key={tech}
+                      className="demo-pop rounded-full border border-emerald-500/25 bg-emerald-500/8 px-2 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400"
+                      style={{ animationDelay: `${200 + i * 120}ms` }}
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("features.secure.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.secure.desc")}</p>
+                </div>
               </div>
-              <div className="flex gap-1.5 flex-wrap">
-                {[t("features.secure.badge1"), t("features.secure.badge2"), t("features.secure.badge3")].map((tech, i) => (
-                  <span
-                    key={tech}
-                    className="demo-pop rounded-full border border-emerald-500/25 bg-emerald-500/8 px-2 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400"
-                    style={{ animationDelay: `${200 + i * 120}ms` }}
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              <div className="space-y-1.5">
-                <h3 className="font-bold text-slate-900 dark:text-white">{t("features.secure.title")}</h3>
-                <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("features.secure.desc")}</p>
-              </div>
-            </div>
+            </Tilt>
           </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Free tools — kayıt gerektirmeyen public araçlar */}
+      <section className="mx-auto max-w-6xl px-8 pb-24">
+        <ScrollReveal>
+          <div className="text-center space-y-3 mb-10">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-400">{t("tools.eyebrow")}</p>
+            <h2 className="text-4xl font-extrabold tracking-tight">{t("tools.title")}</h2>
+            <p className="text-slate-500 dark:text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">{t("tools.subtitle")}</p>
+          </div>
+        </ScrollReveal>
+
+        <div className="grid md:grid-cols-3 gap-5">
+          {tools.map(({ href, icon: Icon, key, accent }, i) => (
+            <ScrollReveal key={key} delay={i * 80}>
+              <Tilt fill>
+                <Link
+                  href={href}
+                  className={`${cardBase} block space-y-4 hover:-translate-y-0.5 hover:shadow-lg`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="h-10 w-10 rounded-xl flex items-center justify-center border" style={{ backgroundColor: `${accent}1a`, borderColor: `${accent}33` }}>
+                      <Icon className="h-5 w-5" style={{ color: accent }} />
+                    </div>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 rounded-full px-2.5 py-1">
+                      {t("tools.freeBadge")}
+                    </span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <h3 className="font-bold text-slate-900 dark:text-white">{t(`tools.${key}.title`)}</h3>
+                    <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t(`tools.${key}.desc`)}</p>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-sm font-bold" style={{ color: accent }}>
+                    {t("tools.open")} <ArrowUpRight className="h-4 w-4" />
+                  </span>
+                </Link>
+              </Tilt>
+            </ScrollReveal>
+          ))}
         </div>
       </section>
 
@@ -520,7 +670,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             {steps.map(({ step, title, desc, delay, demo }) => (
               <ScrollReveal key={step} delay={delay}>
                 <div className="space-y-4">
-                  {demo}
+                  <Tilt>{demo}</Tilt>
                   <div className="flex items-center gap-3">
                     <span className="text-3xl font-extrabold text-slate-200 dark:text-white/10 tabular-nums">{step}</span>
                     <div className="h-px flex-1 bg-gradient-to-r from-[#00F0FF]/60 to-transparent" />
@@ -536,6 +686,69 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         </div>
       </section>
 
+      {/* Grow — tek tıkla içe aktar + davet et kazan */}
+      <section className="mx-auto max-w-6xl px-8 py-24">
+        <ScrollReveal>
+          <div className="text-center space-y-3 mb-10">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("grow.eyebrow")}</p>
+            <h2 className="text-4xl font-extrabold tracking-tight">{t("grow.title")}</h2>
+          </div>
+        </ScrollReveal>
+        <div className="grid md:grid-cols-2 gap-5">
+          {/* Tek tıkla içe aktar (uzantı) */}
+          <ScrollReveal delay={0}>
+            <Tilt fill>
+              <div className={`${cardBase} flex flex-col gap-4 hover:border-[#00F0FF]/30 dark:hover:border-[#00F0FF]/20 hover:shadow-md`}>
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center shrink-0">
+                    <Puzzle className="h-5 w-5 text-[#00F0FF]" />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {(["upwork","fiverr","linkedin"] as PlatformId[]).map((id) => (
+                      <div key={id} className="rounded-lg border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.04] p-1.5">
+                        <PlatformLogo platform={id} size={16} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-1.5 flex-1">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("grow.import.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("grow.import.desc")}</p>
+                </div>
+                <Link href={isLoggedIn ? "/dashboard/import" : "/signup"} className="inline-flex items-center gap-1 text-sm font-bold text-[#00F0FF]">
+                  {t("grow.import.cta")} <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </Tilt>
+          </ScrollReveal>
+
+          {/* Davet et kazan (referans) */}
+          <ScrollReveal delay={80}>
+            <Tilt fill>
+              <div className={`${cardBase} flex flex-col gap-4 hover:border-violet-500/20 hover:shadow-md`}>
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
+                    <Gift className="h-5 w-5 text-violet-400" />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="rounded-full border border-violet-500/25 bg-violet-500/8 px-2.5 py-1 text-[11px] font-extrabold text-violet-500 dark:text-violet-300">+20</span>
+                    <ArrowRight className="h-3.5 w-3.5 text-slate-300 dark:text-white/25" />
+                    <span className="rounded-full border border-[#00F0FF]/25 bg-[#00F0FF]/8 px-2.5 py-1 text-[11px] font-extrabold text-slate-600 dark:text-[#00F0FF]">+20</span>
+                  </div>
+                </div>
+                <div className="space-y-1.5 flex-1">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t("grow.referral.title")}</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{t("grow.referral.desc")}</p>
+                </div>
+                <Link href={isLoggedIn ? "/dashboard" : "/signup"} className="inline-flex items-center gap-1 text-sm font-bold text-violet-400">
+                  {t("grow.referral.cta")} <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </Tilt>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* Pricing */}
       <PricingSection isLoggedIn={isLoggedIn} />
 
@@ -547,8 +760,8 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         <ScrollReveal scale>
           <div className="relative rounded-3xl border border-[#00F0FF]/15 dark:border-[#00F0FF]/10 bg-slate-50 dark:bg-[#161923] px-8 py-16 overflow-hidden">
             <div className="pointer-events-none absolute inset-0">
-              <div className="absolute left-1/3 top-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full bg-[#00F0FF]/6 blur-[80px]" />
-              <div className="absolute right-1/3 top-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full bg-violet-500/8 blur-[80px]" />
+              <div className="par absolute left-1/3 top-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full bg-[#00F0FF]/6 blur-[80px]" style={{ "--par-from": "50px", "--par-to": "-50px" } as React.CSSProperties} />
+              <div className="par absolute right-1/3 top-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full bg-violet-500/8 blur-[80px]" style={{ "--par-from": "-40px", "--par-to": "60px" } as React.CSSProperties} />
             </div>
             <div className="relative space-y-5">
               <h2 className="text-4xl font-extrabold tracking-tight">
@@ -570,6 +783,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
 
       {/* Footer */}
       <SiteFooter />
+      </div>
     </div>
   );
 }

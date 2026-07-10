@@ -368,6 +368,48 @@
 }
 .pd-chip { animation: pdChipIn 0.35s ease-out backwards; }
 
+/* ─── Landing: 3D ile senkron hareket (mouse tilt + scroll parallax) ─── */
+/* LandingMotion (client) kök değişkenleri günceller: --mx/--my pointer (-1..1),
+   --sx sayfa scroll ilerlemesi (0..1). 3D sahne de AYNI pointer/scroll'u okur →
+   birlikte hareket ederler. Tilt saf CSS (çapraz tarayıcı); scroll parallax
+   view() timeline (Chromium) — desteklemeyen tarayıcı sessizce statik kalır. */
+:root { --mx: 0; --my: 0; --sx: 0; }
+
+/* Fareye göre 3D eğilme */
+.tilt-3d { perspective: 1200px; }
+.tilt-3d__i {
+  transform: rotateY(calc(var(--mx) * 5deg)) rotateX(calc(var(--my) * -5deg));
+  transform-style: preserve-3d;
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+.tilt-3d--strong { perspective: 1000px; }
+.tilt-3d--strong .tilt-3d__i {
+  transform: rotateY(calc(var(--mx) * 11deg)) rotateX(calc(var(--my) * -9deg));
+}
+/* preserve-3d içindeki alt katman derinlik kazansın (hafif "yüzme") */
+.tilt-pop { transform: translateZ(38px); }
+.tilt-pop-sm { transform: translateZ(20px); }
+
+/* Scroll parallax — element viewport'tan geçerken katmanlı derinlik */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .par {
+      animation: parY linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+      will-change: transform;
+    }
+  }
+}
+@keyframes parY {
+  from { transform: translateY(var(--par-from, 40px)); }
+  to   { transform: translateY(var(--par-to, -40px)); }
+}
+
+/* Scroll ilerlemesine bağlı yatay kayma (sx=0 → nötr; sahnenin driftini yankılar) */
+.drift-x { transform: translateX(calc(var(--sx) * var(--drift, 40px))); will-change: transform; }
+
 /* ─── Erişilebilirlik: hareket azaltma tercihi ────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
