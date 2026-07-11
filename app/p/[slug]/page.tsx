@@ -218,7 +218,9 @@ export default async function PortfolioPage({ params }: PageProps) {
           <SectionLabel style={heading}>{t("projects")}</SectionLabel>
           {/* Karta tıklanınca Upwork tarzı proje detay modalı (rol/açıklama/beceriler/görseller). */}
           <div className="mt-5">
-            <ProjectShowcase projects={projectGroups} fallbackAlt={headline} />
+            {/* vars modala aktarılır: modal body'ye portallandığından --pf-* değişkenleri
+                ancak portal kök'üne uygulanınca çözülür (aksi halde stilsiz görünür). */}
+            <ProjectShowcase projects={projectGroups} fallbackAlt={headline} themeVars={vars} />
           </div>
         </section>
       ) : media.gallery.length > 0 ? (

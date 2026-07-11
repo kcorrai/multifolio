@@ -765,6 +765,7 @@
     },
     "displayHint": "İçe aktardığın görsellerin public sayfanda nasıl görüneceği.",
     "displayNoProjects": "Proje-proje gösterilecek proje yok. Bir Upwork/Fiverr profili içe aktar, sonra kaydet — buraya senkronlanır, yeniden üretmene gerek yok.",
+    "displaySyncPending": "{count} içe aktarılan proje hazır. Sayfana yayınlamak için Ayarları kaydet'e bas.",
     "leads": {
         "title": "Gelen talepler",
         "empty": "Henüz talep yok. Almaya başlamak için portfolyonu paylaş.",

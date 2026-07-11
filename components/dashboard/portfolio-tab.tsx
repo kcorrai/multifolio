@@ -22,10 +22,13 @@ import { ELEVATED, type InitialPortfolio } from "./shared";
 import { useDashboard } from "./dashboard-context";
 
 export function PortfolioTab({
-  profileSaved, initialPortfolio,
+  profileSaved, initialPortfolio, projectsNeedSync = false,
 }: {
   profileSaved: boolean;
   initialPortfolio: InitialPortfolio | null;
+  /** Sunucu profilden taze proje grupları enjekte etti (kayıtlıdan farklı) → Kaydet'e
+      basılınca public sayfaya yansır. Başlangıçta "kaydedilmemiş" işaretle. */
+  projectsNeedSync?: boolean;
 }) {
   const { applyCredits, triggerComingSoon } = useDashboard();
   const t = useTranslations("portfolio");
@@ -34,7 +37,9 @@ export function PortfolioTab({
   const [published, setPublished] = useState(initialPortfolio?.published ?? false);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [dirty, setDirty] = useState(false);
+  const [dirty, setDirty] = useState(projectsNeedSync);
+  // Sunucunun enjekte ettiği taze proje grupları henüz kaydedilmedi mi (kaydetme sonrası temizlenir).
+  const [pendingSync, setPendingSync] = useState(projectsNeedSync);
   const [error, setError] = useState("");
   const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
 
@@ -71,7 +76,7 @@ export function PortfolioTab({
     // Sunucu projectGroups'u canlı profilden yeniden kurar (ücretsiz senkron) → dönen
     // içeriği uygula ki import edilen projeler "By project" modunda anında görünsün.
     if (body.portfolio.content) setContent(body.portfolio.content);
-    setSlug(body.portfolio.slug); setPublished(body.portfolio.published); setDirty(false);
+    setSlug(body.portfolio.slug); setPublished(body.portfolio.published); setDirty(false); setPendingSync(false);
     setSaving(false);
   }
 
@@ -156,11 +161,17 @@ export function PortfolioTab({
                     </button>
                   ))}
                 </div>
-                <p className="text-[11px] text-muted-foreground/70">
-                  {content.layout === "projects" && (content.media.projectGroups?.length ?? 0) === 0
-                    ? t("displayNoProjects")
-                    : t("displayHint")}
-                </p>
+                {content.layout === "projects" && pendingSync && (content.media.projectGroups?.length ?? 0) > 0 ? (
+                  <p className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                    {t("displaySyncPending", { count: content.media.projectGroups!.length })}
+                  </p>
+                ) : (
+                  <p className="text-[11px] text-muted-foreground/70">
+                    {content.layout === "projects" && (content.media.projectGroups?.length ?? 0) === 0
+                      ? t("displayNoProjects")
+                      : t("displayHint")}
+                  </p>
+                )}
               </div>
 
               {/* ── İçerik düzenleme ─────────────────────────────────── */}

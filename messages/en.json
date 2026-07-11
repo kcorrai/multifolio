@@ -765,6 +765,7 @@
     },
     "displayHint": "How your imported images appear on your public page.",
     "displayNoProjects": "No projects to show by project yet. Import an Upwork/Fiverr profile, then save to sync them here — no regeneration needed.",
+    "displaySyncPending": "{count} imported projects ready. Click Save settings to publish them to your page.",
     "leads": {
         "title": "Incoming requests",
         "empty": "No requests yet. Share your portfolio to start receiving them.",

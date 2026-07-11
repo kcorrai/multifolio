@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PlatformLogo } from "@/components/platform-logo";
 import { CreditCost } from "@/components/credit-cost";
 import { ImageLightbox, type LightboxImage } from "@/components/image-lightbox";
+import { ProjectDetailModal } from "@/components/portfolio/project-detail-modal";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import { ChipsInput } from "./chips-input";
@@ -43,6 +44,8 @@ export function ProfileTab({
   // İçe aktarılan yapılandırılmış projeler (Upwork) — profilde gruplu gösterilir; Kaydet'te korunur.
   const projects = initialProfile?.projects ?? [];
   const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number; title?: string; description?: string } | null>(null);
+  // Projeye tıklayınca açılan Upwork tarzı detay modalı (public portfolyoyla aynı bileşen).
+  const [projectModal, setProjectModal] = useState<number | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [picked, setPicked] = useState<Set<string>>(new Set());
 
@@ -566,13 +569,25 @@ export function ProfileTab({
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             {projects.map((p, pi) => {
-              const imgs: LightboxImage[] = p.images.filter((im) => im.url).map((im) => ({ src: im.url, alt: im.caption || p.title }));
+              const imgs = p.images.filter((im) => im.url);
+              // Tüm kart tıklanabilir: projeye tıklayınca Upwork tarzı detay modalı açılır
+              // (görseller modal içinde tam ekran büyür). Küçük resimler yalnız önizleme.
               return (
-                <Card key={pi} className={`shadow-sm ${ELEVATED}`}>
+                <Card
+                  key={pi}
+                  onClick={() => setProjectModal(pi)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setProjectModal(pi); } }}
+                  className={`group cursor-pointer shadow-sm transition-colors hover:border-[#00F0FF]/50 ${ELEVATED}`}
+                >
                   <CardContent className="pt-5 space-y-3">
-                    <div>
-                      <h3 className="text-base font-bold leading-snug">{p.title}</h3>
-                      {p.role && <p className="mt-0.5 text-xs font-semibold text-[#00F0FF]/80">{p.role}</p>}
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 className="text-base font-bold leading-snug">{p.title}</h3>
+                        {p.role && <p className="mt-0.5 text-xs font-semibold text-[#00F0FF]/80">{p.role}</p>}
+                      </div>
+                      <ArrowUpRight className="h-4 w-4 shrink-0 text-[#00F0FF]/70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </div>
                     {p.description && (
                       <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground line-clamp-5">{p.description}</p>
@@ -586,17 +601,14 @@ export function ProfileTab({
                     )}
                     {imgs.length > 0 && (
                       <div className="grid grid-cols-3 gap-2">
-                        {imgs.map((img, k) => (
-                          <button
-                            key={img.src + k}
-                            type="button"
-                            onClick={() => setLightbox({ images: imgs, index: k, title: p.title, description: p.description })}
-                            title={img.alt}
-                            className="group relative aspect-square overflow-hidden rounded-lg border border-border cursor-zoom-in"
-                          >
+                        {imgs.slice(0, 3).map((img, k) => (
+                          <div key={img.url + k} className="relative aspect-square overflow-hidden rounded-lg border border-border">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={img.src} alt={img.alt} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
-                          </button>
+                            <img src={img.url} alt={img.caption || p.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                            {k === 2 && imgs.length > 3 && (
+                              <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm font-semibold text-white">+{imgs.length - 3}</span>
+                            )}
+                          </div>
                         ))}
                       </div>
                     )}
@@ -619,6 +631,25 @@ export function ProfileTab({
           closeLabel={t("lightboxClose")}
           prevLabel={t("prev")}
           nextLabel={t("next")}
+        />
+      )}
+
+      {/* Proje detay modalı (public portfolyoyla aynı bileşen). Portal body'ye taşındığından
+          tema --pf-* değişkenleri dashboard token'larına eşlenip portal kök'üne verilir. */}
+      {projectModal !== null && projects[projectModal] && (
+        <ProjectDetailModal
+          project={projects[projectModal]}
+          fallbackAlt={projects[projectModal].title || headline}
+          onClose={() => setProjectModal(null)}
+          vars={{
+            // Dashboard token'ları oklch(...) tam renk değerleri → doğrudan var(), hsl() SARMA.
+            "--pf-bg": "var(--card)",
+            "--pf-surface": "var(--muted)",
+            "--pf-text": "var(--foreground)",
+            "--pf-muted": "var(--muted-foreground)",
+            "--pf-border": "var(--border)",
+            "--pf-accent": "#00F0FF",
+          } as CSSProperties}
         />
       )}
 
