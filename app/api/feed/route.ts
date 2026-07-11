@@ -7,7 +7,7 @@ import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseQuery } from "@/lib/validation";
 import { feedListQuerySchema, type PoolJobRow, type JobFeedRow, type PoolJob } from "@/lib/validation/schemas/feed";
 import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
-import { jobRelevance, orderDefaultFeed, dedupeNearDuplicates, type RelevanceProfile } from "@/lib/feed/relevance";
+import { jobRelevance, orderDefaultFeed, orderFeedMatches, type RelevanceProfile } from "@/lib/feed/relevance";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const POOL_WINDOW = 200;
@@ -38,15 +38,19 @@ export const GET = withErrorHandler(async (req) => {
   const relProfile: RelevanceProfile = { headline: profileRes.data?.headline ?? null, skills: profileRes.data?.skills ?? null };
 
   // Feedsiz varsayılan görünüm profil alakasına göre sıralanır/elenir; kayıtlı
-  // feed'de kullanıcının kendi kriterleri (matchesFeed) geçerli, sıra korunur.
+  // feed'de kullanıcının kendi kriterleri (matchesFeed) filtreler, sonuçlar ELENMEDEN
+  // alakaya göre sıralanır (orderFeedMatches — eşit alakada en yeni önce).
   // Near-duplicate (aynı başlık farklı şehir) ilanlar her iki dalda da tekilleştirilir (JOBS-FLOWS P1).
   const matched = feeds.length === 0
     ? orderDefaultFeed(pool, relProfile)
-    : dedupeNearDuplicates(pool.filter((p) => {
-        const s = scores.get(p.id);
-        const score = s ? (s.score as number) : null;
-        return feeds.some((f) => matchesFeed(p, feedCriteria(f), score));
-      }));
+    : orderFeedMatches(
+        pool.filter((p) => {
+          const s = scores.get(p.id);
+          const score = s ? (s.score as number) : null;
+          return feeds.some((f) => matchesFeed(p, feedCriteria(f), score));
+        }),
+        relProfile,
+      );
 
   const page: PoolJob[] = matched.slice(offset, offset + limit).map((p) => {
     const s = scores.get(p.id);

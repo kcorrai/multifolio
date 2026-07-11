@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { jobRelevance, orderDefaultFeed, nearDuplicateKey, dedupeNearDuplicates } from "./relevance";
+import { jobRelevance, orderDefaultFeed, orderFeedMatches, nearDuplicateKey, dedupeNearDuplicates } from "./relevance";
 import type { PoolJobRow } from "@/lib/validation/schemas/feed";
 
 function job(over: Partial<PoolJobRow> = {}): PoolJobRow {
@@ -98,6 +98,28 @@ describe("orderDefaultFeed", () => {
     const out = orderDefaultFeed([german], reactProfile);
     expect(out).toHaveLength(1);
     expect(out[0].id).toBe(german.id);
+  });
+});
+
+describe("orderFeedMatches", () => {
+  const german = job({
+    id: "00000000-0000-0000-0000-0000000000de",
+    title: "Produktionsleiter (m/w/d)",
+    description: "Fertigung und Montage in der Produktion.",
+    skills: ["produktion", "montage"],
+  });
+  const reactJob = job();
+
+  it("yeterli sinyalde alakalı üste gelir AMA düşük alaka GİZLENMEZ (kullanıcı kriteri seçti)", () => {
+    const out = orderFeedMatches([german, reactJob], reactProfile);
+    expect(out[0].id).toBe(reactJob.id);
+    expect(out.some((j) => j.id === german.id)).toBe(true); // feedde eleme yok
+    expect(out).toHaveLength(2);
+  });
+
+  it("profil sinyali zayıfsa gelen (kronolojik) sıra korunur", () => {
+    const out = orderFeedMatches([german, reactJob], { headline: "x", skills: [] });
+    expect(out.map((j) => j.id)).toEqual([german.id, reactJob.id]);
   });
 });
 

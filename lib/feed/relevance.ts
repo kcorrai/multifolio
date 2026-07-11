@@ -140,3 +140,18 @@ export function orderDefaultFeed(pool: PoolJobRow[], profile: RelevanceProfile):
   const filtered = ranked.filter((x) => x.rel >= RELEVANCE_HIDE_BELOW);
   return dedupeNearDuplicates((filtered.length > 0 ? filtered : ranked).map((x) => x.row));
 }
+
+/** Kayıtlı feed sonuçları için sıralama: kullanıcı kriterleri (matchesFeed) ilanları
+ *  ZATEN seçti → GİZLEME/eleme YOK (kullanıcının istediğini saklamayız). Yalnız profil
+ *  sinyali yeterliyse (≥3 skill) alaka DESC sırala (kararlı sort → eşit alakada gelen
+ *  kronolojik sıra korunur = en yeni önce), sonra near-duplicate tekilleştir. Sinyal
+ *  zayıfsa gelen (kronolojik) sıra korunur. Feedsiz orderDefaultFeed'den farkı: eşik
+ *  altını gizlemez. */
+export function orderFeedMatches(pool: PoolJobRow[], profile: RelevanceProfile): PoolJobRow[] {
+  const skillCount = (profile.skills ?? []).filter((s) => s.trim()).length;
+  if (skillCount < RELEVANCE_MIN_SIGNAL_SKILLS) return dedupeNearDuplicates(pool);
+  const ranked = pool
+    .map((row) => ({ row, rel: jobRelevance(profile, row) ?? 0 }))
+    .sort((a, b) => b.rel - a.rel);
+  return dedupeNearDuplicates(ranked.map((x) => x.row));
+}
