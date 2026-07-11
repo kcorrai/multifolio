@@ -443,6 +443,13 @@
       "label": "Etikete göre filtrele:",
       "clear": "Temizle"
     },
+    "cashflow": {
+      "title": "Nakit-akışı tahmini",
+      "weighted": "Ağırlıklı beklenen",
+      "potential": "Pipeline değeri",
+      "disclaimer": "Bütçe metninden aşamaya göre ağırlıklı kaba tahmin. Karışık para birimleri çevrilmez.",
+      "hourlyNote": "{count} saatlik iş hariç (saat bilinmiyor)."
+    },
     "statApplied": "Başvurulan",
     "statAwaiting": "Yanıt Bekleniyor",
     "statActive": "Aktif",

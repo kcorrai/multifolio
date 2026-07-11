@@ -58,7 +58,7 @@ export const POST = withErrorHandler(async (_req, { params }) => {
       .update({ match_score: matched.result.score, match_result: matched.result })
       .eq("id", id)
       .eq("user_id", user.id)
-      .select("id, title, company, platform, status, match_score, match_result, created_at")
+      .select("id, title, company, platform, status, match_score, match_result, created_at, reminder_date, deadline_date, tags, budget")
       .single();
     if (updateError) throw updateError;
     return { matched, updated };

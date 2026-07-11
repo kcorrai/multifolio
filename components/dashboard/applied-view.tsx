@@ -8,6 +8,7 @@ import { JobAddModal } from "@/components/job-add-modal";
 import { JobDetailPanel } from "@/components/job-detail-panel";
 import { KanbanBoard } from "./kanban-board";
 import { PipelineStats } from "./pipeline-stats";
+import { CashflowPanel } from "./cashflow-panel";
 import { STATUS_DOT, scoreColor, scoreBarColor, type JobRow } from "./shared";
 import { useDashboard } from "./dashboard-context";
 import type { JobStatus } from "@/lib/validation/schemas/job";
@@ -82,8 +83,13 @@ export function AppliedView({
 
   return (
     <div className="space-y-4">
-      {/* Pipeline analitiği (huni + dönüşüm oranları) */}
-      {jobs.length > 0 && <PipelineStats jobs={jobs} />}
+      {/* Pipeline analitiği (huni + dönüşüm oranları) + nakit-akışı projeksiyonu */}
+      {jobs.length > 0 && (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <PipelineStats jobs={jobs} />
+          <CashflowPanel jobs={jobs} />
+        </div>
+      )}
 
       {/* Add + görünüm toggle + error */}
       <div className="flex items-center justify-between gap-3">

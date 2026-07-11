@@ -443,6 +443,13 @@
       "label": "Filter by tag:",
       "clear": "Clear"
     },
+    "cashflow": {
+      "title": "Cash-flow projection",
+      "weighted": "Weighted expected",
+      "potential": "Pipeline value",
+      "disclaimer": "Rough estimate from budget text, weighted by stage. Mixed currencies not converted.",
+      "hourlyNote": "{count} hourly job(s) excluded (hours unknown)."
+    },
     "statApplied": "Applied",
     "statAwaiting": "Awaiting Reply",
     "statActive": "Active",

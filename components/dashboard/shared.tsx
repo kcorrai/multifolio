@@ -44,6 +44,8 @@ export interface JobRow {
   reminder_date?: string | null; deadline_date?: string | null;
   // Serbest etiketler (opsiyonel; migration 0034).
   tags?: string[] | null;
+  // Bütçe metni (nakit-akışı projeksiyonu için; kolon mevcut — migration yok).
+  budget?: string | null;
 }
 export interface AnalyticsData {
   totalCredits: number; totalCount: number;
