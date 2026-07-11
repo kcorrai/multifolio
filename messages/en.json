@@ -746,6 +746,19 @@
     },
     "displayHint": "How your imported images appear on your public page.",
     "displayNoProjects": "No structured projects imported yet — regenerate after importing an Upwork/Fiverr profile to group images by project.",
+    "leads": {
+        "title": "Incoming requests",
+        "empty": "No requests yet. Share your portfolio to start receiving them.",
+        "loading": "Loading…",
+        "newBadge": "{count} new",
+        "statusLabel": "Status",
+        "status": {
+          "new": "New",
+          "contacted": "Contacted",
+          "converted": "Won",
+          "archived": "Archived"
+        }
+      },
     "preset": {
       "studio": "Studio",
       "atelier": "Atelier",
@@ -957,6 +970,9 @@
     "photoNext": "Next",
     "hireCta": "Get in touch",
     "hireHeading": "Available for work",
+    "leadEyebrow": "Work with me",
+    "leadHeading": "Have a project in mind?",
+    "leadBody": "Send a quick request and I'll get back to you by email.",
     "hireBody": "Have a project in mind? Let's talk.",
     "madeWith": "Made with Multifolio",
     "testimonials": "What clients say"
@@ -1448,6 +1464,24 @@
     "ctaBody": "Multifolio scores and rewrites your full profile for LinkedIn, Upwork, Fiverr and more — in each platform's voice. Start free with 100 credits.",
     "ctaButton": "Start free"
   },
+  "lead": {
+    "nameLabel": "Your name",
+    "emailLabel": "Email",
+    "projectLabel": "Project",
+    "projectPlaceholder": "e.g. Landing page redesign",
+    "budgetLabel": "Budget",
+    "budgetPlaceholder": "e.g. $2,000",
+    "timelineLabel": "Timeline",
+    "timelinePlaceholder": "e.g. Within a month",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Tell me about your project and what you need…",
+    "submit": "Send request",
+    "sending": "Sending…",
+    "successTitle": "Request sent",
+    "successBody": "Thanks — I'll get back to you by email soon.",
+    "error": "Something went wrong. Please try again.",
+    "privacyNote": "Your details are sent only to the owner of this page."
+  },
   "compare": {
     "metaTitle": "Freelance Platform Net Income Comparison — Multifolio",
     "metaDescription": "One project, five platforms: see how much you take home on Upwork, Fiverr, Bionluk and direct clients after fees, transfer costs and tax.",
@@ -1635,6 +1669,8 @@
     "analyzeNoContent": "We couldn't read a profile from that input. Try pasting your profile text instead.",
     "testimonialTargetMissing": "This portfolio isn't available for recommendations.",
     "testimonialRateLimited": "Too many recommendations right now. Please try again later.",
+    "leadTargetMissing": "This portfolio isn't available for requests.",
+    "leadRateLimited": "Too many requests right now. Please try again later.",
     "translateRateLimited": "Too many translation requests. Please try again in an hour.",
     "syncNoConnection": "Save your profile URL in the Connection section first.",
     "syncUnsupported": "This platform can only be imported with the browser extension.",

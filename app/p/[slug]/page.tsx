@@ -13,7 +13,8 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { ArrowUpRight } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
-import { portfolioTheme } from "@/lib/portfolio/theme";
+import { portfolioTheme, ACCENT_HEX } from "@/lib/portfolio/theme";
+import { LeadForm } from "@/components/portfolio/lead-form";
 import { buildPersonJsonLd } from "@/lib/portfolio/json-ld";
 import { PublicGallery } from "@/components/portfolio/public-gallery";
 import { ZoomableImage } from "@/components/portfolio/zoomable-image";
@@ -111,6 +112,7 @@ export default async function PortfolioPage({ params }: PageProps) {
   // Tarih formatı ziyaretçi/UI diline bağlanır — görsel preset'e DEĞİL (atelier ≠ TR).
   const locale = await getLocale();
   const { vars, dark } = portfolioTheme(theme.preset, theme.accent);
+  const accentHex = ACCENT_HEX[theme.accent] ?? ACCENT_HEX.blue;
 
   // İletişim/işe-al hedefi: e-posta öncelikli (mailto), yoksa http(s) link. İkisi de yoksa CTA gizli.
   // Render'da defense-in-depth: yalnız geçerli e-posta / http(s) URL kabul (javascript: vb. engellenir).
@@ -324,6 +326,18 @@ export default async function PortfolioPage({ params }: PageProps) {
           </div>
         </section>
       )}
+
+      {/* ── İşe al: lead formu (her yayınlanan portfolyoda; talep → owner dashboard) ── */}
+      <section className="mx-auto max-w-2xl px-6 py-12">
+        <div className="anim-fade-up rounded-3xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-6 sm:p-8">
+          <SectionLabel style={heading}>{t("leadEyebrow")}</SectionLabel>
+          <h2 style={heading} className="mt-2 text-2xl font-bold">{t("leadHeading")}</h2>
+          <p className="mt-2 text-[var(--pf-muted)]">{t("leadBody")}</p>
+          <div className="mt-6">
+            <LeadForm slug={slug} accentHex={accentHex} />
+          </div>
+        </div>
+      </section>
 
       {/* ── Footer ───────────────────────────────────────────────────── */}
       <footer className="mx-auto max-w-5xl px-6 pb-16 pt-10">
