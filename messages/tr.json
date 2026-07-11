@@ -21,6 +21,7 @@
       "analyze": "Ücretsiz Profil Analizi",
       "earnings": "Net Kazanç Hesaplayıcı",
       "rate": "Ücret hesaplayıcı",
+      "proposalChecker": "Teklif denetçisi",
       "compare": "Platform Karşılaştırma",
       "trTax": "Türkiye vergi rehberi",
       "pricing": "Fiyat",
@@ -118,6 +119,10 @@
       "rate": {
         "title": "Ücret hesaplayıcı",
         "desc": "Gelir hedefine ulaşmak için gereken saatlik ücreti bul."
+      },
+      "proposalChecker": {
+        "title": "Teklif denetçisi",
+        "desc": "Kapak mektubunu müşteri kazandıran kriterlere göre puanla."
       },
       "compare": {
         "title": "Platform karşılaştırma",
@@ -1361,6 +1366,34 @@
     "bellLabel": "Bildirimler",
     "matchTitle": "Yeni %{score} eşleşme",
     "matchBody": "\"{title}\" profiline güçlü uyuyor."
+  },
+  "proposalChecker": {
+    "metaTitle": "Ücretsiz Teklif & Kapak Mektubu Denetçisi — Multifolio",
+    "metaDescription": "Freelance teklifini yapıştır, müşteri kazandıran kriterlere göre anında puan al — uzunluk, net soru, sayısal sonuç, müşteri odağı ve klişesizlik. Ücretsiz, kayıt yok.",
+    "heroEyebrow": "Ücretsiz araç",
+    "heroTitle": "Teklifin kazanacak kadar iyi mi?",
+    "heroSubtitle": "Kapak mektubunu yapıştır, gerçekten müşteri kazandıran unsurlara göre anında puan al — kayıt yok.",
+    "inputLabel": "Teklifin",
+    "placeholder": "Teklifini ya da kapak mektubunu buraya yapıştır…",
+    "wordCount": "{count} kelime",
+    "resultTitle": "Teklif puanı",
+    "verdict": {
+      "strong": "Güçlü",
+      "ok": "İdare eder",
+      "weak": "Geliştirilmeli"
+    },
+    "checks": {
+      "length": "Kısa ve öz (30–250 kelime)",
+      "question": "Soru veya net eylem çağrısıyla bitiyor",
+      "numbers": "İddiaları sayı/sonuçla destekliyor",
+      "clientFocus": "Kendine değil müşteriye odaklı",
+      "noFiller": "Klişe/dolgu ifade yok"
+    },
+    "fillerLabel": "Kaldırılacak klişeler",
+    "disclaimer": "Hızlı bir sezgisel kontrol, garanti değil. Her teklifi işe ve müşteriye özel kişiselleştir.",
+    "ctaTitle": "Kazandıran teklifleri AI yazsın",
+    "ctaBody": "Multifolio, işin gereksinimlerini karşılayan, platforma hazır ve müşterinin dilinde teklifler üretir. 100 ücretsiz krediyle başla.",
+    "ctaButton": "Ücretsiz başla"
   },
   "compare": {
     "metaTitle": "Freelance Platform Net Gelir Karşılaştırması — Multifolio",

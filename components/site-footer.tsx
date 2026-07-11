@@ -11,6 +11,7 @@ export async function SiteFooter() {
     { href: "/analyze", label: t("nav.analyze") },
     { href: "/earnings", label: t("nav.earnings") },
     { href: "/rate", label: t("nav.rate") },
+    { href: "/proposal-checker", label: t("nav.proposalChecker") },
     { href: "/compare", label: t("nav.compare") },
     { href: "/vergi", label: t("nav.trTax") },
     { href: "/pricing", label: t("nav.pricing") },

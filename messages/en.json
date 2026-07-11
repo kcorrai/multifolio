@@ -21,6 +21,7 @@
       "analyze": "Free profile check",
       "earnings": "Earnings calculator",
       "rate": "Rate calculator",
+      "proposalChecker": "Proposal checker",
       "compare": "Platform comparison",
       "trTax": "Turkey tax guide",
       "pricing": "Pricing",
@@ -118,6 +119,10 @@
       "rate": {
         "title": "Rate calculator",
         "desc": "Find the hourly rate you need to hit your income goal."
+      },
+      "proposalChecker": {
+        "title": "Proposal checker",
+        "desc": "Score your cover letter against what actually wins clients."
       },
       "compare": {
         "title": "Platform comparison",
@@ -1361,6 +1366,34 @@
     "bellLabel": "Notifications",
     "matchTitle": "New {score}% match",
     "matchBody": "\"{title}\" looks like a strong fit for your profile."
+  },
+  "proposalChecker": {
+    "metaTitle": "Free Proposal & Cover Letter Checker — Multifolio",
+    "metaDescription": "Paste your freelance proposal and get an instant score against what wins clients — length, a clear question, quantified results, client focus and no clichés. Free, no sign-up.",
+    "heroEyebrow": "Free tool",
+    "heroTitle": "Is your proposal good enough to win?",
+    "heroSubtitle": "Paste your cover letter and get an instant score against the things that actually win clients — no sign-up.",
+    "inputLabel": "Your proposal",
+    "placeholder": "Paste your proposal or cover letter here…",
+    "wordCount": "{count} words",
+    "resultTitle": "Proposal score",
+    "verdict": {
+      "strong": "Strong",
+      "ok": "Decent",
+      "weak": "Needs work"
+    },
+    "checks": {
+      "length": "Concise (30–250 words)",
+      "question": "Ends with a question or clear call to action",
+      "numbers": "Backs a claim with a number or result",
+      "clientFocus": "Focuses on the client, not just yourself",
+      "noFiller": "No generic clichés or filler"
+    },
+    "fillerLabel": "Clichés to remove",
+    "disclaimer": "A quick heuristic check, not a guarantee. Personalize every proposal to the specific job and client.",
+    "ctaTitle": "Let AI write proposals that win",
+    "ctaBody": "Multifolio generates tailored, platform-ready proposals that cover the job's requirements — in the client's language. Start free with 100 credits.",
+    "ctaButton": "Start free"
   },
   "compare": {
     "metaTitle": "Freelance Platform Net Income Comparison — Multifolio",

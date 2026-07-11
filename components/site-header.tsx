@@ -30,6 +30,7 @@ export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean 
               { label: t("nav.analyze"),  href: "/analyze" },
               { label: t("nav.earnings"), href: "/earnings" },
               { label: t("nav.rate"),     href: "/rate" },
+              { label: t("nav.proposalChecker"), href: "/proposal-checker" },
               { label: t("nav.compare"),  href: "/compare" },
               // TR vergi rehberi yalnız Türk kullanıcılara (global kitleye alakasız).
               ...(locale.startsWith("tr") ? [{ label: t("nav.trTax"), href: "/vergi" }] : []),
