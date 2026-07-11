@@ -23,8 +23,8 @@ describe("isAdminEmail", () => {
     expect(isAdminEmail(null, csv)).toBe(false);
     expect(isAdminEmail("owner@x.com", "")).toBe(false);
   });
-  it("kodda gömülü sahip e-postası env boş olsa da → true (sıfır kurulum)", () => {
-    expect(isAdminEmail("yanlizcakaan@gmail.com", "")).toBe(true);
-    expect(isAdminEmail("YanlizcaKaan@Gmail.com", undefined)).toBe(true);
+  it("env boşsa hiç kimse admin değil (kodda gömülü e-posta YOK)", () => {
+    expect(isAdminEmail("anyone@x.com", "")).toBe(false);
+    expect(isAdminEmail("yanlizcakaan@gmail.com", "")).toBe(false);
   });
 });
