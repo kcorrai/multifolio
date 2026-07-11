@@ -1,13 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CheckCircle2, Sparkles, Briefcase, ChevronRight, AlertCircle } from "lucide-react";
+import { CheckCircle2, Sparkles, Briefcase, ChevronRight, AlertCircle, Wand2, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { PlatformLogo } from "@/components/platform-logo";
 import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
+import { CREDIT_COSTS } from "@/lib/credits/costs";
 import { ELEVATED, PLATFORM_STYLES } from "./shared";
 import { useDashboard } from "./dashboard-context";
+
+// Tüm platformları uyarlamanın toplam kredi maliyeti (platform sayısı × adaptation).
+const ADAPT_ALL_COST = PLATFORM_IDS.length * CREDIT_COSTS.adaptation;
 
 export function PlatformsHubTab({
   profileSaved, connections, jobsByPlatform, initialAdaptedPlatforms,
@@ -18,7 +24,30 @@ export function PlatformsHubTab({
   initialAdaptedPlatforms: PlatformId[];
 }) {
   const t = useTranslations("platforms");
-  const { adaptResults } = useDashboard();
+  const { adaptResults, setAdaptResult, applyCredits, triggerComingSoon } = useDashboard();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [summary, setSummary] = useState<{ count: number; stopped: boolean } | null>(null);
+
+  // Tek-tık: çekirdek profili 5 platforma birden uyarla (aktivasyon; /api/adapt/all).
+  async function adaptAll() {
+    setBusy(true); setError(""); setSummary(null);
+    const res = await fetch("/api/adapt/all", { method: "POST" });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) {
+      setError(body?.error?.message ?? t("adaptAll.error"));
+      if (res.status === 402) triggerComingSoon();
+      setBusy(false); return;
+    }
+    for (const r of body.results as { platform: PlatformId; output: { headline: string; body: string } }[]) {
+      setAdaptResult(r.platform, r.output);
+    }
+    if (body.credits) applyCredits(body.credits);
+    setSummary({ count: body.adaptedCount, stopped: body.stoppedForCredits });
+    setBusy(false);
+  }
+
+  const adaptedCount = PLATFORM_IDS.filter((id) => !!adaptResults[id] || initialAdaptedPlatforms.includes(id)).length;
 
   return (
     <div className="space-y-5">
@@ -31,6 +60,40 @@ export function PlatformsHubTab({
       {!profileSaved && (
         <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
           <AlertCircle className="h-4 w-4 shrink-0" />{t("card.saveProfileFirst")}
+        </div>
+      )}
+
+      {/* ── Tek-tık: tüm platformlara uyarla (aktivasyon) ─────────────── */}
+      {profileSaved && (
+        <div className="rounded-2xl border border-violet-500/25 bg-gradient-to-br from-violet-500/10 to-[#00F0FF]/[0.06] p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3 min-w-0">
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-violet-500/15 flex items-center justify-center">
+                <Wand2 className="h-5 w-5 text-violet-400" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold">{t("adaptAll.title")}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("adaptAll.desc", { count: PLATFORM_IDS.length })}</p>
+              </div>
+            </div>
+            <Button onClick={adaptAll} disabled={busy} className="gap-2 shrink-0">
+              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+              {busy ? t("adaptAll.busy") : t("adaptAll.button")}
+              <span className="rounded-full bg-black/10 dark:bg-white/15 px-1.5 py-0.5 text-[10px] font-bold tabular-nums">{ADAPT_ALL_COST}</span>
+            </Button>
+          </div>
+          {error && (
+            <p className="mt-3 flex items-center gap-1.5 text-xs text-destructive"><AlertCircle className="h-3.5 w-3.5" />{error}</p>
+          )}
+          {summary && (
+            <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              {summary.stopped ? t("adaptAll.partial", { count: summary.count }) : t("adaptAll.done", { count: summary.count })}
+            </p>
+          )}
+          {!summary && adaptedCount > 0 && (
+            <p className="mt-3 text-[11px] text-muted-foreground">{t("adaptAll.already", { count: adaptedCount, total: PLATFORM_IDS.length })}</p>
+          )}
         </div>
       )}
 

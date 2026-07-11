@@ -666,6 +666,16 @@
     "eyebrow": "Çalışma Alanı",
     "hubTitle": "Platformlar",
     "hubSubtitle": "Her platformun profilini, bağlantısını, eşleşen işlerini ve tekliflerini tek yerden yönet.",
+    "adaptAll": {
+      "title": "Her platform için optimize et",
+      "desc": "Profilini tek tıkla {count} platforma birden uyarla — her biri kendi diliyle.",
+      "button": "Tüm platformlara uyarla",
+      "busy": "Uyarlanıyor…",
+      "done": "Bitti — {count} platform için uyarlandı. Sonucu görmek için bir platformu aç.",
+      "partial": "{count} platform uyarlandı — kalanı için kredin yetmedi.",
+      "already": "{total} platformdan {count} tanesi uyarlandı.",
+      "error": "Platformlar uyarlanamadı. Lütfen tekrar dene."
+    },
     "card": {
       "connected": "Bağlı",
       "notConnected": "Bağlı değil",
