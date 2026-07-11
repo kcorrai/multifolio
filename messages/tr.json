@@ -1780,6 +1780,7 @@
     "leadTargetMissing": "Bu portfolyo şu an talep almıyor.",
     "leadRateLimited": "Şu an çok fazla talep var. Lütfen sonra tekrar dene.",
     "translateRateLimited": "Çok fazla çeviri isteği. Bir saat sonra tekrar dene.",
+    "jobCaptureRateLimited": "Bu saat içinde çok fazla iş eklendi. Lütfen sonra tekrar dene.",
     "syncNoConnection": "Önce Bağlantı bölümünde profil URL'ini kaydet.",
     "syncUnsupported": "Bu platform yalnız tarayıcı uzantısıyla içe aktarılabilir.",
     "suggestNoData": "Önce bir platform bağlayıp verisini çek — öneriler public profillerinden üretilir.",

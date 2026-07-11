@@ -1780,6 +1780,7 @@
     "leadTargetMissing": "This portfolio isn't available for requests.",
     "leadRateLimited": "Too many requests right now. Please try again later.",
     "translateRateLimited": "Too many translation requests. Please try again in an hour.",
+    "jobCaptureRateLimited": "Too many jobs added this hour. Please try again later.",
     "syncNoConnection": "Save your profile URL in the Connection section first.",
     "syncUnsupported": "This platform can only be imported with the browser extension.",
     "suggestNoData": "Connect a platform and pull its data first — suggestions are built from your public profiles.",
