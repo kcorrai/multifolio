@@ -734,6 +734,13 @@
     "saveSettings": "Save Settings",
     "viewPage": "View page",
     "themeTitle": "Theme",
+    "displayTitle": "Image display",
+    "display": {
+      "gallery": "Gallery",
+      "projects": "By project"
+    },
+    "displayHint": "How your imported images appear on your public page.",
+    "displayNoProjects": "No structured projects imported yet — regenerate after importing an Upwork/Fiverr profile to group images by project.",
     "preset": {
       "studio": "Studio",
       "atelier": "Atelier",

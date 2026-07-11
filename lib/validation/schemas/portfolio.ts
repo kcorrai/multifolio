@@ -30,12 +30,19 @@ export const portfolioGalleryItemSchema = z.object({
   url: z.string().url(),
   caption: z.string().max(120).default(""),
 });
+// Proje-proje gösterim modu için: her grup = bir projenin başlığı + görselleri
+// (profiles.projects'ten üretimde kopyalanır). Boşsa galeri moduna düşülür.
+export const portfolioProjectGroupSchema = z.object({
+  title: z.string().max(200).default(""),
+  images: z.array(portfolioGalleryItemSchema).max(24).default([]),
+});
 export const portfolioMediaSchema = z
   .object({
     avatarUrl: z.string().url().nullable().default(null),
     gallery: z.array(portfolioGalleryItemSchema).max(24).default([]),
+    projectGroups: z.array(portfolioProjectGroupSchema).max(12).default([]),
   })
-  .default({ avatarUrl: null, gallery: [] });
+  .default({ avatarUrl: null, gallery: [], projectGroups: [] });
 
 // AI'nın ürettiği ve kullanıcının düzenleyebildiği portfolyo içeriği.
 // theme/media `.default()`'lı → eski (theme'siz) kayıtlar geçerli kalır.
@@ -44,6 +51,9 @@ export const portfolioContentSchema = z.object({
   bio: z.string().min(1).max(2000),
   skills: z.array(z.string().min(1).max(60)).min(1).max(30),
   projects: z.array(portfolioProjectSchema).max(12).default([]),
+  // Görsel gösterim modu: "gallery" = düz masonry galeri (yalnız resimler),
+  // "projects" = proje-proje gruplu (media.projectGroups). .catch/.default → eski kayıtlar geçerli.
+  layout: z.enum(["gallery", "projects"]).catch("gallery").default("gallery"),
   theme: portfolioThemeSchema,
   media: portfolioMediaSchema,
   // İşe-al/iletişim CTA hedefi (opsiyonel; ikisi de yoksa CTA gizli). Editörde serbest

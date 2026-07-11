@@ -104,7 +104,9 @@ export default async function PortfolioPage({ params }: PageProps) {
     .order("created_at", { ascending: false })
     .limit(12);
   const testimonials = testimonialRows ?? [];
-  const { headline, bio, skills, projects, media, theme } = content;
+  const { headline, bio, skills, projects, media, theme, layout } = content;
+  const projectGroups = media.projectGroups ?? [];
+  const showProjectGroups = layout === "projects" && projectGroups.length > 0;
   const t = await getTranslations("portfolioPublic");
   // Tarih formatı ziyaretçi/UI diline bağlanır — görsel preset'e DEĞİL (atelier ≠ TR).
   const locale = await getLocale();
@@ -196,14 +198,26 @@ export default async function PortfolioPage({ params }: PageProps) {
         </div>
       </header>
 
-      {/* ── Galeri (bağlı public profillerden çekilen görseller) ──────── */}
-      {media.gallery.length > 0 && (
+      {/* ── Görseller: "projects" modu = proje-proje gruplu; aksi = düz galeri ── */}
+      {showProjectGroups ? (
+        <section className="mx-auto max-w-5xl px-6 py-8 space-y-10">
+          {projectGroups.map((g, gi) => (
+            <div key={gi}>
+              <SectionLabel style={heading}>{g.title || t("projects")}</SectionLabel>
+              {/* Tıklanınca lightbox + foto arası ileri/geri (PublicGallery, client). */}
+              <div className="mt-4">
+                <PublicGallery images={g.images} fallbackAlt={g.title || headline} />
+              </div>
+            </div>
+          ))}
+        </section>
+      ) : media.gallery.length > 0 ? (
         <section className="mx-auto max-w-5xl px-6 py-8">
           <SectionLabel style={heading}>{t("gallery")}</SectionLabel>
           {/* Tıklanınca lightbox + foto arası ileri/geri (PublicGallery, client). */}
           <PublicGallery images={media.gallery} fallbackAlt={headline} />
         </section>
-      )}
+      ) : null}
 
       {/* ── Hakkında ─────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-3xl px-6 py-10">

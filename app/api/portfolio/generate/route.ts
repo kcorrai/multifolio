@@ -11,7 +11,7 @@ import { slugify } from "@/lib/portfolio/slug";
 import { spendCredits } from "@/lib/credits/spend";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { portfolioThemeSchema, type PortfolioMedia } from "@/lib/validation/schemas/portfolio";
-import type { ProfileInput, PortfolioItem } from "@/lib/validation/schemas/profile";
+import type { ProfileInput, PortfolioItem, ProfileProject } from "@/lib/validation/schemas/profile";
 
 // Profil/platform görsellerini portfolyo galerisine çevirir (url'siz atlanır,
 // caption 120'ye kırpılır, url'ye göre dedup, 24 ile sınırlı).
@@ -26,6 +26,22 @@ function buildGallery(...sources: (PortfolioItem[] | null | undefined)[]): Portf
       out.push({ url, caption: (item.title ?? "").slice(0, 120) });
       if (out.length >= 24) return out;
     }
+  }
+  return out;
+}
+
+// Yapılandırılmış projeleri "proje-proje" gösterim grupları'na çevirir (her grup =
+// başlık + görselleri). Görselsiz proje atlanır; 12 grup / grup başına 24 görselle sınırlı.
+function buildProjectGroups(projects: ProfileProject[] | null | undefined): PortfolioMedia["projectGroups"] {
+  const out: PortfolioMedia["projectGroups"] = [];
+  for (const p of projects ?? []) {
+    const images = (p.images ?? [])
+      .filter((im) => im?.url?.trim())
+      .slice(0, 24)
+      .map((im) => ({ url: im.url, caption: (im.caption || p.title || "").slice(0, 120) }));
+    if (images.length === 0) continue;
+    out.push({ title: (p.title ?? "").slice(0, 200), images });
+    if (out.length >= 12) break;
   }
   return out;
 }
@@ -56,7 +72,7 @@ export const POST = withErrorHandler(async () => {
   // de çekilir (public sayfaya gömülür → bağlı public profillerdeki veri iş görür).
   const { data: profileData, error: profileError } = await supabase
     .from("profiles")
-    .select("headline, summary, skills, avatar_url, portfolio")
+    .select("headline, summary, skills, avatar_url, portfolio, projects")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -79,6 +95,8 @@ export const POST = withErrorHandler(async () => {
       profileData.portfolio as PortfolioItem[] | null,
       ...(platformRows ?? []).map((r) => r.portfolio as PortfolioItem[] | null),
     ),
+    // Proje-proje modu için gruplu görseller (yapılandırılmış projelerden).
+    projectGroups: buildProjectGroups(profileData.projects as ProfileProject[] | null),
   };
 
   const portfolioLocale = await getUserLocale();
@@ -94,9 +112,11 @@ export const POST = withErrorHandler(async () => {
   const slug = existing?.slug ?? (await deriveUniqueSlug(admin, profileData.headline as string | null, user.id));
   // Yeniden üretimde kullanıcının seçtiği tema + iletişim CTA hedefi KORUNUR (AI bunları üretmez).
   const existingContent = existing?.content as
-    | { theme?: unknown; contactEmail?: unknown; contactUrl?: unknown }
+    | { theme?: unknown; layout?: unknown; contactEmail?: unknown; contactUrl?: unknown }
     | null;
   const theme = portfolioThemeSchema.parse(existingContent?.theme);
+  // Gösterim modu (gallery/projects) yeniden üretimde KORUNUR (kullanıcı seçimi).
+  const layout: "gallery" | "projects" = existingContent?.layout === "projects" ? "projects" : "gallery";
   // İletişim CTA: ilk üretimde hesap e-postasına VARSAYILAN (public sayfada "İşe al"
   // butonu default çalışsın — P1 #6). Editörde görünür + değiştirilebilir/silinebilir;
   // yeniden üretimde kullanıcının değeri (boş bıraktıysa boş dahil) KORUNUR.
@@ -108,7 +128,7 @@ export const POST = withErrorHandler(async () => {
   // AI üretimi + portfolyonun yazımı tek closure'da: yazım patlarsa spendCredits krediyi iade eder.
   const { result, balance, spent } = await spendCredits(user.id, "portfolio_generation", async () => {
     const ai = await generatePortfolio(profileData as ProfileInput, portfolioLocale, media);
-    const content = { ...ai.content, theme, ...(contactEmail !== undefined ? { contactEmail } : {}), ...(contactUrl !== undefined ? { contactUrl } : {}) };
+    const content = { ...ai.content, theme, layout, ...(contactEmail !== undefined ? { contactEmail } : {}), ...(contactUrl !== undefined ? { contactUrl } : {}) };
     const { data: portfolio, error: upsertError } = await admin
       .from("portfolios")
       .upsert(

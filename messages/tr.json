@@ -734,6 +734,13 @@
     "saveSettings": "Ayarları Kaydet",
     "viewPage": "Sayfayı görüntüle",
     "themeTitle": "Tema",
+    "displayTitle": "Görsel gösterimi",
+    "display": {
+      "gallery": "Galeri",
+      "projects": "Proje proje"
+    },
+    "displayHint": "İçe aktardığın görsellerin public sayfanda nasıl görüneceği.",
+    "displayNoProjects": "Henüz yapılandırılmış proje içe aktarılmadı — Upwork/Fiverr profilini içe aktardıktan sonra yeniden üret, görseller proje-proje gruplanır.",
     "preset": {
       "studio": "Studio",
       "atelier": "Atelier",

@@ -133,6 +133,31 @@ export function PortfolioTab({
                 </div>
               </div>
 
+              {/* ── Görsel gösterimi: düz galeri veya proje-proje gruplu ─── */}
+              <div className="space-y-2">
+                <Label>{t("displayTitle")}</Label>
+                <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5">
+                  {(["gallery", "projects"] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => patch({ layout: mode })}
+                      aria-pressed={content.layout === mode}
+                      className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+                        content.layout === mode ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {t(`display.${mode}`)}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[11px] text-muted-foreground/70">
+                  {content.layout === "projects" && (content.media.projectGroups?.length ?? 0) === 0
+                    ? t("displayNoProjects")
+                    : t("displayHint")}
+                </p>
+              </div>
+
               {/* ── İçerik düzenleme ─────────────────────────────────── */}
               <div className="grid gap-4">
                 <div className="space-y-1.5">

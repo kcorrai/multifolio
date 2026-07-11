@@ -65,6 +65,7 @@ function mapToContent(
           ...(url ? { url } : {}),
         };
       }),
+    layout: "gallery",
     theme: { preset: "studio", accent: "blue" },
     media,
   };
@@ -86,7 +87,7 @@ const SYSTEM_PROMPT =
 export async function generatePortfolio(
   profile: ProfileInput,
   locale: Locale = "en",
-  media: PortfolioMedia = { avatarUrl: null, gallery: [] },
+  media: PortfolioMedia = { avatarUrl: null, gallery: [], projectGroups: [] },
 ): Promise<GeneratePortfolioResult> {
   const client = getOpenAIClient();
 
