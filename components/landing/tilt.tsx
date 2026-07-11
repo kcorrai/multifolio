@@ -1,27 +1,19 @@
-/* Saf CSS hareket sarmalayıcıları (sunucu bileşeni) — motoru `LandingMotion`
-   kök değişkenleri (--mx/--my/--sx). Buradaki bileşenler sadece doğru class'ları
-   ve derinlik değişkenlerini koyar; JS yok. */
+/* Saf CSS hareket sarmalayıcıları (sunucu bileşeni). Scroll parallax motoru
+   `LandingMotion` kök değişkeni --sx; JS yok. (Mouse tilt kaldırıldı.) */
 
 import type { CSSProperties, ReactNode } from "react";
 
-/* Fareye göre 3D eğilen kart — sahneyle AYNI pointer sinyalini okur. */
+/* Statik yükseklik sarmalayıcısı — `fill` grid hücresinde kartı tam yükseklik yapar. */
 export function Tilt({
   children,
   className = "",
-  strong = false,
   fill = false,
 }: {
   children: ReactNode;
   className?: string;
-  strong?: boolean;
   fill?: boolean;
 }) {
-  const h = fill ? "h-full" : "";
-  return (
-    <div className={`tilt-3d ${h} ${strong ? "tilt-3d--strong" : ""} ${className}`}>
-      <div className={`tilt-3d__i ${h}`}>{children}</div>
-    </div>
-  );
+  return <div className={`${fill ? "h-full" : ""} ${className}`}>{children}</div>;
 }
 
 /* Scroll'da katmanlı parallax (element viewport'tan geçerken kayar).

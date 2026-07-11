@@ -8,7 +8,6 @@ import { getTranslations } from "next-intl/server";
 import { CountUp } from "@/components/count-up";
 import { PlatformLogo } from "@/components/platform-logo";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { ThreeBackground } from "@/components/landing/three-background";
 import { LandingMotion } from "@/components/landing/landing-motion";
 import { Tilt } from "@/components/landing/tilt";
 import { SiteHeader } from "@/components/site-header";
@@ -248,9 +247,14 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
     <div className="relative min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
 
-      {/* Gerçek 3D (WebGL) arka plan — scroll'la döner/kayar; içeriğin ARDINDA (z-0) */}
-      <ThreeBackground />
-      {/* Hareket kontrolcüsü — kök CSS değişkenleri (pointer/scroll) 3D ile paylaşılır */}
+      {/* Sakin ambient aurora (2D CSS — WebGL yok); üst folda yumuşak gradyan,
+          alta doğru maskeyle söner → diğer bölümler tertemiz. İçeriğin ARDINDA (z-0) */}
+      <div aria-hidden className="landing-aurora">
+        <span className="a1" />
+        <span className="a2" />
+        <span className="a3" />
+      </div>
+      {/* Hareket kontrolcüsü — kök CSS değişkenleri (pointer/scroll) mikro-animasyonları besler */}
       <LandingMotion />
 
       <div className="relative z-10">
@@ -330,9 +334,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
 
           <div className="hidden lg:block">
-            <Tilt strong>
-              <ProductMockup />
-            </Tilt>
+            <ProductMockup />
           </div>
         </div>
       </section>
