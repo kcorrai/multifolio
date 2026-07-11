@@ -10,7 +10,7 @@ import { EXTENSION_STORE_URL } from "@/lib/extension";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("extensionPrivacy");
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return { title: t("metaTitle"), description: t("metaDescription"), alternates: { canonical: "/extension/privacy" } };
 }
 
 const SECTIONS = ["collected", "use", "sharing", "permissions", "retention", "contact"] as const;

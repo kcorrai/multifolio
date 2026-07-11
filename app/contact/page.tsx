@@ -9,7 +9,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 // kullanıcı değiştirebilir. mailto ile doğrudan iletişim.
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("legalContact");
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return { title: t("metaTitle"), description: t("metaDescription"), alternates: { canonical: "/contact" } };
 }
 
 export default async function ContactPage() {

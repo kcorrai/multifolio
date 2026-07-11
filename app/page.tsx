@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import {
   Layers, Globe, Briefcase, ArrowRight, ArrowUpRight,
   CheckCircle2, Target, Sparkles, ShieldCheck,
@@ -21,6 +22,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { PlatformId } from "@/lib/ai/platforms";
 
 const PLATFORMS: PlatformId[] = ["linkedin", "upwork", "fiverr", "bionluk", "armut"];
+
+// Landing self-canonical (kök title/description korunur; yalnız canonical eklenir).
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 /* ─── Circular progress ring ────────────────────────────────────── */
 function CircleScore({ score }: { score: number }) {

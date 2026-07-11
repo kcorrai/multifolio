@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!guide) return {};
   const locale = await getLocale();
   const c = locale === "tr" ? guide.tr : guide.en;
-  return { title: `${c.title} — Multifolio`, description: c.description };
+  return { title: `${c.title} — Multifolio`, description: c.description, alternates: { canonical: `/guides/${slug}` } };
 }
 
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {

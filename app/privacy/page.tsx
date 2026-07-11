@@ -8,7 +8,7 @@ const SECTIONS = ["collected", "use", "sharing", "cookies", "security", "rights"
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("legalPrivacy");
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return { title: t("metaTitle"), description: t("metaDescription"), alternates: { canonical: "/privacy" } };
 }
 
 export default async function PrivacyPage() {

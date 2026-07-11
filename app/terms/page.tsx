@@ -8,7 +8,7 @@ const SECTIONS = ["acceptance", "service", "account", "credits", "acceptable", "
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("legalTerms");
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return { title: t("metaTitle"), description: t("metaDescription"), alternates: { canonical: "/terms" } };
 }
 
 export default async function TermsPage() {

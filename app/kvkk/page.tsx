@@ -8,7 +8,7 @@ const SECTIONS = ["controller", "data", "purpose", "basis", "transfer", "method"
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("legalKvkk");
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return { title: t("metaTitle"), description: t("metaDescription"), alternates: { canonical: "/kvkk" } };
 }
 
 export default async function KvkkPage() {

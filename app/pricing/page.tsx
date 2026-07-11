@@ -12,7 +12,7 @@ import { CREDIT_COSTS, type CreditKind } from "@/lib/credits/costs";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("pricingPage");
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return { title: t("metaTitle"), description: t("metaDescription"), alternates: { canonical: "/pricing" } };
 }
 
 // Maliyet tablosu satırları: CREDIT_COSTS ile birebir, sabit gösterim sırası + ikon
