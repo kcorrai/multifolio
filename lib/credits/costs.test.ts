@@ -3,16 +3,16 @@ import { CREDIT_COSTS } from "./costs";
 
 describe("CREDIT_COSTS", () => {
   it("her aksiyon türü için pozitif tamsayı kredi tanımlar", () => {
-    expect(CREDIT_COSTS.adaptation).toBe(1);
-    expect(CREDIT_COSTS.job_match).toBe(1);
-    expect(CREDIT_COSTS.proposal).toBe(2);
-    expect(CREDIT_COSTS.profile_suggest).toBe(2);
-    expect(CREDIT_COSTS.portfolio_generation).toBe(3);
-    expect(CREDIT_COSTS.followup).toBe(1);
-    expect(CREDIT_COSTS.cv_generation).toBe(3);
-    expect(CREDIT_COSTS.cv_tailor).toBe(2);
-    expect(CREDIT_COSTS.cv_bullets).toBe(2);
-    expect(CREDIT_COSTS.cv_summary).toBe(1);
+    expect(CREDIT_COSTS.adaptation).toBe(2);
+    expect(CREDIT_COSTS.job_match).toBe(2);
+    expect(CREDIT_COSTS.proposal).toBe(3);
+    expect(CREDIT_COSTS.profile_suggest).toBe(3);
+    expect(CREDIT_COSTS.portfolio_generation).toBe(5);
+    expect(CREDIT_COSTS.followup).toBe(2);
+    expect(CREDIT_COSTS.cv_generation).toBe(5);
+    expect(CREDIT_COSTS.cv_tailor).toBe(3);
+    expect(CREDIT_COSTS.cv_bullets).toBe(3);
+    expect(CREDIT_COSTS.cv_summary).toBe(2);
   });
 
   it("usage_events.kind ile birebir anahtar kullanır", () => {

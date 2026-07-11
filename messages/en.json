@@ -188,7 +188,7 @@
         "beta": "Is it really free to start?"
       },
       "a": {
-        "credits": "Credits are what you spend on AI actions. Adapting a profile or matching a job costs 1 credit, a proposal 2, a full portfolio 3. You always see your balance before you spend.",
+        "credits": "Credits are what you spend on AI actions. Adapting a profile or matching a job costs 2 credits, a proposal 3, a full portfolio or CV 5. You always see your balance before you spend.",
         "expire": "No. Credits never expire — buy once, use whenever. There's no monthly reset.",
         "subscription": "No subscription and no auto-renew. It's pay-as-you-go: top up credits only when you want to.",
         "platforms": "LinkedIn, Upwork, Fiverr, Bionluk and Armut — with more on the way.",
@@ -1167,7 +1167,7 @@
       "cv_bullets": "CV bullet boost",
       "cv_summary": "CV summary"
     },
-    "actionsNote": "Example: 500 credits = 500 adaptations, or 250 proposals, or ~166 full portfolios.",
+    "actionsNote": "Example: 500 credits = 250 adaptations, or ~166 proposals, or 100 full portfolios.",
     "ctaTitle": "Start with 100 free credits",
     "ctaSubtitle": "Every new account gets 100 credits — enough to adapt all five platforms and match your first jobs.",
     "ctaButton": "Get started free"

@@ -188,7 +188,7 @@
         "beta": "Başlaması gerçekten ücretsiz mi?"
       },
       "a": {
-        "credits": "Krediler AI aksiyonlarında harcadığın birimlerdir. Profil uyarlama veya iş eşleştirme 1 kredi, teklif 2, tam portfolyo 3 kredidir. Harcamadan önce bakiyeni her zaman görürsün.",
+        "credits": "Krediler AI aksiyonlarında harcadığın birimlerdir. Profil uyarlama veya iş eşleştirme 2 kredi, teklif 3, tam portfolyo veya CV 5 kredidir. Harcamadan önce bakiyeni her zaman görürsün.",
         "expire": "Hayır. Krediler süresizdir — bir kez al, istediğinde kullan. Aylık sıfırlama yok.",
         "subscription": "Abonelik ve otomatik yenileme yok. Kullandıkça öde: sadece istediğinde kredi yükle.",
         "platforms": "LinkedIn, Upwork, Fiverr, Bionluk ve Armut — yenileri yolda.",
@@ -1167,7 +1167,7 @@
       "cv_bullets": "CV madde güçlendirme",
       "cv_summary": "CV özeti"
     },
-    "actionsNote": "Örnek: 500 kredi = 500 uyarlama, ya da 250 teklif, ya da ~166 tam portfolyo.",
+    "actionsNote": "Örnek: 500 kredi = 250 uyarlama, ya da ~166 teklif, ya da 100 tam portfolyo.",
     "ctaTitle": "100 ücretsiz krediyle başla",
     "ctaSubtitle": "Her yeni hesap 100 kredi alır — beş platformu uyarlamaya ve ilk işlerini eşleştirmeye yeter.",
     "ctaButton": "Ücretsiz başla"

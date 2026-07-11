@@ -12,6 +12,7 @@ vi.mock("next-intl/server", () => ({
 }));
 
 import { spendCredits } from "./spend";
+import { CREDIT_COSTS } from "./costs";
 import { InsufficientCreditsError } from "@/lib/errors";
 
 beforeEach(() => rpc.mockReset());
@@ -23,9 +24,9 @@ describe("spendCredits", () => {
 
     const out = await spendCredits("u1", "proposal", work);
 
-    expect(rpc).toHaveBeenCalledWith("deduct_credits", { p_user: "u1", p_amount: 2 });
+    expect(rpc).toHaveBeenCalledWith("deduct_credits", { p_user: "u1", p_amount: CREDIT_COSTS.proposal });
     expect(work).toHaveBeenCalledOnce();
-    expect(out).toEqual({ result: "ok", balance: 98, spent: 2 });
+    expect(out).toEqual({ result: "ok", balance: 98, spent: CREDIT_COSTS.proposal });
   });
 
   it("yetersiz kredide işi ÇALIŞTIRMAZ ve InsufficientCreditsError fırlatır", async () => {
@@ -43,6 +44,6 @@ describe("spendCredits", () => {
     const work = vi.fn().mockRejectedValue(boom);
 
     await expect(spendCredits("u1", "adaptation", work)).rejects.toBe(boom);
-    expect(rpc).toHaveBeenNthCalledWith(2, "refund_credits", { p_user: "u1", p_amount: 1 });
+    expect(rpc).toHaveBeenNthCalledWith(2, "refund_credits", { p_user: "u1", p_amount: CREDIT_COSTS.adaptation });
   });
 });

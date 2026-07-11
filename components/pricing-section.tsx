@@ -4,6 +4,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { BuyCreditsButton } from "@/components/buy-credits-button";
 import { isIyzicoConfigured } from "@/lib/payments/iyzico";
+import { CREDIT_COSTS } from "@/lib/credits/costs";
 
 // Kredi paketleri (pay-as-you-go): abonelik yok, kredi tükendikçe satın alınır.
 // Fiyat locale'e göre: TR kullanıcı TL, yabancı kullanıcı USD görür (ayrı belirlenmiş
@@ -81,7 +82,8 @@ export async function PricingSection({ isLoggedIn = false, showHeader = true }: 
                 {t("pricing.creditsLine", { count: credits })}
               </p>
               <p className="mt-0.5 text-xs text-slate-400 dark:text-[#94A3B8]/70">
-                {t("pricing.valueHint", { adaptations: credits, proposals: Math.floor(credits / 2) })}
+                {/* Aksiyon sayıları CREDIT_COSTS'tan türetilir → maliyet değişince otomatik senkron. */}
+                {t("pricing.valueHint", { adaptations: Math.floor(credits / CREDIT_COSTS.adaptation), proposals: Math.floor(credits / CREDIT_COSTS.proposal) })}
               </p>
               <div className="my-5 h-px bg-slate-100 dark:bg-white/6" />
               <p className="text-sm text-slate-500 dark:text-[#94A3B8] font-medium flex-1">{t(`pricing.desc.${key}`)}</p>
