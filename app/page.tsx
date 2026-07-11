@@ -265,9 +265,23 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
     },
   };
 
+  // HowTo structured data ("nasıl çalışır" 3 adımı) — Google zengin sonuç.
+  const howToLd = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: t("how.title"),
+    step: steps.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.title,
+      text: s.desc,
+    })),
+  };
+
   return (
     <div className="relative min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
       <JsonLd data={softwareLd} />
+      <JsonLd data={howToLd} />
 
       {/* Sakin ambient aurora (2D CSS — WebGL yok); üst folda yumuşak gradyan,
           alta doğru maskeyle söner → diğer bölümler tertemiz. İçeriğin ARDINDA (z-0) */}

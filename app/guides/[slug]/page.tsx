@@ -8,6 +8,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { JsonLd } from "@/components/seo/json-ld";
+import { SITE_URL } from "@/lib/seo/site";
 import { GUIDES, getGuide } from "@/lib/guides/content";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -45,10 +46,21 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
     author: { "@type": "Organization", name: "Multifolio" },
     publisher: { "@type": "Organization", name: "Multifolio" },
   };
+  // Breadcrumb: Home → Guides → [rehber] (Google zengin sonuç kırıntısı).
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Multifolio", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: t("eyebrow"), item: `${SITE_URL}/guides` },
+      { "@type": "ListItem", position: 3, name: c.title, item: `${SITE_URL}/guides/${slug}` },
+    ],
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
       <JsonLd data={articleLd} />
+      <JsonLd data={breadcrumbLd} />
       <SiteHeader isLoggedIn={isLoggedIn} />
 
       <article className="mx-auto max-w-2xl px-8 py-16">
