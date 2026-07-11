@@ -18,13 +18,19 @@ export default function ResetPasswordPage() {
   const [status, setStatus] = useState<"idle" | "submitting" | "error" | "done">("idle");
   const [message, setMessage] = useState("");
 
-  // Recovery oturumu var mı? (auth/confirm code'u çevirmiş olmalı)
+  // Recovery oturumu var mı? (auth/confirm code'u çevirmiş olmalı). Async getSession
+  // unmount sonrası çözülürse setState/replace çağırmayı önle (mounted guard).
   useEffect(() => {
+    let mounted = true;
     const supabase = createSupabaseBrowserClient();
     supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
       if (data.session) setReady(true);
       else router.replace("/forgot-password");
     });
+    return () => {
+      mounted = false;
+    };
   }, [router]);
 
   async function onSubmit(e: React.FormEvent) {
