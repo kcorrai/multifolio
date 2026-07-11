@@ -36,15 +36,18 @@ function skillTokens(skills: string[]): Set<string> {
   return out;
 }
 
+// Kaç EŞLEŞEN skill'de sinyal tam sayılır (doygunluk hedefi). Bu kadar profil skill'i
+// ilanda geçiyorsa oran düşük olsa bile ilan güçlü alakalıdır (broad-skill telafisi).
+const SKILL_SATURATION = 4;
+
 /** Profil ile ilan arasındaki alaka skoru (0-100). Deterministik, ücretsiz.
  *  Profilde skill yoksa null (sinyal yetersiz → çağıran sıralama/eleme yapmaz).
- *  Temel sinyal skill kesişimi; başlık/rol örtüşmesi yalnız YUKARI çarpan bonus
- *  (eşleşmemesi skoru cezalandırmaz — rol kelimeleri çoğu ilan başlığında birebir geçmez). */
+ *  Temel sinyal skill eşleşmesi (oran VEYA mutlak sayı doygunluğu — hangisi yüksekse);
+ *  başlık/rol örtüşmesi yalnız YUKARI çarpan bonus (eşleşmemesi cezalandırmaz). */
 export function jobRelevance(profile: RelevanceProfile, job: PoolJobRow): number | null {
   const profSkills = (profile.skills ?? []).map((s) => s.trim()).filter(Boolean);
   if (profSkills.length === 0) return null;
 
-  const profSkillSet = skillTokens(profSkills);
   const profHeadline = tokenize(profile.headline ?? "");
 
   // İlan tarafı: skill'ler (güçlü sinyal) + başlık(lar) + açıklamanın ilk kısmı.
@@ -54,12 +57,24 @@ export function jobRelevance(profile: RelevanceProfile, job: PoolJobRow): number
   );
   const jobDescTokens = tokenize((job.description ?? "").slice(0, 600));
 
-  // (1) Temel: profil skill token'larının kaçı ilanda (skill VEYA başlık VEYA metin) geçiyor.
-  let skillHits = 0;
-  for (const s of profSkillSet) {
-    if (jobSkillSet.has(s) || jobTitleTokens.has(s) || jobDescTokens.has(s)) skillHits++;
+  // (1) Kaç profil SKILL'i ilanda (skill VEYA başlık VEYA metin) geçiyor — token değil,
+  // skill bazında (çok kelimeli skill tek eşleşme sayılır, sayımı şişirmez).
+  let matched = 0;
+  for (const skill of profSkills) {
+    let hit = false;
+    for (const tk of skillTokens([skill])) {
+      if (jobSkillSet.has(tk) || jobTitleTokens.has(tk) || jobDescTokens.has(tk)) {
+        hit = true;
+        break;
+      }
+    }
+    if (hit) matched++;
   }
-  const skillScore = profSkillSet.size > 0 ? skillHits / profSkillSet.size : 0;
+  // Oran (kapsama) VEYA mutlak eşleşme doygunluğu — hangisi yüksekse. Çok-becerili
+  // profil, az sayıda GÜÇLÜ eşleşmede düşük orandan ötürü elenmesin (Dashboard P0).
+  const coverage = matched / profSkills.length;
+  const saturation = Math.min(1, matched / SKILL_SATURATION);
+  const skillScore = Math.max(coverage, saturation);
 
   // (2) Rol/başlık örtüşmesi: SADECE yukarı çarpan bonus (max +30%).
   let titleHits = 0;

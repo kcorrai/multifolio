@@ -61,6 +61,17 @@ describe("jobRelevance", () => {
     )!;
     expect(r).toBeLessThan(15);
   });
+
+  it("çok-becerili profil, az sayıda güçlü eşleşmede elenmez (doygunluk telafisi)", () => {
+    // 12 skill'li profil; ilan 3 çekirdek skill'i içeriyor. Ham oran 3/12=%25 olurdu
+    // ama 3 güçlü eşleşme doygunluğu (3/SKILL_SATURATION=%75) yüksek skor sağlar.
+    const broad = {
+      headline: "Full-stack Developer",
+      skills: ["React", "Next.js", "TypeScript", "Tailwind", "Node", "GraphQL", "Docker", "AWS", "Python", "Go", "Rust", "Kubernetes"],
+    };
+    const r = jobRelevance(broad, job())!; // job: React, Next.js, TypeScript (+desc)
+    expect(r).toBeGreaterThanOrEqual(60);
+  });
 });
 
 describe("orderDefaultFeed", () => {
