@@ -15,11 +15,12 @@ const COLUMN_ORDER: JobStatus[] = [
 ];
 
 export function KanbanBoard({
-  jobs, onChangeStatus, onSelect,
+  jobs, onChangeStatus, onSelect, selectedId = null,
 }: {
   jobs: JobRow[];
   onChangeStatus: (id: string, status: JobStatus) => void;
   onSelect?: (id: string) => void;
+  selectedId?: string | null;
 }) {
   const t = useTranslations("jobs");
   const [dragId, setDragId] = useState<string | null>(null);
@@ -67,8 +68,10 @@ export function KanbanBoard({
                   draggable
                   onDragStart={() => setDragId(job.id)}
                   onDragEnd={() => { setDragId(null); setOverCol(null); }}
-                  className={`rounded-xl border border-border bg-card p-2.5 cursor-grab active:cursor-grabbing transition-shadow hover:shadow-sm ${
+                  className={`rounded-xl border bg-card p-2.5 cursor-grab active:cursor-grabbing transition-shadow hover:shadow-sm ${
                     dragId === job.id ? "opacity-50" : ""
+                  } ${
+                    selectedId === job.id ? "border-[#00F0FF]/50 ring-1 ring-[#00F0FF]/30" : "border-border"
                   }`}
                 >
                   <button

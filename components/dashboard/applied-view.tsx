@@ -119,7 +119,20 @@ export function AppliedView({
           </p>
         </div>
       ) : mode === "board" ? (
-        <KanbanBoard jobs={jobs} onChangeStatus={changeStatus} onSelect={setSelectedJobId} />
+        <div className="space-y-4">
+          <KanbanBoard jobs={jobs} onChangeStatus={changeStatus} onSelect={setSelectedJobId} selectedId={selectedJobId} />
+          {/* Panoda kart seçilince detay paneli panonun altında açılır */}
+          {selectedJob && (
+            <div className="rounded-2xl border border-border overflow-hidden min-h-[400px]">
+              <JobDetailPanel
+                job={selectedJob}
+                onClose={() => setSelectedJobId(null)}
+                onJobUpdated={(updated) => setJobs((prev) => prev.map((j) => (j.id === updated.id ? updated : j)))}
+                onCreditsUpdate={(c) => applyCredits(c)}
+              />
+            </div>
+          )}
+        </div>
       ) : (
         <div className="grid lg:grid-cols-5 gap-3">
           {/* Sol: iş listesi */}
