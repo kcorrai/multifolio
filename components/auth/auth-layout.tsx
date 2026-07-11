@@ -364,8 +364,10 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* ── Floating form card ── */}
+        {/* Genişlik REM tabanlı (max-w-md) — ≥1536px kök-font zoom'uyla birlikte
+            ölçeklenir; px olsaydı geniş ekranda içerik taşar/kart minik kalırdı. */}
         <div
-          className="relative z-10 w-full max-w-[390px] login-form-in
+          className="relative z-10 w-full max-w-md login-form-in
                      rounded-2xl p-8
                      border border-white/90 dark:border-white/8
                      bg-white dark:bg-[#161B2C]
