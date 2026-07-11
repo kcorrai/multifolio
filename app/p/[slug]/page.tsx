@@ -15,6 +15,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
 import { portfolioTheme, ACCENT_HEX } from "@/lib/portfolio/theme";
 import { LeadForm } from "@/components/portfolio/lead-form";
+import { getSafeEmbed } from "@/lib/portfolio/embed";
 import { buildPersonJsonLd } from "@/lib/portfolio/json-ld";
 import { PublicGallery } from "@/components/portfolio/public-gallery";
 import { ZoomableImage } from "@/components/portfolio/zoomable-image";
@@ -220,6 +221,28 @@ export default async function PortfolioPage({ params }: PageProps) {
           <PublicGallery images={media.gallery} fallbackAlt={headline} />
         </section>
       ) : null}
+
+      {/* ── Canlı demo (opsiyonel gömme; SADECE allowlist host'lar güvenli iframe) ── */}
+      {(() => {
+        const embed = getSafeEmbed(content.embedUrl);
+        if (!embed) return null;
+        return (
+          <section className="mx-auto max-w-4xl px-6 py-8">
+            <SectionLabel style={heading}>{t("liveDemo")}</SectionLabel>
+            <div className="mt-4 aspect-video w-full overflow-hidden rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)]">
+              <iframe
+                src={embed.src}
+                title={t("liveDemo")}
+                loading="lazy"
+                allowFullScreen
+                sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
+                referrerPolicy="strict-origin-when-cross-origin"
+                className="h-full w-full"
+              />
+            </div>
+          </section>
+        );
+      })()}
 
       {/* ── Hakkında ─────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-3xl px-6 py-10">

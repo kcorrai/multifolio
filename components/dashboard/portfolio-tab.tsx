@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { TestimonialsManager } from "./testimonials-manager";
 import { LeadsManager } from "./leads-manager";
+import { getSafeEmbed } from "@/lib/portfolio/embed";
 import { Sparkles, Save, AlertCircle, ExternalLink, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -187,6 +188,17 @@ export function PortfolioTab({
                     onChange={(e) => patch({ contactUrl: e.target.value })} />
                   {(content.contactUrl ?? "").trim() && !/^https?:\/\//i.test((content.contactUrl ?? "").trim()) && (
                     <p className="text-[11px] text-amber-600 dark:text-amber-400">{t("contactUrlInvalid")}</p>
+                  )}
+                </div>
+                {/* Canlı demo gömme (opsiyonel; yalnız YouTube/Vimeo/Loom/Figma) */}
+                <div className="space-y-1.5">
+                  <Label>{t("embedTitle")}</Label>
+                  <p className="text-xs text-muted-foreground">{t("embedHint")}</p>
+                  <Input type="url" inputMode="url" value={content.embedUrl ?? ""} maxLength={500}
+                    placeholder={t("embedPlaceholder")} aria-label={t("embedTitle")}
+                    onChange={(e) => patch({ embedUrl: e.target.value })} />
+                  {(content.embedUrl ?? "").trim() && !getSafeEmbed(content.embedUrl) && (
+                    <p className="text-[11px] text-amber-600 dark:text-amber-400">{t("embedInvalid")}</p>
                   )}
                 </div>
               </div>

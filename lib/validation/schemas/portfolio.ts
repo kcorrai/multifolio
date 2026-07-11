@@ -61,6 +61,10 @@ export const portfolioContentSchema = z.object({
   // sayfa RENDER'da yalnız geçerli e-posta / http(s) URL'i href yapar (javascript: vb. engellenir).
   contactEmail: z.string().max(200).nullable().optional(),
   contactUrl: z.string().max(300).nullable().optional(),
+  // Canlı gömme (opsiyonel): YouTube/Vimeo/Loom/Figma linki. Biçim burada zorlanmaz
+  // (editör serbest yazar); render'da SADECE lib/portfolio/embed getSafeEmbed allowlist
+  // host'ları güvenli iframe'e çevirir (rastgele iframe src ASLA).
+  embedUrl: z.string().max(500).nullable().optional(),
 });
 
 export type PortfolioTheme = z.infer<typeof portfolioThemeSchema>;

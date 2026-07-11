@@ -776,6 +776,10 @@
     "contactUrlLabel": "Or a contact link (URL)",
     "contactEmailInvalid": "Not a valid email — the button won't show until it's fixed.",
     "contactUrlInvalid": "Enter a full URL starting with http:// or https:// — otherwise the button won't show.",
+    "embedTitle": "Live demo (optional)",
+    "embedHint": "Paste a YouTube, Vimeo, Loom or Figma link to embed it on your page.",
+    "embedPlaceholder": "https://youtube.com/watch?v=… or figma.com/…",
+    "embedInvalid": "Only YouTube, Vimeo, Loom and Figma links can be embedded.",
     "saved": "Saved",
     "testimonials": {
       "title": "Client recommendations",
@@ -957,6 +961,7 @@
   "portfolioPublic": {
     "notFoundTitle": "Portfolio not found",
     "about": "About",
+    "liveDemo": "Live demo",
     "skills": "Skills",
     "projects": "Projects",
     "caseProblem": "Problem",

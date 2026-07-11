@@ -112,7 +112,7 @@ export const POST = withErrorHandler(async () => {
   const slug = existing?.slug ?? (await deriveUniqueSlug(admin, profileData.headline as string | null, user.id));
   // Yeniden üretimde kullanıcının seçtiği tema + iletişim CTA hedefi KORUNUR (AI bunları üretmez).
   const existingContent = existing?.content as
-    | { theme?: unknown; layout?: unknown; contactEmail?: unknown; contactUrl?: unknown }
+    | { theme?: unknown; layout?: unknown; contactEmail?: unknown; contactUrl?: unknown; embedUrl?: unknown }
     | null;
   const theme = portfolioThemeSchema.parse(existingContent?.theme);
   // Gösterim modu (gallery/projects) yeniden üretimde KORUNUR (kullanıcı seçimi).
@@ -124,11 +124,13 @@ export const POST = withErrorHandler(async () => {
     ? existingContent.contactEmail
     : (existing ? undefined : (user.email ?? undefined));
   const contactUrl = typeof existingContent?.contactUrl === "string" ? existingContent.contactUrl : undefined;
+  // Canlı gömme linki yeniden üretimde KORUNUR (AI üretmez).
+  const embedUrl = typeof existingContent?.embedUrl === "string" ? existingContent.embedUrl : undefined;
 
   // AI üretimi + portfolyonun yazımı tek closure'da: yazım patlarsa spendCredits krediyi iade eder.
   const { result, balance, spent } = await spendCredits(user.id, "portfolio_generation", async () => {
     const ai = await generatePortfolio(profileData as ProfileInput, portfolioLocale, media);
-    const content = { ...ai.content, theme, layout, ...(contactEmail !== undefined ? { contactEmail } : {}), ...(contactUrl !== undefined ? { contactUrl } : {}) };
+    const content = { ...ai.content, theme, layout, ...(contactEmail !== undefined ? { contactEmail } : {}), ...(contactUrl !== undefined ? { contactUrl } : {}), ...(embedUrl !== undefined ? { embedUrl } : {}) };
     const { data: portfolio, error: upsertError } = await admin
       .from("portfolios")
       .upsert(

@@ -776,6 +776,10 @@
     "contactUrlLabel": "Veya bir iletişim bağlantısı (URL)",
     "contactEmailInvalid": "Geçerli bir e-posta değil — düzeltilene kadar buton görünmez.",
     "contactUrlInvalid": "http:// veya https:// ile başlayan tam bir URL gir — yoksa buton görünmez.",
+    "embedTitle": "Canlı demo (opsiyonel)",
+    "embedHint": "Sayfana gömmek için YouTube, Vimeo, Loom veya Figma linki yapıştır.",
+    "embedPlaceholder": "https://youtube.com/watch?v=… veya figma.com/…",
+    "embedInvalid": "Yalnızca YouTube, Vimeo, Loom ve Figma linkleri gömülebilir.",
     "saved": "Kaydedildi",
     "testimonials": {
       "title": "Müşteri yorumları",
@@ -957,6 +961,7 @@
   "portfolioPublic": {
     "notFoundTitle": "Portfolyo bulunamadı",
     "about": "Hakkında",
+    "liveDemo": "Canlı demo",
     "skills": "Beceriler",
     "projects": "Projeler",
     "caseProblem": "Sorun",
