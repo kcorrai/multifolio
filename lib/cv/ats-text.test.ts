@@ -42,6 +42,15 @@ describe("scoreResumeText", () => {
     expect(scoreResumeText("a@b.com +1 415 555 0199").checks.find((c) => c.id === "contact")?.passed).toBe(true);
   });
 
+  it("tarih aralığı ('2019 - 2024') telefon sayılmaz (yanlış-pozitif düzeltmesi)", () => {
+    // Yalnız e-posta + tarih aralığı olan CV, telefonu yokken contact GEÇMEMELİ.
+    const cv = "a@b.com\nExperience 2019 - 2024 at Acme\nEducation 2011 - 2015";
+    expect(scoreResumeText(cv).checks.find((c) => c.id === "contact")?.passed).toBe(false);
+    // Gerçek telefon biçimleri hâlâ yakalanır.
+    expect(scoreResumeText("a@b.com (415) 555-0199").checks.find((c) => c.id === "contact")?.passed).toBe(true);
+    expect(scoreResumeText("a@b.com 415 555 0199").checks.find((c) => c.id === "contact")?.passed).toBe(true);
+  });
+
   it("dolgu ifadeler noFiller kontrolünü düşürür", () => {
     const cv = "Experience\n- Responsible for various tasks\n- Helped the team with stuff";
     expect(scoreResumeText(cv).checks.find((c) => c.id === "noFiller")?.passed).toBe(false);

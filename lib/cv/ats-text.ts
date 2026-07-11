@@ -41,9 +41,23 @@ const SECTION_RE = {
   education: /\b(education|academic)\b|eğitim|öğrenim/i,
 };
 const EMAIL_RE = /[^\s@]+@[^\s@]+\.[^\s@]+/;
-// En az ~8 rakamlı telefon dizisi (uluslararası biçimler dahil).
-const PHONE_RE = /(?:\+?\d[\d\s().-]{7,}\d)/;
 const YEAR_RE = /\b(19|20)\d{2}\b/;
+
+// Telefon sezgisi. Basit "≥8 rakam + ayraç" regex'i "2019 - 2024" gibi TARİH ARALIĞINI
+// yanlış telefon sanıyordu (2 grup, 8 rakam). Bu yüzden: uluslararası önek (+) veya
+// parantezli alan kodu GÜÇLÜ sinyal; aksi halde ≥7 rakamı ≥3 GRUPTA içeren dizi ara
+// (yıl aralığı = 2 grup → elenir).
+function detectPhone(text: string): boolean {
+  if (/\+\d[\d\s().-]{6,}\d/.test(text)) return true;
+  if (/\(\d{2,4}\)\s*\d/.test(text)) return true;
+  for (const m of text.matchAll(/\d[\d\s().-]{5,}\d/g)) {
+    const seg = m[0];
+    const digits = (seg.match(/\d/g) ?? []).length;
+    const groups = seg.split(/[\s().\-–]+/).filter(Boolean).length;
+    if (digits >= 7 && groups >= 3) return true;
+  }
+  return false;
+}
 const BULLET_RE = /^\s*[•\-*–●▪·]\s+/;
 
 // Anahtar kelime çıkarımında elenen çok yaygın kelimeler (EN + TR mini stopword).
@@ -88,7 +102,7 @@ export function scoreResumeText(rawText: string, jobText = ""): ResumeAtsResult 
 
   // Boyut alt-skorları (0..1) — her biri bir "check".
   const hasEmail = EMAIL_RE.test(text);
-  const hasPhone = PHONE_RE.test(text);
+  const hasPhone = detectPhone(text);
   const contact = (hasEmail ? 0.7 : 0) + (hasPhone ? 0.3 : 0);
 
   const hasSummary = SECTION_RE.summary.test(lower);
