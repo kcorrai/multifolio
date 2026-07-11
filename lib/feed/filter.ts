@@ -31,6 +31,16 @@ export function feedCriteria(f: JobFeedRow): FeedCriteria {
   };
 }
 
+// Keyword'ü metinde KELIME SINIRIYLA arar: "java" → "javascript"i yakalamasın.
+// + ve # kelime-içi sayılır (c++, c# bölünmesin); "." sınır sayılır (cümle sonu
+// "typescript." eşleşsin — nokta içeren terimler zaten keyword regex'inde literaldir).
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function keywordHit(hay: string, keyword: string): boolean {
+  const k = keyword.trim().toLowerCase();
+  if (!k) return false;
+  return new RegExp(`(^|[^a-z0-9+#])${escapeRe(k)}([^a-z0-9+#]|$)`, "i").test(hay);
+}
+
 /** Serbest bütçe metninden ilk sayıyı (bin ayıracı dahil) çıkarır; yoksa null. */
 export function extractBudgetFloor(text: string | null): number | null {
   if (!text) return null;
@@ -69,8 +79,8 @@ export function matchesFeed(pool: PoolJobRow, c: FeedCriteria, score: number | n
   if (c.keywords.length > 0 || (c.exclude_keywords && c.exclude_keywords.length > 0)) {
     // Çevrilmiş başlıklar da aranır: İngilizce keyword Almanca ilanı yakalasın.
     const hay = `${pool.title} ${pool.title_en ?? ""} ${pool.title_tr ?? ""} ${pool.description} ${pool.skills.join(" ")}`.toLowerCase();
-    if (c.exclude_keywords && c.exclude_keywords.some((k) => hay.includes(k.toLowerCase()))) return false;
-    if (c.keywords.length > 0 && !c.keywords.some((k) => hay.includes(k.toLowerCase()))) return false;
+    if (c.exclude_keywords && c.exclude_keywords.some((k) => keywordHit(hay, k))) return false;
+    if (c.keywords.length > 0 && !c.keywords.some((k) => keywordHit(hay, k))) return false;
   }
   return true;
 }

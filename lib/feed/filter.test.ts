@@ -91,6 +91,16 @@ describe("matchesFeed", () => {
     expect(matchesFeed(de, crit({ keywords: ["muhasebe"] }))).toBe(false);
   });
 
+  it("keyword kelime sınırıyla eşleşir (java ≠ javascript)", () => {
+    const js = pool({ title: "JavaScript expert", description: "Node backend", skills: ["JavaScript"] });
+    expect(matchesFeed(js, crit({ keywords: ["java"] }))).toBe(false);
+    expect(matchesFeed(js, crit({ keywords: ["javascript"] }))).toBe(true);
+    // Özel karakterli terimler korunur (c++, c#, next.js).
+    expect(matchesFeed(pool({ description: "Strong C++ and C# skills" }), crit({ keywords: ["c++"] }))).toBe(true);
+    // exclude da kelime sınırı kullanır.
+    expect(matchesFeed(js, crit({ keywords: ["javascript"], exclude_keywords: ["java"] }))).toBe(true);
+  });
+
   it("min_score yalnız CACHE'Lİ skoru olan ilanları eler; skorsuz geçer", () => {
     expect(matchesFeed(pool({}), crit({ min_score: 70 }), 60)).toBe(false);
     expect(matchesFeed(pool({}), crit({ min_score: 70 }), 90)).toBe(true);
