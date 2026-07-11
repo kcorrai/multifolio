@@ -12,5 +12,10 @@
   "captureJob": { "message": "Save job to Multifolio" },
   "captureSending": { "message": "Saving…" },
   "captureSuccess": { "message": "Job saved — find it in Multifolio › Jobs." },
-  "captureEmpty": { "message": "Couldn't read the job title/description on this page." }
+  "captureEmpty": { "message": "Couldn't read the job title/description on this page." },
+  "pasteProposal": { "message": "Insert my latest proposal" },
+  "pasteSending": { "message": "Fetching…" },
+  "pasteSuccess": { "message": "Proposal inserted — review and submit yourself." },
+  "pasteNoProposal": { "message": "No proposal yet — generate one in Multifolio first." },
+  "pasteNoBox": { "message": "Couldn't find a cover-letter box — click into it first." }
 }

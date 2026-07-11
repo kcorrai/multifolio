@@ -1,7 +1,7 @@
 // Background service worker: content script'ten gelen payload'ı Multifolio API'sine
 // cookie'li POST'lar (host_permissions sayesinde kullanıcının oturum cookie'leri
 // eklenir — spike ile doğrulandı). Başarıda inceleme wizard'ını yeni sekmede açar.
-import { IMPORT_ENDPOINT, JOBS_ENDPOINT, WIZARD_URL, LOGIN_URL } from "./config";
+import { IMPORT_ENDPOINT, JOBS_ENDPOINT, PROPOSAL_LATEST_ENDPOINT, WIZARD_URL, LOGIN_URL } from "./config";
 
 interface ImportProject {
   title: string;
@@ -45,8 +45,27 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     void handleCaptureJob(message as CaptureJobMessage).then(sendResponse);
     return true;
   }
+  if (message?.type === "fetch_latest_proposal") {
+    void handleLatestProposal().then(sendResponse);
+    return true;
+  }
   return false;
 });
+
+// Kullanıcının en son ürettiği teklifi çeker (cover-letter kutusuna yapıştırmak için).
+async function handleLatestProposal() {
+  try {
+    const res = await fetch(PROPOSAL_LATEST_ENDPOINT, { method: "GET", credentials: "include" });
+    if (res.status === 401) return { ok: false as const, reason: "auth" as const };
+    if (!res.ok) return { ok: false as const, reason: "error" as const };
+    const body = await res.json().catch(() => null);
+    const content: string | undefined = body?.proposal?.content;
+    if (!content) return { ok: false as const, reason: "empty" as const };
+    return { ok: true as const, content };
+  } catch {
+    return { ok: false as const, reason: "error" as const };
+  }
+}
 
 async function handleCaptureJob(msg: CaptureJobMessage) {
   try {

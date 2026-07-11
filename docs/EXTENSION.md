@@ -28,6 +28,14 @@ açıklama ≤10k + best-effort `extractJobBudget` + LinkedIn şirket adı) → 
 POST; AI/kredi yok, doğrudan `job_listings` satırı). İnceleme wizard'ı YOK — kullanıcı
 dashboard'da (İşler) düzenler/etiketler. `detectJobPage` + `extractJobBudget` SAF + vitest'li.
 
+**Sayfaya yapıştır (v0.2.16+):** Upwork başvuru sayfalarında (`/nx/proposals/*`,
+`/ab/proposals/*`, `detectApplyPage`) buton → `background.ts` cookie'li GET
+`/api/proposal/latest` (kullanıcının EN SON ürettiği teklif; RLS owner, AI/kredi yok) →
+content.ts `insertProposalIntoPage` cover-letter kutusuna yazar (odaklı öğe → en büyük
+görünür textarea → contenteditable; React controlled input için native setter + `input`
+olayı). **AUTO-SUBMIT YOK** (circumvention/ban riski) — yalnız doldurur, kullanıcı kontrol
+edip kendi gönderir. `detectApplyPage` SAF + vitest'li.
+
 - `src/extract.ts` — SAF yardımcılar (vitest'li): `detectProfilePage` (Upwork
   `/freelancers/~id|slug`, `/fl/slug`; Fiverr kök/`users/` kullanıcı yolu − rezerve
   yol denylist'i; LinkedIn `*.linkedin.com/in/{username}`), `clampText(50k)`,

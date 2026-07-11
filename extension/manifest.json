@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "icons": {
@@ -22,7 +22,9 @@
         "https://www.fiverr.com/*",
         "https://*.linkedin.com/in/*",
         "https://www.upwork.com/jobs/*",
-        "https://*.linkedin.com/jobs/view/*"
+        "https://*.linkedin.com/jobs/view/*",
+        "https://www.upwork.com/nx/proposals/*",
+        "https://www.upwork.com/ab/proposals/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"

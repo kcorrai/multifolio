@@ -70,6 +70,14 @@ export function detectJobPage(host: string, pathname: string): JobPlatform | nul
   return null;
 }
 
+/** Upwork başvuru (cover-letter) sayfası mı? /nx/proposals/* veya /ab/proposals/*.
+ *  "Sayfaya yapıştır" butonu yalnız burada gösterilir (üretilen teklif → kutu). */
+export function detectApplyPage(host: string, pathname: string): boolean {
+  const h = host.toLowerCase();
+  if (h !== "www.upwork.com" && h !== "upwork.com") return false;
+  return /^\/(?:nx|ab)\/proposals\//i.test(pathname);
+}
+
 /** İlan metninden best-effort bütçe/ücret ifadesini çıkarır (ilk para deseni); yoksa
  *  undefined. Sunucu budget alanı max 100 → kırpılır. Para birimi/aralık/saatlik destekli. */
 export function extractJobBudget(text: string): string | undefined {

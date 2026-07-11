@@ -13,6 +13,11 @@ const FALLBACK = {
   captureSending: "Saving…",
   captureSuccess: "Job saved — find it in Multifolio › Jobs.",
   captureEmpty: "Couldn't read the job title/description on this page.",
+  pasteProposal: "Insert my latest proposal",
+  pasteSending: "Fetching…",
+  pasteSuccess: "Proposal inserted — review and submit yourself.",
+  pasteNoProposal: "No proposal yet — generate one in Multifolio first.",
+  pasteNoBox: "Couldn't find a cover-letter box — click into it first.",
 } as const;
 
 export type MsgKey = keyof typeof FALLBACK;

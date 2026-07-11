@@ -1,5 +1,17 @@
 import { describe, it, expect } from "vitest";
-import { detectProfilePage, detectJobPage, extractJobBudget, clampText, pickImageUrls } from "./extract";
+import { detectProfilePage, detectJobPage, detectApplyPage, extractJobBudget, clampText, pickImageUrls } from "./extract";
+
+describe("detectApplyPage", () => {
+  it("Upwork başvuru/proposal sayfaları", () => {
+    expect(detectApplyPage("www.upwork.com", "/nx/proposals/job/~021/apply/")).toBe(true);
+    expect(detectApplyPage("www.upwork.com", "/ab/proposals/1234")).toBe(true);
+  });
+  it("başvuru olmayan → false", () => {
+    expect(detectApplyPage("www.upwork.com", "/jobs/some-slug")).toBe(false);
+    expect(detectApplyPage("www.upwork.com", "/nx/find-work/")).toBe(false);
+    expect(detectApplyPage("www.linkedin.com", "/jobs/view/1")).toBe(false);
+  });
+});
 
 describe("detectJobPage", () => {
   it("Upwork iş ilanı detayı", () => {

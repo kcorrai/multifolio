@@ -12,5 +12,10 @@
   "captureJob": { "message": "İşi Multifolio'ya kaydet" },
   "captureSending": { "message": "Kaydediliyor…" },
   "captureSuccess": { "message": "İş kaydedildi — Multifolio › İşler'de bul." },
-  "captureEmpty": { "message": "Bu sayfada iş başlığı/açıklaması okunamadı." }
+  "captureEmpty": { "message": "Bu sayfada iş başlığı/açıklaması okunamadı." },
+  "pasteProposal": { "message": "Son teklifimi ekle" },
+  "pasteSending": { "message": "Getiriliyor…" },
+  "pasteSuccess": { "message": "Teklif eklendi — kontrol edip kendin gönder." },
+  "pasteNoProposal": { "message": "Henüz teklif yok — önce Multifolio'da üret." },
+  "pasteNoBox": { "message": "Cover-letter kutusu bulunamadı — önce içine tıkla." }
 }

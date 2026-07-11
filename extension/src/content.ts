@@ -1,21 +1,26 @@
 // Content script: Upwork/Fiverr/LinkedIn profil sayfasına buton enjekte eder; tıklanınca
 // görünür metni + best-effort medya URL'lerini toplayıp background'a yollar.
 // Alan-alan CSS seçici parse YOK (bilinçli karar) — metin AI'a, görseller URL olarak.
-import { detectProfilePage, detectJobPage, extractJobBudget, clampText, pickImageUrls, type ProfilePlatform, type JobPlatform } from "./extract";
+import { detectProfilePage, detectJobPage, detectApplyPage, extractJobBudget, clampText, pickImageUrls, type ProfilePlatform, type JobPlatform } from "./extract";
 import { dedupeFiverrImages, type FiverrExtract } from "./fiverr-map";
 import { msg } from "./messages";
 
 const HOST_ID = "mf-import-host";
 let injectedForPath = ""; // buton hangi pathname için enjekte edildi (çift enjeksiyon guard)
 
-// Butonun ne yapacağını belirleyen hedef: profil import'u veya iş yakalama.
+// Butonun ne yapacağını belirleyen hedef: profil import'u, iş yakalama veya teklif yapıştır.
 type InjectTarget =
   | { kind: "import"; platform: ProfilePlatform }
-  | { kind: "job"; platform: JobPlatform };
+  | { kind: "job"; platform: JobPlatform }
+  | { kind: "apply" };
 
 type ImportResponse =
   | { ok: true }
   | { ok: false; reason: "auth" | "rate" | "invalid" | "error"; message?: string };
+
+type ProposalResponse =
+  | { ok: true; content: string }
+  | { ok: false; reason: "auth" | "empty" | "error" };
 
 function removeButton() {
   document.getElementById(HOST_ID)?.remove();
@@ -28,13 +33,16 @@ function removeButton() {
 // Cloudflare "insan mısın" sayfaları kısa metinlidir → yanlışlıkla tetiklenmez.
 function maybeInit() {
   const profile = detectProfilePage(location.hostname, location.pathname);
-  // Profil öncelikli; değilse iş ilanı sayfası mı? (URL desenleri ayrık.)
+  // Profil öncelikli; değilse iş ilanı, değilse başvuru (cover-letter) sayfası mı? Desenler ayrık.
   const jobPlatform = profile ? null : detectJobPage(location.hostname, location.pathname);
+  const isApply = !profile && !jobPlatform && detectApplyPage(location.hostname, location.pathname);
   const target: InjectTarget | null = profile
     ? { kind: "import", platform: profile }
     : jobPlatform
       ? { kind: "job", platform: jobPlatform }
-      : null;
+      : isApply
+        ? { kind: "apply" }
+        : null;
   const path = location.pathname;
 
   if (!target) { removeButton(); return; }                         // profil/ilan sayfası değil
@@ -88,6 +96,51 @@ function collectJobPayload(platform: JobPlatform) {
     url: location.origin + location.pathname,
     ...(budget ? { budget } : {}),
   };
+}
+
+// Cover-letter kutusunu bulur: önce odaklı düzenlenebilir öğe, yoksa en büyük görünür
+// textarea, son çare en büyük görünür contenteditable. Bulunamazsa null.
+function findCoverLetterBox(): { el: HTMLElement; kind: "textarea" | "editable" } | null {
+  const active = document.activeElement as HTMLElement | null;
+  if (active instanceof HTMLTextAreaElement) return { el: active, kind: "textarea" };
+  if (active?.getAttribute?.("contenteditable") === "true") return { el: active, kind: "editable" };
+
+  const largestVisible = <T extends HTMLElement>(sel: string): T | null => {
+    let best: T | null = null;
+    let bestArea = 0;
+    for (const el of Array.from(document.querySelectorAll<T>(sel))) {
+      const r = el.getBoundingClientRect();
+      if (r.width < 120 || r.height < 40) continue; // ikon/gizli değil, gerçek kutu
+      const area = r.width * r.height;
+      if (area > bestArea) { bestArea = area; best = el; }
+    }
+    return best;
+  };
+
+  const ta = largestVisible<HTMLTextAreaElement>("textarea");
+  if (ta) return { el: ta, kind: "textarea" };
+  const ce = largestVisible<HTMLElement>('[contenteditable="true"]');
+  if (ce) return { el: ce, kind: "editable" };
+  return null;
+}
+
+// Teklifi kutuya yazar (React controlled input için native setter + input olayı).
+// AUTO-SUBMIT YOK — yalnız doldurur; kullanıcı kontrol edip kendi gönderir.
+function insertProposalIntoPage(text: string): boolean {
+  const box = findCoverLetterBox();
+  if (!box) return false;
+  box.el.focus();
+  if (box.kind === "textarea") {
+    const ta = box.el as HTMLTextAreaElement;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set;
+    if (setter) setter.call(ta, text); else ta.value = text;
+    ta.dispatchEvent(new Event("input", { bubbles: true }));
+    ta.dispatchEvent(new Event("change", { bubbles: true }));
+  } else {
+    box.el.textContent = text;
+    box.el.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+  return true;
 }
 
 // Üst bölgede, kabaca kare, makul boyutlu bir görsel = profil fotosu (en olası).
@@ -493,7 +546,7 @@ function injectButton(target: InjectTarget) {
 
   const btn = document.createElement("button");
   btn.className = "mf-btn";
-  btn.textContent = isJob ? msg("captureJob") : msg("button");
+  btn.textContent = target.kind === "apply" ? msg("pasteProposal") : isJob ? msg("captureJob") : msg("button");
   root.appendChild(btn);
 
   const note = document.createElement("div");
@@ -514,6 +567,26 @@ function injectButton(target: InjectTarget) {
 
   btn.addEventListener("click", async () => {
     note.hidden = true;
+
+    if (target.kind === "apply") {
+      // Sayfaya yapıştır: son teklifi çek → cover-letter kutusuna yaz (auto-submit YOK).
+      btn.disabled = true;
+      btn.textContent = msg("pasteSending");
+      chrome.runtime.sendMessage({ type: "fetch_latest_proposal" }, (res: ProposalResponse | undefined) => {
+        btn.disabled = false;
+        btn.textContent = msg("pasteProposal");
+        if (res?.ok) {
+          show(insertProposalIntoPage(res.content) ? msg("pasteSuccess") : msg("pasteNoBox"));
+          return;
+        }
+        switch (res?.reason) {
+          case "auth": show(msg("authNeeded"), true); break;
+          case "empty": show(msg("pasteNoProposal")); break;
+          default: show(msg("genericError"));
+        }
+      });
+      return;
+    }
 
     if (target.kind === "job") {
       // İş yakalama: başlık/açıklama topla → /api/jobs. İçerik yetersizse hata göster.
