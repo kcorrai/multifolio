@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { MobileNav } from "@/components/mobile-nav";
+import { FreeToolsNav } from "@/components/free-tools-nav";
 
 /* ─── Paylaşılan üst gezinme (landing + pricing) ─────────────────── */
 export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
@@ -21,20 +22,22 @@ export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean 
           <span className="font-bold text-lg tracking-tight">Multifolio</span>
         </Link>
 
+        {/* Sadeleştirilmiş nav: "Free Tools" (araçlar açılır menüde) + "Pricing" */}
         <nav className="hidden md:flex items-center gap-7">
-          {[
-            { label: t("nav.analyze"),    href: "/analyze" },
-            { label: t("nav.earnings"),   href: "/earnings" },
-            { label: t("nav.rate"),       href: "/rate" },
-            { label: t("nav.compare"),    href: "/compare" },
-            // TR vergi rehberi yalnız Türk kullanıcılara (global kitleye alakasız).
-            ...(locale.startsWith("tr") ? [{ label: t("nav.trTax"), href: "/vergi" }] : []),
-            { label: t("nav.pricing"),    href: "/pricing" },
-          ].map(({ label, href }) => (
-            <Link key={href} href={href} className="text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
-              {label}
-            </Link>
-          ))}
+          <FreeToolsNav
+            label={t("nav.freeTools")}
+            items={[
+              { label: t("nav.analyze"),  href: "/analyze" },
+              { label: t("nav.earnings"), href: "/earnings" },
+              { label: t("nav.rate"),     href: "/rate" },
+              { label: t("nav.compare"),  href: "/compare" },
+              // TR vergi rehberi yalnız Türk kullanıcılara (global kitleye alakasız).
+              ...(locale.startsWith("tr") ? [{ label: t("nav.trTax"), href: "/vergi" }] : []),
+            ]}
+          />
+          <Link href="/pricing" className="text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
+            {t("nav.pricing")}
+          </Link>
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
