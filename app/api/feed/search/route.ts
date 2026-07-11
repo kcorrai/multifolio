@@ -4,7 +4,7 @@ import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseQuery } from "@/lib/validation";
 import { feedSearchQuerySchema, type PoolJobRow, type PoolJob } from "@/lib/validation/schemas/feed";
 import { searchPool } from "@/lib/feed/filter";
-import { jobRelevance, dedupeNearDuplicates, type RelevanceProfile } from "@/lib/feed/relevance";
+import { jobRelevance, skillGap, dedupeNearDuplicates, type RelevanceProfile } from "@/lib/feed/relevance";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const POOL_WINDOW = 200;
@@ -43,6 +43,7 @@ export const GET = withErrorHandler(async (req) => {
       score: s ? (s.score as number) : null,
       scoreResult: s ? s.result : null,
       relevance: jobRelevance(relProfile, p),
+      skillGap: skillGap(relProfile, p),
     };
   });
 

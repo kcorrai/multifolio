@@ -93,6 +93,12 @@ export interface JobFeedRow {
   created_at: string;
 }
 
+// Profil × ilan ücretsiz beceri kesişimi (kredisiz, saf hesap).
+export interface SkillGap {
+  matched: string[]; // ilanın istediği + profilde karşılanan beceriler
+  missing: string[]; // ilanın istediği ama profilde olmayan beceriler (gap)
+}
+
 // İstemciye dönen zenginleştirilmiş pool ilanı
 export interface PoolJob extends PoolJobRow {
   isStarred: boolean;
@@ -101,4 +107,6 @@ export interface PoolJob extends PoolJobRow {
   // Profil × ilan ücretsiz alaka skoru (0-100, saf hesap; sunucuda eklenir).
   // Profil skill'i yoksa null (sinyal yok → sıralama/eleme uygulanmaz).
   relevance: number | null;
+  // Kredisiz beceri kesişimi (sunucuda eklenir); ilanda beceri yoksa null.
+  skillGap: SkillGap | null;
 }

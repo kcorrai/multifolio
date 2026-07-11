@@ -1213,6 +1213,8 @@
     "relevanceLabel": "Profil uyumu",
     "lowRelevanceWarn": "Bu ilan profiline pek uymuyor görünüyor. Yine de analiz edilsin mi?",
     "analyzeAnyway": "Yine de analiz et",
+    "skillGapTitle": "Beceri uyumu",
+    "skillGapMissingHint": "{count, plural, one {Profilinde listelemediğin # beceri — eklersen uyumun güçlenir.} other {Profilinde listelemediğin # beceri — eklersen uyumun güçlenir.}}",
     "openOnPlatform": "Platformda aç",
     "markApplied": "Başvurdum olarak işaretle",
     "applied": "Başvuruldu",

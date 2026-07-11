@@ -1,7 +1,7 @@
 // Ücretsiz profil × ilan alaka motoru (Dashboard P0-1/P0-2). SAF, AI YOK, kredi YOK.
 // Amaç: varsayılan feed'i profile göre sıralamak/elemek ve skorlama öncesi kullanıcıyı
 // bariz uymayan ilanlarda uyarmak. AI skorlaması (kredi) opsiyonel derinlik olarak kalır.
-import type { PoolJobRow } from "@/lib/validation/schemas/feed";
+import type { PoolJobRow, SkillGap } from "@/lib/validation/schemas/feed";
 
 export interface RelevanceProfile {
   headline: string | null;
@@ -85,6 +85,33 @@ export function jobRelevance(profile: RelevanceProfile, job: PoolJobRow): number
 
   const score = skillScore * (1 + 0.3 * titleScore);
   return Math.round(Math.min(1, score) * 100);
+}
+
+/** Kredisiz beceri kesişimi: ilanın istediği becerilerden (job.skills) hangilerini
+ *  profil karşılıyor (matched) / hangilerini karşılamıyor (missing = gap). Eşleşme
+ *  jobRelevance ile AYNI token mantığı (skill token'ı profil skill token'larında VEYA
+ *  başlıkta geçiyorsa karşılanmış sayılır). İlanda beceri yoksa null (gösterilecek
+ *  gap yok). AI/kredi YOK — kullanıcı skorlamadan önce eksiğini görür. */
+export function skillGap(profile: RelevanceProfile, job: PoolJobRow): SkillGap | null {
+  const jobSkills = (job.skills ?? []).map((s) => s.trim()).filter(Boolean);
+  if (jobSkills.length === 0) return null;
+
+  const profTokens = skillTokens(profile.skills ?? []);
+  const profHeadline = tokenize(profile.headline ?? "");
+
+  const matched: string[] = [];
+  const missing: string[] = [];
+  for (const js of jobSkills) {
+    let hit = false;
+    for (const tk of skillTokens([js])) {
+      if (profTokens.has(tk) || profHeadline.has(tk)) {
+        hit = true;
+        break;
+      }
+    }
+    (hit ? matched : missing).push(js);
+  }
+  return { matched, missing };
 }
 
 /** Near-duplicate başlık anahtarı: aynı ilanın farklı şehirde/cinsiyet-işaretiyle

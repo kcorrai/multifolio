@@ -1213,6 +1213,8 @@
     "relevanceLabel": "Profile match",
     "lowRelevanceWarn": "This job doesn't look like a strong match for your profile. Analyze it anyway?",
     "analyzeAnyway": "Analyze anyway",
+    "skillGapTitle": "Skill match",
+    "skillGapMissingHint": "{count, plural, one {# skill you don't list yet — add it to strengthen your fit.} other {# skills you don't list yet — add them to strengthen your fit.}}",
     "openOnPlatform": "Open on platform",
     "markApplied": "Mark as applied",
     "applied": "Applied",

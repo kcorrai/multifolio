@@ -4,7 +4,7 @@ import { JobsTab } from "@/components/dashboard/jobs-tab";
 import type { JobRow } from "@/components/dashboard/shared";
 import type { PoolJob, PoolJobRow, JobFeedRow } from "@/lib/validation/schemas/feed";
 import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
-import { jobRelevance, orderDefaultFeed, dedupeNearDuplicates, RELEVANCE_MIN_SIGNAL_SKILLS, type RelevanceProfile } from "@/lib/feed/relevance";
+import { jobRelevance, skillGap, orderDefaultFeed, dedupeNearDuplicates, RELEVANCE_MIN_SIGNAL_SKILLS, type RelevanceProfile } from "@/lib/feed/relevance";
 
 type View = "feed" | "search" | "starred" | "applied";
 const VIEWS: View[] = ["feed", "search", "starred", "applied"];
@@ -54,6 +54,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
       score: s ? (s.score as number) : null,
       scoreResult: s ? s.result : null,
       relevance: jobRelevance(relProfile, p),
+    skillGap: skillGap(relProfile, p),
     };
   });
 

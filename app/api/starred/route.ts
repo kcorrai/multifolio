@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseJson, parseQuery } from "@/lib/validation";
 import { starToggleSchema, type PoolJobRow, type PoolJob } from "@/lib/validation/schemas/feed";
-import { jobRelevance, type RelevanceProfile } from "@/lib/feed/relevance";
+import { jobRelevance, skillGap, type RelevanceProfile } from "@/lib/feed/relevance";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const POOL_COLS = "id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr";
@@ -42,6 +42,7 @@ export const GET = withErrorHandler(async () => {
       score: s ? (s.score as number) : null,
       scoreResult: s ? s.result : null,
       relevance: jobRelevance(relProfile, p),
+      skillGap: skillGap(relProfile, p),
     };
   });
   return NextResponse.json({ jobs });

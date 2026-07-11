@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { jobRelevance, orderDefaultFeed, orderFeedMatches, nearDuplicateKey, dedupeNearDuplicates } from "./relevance";
+import { jobRelevance, skillGap, orderDefaultFeed, orderFeedMatches, nearDuplicateKey, dedupeNearDuplicates } from "./relevance";
 import type { PoolJobRow } from "@/lib/validation/schemas/feed";
 
 function job(over: Partial<PoolJobRow> = {}): PoolJobRow {
@@ -98,6 +98,24 @@ describe("orderDefaultFeed", () => {
     const out = orderDefaultFeed([german], reactProfile);
     expect(out).toHaveLength(1);
     expect(out[0].id).toBe(german.id);
+  });
+});
+
+describe("skillGap", () => {
+  it("ilanın istediği becerileri karşılanan/eksik olarak ayırır", () => {
+    const g = skillGap(reactProfile, job({ skills: ["React", "Next.js", "Vue", "GraphQL"] }))!;
+    expect(g.matched.sort()).toEqual(["Next.js", "React"]);
+    expect(g.missing.sort()).toEqual(["GraphQL", "Vue"]);
+  });
+
+  it("ilanda beceri yoksa null", () => {
+    expect(skillGap(reactProfile, job({ skills: [] }))).toBeNull();
+  });
+
+  it("başlıktaki beceri de karşılanmış sayılır", () => {
+    const g = skillGap({ headline: "React Developer", skills: [] }, job({ skills: ["React"] }))!;
+    expect(g.matched).toEqual(["React"]);
+    expect(g.missing).toEqual([]);
   });
 });
 
