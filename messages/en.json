@@ -1215,6 +1215,14 @@
     "analyzeAnyway": "Analyze anyway",
     "skillGapTitle": "Skill match",
     "skillGapMissingHint": "{count, plural, one {# skill you don't list yet — add it to strengthen your fit.} other {# skills you don't list yet — add them to strengthen your fit.}}",
+    "strength": {
+      "title": "Feed strength",
+      "matched": "Jobs",
+      "precision": "Profile fit",
+      "avgRelevance": "Avg. match",
+      "noSignal": "Add skills to your profile to see how well this feed fits you.",
+      "suggestAdd": "Suggested keywords — tap to narrow this feed to your strengths:"
+    },
     "openOnPlatform": "Open on platform",
     "markApplied": "Mark as applied",
     "applied": "Applied",

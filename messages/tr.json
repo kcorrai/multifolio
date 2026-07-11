@@ -1215,6 +1215,14 @@
     "analyzeAnyway": "Yine de analiz et",
     "skillGapTitle": "Beceri uyumu",
     "skillGapMissingHint": "{count, plural, one {Profilinde listelemediğin # beceri — eklersen uyumun güçlenir.} other {Profilinde listelemediğin # beceri — eklersen uyumun güçlenir.}}",
+    "strength": {
+      "title": "Feed gücü",
+      "matched": "İlan",
+      "precision": "Profil uyumu",
+      "avgRelevance": "Ort. uyum",
+      "noSignal": "Bu feed'in sana ne kadar uyduğunu görmek için profiline beceri ekle.",
+      "suggestAdd": "Önerilen keyword'ler — feed'i güçlü yönlerine daraltmak için dokun:"
+    },
     "openOnPlatform": "Platformda aç",
     "markApplied": "Başvurdum olarak işaretle",
     "applied": "Başvuruldu",

@@ -5,12 +5,13 @@
 // + e-posta bildirimi. Değişiklik olunca Kaydet/Vazgeç çubuğu belirir; PATCH
 // /api/feeds/[id] ile kaydedilir. feed prop'u değişince parent key={feed.id}
 // ile remount eder (state tazelenir).
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, Bell, SlidersHorizontal, Sparkles, Check, FileText } from "lucide-react";
+import { ChevronDown, Bell, SlidersHorizontal, Sparkles, Check, FileText, Gauge, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/ai/platforms";
-import type { JobFeedRow } from "@/lib/validation/schemas/feed";
+import type { JobFeedRow, PoolJob } from "@/lib/validation/schemas/feed";
+import { feedStrength } from "@/lib/feed/strength";
 import { ChipsInput } from "./chips-input";
 
 // Sayısal opsiyonel alan: boş/geçersiz → null.
@@ -22,9 +23,10 @@ function numOrNull(v: string): number | null {
 }
 
 export function FeedSettingsPanel({
-  feed, onSaved,
+  feed, jobs, onSaved,
 }: {
   feed: JobFeedRow;
+  jobs: PoolJob[];
   onSaved: (feed: JobFeedRow) => void;
 }) {
   const t = useTranslations("feed");
@@ -44,6 +46,13 @@ export function FeedSettingsPanel({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+
+  // Feed gücü: seçili feed'in gösterdiği ilanların (jobs) profile uyumu + keyword önerisi.
+  // Saf hesap, kredisiz; keyword state'i değişince canlı güncellenir.
+  const strength = useMemo(() => feedStrength(jobs, keywords), [jobs, keywords]);
+  function addKeyword(s: string) {
+    setKeywords((k) => (k.length >= 10 || k.some((x) => x.toLowerCase() === s.toLowerCase()) ? k : [...k, s]));
+  }
 
   const dirty =
     name.trim() !== feed.name ||
@@ -102,6 +111,48 @@ export function FeedSettingsPanel({
 
   return (
     <div className="space-y-3">
+      {/* ── Feed gücü (kredisiz metrik + keyword önerisi) ────────────────── */}
+      <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+        <h4 className="text-sm font-bold flex items-center gap-2">
+          <Gauge className="h-4 w-4 text-[#00F0FF]" />{t("strength.title")}
+        </h4>
+        <div className="grid grid-cols-3 gap-2 text-center">
+          <div>
+            <p className="text-lg font-bold tabular-nums">{strength.matchedCount}</p>
+            <p className="text-[11px] text-muted-foreground">{t("strength.matched")}</p>
+          </div>
+          <div>
+            <p className="text-lg font-bold tabular-nums">{strength.precisionPct === null ? "—" : `${strength.precisionPct}%`}</p>
+            <p className="text-[11px] text-muted-foreground">{t("strength.precision")}</p>
+          </div>
+          <div>
+            <p className="text-lg font-bold tabular-nums">{strength.avgRelevance ?? "—"}</p>
+            <p className="text-[11px] text-muted-foreground">{t("strength.avgRelevance")}</p>
+          </div>
+        </div>
+        {strength.precisionPct === null && (
+          <p className="text-[11px] text-muted-foreground/70">{t("strength.noSignal")}</p>
+        )}
+        {strength.suggestAdd.length > 0 && (
+          <div className="space-y-1.5">
+            <p className="text-[11px] font-semibold text-muted-foreground">{t("strength.suggestAdd")}</p>
+            <div className="flex flex-wrap gap-1.5">
+              {strength.suggestAdd.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => addKeyword(s)}
+                  disabled={keywords.length >= 10}
+                  className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2 py-0.5 text-[11px] font-medium hover:border-[#00F0FF] hover:text-[#00F0FF] transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  <Plus className="h-3 w-3" />{s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* ── Ön filtre ─────────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-border bg-card p-4 space-y-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">

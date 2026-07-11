@@ -252,7 +252,7 @@ export function FeedView({
                 )}
               </div>
               {/* key={id}: feed değişince panel state'i tazelenir */}
-              <FeedSettingsPanel key={activeFeed.id} feed={activeFeed} onSaved={onFeedSaved} />
+              <FeedSettingsPanel key={activeFeed.id} feed={activeFeed} jobs={visibleJobs} onSaved={onFeedSaved} />
             </div>
           </>
         ) : visibleJobs.length === 0 ? (
