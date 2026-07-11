@@ -28,8 +28,19 @@ export async function spendCredits<T>(
     const result = await work();
     return { result, balance: balance as number, spent: cost };
   } catch (err) {
-    // İş patladı → krediyi geri yükle, sonra hatayı yükselt.
-    await admin.rpc("refund_credits", { p_user: userId, p_amount: cost });
+    // İş patladı → krediyi geri yükle, sonra hatayı yükselt. Supabase RPC hatayı
+    // THROW ETMEZ ({error} döner) → kontrol edilmezse iade sessizce başarısız olup
+    // kullanıcı krediyi kaybeder. İade patlarsa KRİTİK log (elle telafi gerekir);
+    // orijinal iş hatası her hâlükârda yükseltilir.
+    const { error: refundErr } = await admin.rpc("refund_credits", { p_user: userId, p_amount: cost });
+    if (refundErr) {
+      console.error("KRİTİK: kredi iadesi başarısız — kullanıcı kredi kaybetti", {
+        userId,
+        kind,
+        cost,
+        refundErr,
+      });
+    }
     throw err;
   }
 }
