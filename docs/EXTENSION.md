@@ -20,6 +20,14 @@ sekmesini açar ve kullanıcı taslağı wizard'da inceleyip kaydeder (otomatik 
 [Multifolio] route AI taslağı üretir → profile_import_drafts upsert → wizard prefill
 ```
 
+**İş yakalama (v0.2.15+):** Aynı content.ts, İŞ İLANI sayfalarında (Upwork `/jobs/*`,
+LinkedIn `/jobs/view/*`) farklı bir buton gösterir. `detectJobPage` profil tespitinden
+SONRA çalışır (URL desenleri ayrık). Buton → `collectJobPayload` (h1 başlık + ana metin
+açıklama ≤10k + best-effort `extractJobBudget` + LinkedIn şirket adı) → `chrome.runtime
+.sendMessage({type:"capture_job"})` → `background.ts` cookie'li POST `/api/jobs` (mevcut
+POST; AI/kredi yok, doğrudan `job_listings` satırı). İnceleme wizard'ı YOK — kullanıcı
+dashboard'da (İşler) düzenler/etiketler. `detectJobPage` + `extractJobBudget` SAF + vitest'li.
+
 - `src/extract.ts` — SAF yardımcılar (vitest'li): `detectProfilePage` (Upwork
   `/freelancers/~id|slug`, `/fl/slug`; Fiverr kök/`users/` kullanıcı yolu − rezerve
   yol denylist'i; LinkedIn `*.linkedin.com/in/{username}`), `clampText(50k)`,

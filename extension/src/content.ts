@@ -1,12 +1,17 @@
 // Content script: Upwork/Fiverr/LinkedIn profil sayfasına buton enjekte eder; tıklanınca
 // görünür metni + best-effort medya URL'lerini toplayıp background'a yollar.
 // Alan-alan CSS seçici parse YOK (bilinçli karar) — metin AI'a, görseller URL olarak.
-import { detectProfilePage, clampText, pickImageUrls, type ProfilePlatform } from "./extract";
+import { detectProfilePage, detectJobPage, extractJobBudget, clampText, pickImageUrls, type ProfilePlatform, type JobPlatform } from "./extract";
 import { dedupeFiverrImages, type FiverrExtract } from "./fiverr-map";
 import { msg } from "./messages";
 
 const HOST_ID = "mf-import-host";
 let injectedForPath = ""; // buton hangi pathname için enjekte edildi (çift enjeksiyon guard)
+
+// Butonun ne yapacağını belirleyen hedef: profil import'u veya iş yakalama.
+type InjectTarget =
+  | { kind: "import"; platform: ProfilePlatform }
+  | { kind: "job"; platform: JobPlatform };
 
 type ImportResponse =
   | { ok: true }
@@ -22,18 +27,25 @@ function removeButton() {
 // kabul edilir; hiçbiri gelmezse uzun beklemeden sonra dolu içerik varsa yine gösterilir.
 // Cloudflare "insan mısın" sayfaları kısa metinlidir → yanlışlıkla tetiklenmez.
 function maybeInit() {
-  const platform = detectProfilePage(location.hostname, location.pathname);
+  const profile = detectProfilePage(location.hostname, location.pathname);
+  // Profil öncelikli; değilse iş ilanı sayfası mı? (URL desenleri ayrık.)
+  const jobPlatform = profile ? null : detectJobPage(location.hostname, location.pathname);
+  const target: InjectTarget | null = profile
+    ? { kind: "import", platform: profile }
+    : jobPlatform
+      ? { kind: "job", platform: jobPlatform }
+      : null;
   const path = location.pathname;
 
-  if (!platform) { removeButton(); return; }                       // profil sayfası değil
+  if (!target) { removeButton(); return; }                         // profil/ilan sayfası değil
   if (injectedForPath === path && document.getElementById(HOST_ID)) return; // zaten var
   removeButton(); // URL değişmiş olabilir → eski butonu temizle
 
   let tries = 0;
   const timer = setInterval(() => {
     tries += 1;
-    // Bu arada başka sayfaya geçtiysek bırak.
-    if (detectProfilePage(location.hostname, location.pathname) !== platform || location.pathname !== path) {
+    // Bu arada başka sayfaya geçtiysek bırak (path değişimi = SPA navigasyonu).
+    if (location.pathname !== path) {
       clearInterval(timer);
       return;
     }
@@ -41,12 +53,41 @@ function maybeInit() {
     const enoughText = (document.body?.innerText?.trim().length ?? 0) > 500;
     if (hasHeading && enoughText) {
       clearInterval(timer);
-      injectButton(platform);
+      injectButton(target);
     } else if (tries >= 30) {          // ~15 sn: başlık gelmediyse bile dolu içerik varsa göster
       clearInterval(timer);
-      if (enoughText) injectButton(platform);
+      if (enoughText) injectButton(target);
     }
   }, 500);
+}
+
+// İş ilanı sayfasından başlık + açıklama + best-effort şirket/bütçe toplar.
+// title/description yetersizse null (buton "okunamadı" gösterir).
+function findJobCompany(platform: JobPlatform): string | undefined {
+  if (platform !== "linkedin") return undefined; // Upwork müşterisi anonim
+  const el = document.querySelector(
+    ".job-details-jobs-unified-top-card__company-name, .jobs-unified-top-card__company-name, .topcard__org-name-link",
+  );
+  const t = el?.textContent?.trim();
+  return t ? t.slice(0, 100) : undefined;
+}
+
+function collectJobPayload(platform: JobPlatform) {
+  const title = (document.querySelector("h1")?.textContent || document.title || "").trim().slice(0, 200);
+  const main = document.querySelector("main");
+  const description = clampText((main ?? document.body).innerText, 10_000);
+  if (title.length < 2 || description.length < 10) return null;
+  const budget = extractJobBudget(description);
+  const company = findJobCompany(platform);
+  return {
+    type: "capture_job" as const,
+    title,
+    description,
+    platform,
+    ...(company ? { company } : {}),
+    url: location.origin + location.pathname,
+    ...(budget ? { budget } : {}),
+  };
 }
 
 // Üst bölgede, kabaca kare, makul boyutlu bir görsel = profil fotosu (en olası).
@@ -416,9 +457,10 @@ async function collectPayload(platform: ProfilePlatform) {
   };
 }
 
-function injectButton(platform: ProfilePlatform) {
+function injectButton(target: InjectTarget) {
   if (document.getElementById(HOST_ID)) return; // çift guard
   injectedForPath = location.pathname;
+  const isJob = target.kind === "job";
 
   // Closed shadow root: host sayfa CSS'i butonu bozamasın.
   const host = document.createElement("div");
@@ -451,7 +493,7 @@ function injectButton(platform: ProfilePlatform) {
 
   const btn = document.createElement("button");
   btn.className = "mf-btn";
-  btn.textContent = msg("button");
+  btn.textContent = isJob ? msg("captureJob") : msg("button");
   root.appendChild(btn);
 
   const note = document.createElement("div");
@@ -471,11 +513,32 @@ function injectButton(platform: ProfilePlatform) {
   }
 
   btn.addEventListener("click", async () => {
+    note.hidden = true;
+
+    if (target.kind === "job") {
+      // İş yakalama: başlık/açıklama topla → /api/jobs. İçerik yetersizse hata göster.
+      const payload = collectJobPayload(target.platform);
+      if (!payload) { show(msg("captureEmpty")); return; }
+      btn.disabled = true;
+      btn.textContent = msg("captureSending");
+      chrome.runtime.sendMessage(payload, (res: ImportResponse | undefined) => {
+        btn.disabled = false;
+        btn.textContent = msg("captureJob");
+        if (res?.ok) { show(msg("captureSuccess")); return; }
+        switch (res?.reason) {
+          case "auth": show(msg("authNeeded"), true); break;
+          case "rate": show(msg("rateLimited")); break;
+          case "invalid": show(res.message || msg("captureEmpty")); break;
+          default: show(msg("genericError"));
+        }
+      });
+      return;
+    }
+
     btn.disabled = true;
     btn.textContent = msg("sending");
-    note.hidden = true;
     // Upwork'te portfolyo sayfaları gezildiği için birkaç saniye sürebilir (buton "gönderiliyor").
-    const payload = await collectPayload(platform);
+    const payload = await collectPayload(target.platform);
     chrome.runtime.sendMessage(payload, (res: ImportResponse | undefined) => {
       btn.disabled = false;
       btn.textContent = msg("button");

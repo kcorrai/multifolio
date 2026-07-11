@@ -2,6 +2,7 @@
 // content.ts bunları tarayıcı bağlamında çağırır.
 
 export type ProfilePlatform = "upwork" | "fiverr" | "linkedin";
+export type JobPlatform = "upwork" | "linkedin";
 
 // Fiverr'da kullanıcı adları kök yolda yaşar (fiverr.com/<username>) — profil
 // OLMAYAN bilinen kök yollar burada elenir. Kaçak olursa zararsız: sayfada profil
@@ -46,6 +47,35 @@ export function detectProfilePage(host: string, pathname: string): ProfilePlatfo
   }
 
   return null;
+}
+
+/** Host+path'ten İŞ İLANI sayfası platformunu tespit eder; ilan değilse null.
+ *  Upwork iş detayı /jobs/... (arama /nx/search/jobs/ değil); LinkedIn /jobs/view/... */
+export function detectJobPage(host: string, pathname: string): JobPlatform | null {
+  const h = host.toLowerCase();
+  const path = pathname.replace(/\/+$/, "") || "/";
+
+  if (h === "www.upwork.com" || h === "upwork.com") {
+    // İş ilanı detayı: /jobs/<slug>_~<id>. Arama (/nx/search/jobs/) hariç.
+    if (/^\/jobs\/[^/]+/i.test(path)) return "upwork";
+    return null;
+  }
+
+  if (h === "linkedin.com" || h.endsWith(".linkedin.com")) {
+    // Tekil ilan görünümü. Feed (/jobs/collections, /jobs/search) belirsiz → hariç.
+    if (/^\/jobs\/view\//i.test(path)) return "linkedin";
+    return null;
+  }
+
+  return null;
+}
+
+/** İlan metninden best-effort bütçe/ücret ifadesini çıkarır (ilk para deseni); yoksa
+ *  undefined. Sunucu budget alanı max 100 → kırpılır. Para birimi/aralık/saatlik destekli. */
+export function extractJobBudget(text: string): string | undefined {
+  const m = /(?:\$|€|£|₺|USD|EUR|TRY)\s?\d[\d.,]*(?:\s?[-–—]\s?(?:\$|€|£|₺)?\s?\d[\d.,]*)?(?:\s?\/\s?(?:hr|hour|saat|month|mo|yr|year))?/i.exec(text);
+  if (!m) return undefined;
+  return m[0].trim().slice(0, 100);
 }
 
 /** Metni sunucu şemasının tavanına kırpar (sunucu AI öncesi 20k'ya ayrıca kırpar). */

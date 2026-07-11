@@ -9,6 +9,10 @@ const FALLBACK = {
   emptyPage: "Couldn't read enough profile text on this page.",
   genericError: "Import failed — try again.",
   openLogin: "Open login",
+  captureJob: "Save job to Multifolio",
+  captureSending: "Saving…",
+  captureSuccess: "Job saved — find it in Multifolio › Jobs.",
+  captureEmpty: "Couldn't read the job title/description on this page.",
 } as const;
 
 export type MsgKey = keyof typeof FALLBACK;

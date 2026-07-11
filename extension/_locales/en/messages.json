@@ -8,5 +8,9 @@
   "rateLimited": { "message": "Import limit reached — try again in an hour." },
   "emptyPage": { "message": "Couldn't read enough profile text on this page." },
   "genericError": { "message": "Import failed — try again." },
-  "openLogin": { "message": "Open login" }
+  "openLogin": { "message": "Open login" },
+  "captureJob": { "message": "Save job to Multifolio" },
+  "captureSending": { "message": "Saving…" },
+  "captureSuccess": { "message": "Job saved — find it in Multifolio › Jobs." },
+  "captureEmpty": { "message": "Couldn't read the job title/description on this page." }
 }

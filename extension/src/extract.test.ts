@@ -1,5 +1,34 @@
 import { describe, it, expect } from "vitest";
-import { detectProfilePage, clampText, pickImageUrls } from "./extract";
+import { detectProfilePage, detectJobPage, extractJobBudget, clampText, pickImageUrls } from "./extract";
+
+describe("detectJobPage", () => {
+  it("Upwork iş ilanı detayı", () => {
+    expect(detectJobPage("www.upwork.com", "/jobs/Senior-React-Developer_~021abc")).toBe("upwork");
+    expect(detectJobPage("upwork.com", "/jobs/some-slug")).toBe("upwork");
+  });
+  it("LinkedIn tekil ilan", () => {
+    expect(detectJobPage("www.linkedin.com", "/jobs/view/3812345678")).toBe("linkedin");
+    expect(detectJobPage("tr.linkedin.com", "/jobs/view/999/")).toBe("linkedin");
+  });
+  it("ilan olmayan sayfalar null", () => {
+    expect(detectJobPage("www.upwork.com", "/freelancers/~018f")).toBeNull(); // profil
+    expect(detectJobPage("www.upwork.com", "/nx/search/jobs/")).toBeNull();   // arama
+    expect(detectJobPage("www.linkedin.com", "/jobs/collections/recommended/")).toBeNull(); // feed
+    expect(detectJobPage("www.linkedin.com", "/in/janedoe")).toBeNull();      // profil
+    expect(detectJobPage("example.com", "/jobs/x")).toBeNull();
+  });
+});
+
+describe("extractJobBudget", () => {
+  it("para/aralık/saatlik desenleri", () => {
+    expect(extractJobBudget("Budget: $1,500 fixed")).toBe("$1,500");
+    expect(extractJobBudget("Rate $40-70 /hr for this")).toBe("$40-70 /hr");
+    expect(extractJobBudget("Bütçe ₺5.000 civarı")).toBe("₺5.000");
+  });
+  it("para yoksa undefined", () => {
+    expect(extractJobBudget("No compensation mentioned here")).toBeUndefined();
+  });
+});
 
 describe("detectProfilePage", () => {
   it("Upwork profil biçimlerini tanır", () => {
