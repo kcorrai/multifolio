@@ -459,7 +459,12 @@
       "viewListing": "View Listing",
       "notes": "Notes",
       "saving": "Saving…",
-      "notesPlaceholder": "Interview notes, key details…"
+      "notesPlaceholder": "Interview notes, key details…",
+      "reminder": "Reminder",
+      "deadline": "Deadline",
+      "due_overdue": "Overdue",
+      "due_today": "Today",
+      "due_soon": "Soon"
     },
     "followup": {
       "waiting": "{days, plural, one {No reply for # day} other {No reply for # days}}",

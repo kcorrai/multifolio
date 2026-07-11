@@ -6,8 +6,19 @@
 // (optimistic + PATCH /api/jobs/[id]) devredilir. Yeni state tutmaz.
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { CalendarClock } from "lucide-react";
 import { JOB_STATUSES, type JobStatus } from "@/lib/validation/schemas/job";
+import { reminderUrgency, type ReminderUrgency } from "@/lib/jobs/reminder";
 import { STATUS_DOT, scoreColor, type JobRow } from "./shared";
+
+// En acil tarih (hatırlatıcı veya deadline) → küçük kart rozeti. overdue/today
+// vurgulanır; ikisi de yoksa rozet gizli.
+const BADGE_CLASS: Record<ReminderUrgency, string> = {
+  overdue:  "text-red-600 dark:text-red-400",
+  today:    "text-amber-700 dark:text-amber-300",
+  soon:     "text-amber-600 dark:text-amber-400",
+  upcoming: "text-muted-foreground",
+};
 
 // Boru hattı sırası (soldan sağa ilerleme; rejected sonda).
 const COLUMN_ORDER: JobStatus[] = [
@@ -85,6 +96,21 @@ export function KanbanBoard({
                         {[job.company, job.platform].filter(Boolean).join(" · ")}
                       </p>
                     )}
+                    {(() => {
+                      // En acil olanı göster (deadline ve reminder'dan hangisi daha acil).
+                      const cands = [job.deadline_date, job.reminder_date]
+                        .map((d) => ({ d, u: reminderUrgency(d, new Date()) }))
+                        .filter((x): x is { d: string; u: ReminderUrgency } => Boolean(x.d && x.u));
+                      if (cands.length === 0) return null;
+                      const order: ReminderUrgency[] = ["overdue", "today", "soon", "upcoming"];
+                      const top = cands.sort((a, b) => order.indexOf(a.u) - order.indexOf(b.u))[0];
+                      return (
+                        <span className={`mt-1 inline-flex items-center gap-1 text-[10px] font-semibold ${BADGE_CLASS[top.u]}`}>
+                          <CalendarClock className="h-2.5 w-2.5" />
+                          {new Date(top.d).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                        </span>
+                      );
+                    })()}
                   </button>
 
                   <div className="flex items-center justify-between gap-2 mt-2">

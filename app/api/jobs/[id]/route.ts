@@ -17,7 +17,7 @@ export const GET = withErrorHandler(async (_req, { params }) => {
 
   const { data, error } = await supabase
     .from("job_listings")
-    .select("id, title, company, platform, status, match_score, match_result, description, url, notes, budget, created_at, updated_at, status_changed_at")
+    .select("id, title, company, platform, status, match_score, match_result, description, url, notes, budget, created_at, updated_at, status_changed_at, reminder_date, deadline_date")
     .eq("id", id)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -39,18 +39,20 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
 
   const input = await parseJson(req, jobUpdateSchema);
 
+  const patch: Record<string, unknown> = { ...input };
   // Durum değişiyorsa status_changed_at damgalanır (follow-up hatırlatıcısının
   // referansı — not düzenlemesi gibi güncellemeler sayacı sıfırlamaz).
-  const patch = input.status !== undefined
-    ? { ...input, status_changed_at: new Date().toISOString() }
-    : input;
+  if (input.status !== undefined) patch.status_changed_at = new Date().toISOString();
+  // Tarih alanlarında "" = temizle → null (date kolonu boş string kabul etmez).
+  if ("reminder_date" in input) patch.reminder_date = input.reminder_date || null;
+  if ("deadline_date" in input) patch.deadline_date = input.deadline_date || null;
 
   const { data, error } = await supabase
     .from("job_listings")
     .update(patch)
     .eq("id", id)
     .eq("user_id", user.id)
-    .select("id, title, company, platform, status, match_score, match_result, notes, created_at")
+    .select("id, title, company, platform, status, match_score, match_result, notes, created_at, reminder_date, deadline_date")
     .maybeSingle();
 
   if (error) throw error;

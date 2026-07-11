@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   X, ExternalLink, Target, CheckCircle2, AlertCircle,
-  Sparkles, FileText, ChevronDown, RefreshCw, BellRing,
+  Sparkles, FileText, ChevronDown, RefreshCw, BellRing, CalendarClock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,11 +13,13 @@ import { CreditCost } from "@/components/credit-cost";
 import { CopyButton } from "@/components/dashboard/copy-button";
 import { MatchRubric, VerdictBadge, RiskBadges, MatchImprovements } from "@/components/dashboard/match-rubric";
 import { followUpDays } from "@/lib/followup";
+import { reminderUrgency, type ReminderUrgency } from "@/lib/jobs/reminder";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 
 interface JobRow {
   id: string; title: string; company: string | null; platform: string | null;
   status: JobStatus; match_score: number | null; match_result: JobMatchResult | null; created_at: string;
+  reminder_date?: string | null; deadline_date?: string | null;
 }
 
 interface JobDetail extends JobRow {
@@ -28,6 +30,14 @@ interface JobDetail extends JobRow {
   updated_at: string | null;
   status_changed_at: string | null;
 }
+
+// Aciliyet → rozet/metin rengi. overdue=kırmızı, today=amber, soon=amber-soft, upcoming=nötr.
+const URGENCY_CLASS: Record<ReminderUrgency, string> = {
+  overdue:  "text-red-600 dark:text-red-400",
+  today:    "text-amber-700 dark:text-amber-300",
+  soon:     "text-amber-600 dark:text-amber-400",
+  upcoming: "text-muted-foreground",
+};
 
 const JOB_STATUSES = ["saved", "applied", "awaiting_reply", "interview", "offer", "rejected"] as const;
 
@@ -68,6 +78,8 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
   const [status, setStatus] = useState<JobStatus>(job.status);
   const [notes, setNotes] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
+  const [reminderDate, setReminderDate] = useState("");
+  const [deadlineDate, setDeadlineDate] = useState("");
   const [showProposal, setShowProposal] = useState(false);
   const [rematching, setRematching] = useState(false);
   const [followUpMsg, setFollowUpMsg] = useState("");
@@ -86,6 +98,8 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
           setDetail(b.job as JobDetail);
           setNotes(b.job.notes ?? "");
           setStatus((b.job.status as JobStatus) ?? job.status);
+          setReminderDate(b.job.reminder_date ?? "");
+          setDeadlineDate(b.job.deadline_date ?? "");
           setLoadedJobId(job.id);
         }
       })
@@ -102,6 +116,23 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
     });
     const body = await res.json().catch(() => null);
     if (res.ok && body?.job) onJobUpdated(body.job as JobRow);
+  }
+
+  // Hatırlatıcı/teslim tarihini kaydeder ("" = temizle). Kart rozetleri güncellensin
+  // diye dönen job onJobUpdated ile listeye yansıtılır.
+  async function saveDate(field: "reminder_date" | "deadline_date", value: string) {
+    if (field === "reminder_date") setReminderDate(value);
+    else setDeadlineDate(value);
+    const res = await fetch(`/api/jobs/${job.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: value }),
+    });
+    const body = await res.json().catch(() => null);
+    if (res.ok && body?.job) {
+      onJobUpdated(body.job as JobRow);
+      setDetail((prev) => (prev ? { ...prev, [field]: value || null } : prev));
+    }
   }
 
   // Rubrik öncesi eşleştirmeyi rubrikli analizle yeniler (match route her çağrıda yeniden üretir; 1 kredi).
@@ -191,6 +222,33 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                 ))}
               </select>
               <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 opacity-60 pointer-events-none" />
+            </div>
+
+            {/* Hatırlatıcı + teslim tarihi (kart bazlı; elle set) */}
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                { field: "reminder_date" as const, value: reminderDate, label: t("detail.reminder") },
+                { field: "deadline_date" as const, value: deadlineDate, label: t("detail.deadline") },
+              ]).map(({ field, value, label }) => {
+                const urgency = reminderUrgency(value, new Date());
+                return (
+                  <div key={field} className="rounded-lg border border-border bg-muted/30 px-2.5 py-2 space-y-1">
+                    <label className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                      <CalendarClock className={`h-3 w-3 ${urgency ? URGENCY_CLASS[urgency] : ""}`} />
+                      {label}
+                    </label>
+                    <input
+                      type="date"
+                      value={value}
+                      onChange={(e) => saveDate(field, e.target.value)}
+                      className={`w-full bg-transparent text-xs outline-none tabular-nums cursor-pointer ${urgency ? URGENCY_CLASS[urgency] : "text-foreground"}`}
+                    />
+                    {urgency && urgency !== "upcoming" && (
+                      <p className={`text-[10px] font-semibold ${URGENCY_CLASS[urgency]}`}>{t(`detail.due_${urgency}`)}</p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Follow-up hatırlatıcı: X gündür durum değişmedi → AI takip mesajı */}

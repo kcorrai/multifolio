@@ -459,7 +459,12 @@
       "viewListing": "İlanda Görüntüle",
       "notes": "Notlar",
       "saving": "Kaydediliyor…",
-      "notesPlaceholder": "Görüşme notları, önemli detaylar…"
+      "notesPlaceholder": "Görüşme notları, önemli detaylar…",
+      "reminder": "Hatırlatıcı",
+      "deadline": "Son tarih",
+      "due_overdue": "Gecikti",
+      "due_today": "Bugün",
+      "due_soon": "Yakında"
     },
     "followup": {
       "waiting": "{days, plural, one {# gündür yanıt yok} other {# gündür yanıt yok}}",

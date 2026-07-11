@@ -15,11 +15,23 @@ export const jobCreateSchema = z.object({
   source_pool_id: z.string().uuid().optional(),
 });
 
+// Opsiyonel saf tarih (YYYY-MM-DD). "" = temizle (route null'a çevirir), null =
+// temizle, absent = dokunma. <input type="date"> değerleriyle birebir.
+const optionalDateField = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Tarih YYYY-AA-GG olmalı.")
+  .or(z.literal(""))
+  .nullable()
+  .optional();
+
 export const jobUpdateSchema = z.object({
   status: jobStatusSchema.optional(),
   title: z.string().trim().min(1).max(200).optional(),
   company: z.string().trim().max(100).optional(),
   notes: z.string().trim().max(5000).optional(),
+  // Kart bazlı hatırlatıcı + teslim tarihi (Batch 3).
+  reminder_date: optionalDateField,
+  deadline_date: optionalDateField,
 });
 
 // Rubrik: sabit 4 boyut — ilanlar arası karşılaştırılabilirlik için anahtar seti kilitli.
