@@ -63,7 +63,7 @@
       },
       "tracking": {
         "title": "Başvuru Takibi",
-        "desc": "Her başvuruyu net bir akışta takip et: kaydedildi, başvuruldu, yanıt bekleniyor, görüşme, teklif, red."
+        "desc": "Başvuruları sürükle-bırak kanban panosunda takip et ve dönüşüm hunini gör — yanıt, mülakat ve teklif oranları tek bakışta."
       },
       "ai": {
         "title": "AI ile Üretim",
@@ -71,11 +71,11 @@
       },
       "cv": {
         "title": "AI CV oluşturucu",
-        "desc": "Profilini temiz, işe hazır bir CV'ye dönüştür. Bölümleri sürükle-bırak ile sırala, şablon seç ve tek tıkla PDF olarak indir."
+        "desc": "Profilini temiz, işe hazır bir CV'ye dönüştür — 8 ATS-uyumlu şablon. Bölümleri sürükle-bırak sırala ve tek tıkla seçilebilir-metin PDF indir."
       },
       "discovery": {
         "title": "İş keşfi",
-        "desc": "Profiline göre puanlanan canlı bir uzaktan iş akışı. Aramaları kaydet, ilanları yıldızla ve krediyi yalnızca gerçekten uyduğun yerde harca."
+        "desc": "Profiline göre puanlanan canlı bir uzaktan iş akışı. Aramaları kaydet, ilanları yıldızla ve güçlü yeni bir eşleşme geldiğinde uygulama-içi bildirim al."
       },
       "secure": {
         "title": "Güvenli & Hızlı",
@@ -212,6 +212,10 @@
     "demos": {
       "adapting": "AI uyarlıyor…",
       "ready": "Tüm platformlar hazır",
+      "pipeline": "Pipeline",
+      "responseRate": "yanıt oranı",
+      "funnelSent": "Gönderilen",
+      "funnelResponded": "Yanıtlanan",
       "match": "Eşleşme",
       "applied": "Başvuruldu",
       "interview": "Görüşme",

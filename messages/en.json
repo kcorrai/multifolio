@@ -63,7 +63,7 @@
       },
       "tracking": {
         "title": "Application tracking",
-        "desc": "Track every application through a clear pipeline: saved, applied, awaiting reply, interview, offer, rejected."
+        "desc": "Track applications on a drag-and-drop kanban board and see your conversion funnel — response, interview and offer rates at a glance."
       },
       "ai": {
         "title": "AI generation",
@@ -71,11 +71,11 @@
       },
       "cv": {
         "title": "AI CV builder",
-        "desc": "Turn your profile into a clean, recruiter-ready CV. Reorder sections by drag-and-drop, pick a template and export to PDF in one click."
+        "desc": "Turn your profile into a clean, recruiter-ready CV with 8 ATS-ready templates. Reorder sections by drag-and-drop and export to a selectable-text PDF in one click."
       },
       "discovery": {
         "title": "Job discovery",
-        "desc": "A live feed of remote jobs scored against your profile. Save searches, star roles and only spend credits where you actually fit."
+        "desc": "A live feed of remote jobs scored against your profile. Save searches, star roles, and get an in-app alert when a strong new match lands."
       },
       "secure": {
         "title": "Secure & fast",
@@ -212,6 +212,10 @@
     "demos": {
       "adapting": "AI is adapting…",
       "ready": "All platforms ready",
+      "pipeline": "Pipeline",
+      "responseRate": "response rate",
+      "funnelSent": "Sent",
+      "funnelResponded": "Responded",
       "match": "Match",
       "applied": "Applied",
       "interview": "Interview",

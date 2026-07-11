@@ -541,17 +541,26 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                 <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
                   <Target className="h-5 w-5 text-violet-400" />
                 </div>
-                <div className="space-y-2">
+                {/* Mini pipeline huni (gerçek PipelineStats'i yansıtır) */}
+                <div className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] p-3.5 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:text-white/40">{t("demos.pipeline")}</span>
+                    <span className="demo-pop text-sm font-extrabold text-[#00F0FF]" style={{ animationDelay: "600ms" }}>
+                      40%<span className="text-[9px] font-bold ml-1 text-slate-400 dark:text-white/40">{t("demos.responseRate")}</span>
+                    </span>
+                  </div>
                   {[
-                    { width: "w-32", label: t("demos.applied"),   chip: "border-[#00F0FF]/25 bg-[#00F0FF]/8 text-slate-600 dark:text-[#00F0FF]" },
-                    { width: "w-24", label: t("demos.interview"), chip: "border-violet-500/25 bg-violet-500/8 text-violet-500 dark:text-violet-300" },
-                    { width: "w-28", label: t("demos.offer"),     chip: "border-emerald-500/25 bg-emerald-500/8 text-emerald-600 dark:text-emerald-400" },
-                  ].map(({ width, label, chip }, i) => (
-                    <div key={label} className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.03] px-3 py-2">
-                      <div className={`h-2 ${width} rounded-full bg-slate-200 dark:bg-white/12 demo-grow`} style={{ animationDelay: `${150 + i * 150}ms` }} />
-                      <span className={`demo-pop rounded-full border px-2 py-0.5 text-[9px] font-bold ${chip}`} style={{ animationDelay: `${400 + i * 150}ms` }}>
-                        {label}
-                      </span>
+                    { label: t("demos.funnelSent"),      value: 10, color: "bg-slate-400 dark:bg-slate-500" },
+                    { label: t("demos.funnelResponded"), value: 4,  color: "bg-[#00F0FF]" },
+                    { label: t("demos.interview"),       value: 3,  color: "bg-amber-500" },
+                    { label: t("demos.offer"),           value: 1,  color: "bg-emerald-500" },
+                  ].map(({ label, value, color }, i) => (
+                    <div key={label} className="flex items-center gap-2">
+                      <span className="w-16 shrink-0 text-right text-[10px] font-medium text-slate-400 dark:text-white/40">{label}</span>
+                      <div className="flex-1 h-2.5 rounded-full bg-slate-200 dark:bg-white/8 overflow-hidden">
+                        <div className={`h-full rounded-full ${color} demo-grow`} style={{ width: `${value * 10}%`, animationDelay: `${200 + i * 140}ms` }} />
+                      </div>
+                      <span className="w-4 shrink-0 text-right text-[10px] font-bold tabular-nums">{value}</span>
                     </div>
                   ))}
                 </div>
