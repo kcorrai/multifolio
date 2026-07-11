@@ -1,12 +1,27 @@
 import { getTranslations } from "next-intl/server";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { JsonLd } from "@/components/seo/json-ld";
+
+const FAQ_KEYS = ["credits", "expire", "subscription", "platforms", "beta"];
 
 /* ─── Paylaşılan SSS bölümü (landing + /pricing) ────────────────── */
 export async function FaqSection() {
   const t = await getTranslations("landing");
 
+  // FAQPage structured data (Google zengin sonuç: açılır SSS).
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ_KEYS.map((key) => ({
+      "@type": "Question",
+      name: t(`faq.q.${key}`),
+      acceptedAnswer: { "@type": "Answer", text: t(`faq.a.${key}`) },
+    })),
+  };
+
   return (
     <section id="faq" className="border-t border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-[#161923]/40 py-24">
+      <JsonLd data={faqLd} />
       <div className="mx-auto max-w-3xl px-8">
         <ScrollReveal>
           <div className="text-center space-y-3 mb-12">
@@ -15,7 +30,7 @@ export async function FaqSection() {
           </div>
         </ScrollReveal>
         <div className="space-y-3">
-          {["credits", "expire", "subscription", "platforms", "beta"].map((key, i) => (
+          {FAQ_KEYS.map((key, i) => (
             <ScrollReveal key={key} delay={i * 60}>
               <details className="group rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] px-5 py-4">
                 <summary className="flex items-center justify-between cursor-pointer list-none font-semibold text-slate-900 dark:text-white">

@@ -12,6 +12,8 @@ import { LandingMotion } from "@/components/landing/landing-motion";
 import { Tilt } from "@/components/landing/tilt";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { JsonLd } from "@/components/seo/json-ld";
+import { SITE_URL, SITE_NAME } from "@/lib/seo/site";
 import { PricingSection } from "@/components/pricing-section";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaqSection } from "@/components/faq-section";
@@ -246,8 +248,26 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
     },
   ];
 
+  // SoftwareApplication structured data (Google zengin sonuç: uygulama + fiyat).
+  const softwareLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: SITE_NAME,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    description: tc("metaDescription"),
+    url: SITE_URL,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      description: "Free to start with 100 credits — pay-as-you-go, no subscription.",
+    },
+  };
+
   return (
     <div className="relative min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
+      <JsonLd data={softwareLd} />
 
       {/* Sakin ambient aurora (2D CSS — WebGL yok); üst folda yumuşak gradyan,
           alta doğru maskeyle söner → diğer bölümler tertemiz. İçeriğin ARDINDA (z-0) */}
