@@ -3,7 +3,7 @@ import { SITE_URL, PUBLIC_ROUTES } from "@/lib/seo/site";
 import { GUIDES } from "@/lib/guides/content";
 
 // Herkese açık rotaların sitemap'i (PUBLIC_ROUTES + rehber detayları). Google keşfi.
-const HIGH_PRIORITY = /^\/(analyze|earnings|rate|proposal-checker|compare|pricing)$/;
+const HIGH_PRIORITY = /^\/(analyze|earnings|rate|proposal-checker|ats-check|compare|pricing)$/;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = PUBLIC_ROUTES.map((route) => ({

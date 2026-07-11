@@ -30,9 +30,10 @@ export interface AtsResult {
 }
 
 // Nicelenmiş sonuç sinyali: rakam, yüzde, para, çarpan (2x), veya "k/m" ölçek.
-const QUANTIFIED_RE = /\d|%|\$|₺|€|£/;
+// Ham-metin ATS denetleyicisi (lib/cv/ats-text.ts) de yeniden kullanır.
+export const QUANTIFIED_RE = /\d|%|\$|₺|€|£/;
 // Zayıf/dolgu ifadeler (EN + TR) — madde işaretinde geçmesi kaliteyi düşürür.
-const FILLER_RE =
+export const FILLER_RE =
   /\b(responsible for|helped|assisted|worked on|duties included|tasked with)\b|sorumluydu|sorumluyum|yardımcı oldu|görev aldı|çalıştı(m|ğım)?/i;
 
 const norm = (s: string) => s.trim().toLowerCase();

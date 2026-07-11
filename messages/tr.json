@@ -24,6 +24,7 @@
       "rate": "Ücret hesaplayıcı",
       "proposalChecker": "Teklif denetçisi",
       "headlineOptimizer": "Başlık optimize",
+      "atsCheck": "ATS CV denetimi",
       "compare": "Platform Karşılaştırma",
       "trTax": "Türkiye vergi rehberi",
       "pricing": "Fiyat",
@@ -1521,6 +1522,45 @@
     "ctaTitle": "Tüm profilini optimize et",
     "ctaBody": "Multifolio profilinin tamamını LinkedIn, Upwork, Fiverr ve daha fazlası için puanlar ve yeniden yazar — her platformun diliyle. 100 ücretsiz krediyle başla.",
     "ctaButton": "Ücretsiz başla"
+  },
+  "atsCheck": {
+    "metaTitle": "Ücretsiz ATS CV Denetleyici — Multifolio",
+    "metaDescription": "CV'ni yapıştır, anında ATS uyum skoru al: iletişim bilgisi, ölçülebilir sonuçlar, anahtar kelimeler ve daha fazlası. Ücretsiz, kayıt yok, hiçbir şey saklanmaz.",
+    "heroEyebrow": "Ücretsiz araç",
+    "heroTitle": "CV'n ATS'ten geçer mi?",
+    "heroSubtitle": "CV'ni yapıştır, başvuru takip sistemlerinin (ATS) aradığı kriterlere göre anında skor al — ücretsiz, kayıt yok.",
+    "cvLabel": "CV'ni yapıştır",
+    "cvPlaceholder": "CV / özgeçmişinin tam metnini buraya yapıştır…",
+    "wordCount": "{count} kelime",
+    "jobLabel": "İlan metni (opsiyonel)",
+    "jobPlaceholder": "Anahtar kelime kapsamını görmek için ilan metnini yapıştır…",
+    "jobHint": "Opsiyonel — bir ilan ekle, hangi anahtar kelimelerin eksik olduğunu gör.",
+    "privacy": "Tamamen tarayıcında çalışır. CV'n asla yüklenmez veya saklanmaz.",
+    "resultTitle": "ATS skoru",
+    "verdict": {
+      "strong": "Güçlü",
+      "average": "Orta",
+      "weak": "Geliştirilmeli"
+    },
+    "keywordCoverage": "İlanla anahtar kelime örtüşmesi: %{pct}",
+    "checks": {
+      "contact": "E-posta ve telefon var",
+      "summary": "Özet / profil bölümü var",
+      "skills": "Beceriler bölümü var",
+      "experience": "İş deneyimi bölümü var",
+      "education": "Eğitim bölümü var",
+      "quantified": "Maddeler rakam / sonuç içeriyor",
+      "noFiller": "Zayıf dolgu ifade yok (\"sorumluydu\"…)",
+      "dates": "Yıl / tarih içeriyor",
+      "length": "Sağlıklı uzunluk (~200–900 kelime)",
+      "keywords": "İlanın anahtar terimlerini kapsıyor"
+    },
+    "missingLabel": "CV'nde eksik anahtar kelimeler",
+    "disclaimer": "Hızlı bir sezgisel kontrol, garanti değil. Gerçek ATS davranışı işverene göre değişir.",
+    "ctaTitle": "Dakikalar içinde ATS uyumlu CV oluştur",
+    "ctaBody": "Multifolio profilini şablonlar ve skorlamayla temiz, ATS uyumlu bir CV'ye dönüştürür. 100 ücretsiz krediyle başla.",
+    "ctaButton": "Ücretsiz başla",
+    "ctaButtonIn": "CV oluşturucuyu aç"
   },
   "lead": {
     "nameLabel": "Adın",

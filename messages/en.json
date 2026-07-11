@@ -24,6 +24,7 @@
       "rate": "Rate calculator",
       "proposalChecker": "Proposal checker",
       "headlineOptimizer": "Headline optimizer",
+      "atsCheck": "ATS resume check",
       "compare": "Platform comparison",
       "trTax": "Turkey tax guide",
       "pricing": "Pricing",
@@ -1521,6 +1522,45 @@
     "ctaTitle": "Get your whole profile optimized",
     "ctaBody": "Multifolio scores and rewrites your full profile for LinkedIn, Upwork, Fiverr and more — in each platform's voice. Start free with 100 credits.",
     "ctaButton": "Start free"
+  },
+  "atsCheck": {
+    "metaTitle": "Free ATS Resume Checker — Multifolio",
+    "metaDescription": "Paste your resume and get an instant ATS-compatibility score: contact info, quantified results, keywords and more. Free, no sign-up, nothing stored.",
+    "heroEyebrow": "Free tool",
+    "heroTitle": "Will your resume pass the ATS?",
+    "heroSubtitle": "Paste your resume and get an instant score against what applicant tracking systems look for — free, no sign-up.",
+    "cvLabel": "Paste your resume",
+    "cvPlaceholder": "Paste the full text of your resume / CV here…",
+    "wordCount": "{count} words",
+    "jobLabel": "Job description (optional)",
+    "jobPlaceholder": "Paste the job description to check keyword coverage…",
+    "jobHint": "Optional — add a job post to see which keywords you're missing.",
+    "privacy": "Runs entirely in your browser. Your resume is never uploaded or stored.",
+    "resultTitle": "ATS score",
+    "verdict": {
+      "strong": "Strong",
+      "average": "Average",
+      "weak": "Needs work"
+    },
+    "keywordCoverage": "Keyword match with the job: {pct}%",
+    "checks": {
+      "contact": "Has email and phone number",
+      "summary": "Includes a summary / profile section",
+      "skills": "Includes a skills section",
+      "experience": "Includes a work experience section",
+      "education": "Includes an education section",
+      "quantified": "Bullet points show numbers / results",
+      "noFiller": "No weak filler phrases (\"responsible for\"…)",
+      "dates": "Includes years / dates",
+      "length": "A healthy length (about 200–900 words)",
+      "keywords": "Covers the job's key terms"
+    },
+    "missingLabel": "Keywords missing from your resume",
+    "disclaimer": "A quick heuristic check, not a guarantee. Real ATS behavior varies by employer.",
+    "ctaTitle": "Build an ATS-ready resume in minutes",
+    "ctaBody": "Multifolio turns your profile into a clean, ATS-optimized CV with scoring and templates. Start free with 100 credits.",
+    "ctaButton": "Start free",
+    "ctaButtonIn": "Open the CV builder"
   },
   "lead": {
     "nameLabel": "Your name",
