@@ -16,6 +16,7 @@ import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
 import { portfolioTheme, ACCENT_HEX } from "@/lib/portfolio/theme";
 import { LeadForm } from "@/components/portfolio/lead-form";
 import { getSafeEmbed } from "@/lib/portfolio/embed";
+import { validateContactEmail, validateContactUrl } from "@/lib/portfolio/contact";
 import { buildPersonJsonLd } from "@/lib/portfolio/json-ld";
 import { PublicGallery } from "@/components/portfolio/public-gallery";
 import { ProjectShowcase } from "@/components/portfolio/project-showcase";
@@ -118,10 +119,8 @@ export default async function PortfolioPage({ params }: PageProps) {
 
   // İletişim/işe-al hedefi: e-posta öncelikli (mailto), yoksa http(s) link. İkisi de yoksa CTA gizli.
   // Render'da defense-in-depth: yalnız geçerli e-posta / http(s) URL kabul (javascript: vb. engellenir).
-  const rawEmail = content.contactEmail?.trim() || "";
-  const rawUrl = content.contactUrl?.trim() || "";
-  const contactEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail) ? rawEmail : null;
-  const contactUrl = /^https?:\/\//i.test(rawUrl) ? rawUrl : null;
+  const contactEmail = validateContactEmail(content.contactEmail);
+  const contactUrl = validateContactUrl(content.contactUrl);
   const contactHref = contactEmail ? `mailto:${contactEmail}` : contactUrl;
 
   // NOT: inline style'da GERÇEK boşluk şart — Tailwind-arbitrary `_` yerine değil.

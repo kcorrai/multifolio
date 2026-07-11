@@ -8,6 +8,7 @@ import { Document, Page, Text, View, Link, Font } from "@react-pdf/renderer";
 import type { PortfolioContent } from "@/lib/validation/schemas/portfolio";
 import type { Locale } from "@/i18n/detect";
 import { ACCENT_HEX } from "./theme";
+import { validateContactEmail, validateContactUrl } from "./contact";
 
 // TR karakter desteği için gömülü OpenSans (CV ile aynı fontlar; @react-pdf yerleşik
 // Helvetica Latin-1 ile sınırlı ve ı/ğ/ş/İ/ç/ö/ü bozuyor).
@@ -55,10 +56,8 @@ export function PortfolioDocument({ content, locale }: { content: PortfolioConte
   ensureFonts();
   const L = LABELS[locale] ?? LABELS.en;
   const accent = ACCENT_HEX[content.theme.accent] ?? ACCENT_HEX.blue;
-  const contactEmail = (content.contactEmail ?? "").trim();
-  const contactUrl = (content.contactUrl ?? "").trim();
-  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail) ? contactEmail : "";
-  const validUrl = /^https?:\/\//i.test(contactUrl) ? contactUrl : "";
+  const validEmail = validateContactEmail(content.contactEmail) ?? "";
+  const validUrl = validateContactUrl(content.contactUrl) ?? "";
 
   return (
     <Document title={content.headline || "Portfolio"}>
