@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   ArrowLeft, Sparkles, Save, ExternalLink, Trash2, AlertCircle,
-  Briefcase, Clock, Lightbulb, User, Pencil, Download, RefreshCw, Puzzle, ChevronDown, PlayCircle, Languages,
+  Briefcase, Clock, Lightbulb, User, Pencil, Download, RefreshCw, Puzzle, ChevronDown, PlayCircle, Languages, Images,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
@@ -527,6 +527,58 @@ export function PlatformDetailTab({
           </section>
         )}
       </div>
+
+      {/* ── Bölüm: Projeler (bu platformdan içe aktarılan yapılandırılmış projeler) ── */}
+      {profile && profile.projects.length > 0 && (
+        <section className="pd-in space-y-3" style={{ animationDelay: "180ms" }}>
+          <h3 className="text-sm font-semibold flex items-center gap-2">
+            <Images className="h-4 w-4 text-muted-foreground" />{t("detail.projectsSection")}
+          </h3>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {profile.projects.map((p, pi) => {
+              const imgs: LightboxImage[] = p.images
+                .filter((im) => im.url)
+                .map((im) => ({ src: im.url, alt: im.caption || p.title }));
+              return (
+                <Card key={pi} className={`shadow-sm ${ELEVATED}`}>
+                  <CardContent className="pt-5 space-y-3">
+                    <div>
+                      <h4 className="text-base font-bold leading-snug">{p.title}</h4>
+                      {p.role && <p className="mt-0.5 text-xs font-semibold text-[#00F0FF]/80">{p.role}</p>}
+                    </div>
+                    {p.description && (
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground line-clamp-5">{p.description}</p>
+                    )}
+                    {p.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {p.skills.map((s) => (
+                          <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{s}</span>
+                        ))}
+                      </div>
+                    )}
+                    {imgs.length > 0 && (
+                      <div className="grid grid-cols-3 gap-2">
+                        {imgs.map((img, k) => (
+                          <button
+                            key={img.src + k}
+                            type="button"
+                            onClick={() => setLightbox({ images: imgs, index: k })}
+                            title={img.alt}
+                            className="group relative aspect-square overflow-hidden rounded-lg border border-border cursor-zoom-in"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={img.src} alt={img.alt} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ── Bölüm: Bağlantı ──────────────────────────────────────────── */}
       <section className="pd-in space-y-3" style={{ animationDelay: "210ms" }}>

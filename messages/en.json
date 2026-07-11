@@ -653,6 +653,7 @@
       "connectionSection": "Connection",
       "jobsSection": "Matched Jobs",
       "sourceProfileSection": "Your Profile Data",
+      "projectsSection": "Projects",
       "sourceProfileHint": "This data powers adaptation, job matching and proposals on every platform.",
       "editProfile": "Edit profile",
       "platformProfileSection": "Your {platform} Profile",

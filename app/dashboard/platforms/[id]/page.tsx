@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { platformIdSchema } from "@/lib/ai/platforms";
 import { PlatformDetailTab } from "@/components/dashboard/platform-detail-tab";
 import type { JobRow, InitialProfile } from "@/components/dashboard/shared";
-import type { PortfolioItem } from "@/lib/validation/schemas/profile";
+import type { PortfolioItem, ProfileProject } from "@/lib/validation/schemas/profile";
 import type { PlatformProfileRow } from "@/lib/validation/schemas/platform-profile";
 import type { ProposalRow } from "@/lib/validation/schemas/proposal";
 
@@ -22,7 +22,7 @@ export default async function PlatformDetailPage({ params }: PageProps) {
   if (!user) redirect("/login");
 
   const [profileRes, connRes, jobsRes, proposalsRes, adaptRes, platformProfileRes] = await Promise.all([
-    supabase.from("profiles").select("headline, summary, skills, avatar_url, portfolio").eq("user_id", user.id).maybeSingle(),
+    supabase.from("profiles").select("headline, summary, skills, avatar_url, portfolio, projects").eq("user_id", user.id).maybeSingle(),
     supabase.from("platform_connections").select("profile_url").eq("user_id", user.id).eq("platform", platform).maybeSingle(),
     supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at").eq("user_id", user.id).eq("platform", platform).order("created_at", { ascending: false }),
     supabase.from("proposals").select("id, job_id, platform, content, coverage, created_at").eq("user_id", user.id).eq("platform", platform).order("created_at", { ascending: false }),
@@ -40,7 +40,8 @@ export default async function PlatformDetailPage({ params }: PageProps) {
         skills: (profileRes.data.skills as string[]) ?? [],
         avatarUrl: (profileRes.data.avatar_url as string | null) ?? null,
         portfolio: (profileRes.data.portfolio as PortfolioItem[]) ?? [],
-        projects: [], // platform detay projeleri kullanmaz
+        // Yalnız BU platformdan içe aktarılan yapılandırılmış projeler (platform-filtreli).
+        projects: ((profileRes.data.projects as ProfileProject[]) ?? []).filter((p) => p.platform === platform),
       }
     : null;
 

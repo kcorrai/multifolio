@@ -653,6 +653,7 @@
       "connectionSection": "Bağlantı",
       "jobsSection": "Eşleşen İlanlar",
       "sourceProfileSection": "Profil Verilerin",
+      "projectsSection": "Projeler",
       "sourceProfileHint": "Bu veriler her platformda uyarlama, iş eşleştirme ve teklifleri besler.",
       "editProfile": "Profili düzenle",
       "platformProfileSection": "{platform} Profilin",
