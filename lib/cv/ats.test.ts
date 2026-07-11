@@ -82,6 +82,18 @@ describe("scoreCv", () => {
     expect(high.issues.map((i) => i.code)).not.toContain("lowKeywordCoverage");
   });
 
+  it("dil adları anahtar kelime kapsamına dahil edilir (keywords.ts ile tutarlı)", () => {
+    const cv = makeCv({
+      ...strongCv(),
+      languages: [
+        { name: "English", level: "Fluent" },
+        { name: "Turkish", level: "Native" },
+      ],
+    });
+    const res = scoreCv(cv, ["English", "Turkish"]);
+    expect(res.keywordCoverage).toBe(100);
+  });
+
   it("tutarsız tarih (yıl yok) inconsistentDates üretir", () => {
     const cv = makeCv({
       contact: { email: "a@b.com", phone: "1", location: "", linkedin: "", website: "" },

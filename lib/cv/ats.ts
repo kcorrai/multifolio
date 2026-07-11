@@ -58,6 +58,10 @@ function contentText(cv: CvContent): string {
     ...cv.experience.flatMap((e) => [e.role, e.company, ...e.bullets]),
     ...cv.projects.flatMap((p) => [p.name, p.description, ...p.bullets]),
     ...cv.certifications.map((c) => c.name),
+    // Diller de anahtar kelime kapsamına dahil (ör. ilan "English/Turkish" isterse):
+    // keywords.ts cvText ile AYNI metin dünyası olmalı, aksi halde ATS skoru dil
+    // keyword'ünü %0, yan panel %100 gösterip çelişir.
+    ...cv.languages.map((l) => l.name),
   ]
     .join(" ")
     .toLowerCase();
