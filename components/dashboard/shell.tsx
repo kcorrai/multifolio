@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Wallet, LogOut } from "lucide-react";
+import { Wallet, LogOut, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
@@ -16,7 +16,7 @@ import { LowCreditsBanner } from "./low-credits-banner";
 import type { PlatformId } from "@/lib/ai/platforms";
 
 export function DashboardShell({
-  userEmail, credits: initialCredits, initialCreditsUsed, initialJobsCount, initialConnectionsCount, emailVerified, children,
+  userEmail, credits: initialCredits, initialCreditsUsed, initialJobsCount, initialConnectionsCount, emailVerified, isAdmin = false, children,
 }: {
   userEmail: string;
   credits: number;
@@ -24,6 +24,7 @@ export function DashboardShell({
   initialJobsCount: number;
   initialConnectionsCount: number;
   emailVerified: boolean;
+  isAdmin?: boolean;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -104,6 +105,21 @@ export function DashboardShell({
                 </Link>
               );
             })}
+
+            {/* Admin link — yalnız ADMIN_EMAILS allowlist'indeki kullanıcıya görünür. */}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className={`group relative w-full flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-left ${
+                  pathname.startsWith("/admin")
+                    ? "bg-amber-500/10 text-amber-500"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <ShieldCheck className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110" />
+                <span className="flex-1">{t("shell.admin")}</span>
+              </Link>
+            )}
           </nav>
 
           {/* Bottom: credits + user */}
@@ -187,6 +203,19 @@ export function DashboardShell({
                 </Link>
               );
             })}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className={`flex items-center gap-1.5 shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
+                  pathname.startsWith("/admin")
+                    ? "bg-amber-500/10 text-amber-500"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
+                {t("shell.admin")}
+              </Link>
+            )}
           </div>
 
           {/* Scrollable content */}

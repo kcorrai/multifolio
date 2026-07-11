@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { maybeGrantSignupCredits } from "@/lib/credits/signup-bonus";
+import { isAdminEmail } from "@/lib/admin";
 import { DashboardShell } from "@/components/dashboard/shell";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -21,6 +22,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const credits = creditsRes.data?.balance ?? 0;
   const creditsUsed = (usageRes.data ?? []).reduce((sum, r) => sum + Number(r.credits_spent ?? 0), 0);
   const emailVerified = user.app_metadata?.email_verified === true;
+  const isAdmin = isAdminEmail(user.email);
 
   return (
     <DashboardShell
@@ -30,6 +32,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       initialJobsCount={jobsCountRes.count ?? 0}
       initialConnectionsCount={connCountRes.count ?? 0}
       emailVerified={emailVerified}
+      isAdmin={isAdmin}
     >
       {children}
     </DashboardShell>

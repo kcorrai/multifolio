@@ -330,7 +330,8 @@
       "logout": "Sign out",
       "gettingStarted": "Getting started",
       "comingSoonTitle": "Payments coming soon!",
-      "comingSoonBody": "Credit purchasing goes live very soon."
+      "comingSoonBody": "Credit purchasing goes live very soon.",
+      "admin": "Admin"
     },
     "overview": {
       "welcome": "Welcome to Multifolio!",
@@ -1006,6 +1007,14 @@
     "hireBody": "Have a project in mind? Let's talk.",
     "madeWith": "Made with Multifolio",
     "testimonials": "What clients say"
+  },
+  "admin": {
+    "title": "Feedback",
+    "back": "Dashboard",
+    "adminBadge": "Admin only",
+    "feedbackDesc": "Product feedback submitted by users. Read-only; visible to admins in the ADMIN_EMAILS allowlist.",
+    "all": "All",
+    "empty": "No feedback yet."
   },
   "feedback": {
     "title": "Share your feedback",

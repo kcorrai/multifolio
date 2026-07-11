@@ -330,7 +330,8 @@
       "logout": "Çıkış Yap",
       "gettingStarted": "Başlangıç rehberi",
       "comingSoonTitle": "Ödeme sistemi yakında!",
-      "comingSoonBody": "Kredi satın alma çok yakında açılıyor."
+      "comingSoonBody": "Kredi satın alma çok yakında açılıyor.",
+      "admin": "Admin"
     },
     "overview": {
       "welcome": "Multifolio'ya hoş geldin!",
@@ -1006,6 +1007,14 @@
     "hireBody": "Aklında bir proje mi var? Konuşalım.",
     "madeWith": "Multifolio ile yapıldı",
     "testimonials": "Müşteriler ne diyor"
+  },
+  "admin": {
+    "title": "Geri Bildirim",
+    "back": "Panel",
+    "adminBadge": "Yalnız admin",
+    "feedbackDesc": "Kullanıcıların gönderdiği ürün geri bildirimleri. Salt-okunur; yalnız ADMIN_EMAILS allowlist'indeki adminler görür.",
+    "all": "Tümü",
+    "empty": "Henüz geri bildirim yok."
   },
   "feedback": {
     "title": "Geri bildirimini paylaş",
