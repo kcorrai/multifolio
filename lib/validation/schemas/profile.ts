@@ -36,6 +36,14 @@ export const profileProjectSchema = z.object({
 });
 export type ProfileProject = z.infer<typeof profileProjectSchema>;
 
+// Platform-bazlı merge sonrası birikimli üst sınırlar (birden çok platform BİRLİKTE
+// sığsın; jsonb büyümesini de sınırlar). Giriş şeması da BUNLARLA sınırlanır → ProfileTab
+// merge edilmiş (büyük) diziyi geri gönderdiğinde doğrulama reddetmez. app/api/profile
+// merge cap'leri de buradan okur → tek doğru kaynak, drift YOK (aksi halde >50 portfolyo
+// kaydedilemezdi: "Too big: expected array to have <=50 items").
+export const PROFILE_PORTFOLIO_CAP = 120;
+export const PROFILE_PROJECTS_CAP = 60;
+
 export const profileInputSchema = z.object({
   // Görünen başlık, ör. "Senior Frontend Developer".
   headline: z.string().trim().min(2).max(120),
@@ -46,9 +54,9 @@ export const profileInputSchema = z.object({
   skills: z.array(z.string().trim().min(1).max(40)).max(50),
   // Profil fotoğrafı + portfolyo (opsiyonel — yoksa mevcut değerler korunur).
   avatar_url: httpUrl(1000).nullable().optional(),
-  portfolio: z.array(portfolioItemSchema).max(50).optional(),
+  portfolio: z.array(portfolioItemSchema).max(PROFILE_PORTFOLIO_CAP).optional(),
   // Yapılandırılmış projeler (opsiyonel — gönderildiyse yazılır, yoksa korunur).
-  projects: z.array(profileProjectSchema).max(30).optional(),
+  projects: z.array(profileProjectSchema).max(PROFILE_PROJECTS_CAP).optional(),
   // İçe aktarma save'i bunu gönderir → sunucu portfolio/projects'i PLATFORM BAZLI merge
   // eder (bu platformun öğeleri değişir, diğer platformlarınki korunur). Düz profil
   // düzenlemesi (ProfileTab) GÖNDERMEZ → tam-durum replace (mevcut davranış). null = manuel.

@@ -8,16 +8,18 @@ import { NextResponse } from "next/server";
 import type { User } from "@supabase/supabase-js";
 import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
-import { profileInputSchema } from "@/lib/validation/schemas/profile";
+import {
+  profileInputSchema, PROFILE_PORTFOLIO_CAP, PROFILE_PROJECTS_CAP,
+} from "@/lib/validation/schemas/profile";
 import { mergeByPlatform } from "@/lib/profile/merge";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 const REFERRAL_BONUS = 20;
-// Platform bazlı merge sonrası birikimli üst sınır (birden çok platform sığsın; jsonb
-// büyümesini de sınırlar). İçe aktarma başına giriş şeması zaten 30/50 ile sınırlı.
-const MERGED_PROJECTS_CAP = 60;
-const MERGED_PORTFOLIO_CAP = 120;
+// Platform bazlı merge sonrası birikimli üst sınır — giriş şemasıyla AYNI kaynak
+// (drift olursa merge edilmiş büyük dizi geri gönderilince kaydedilemez).
+const MERGED_PROJECTS_CAP = PROFILE_PROJECTS_CAP;
+const MERGED_PORTFOLIO_CAP = PROFILE_PORTFOLIO_CAP;
 
 // Referral aktivasyon tetiği: kayıtta ?ref= ile gelen kullanıcı İLK profilini
 // kaydettiğinde iki tarafa da bonus verilir. referrals.referred_id UNIQUE =
