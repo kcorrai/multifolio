@@ -31,9 +31,14 @@ export const portfolioGalleryItemSchema = z.object({
   caption: z.string().max(120).default(""),
 });
 // Proje-proje gösterim modu için: her grup = bir projenin başlığı + görselleri
-// (profiles.projects'ten üretimde kopyalanır). Boşsa galeri moduna düşülür.
+// (profiles.projects'ten üretimde/kaydetmede kopyalanır). Boşsa galeri moduna düşülür.
+// role/description/skills OPSİYONEL (default'lu) → eski (yalnız title+images) kayıtlar
+// geçerli kalır; doluysa public sayfada Upwork tarzı proje detay modalı gösterilir.
 export const portfolioProjectGroupSchema = z.object({
   title: z.string().max(200).default(""),
+  role: z.string().max(200).default(""),
+  description: z.string().max(4000).default(""),
+  skills: z.array(z.string().max(60)).max(30).default([]),
   images: z.array(portfolioGalleryItemSchema).max(24).default([]),
 });
 export const portfolioMediaSchema = z

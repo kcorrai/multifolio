@@ -12,39 +12,7 @@ import { spendCredits } from "@/lib/credits/spend";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { portfolioThemeSchema, type PortfolioMedia } from "@/lib/validation/schemas/portfolio";
 import type { ProfileInput, PortfolioItem, ProfileProject } from "@/lib/validation/schemas/profile";
-
-// Profil/platform görsellerini portfolyo galerisine çevirir (url'siz atlanır,
-// caption 120'ye kırpılır, url'ye göre dedup, 24 ile sınırlı).
-function buildGallery(...sources: (PortfolioItem[] | null | undefined)[]): PortfolioMedia["gallery"] {
-  const seen = new Set<string>();
-  const out: PortfolioMedia["gallery"] = [];
-  for (const list of sources) {
-    for (const item of list ?? []) {
-      const url = item?.imageUrl?.trim();
-      if (!url || seen.has(url)) continue;
-      seen.add(url);
-      out.push({ url, caption: (item.title ?? "").slice(0, 120) });
-      if (out.length >= 24) return out;
-    }
-  }
-  return out;
-}
-
-// Yapılandırılmış projeleri "proje-proje" gösterim grupları'na çevirir (her grup =
-// başlık + görselleri). Görselsiz proje atlanır; 12 grup / grup başına 24 görselle sınırlı.
-function buildProjectGroups(projects: ProfileProject[] | null | undefined): PortfolioMedia["projectGroups"] {
-  const out: PortfolioMedia["projectGroups"] = [];
-  for (const p of projects ?? []) {
-    const images = (p.images ?? [])
-      .filter((im) => im?.url?.trim())
-      .slice(0, 24)
-      .map((im) => ({ url: im.url, caption: (im.caption || p.title || "").slice(0, 120) }));
-    if (images.length === 0) continue;
-    out.push({ title: (p.title ?? "").slice(0, 200), images });
-    if (out.length >= 12) break;
-  }
-  return out;
-}
+import { buildGallery, buildProjectGroups } from "@/lib/portfolio/media";
 
 // İlk üretimde okunabilir + benzersiz slug türetir. Başlıktan slugify → alınmışsa
 // kısa user-id eki → o da alınmışsa hex fallback. RLS bypass (admin) ile TÜM

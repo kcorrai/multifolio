@@ -764,7 +764,7 @@
       "projects": "Proje proje"
     },
     "displayHint": "İçe aktardığın görsellerin public sayfanda nasıl görüneceği.",
-    "displayNoProjects": "Henüz yapılandırılmış proje içe aktarılmadı — Upwork/Fiverr profilini içe aktardıktan sonra yeniden üret, görseller proje-proje gruplanır.",
+    "displayNoProjects": "Proje-proje gösterilecek proje yok. Bir Upwork/Fiverr profili içe aktar, sonra kaydet — buraya senkronlanır, yeniden üretmene gerek yok.",
     "leads": {
         "title": "Gelen talepler",
         "empty": "Henüz talep yok. Almaya başlamak için portfolyonu paylaş.",
@@ -988,6 +988,9 @@
     "caseResult": "Sonuç",
     "lastUpdated": "Son güncelleme",
     "gallery": "Çalışmalar",
+    "projectRole": "Rolüm",
+    "projectDescription": "Proje açıklaması",
+    "projectSkills": "Beceriler ve teslimatlar",
     "viewPhoto": "Fotoğrafı büyüt",
     "photoClose": "Kapat",
     "photoPrev": "Önceki",

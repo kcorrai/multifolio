@@ -18,6 +18,7 @@ import { LeadForm } from "@/components/portfolio/lead-form";
 import { getSafeEmbed } from "@/lib/portfolio/embed";
 import { buildPersonJsonLd } from "@/lib/portfolio/json-ld";
 import { PublicGallery } from "@/components/portfolio/public-gallery";
+import { ProjectShowcase } from "@/components/portfolio/project-showcase";
 import { ZoomableImage } from "@/components/portfolio/zoomable-image";
 
 // Uygulamanın mutlak taban URL'i (canonical + JSON-LD + og:url için). NEXT_PUBLIC_APP_URL
@@ -211,18 +212,14 @@ export default async function PortfolioPage({ params }: PageProps) {
         </div>
       </header>
 
-      {/* ── Görseller: "projects" modu = proje-proje gruplu; aksi = düz galeri ── */}
+      {/* ── Görseller: "projects" modu = proje-proje kart+modal; aksi = düz galeri ── */}
       {showProjectGroups ? (
-        <section className="mx-auto max-w-5xl px-6 py-8 space-y-10">
-          {projectGroups.map((g, gi) => (
-            <div key={gi}>
-              <SectionLabel style={heading}>{g.title || t("projects")}</SectionLabel>
-              {/* Tıklanınca lightbox + foto arası ileri/geri (PublicGallery, client). */}
-              <div className="mt-4">
-                <PublicGallery images={g.images} fallbackAlt={g.title || headline} />
-              </div>
-            </div>
-          ))}
+        <section className="mx-auto max-w-5xl px-6 py-8">
+          <SectionLabel style={heading}>{t("projects")}</SectionLabel>
+          {/* Karta tıklanınca Upwork tarzı proje detay modalı (rol/açıklama/beceriler/görseller). */}
+          <div className="mt-5">
+            <ProjectShowcase projects={projectGroups} fallbackAlt={headline} />
+          </div>
         </section>
       ) : media.gallery.length > 0 ? (
         <section className="mx-auto max-w-5xl px-6 py-8">
@@ -260,8 +257,11 @@ export default async function PortfolioPage({ params }: PageProps) {
         <p className="mt-4 whitespace-pre-wrap text-lg leading-relaxed text-[var(--pf-text)]/90">{bio}</p>
       </section>
 
-      {/* ── Projeler ─────────────────────────────────────────────────── */}
-      {projects.length > 0 && (
+      {/* ── Projeler (AI metin kartları) ─────────────────────────────────
+          "projects" gösterim modunda üstteki görsel showcase zaten zengin proje
+          kartlarını (rol/açıklama/beceri/görsel) gösterir → yinelenmeyi önlemek için
+          bu metin bölümü yalnız galeri modunda render edilir. */}
+      {projects.length > 0 && !showProjectGroups && (
         <section className="mx-auto max-w-5xl px-6 py-10">
           <SectionLabel style={heading}>{t("projects")}</SectionLabel>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">

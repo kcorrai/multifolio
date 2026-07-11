@@ -764,7 +764,7 @@
       "projects": "By project"
     },
     "displayHint": "How your imported images appear on your public page.",
-    "displayNoProjects": "No structured projects imported yet — regenerate after importing an Upwork/Fiverr profile to group images by project.",
+    "displayNoProjects": "No projects to show by project yet. Import an Upwork/Fiverr profile, then save to sync them here — no regeneration needed.",
     "leads": {
         "title": "Incoming requests",
         "empty": "No requests yet. Share your portfolio to start receiving them.",
@@ -988,6 +988,9 @@
     "caseResult": "Result",
     "lastUpdated": "Last updated",
     "gallery": "Work",
+    "projectRole": "My role",
+    "projectDescription": "Project description",
+    "projectSkills": "Skills and deliverables",
     "viewPhoto": "View photo",
     "photoClose": "Close",
     "photoPrev": "Previous",

@@ -68,6 +68,9 @@ export function PortfolioTab({
     });
     const body = await res.json().catch(() => null);
     if (!res.ok) { setError(body?.error?.message ?? t("errorSaveSettings")); setSaving(false); return; }
+    // Sunucu projectGroups'u canlı profilden yeniden kurar (ücretsiz senkron) → dönen
+    // içeriği uygula ki import edilen projeler "By project" modunda anında görünsün.
+    if (body.portfolio.content) setContent(body.portfolio.content);
     setSlug(body.portfolio.slug); setPublished(body.portfolio.published); setDirty(false);
     setSaving(false);
   }
