@@ -17,6 +17,7 @@
     "nav": {
       "features": "Özellikler",
       "howItWorks": "Nasıl Çalışır",
+      "guides": "Rehberler",
       "freeTools": "Ücretsiz araçlar",
       "analyze": "Ücretsiz Profil Analizi",
       "earnings": "Net Kazanç Hesaplayıcı",
@@ -1394,6 +1395,17 @@
     "ctaTitle": "Kazandıran teklifleri AI yazsın",
     "ctaBody": "Multifolio, işin gereksinimlerini karşılayan, platforma hazır ve müşterinin dilinde teklifler üretir. 100 ücretsiz krediyle başla.",
     "ctaButton": "Ücretsiz başla"
+  },
+  "guides": {
+    "metaTitle": "Freelance rehberleri — Multifolio",
+    "metaDescription": "Freelance teklifleri, ücretler, profiller ve daha fazlası üzerine pratik, dolgusuz rehberler — ve bunları hayata geçirecek ücretsiz araçlar.",
+    "eyebrow": "Rehberler",
+    "title": "Freelance rehberleri",
+    "subtitle": "Daha fazla iş kazanmak için kısa, pratik oyun kitapları — ve bunları hayata geçirecek ücretsiz araçlar.",
+    "readingMinutes": "{count} dk okuma",
+    "ctaTitle": "Uygulamaya geçir",
+    "ctaButton": "Ücretsiz aracı dene",
+    "backToGuides": "Tüm rehberler"
   },
   "compare": {
     "metaTitle": "Freelance Platform Net Gelir Karşılaştırması — Multifolio",

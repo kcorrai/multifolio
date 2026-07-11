@@ -17,6 +17,7 @@
     "nav": {
       "features": "Features",
       "howItWorks": "How it works",
+      "guides": "Guides",
       "freeTools": "Free tools",
       "analyze": "Free profile check",
       "earnings": "Earnings calculator",
@@ -1394,6 +1395,17 @@
     "ctaTitle": "Let AI write proposals that win",
     "ctaBody": "Multifolio generates tailored, platform-ready proposals that cover the job's requirements — in the client's language. Start free with 100 credits.",
     "ctaButton": "Start free"
+  },
+  "guides": {
+    "metaTitle": "Freelance guides — Multifolio",
+    "metaDescription": "Practical, no-fluff guides on freelance proposals, rates, profiles and more — with free tools to put them into action.",
+    "eyebrow": "Guides",
+    "title": "Freelance guides",
+    "subtitle": "Short, practical playbooks to win more work — and the free tools to put them into action.",
+    "readingMinutes": "{count} min read",
+    "ctaTitle": "Put it into practice",
+    "ctaButton": "Try the free tool",
+    "backToGuides": "All guides"
   },
   "compare": {
     "metaTitle": "Freelance Platform Net Income Comparison — Multifolio",

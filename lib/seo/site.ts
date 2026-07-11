@@ -15,6 +15,7 @@ export const PUBLIC_ROUTES: string[] = [
   "/proposal-checker",
   "/compare",
   "/vergi",
+  "/guides",
   "/pricing",
   "/login",
   "/signup",
