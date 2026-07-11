@@ -1586,7 +1586,11 @@
     "ctaTitle": "Dakikalar içinde ATS uyumlu CV oluştur",
     "ctaBody": "Multifolio profilini şablonlar ve skorlamayla temiz, ATS uyumlu bir CV'ye dönüştürür. 100 ücretsiz krediyle başla.",
     "ctaButton": "Ücretsiz başla",
-    "ctaButtonIn": "CV oluşturucuyu aç"
+    "ctaButtonIn": "CV oluşturucuyu aç",
+    "teaser": {
+      "lockChecks": "{count, plural, one {# kontrol daha + anahtar kelime eşleşmesi — hesapla ücretsiz} other {# kontrol daha + anahtar kelime eşleşmesi — hesapla ücretsiz}}",
+      "unlock": "Tam raporu gör"
+    }
   },
   "lead": {
     "nameLabel": "Adın",

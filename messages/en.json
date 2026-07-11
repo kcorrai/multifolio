@@ -1586,7 +1586,11 @@
     "ctaTitle": "Build an ATS-ready resume in minutes",
     "ctaBody": "Multifolio turns your profile into a clean, ATS-optimized CV with scoring and templates. Start free with 100 credits.",
     "ctaButton": "Start free",
-    "ctaButtonIn": "Open the CV builder"
+    "ctaButtonIn": "Open the CV builder",
+    "teaser": {
+      "lockChecks": "{count, plural, one {# more check plus keyword match — free with an account} other {# more checks plus keyword match — free with an account}}",
+      "unlock": "See full report"
+    }
   },
   "lead": {
     "nameLabel": "Your name",

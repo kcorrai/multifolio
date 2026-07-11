@@ -7,7 +7,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Check, X, Info, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
+import { Check, X, Info, ArrowRight, Sparkles, ShieldCheck, Lock } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { scoreResumeText, type ResumeCheckId } from "@/lib/cv/ats-text";
 
@@ -25,6 +25,12 @@ export function AtsCheckForm({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
 
   const color = report.verdict === "strong" ? "#22c55e" : report.verdict === "average" ? "#00F0FF" : "#f59e0b";
   const checks = CHECK_ORDER.map((id) => report.checks.find((c) => c.id === id)).filter(Boolean) as { id: ResumeCheckId; passed: boolean }[];
+  // Teaser: kayıtsız kullanıcıya skor + ilk 3 kontrol ücretsiz; kalan kontroller +
+  // anahtar-kelime eşleşmesi giriş arkasında. Metin YİNE sunucuya gitmez — yalnız UI
+  // gizlenir (gizlilik korunur). Girişli kullanıcı tam raporu görür.
+  const FREE_CHECKS = 3;
+  const locked = !isLoggedIn && has;
+  const visibleChecks = locked ? checks.slice(0, FREE_CHECKS) : checks;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
@@ -88,7 +94,7 @@ export function AtsCheckForm({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           )}
 
           <div className="space-y-2 pt-1 border-t border-[#00F0FF]/15">
-            {checks.map(({ id, passed }) => {
+            {visibleChecks.map(({ id, passed }) => {
               const ok = has && passed;
               return (
                 <div key={id} className="flex items-start gap-2 text-xs">
@@ -101,9 +107,23 @@ export function AtsCheckForm({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                 </div>
               );
             })}
+            {locked && (
+              <div className="mt-1 rounded-xl border border-dashed border-violet-500/30 bg-violet-500/[0.05] px-3 py-3 text-center space-y-2">
+                <p className="flex items-center justify-center gap-1.5 text-[11px] font-semibold">
+                  <Lock className="h-3.5 w-3.5 text-violet-500" />
+                  {t("teaser.lockChecks", { count: checks.length - FREE_CHECKS })}
+                </p>
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs px-3 py-1.5 transition-colors"
+                >
+                  {t("teaser.unlock")}<ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            )}
           </div>
 
-          {has && report.missingKeywords.length > 0 && (
+          {!locked && has && report.missingKeywords.length > 0 && (
             <div className="pt-2 border-t border-[#00F0FF]/15 space-y-1.5">
               <p className="text-[11px] font-semibold text-amber-600 dark:text-amber-400">{t("missingLabel")}</p>
               <div className="flex flex-wrap gap-1.5">
