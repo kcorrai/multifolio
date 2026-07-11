@@ -1333,6 +1333,14 @@
     "ctaBody": "Multifolio platformlar arası daha iyi ücretli işler kazanmana yardım eder — optimize profiller, eşleşen işler ve teklifler. 100 ücretsiz krediyle başla.",
     "ctaButton": "Ücretsiz başla"
   },
+  "notifications": {
+    "title": "Bildirimler",
+    "empty": "Henüz bildirim yok.",
+    "markAllRead": "Tümünü okundu işaretle",
+    "bellLabel": "Bildirimler",
+    "matchTitle": "Yeni %{score} eşleşme",
+    "matchBody": "\"{title}\" profiline güçlü uyuyor."
+  },
   "compare": {
     "metaTitle": "Freelance Platform Net Gelir Karşılaştırması — Multifolio",
     "metaDescription": "Tek proje, beş platform: Upwork, Fiverr, Bionluk ve doğrudan müşteride komisyon, transfer ve vergi sonrası elinde ne kaldığını yan yana gör.",

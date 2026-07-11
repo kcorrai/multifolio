@@ -8,6 +8,7 @@ import { Wallet, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
+import { NotificationBell } from "./notification-bell";
 import { NAV_ITEMS, isNavActive, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
 import { VerifyEmailBanner } from "./verify-email-banner";
@@ -150,6 +151,7 @@ export function DashboardShell({
             <h1 className="hidden lg:block text-base font-semibold text-foreground">{pageTitle}</h1>
             {/* Actions */}
             <div className="flex items-center gap-2">
+              <NotificationBell />
               <LanguageToggle />
               <ThemeToggle />
               <form action="/auth/signout" method="post" className="lg:hidden">

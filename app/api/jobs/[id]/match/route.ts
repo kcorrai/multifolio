@@ -10,6 +10,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { matchJobToProfile } from "@/lib/ai/match";
 import { spendCredits } from "@/lib/credits/spend";
 import { sendMatchNotificationEmail } from "@/lib/notifications/email";
+import { createNotification } from "@/lib/notifications/create";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export const POST = withErrorHandler(async (_req, { params }) => {
@@ -86,6 +87,19 @@ export const POST = withErrorHandler(async (_req, { params }) => {
       matched.result.summary,
       locale,
     ).catch(() => {});
+  }
+
+  // Dashboard içi bildirim: yüksek skorda (≥70) zil'e düşer. createNotification
+  // hatayı içeride yutar; response'tan önce tamamlansın diye await edilir.
+  if (matched.result.score >= 70) {
+    const tn = await getTranslations("notifications");
+    await createNotification(admin, {
+      userId: user.id,
+      type: "job_match",
+      title: tn("matchTitle", { score: matched.result.score }),
+      body: tn("matchBody", { title: updated.title }),
+      link: "/dashboard/jobs?view=applied",
+    });
   }
 
   return NextResponse.json({

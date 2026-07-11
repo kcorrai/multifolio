@@ -1333,6 +1333,14 @@
     "ctaBody": "Multifolio helps you win better-paying work across platforms — optimized profiles, matched jobs and proposals. Start free with 100 credits.",
     "ctaButton": "Start free"
   },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet.",
+    "markAllRead": "Mark all read",
+    "bellLabel": "Notifications",
+    "matchTitle": "New {score}% match",
+    "matchBody": "\"{title}\" looks like a strong fit for your profile."
+  },
   "compare": {
     "metaTitle": "Freelance Platform Net Income Comparison — Multifolio",
     "metaDescription": "One project, five platforms: see how much you take home on Upwork, Fiverr, Bionluk and direct clients after fees, transfer costs and tax.",
