@@ -56,8 +56,9 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      {/* Kredi paketleri (landing ile paylaşılan bölüm) */}
-      <PricingSection isLoggedIn={isLoggedIn} />
+      {/* Kredi paketleri (landing ile paylaşılan bölüm) — sayfa kendi hero'suna
+          sahip → bölümün kendi başlığını gizle (çift "PRICING" tekrarı olmasın). */}
+      <PricingSection isLoggedIn={isLoggedIn} showHeader={false} />
 
       {/* Kredi maliyet tablosu */}
       <section className="border-y border-slate-200 dark:border-white/5 bg-slate-100/60 dark:bg-[#161923]/40 py-24">

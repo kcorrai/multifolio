@@ -15,7 +15,9 @@ const plans = [
 ] as const;
 
 /* ─── Paylaşılan fiyatlandırma bölümü (landing + /pricing) ───────── */
-export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+// showHeader=false: /pricing sayfası kendi hero'suna sahip → bölüm başlığı
+// tekrarını (çift "PRICING") gizle.
+export async function PricingSection({ isLoggedIn = false, showHeader = true }: { isLoggedIn?: boolean; showHeader?: boolean }) {
   const t = await getTranslations("landing");
   const tc = await getTranslations("common");
   const locale = await getLocale();
@@ -25,13 +27,15 @@ export async function PricingSection({ isLoggedIn = false }: { isLoggedIn?: bool
 
   return (
     <section id="pricing" className="mx-auto max-w-6xl px-8 py-24">
-      <ScrollReveal>
-        <div className="text-center space-y-3 mb-4">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("pricing.eyebrow")}</p>
-          <h2 className="text-4xl font-extrabold tracking-tight">{t("pricing.title")}</h2>
-          <p className="text-slate-500 dark:text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">{t("pricing.subtitle")}</p>
-        </div>
-      </ScrollReveal>
+      {showHeader && (
+        <ScrollReveal>
+          <div className="text-center space-y-3 mb-4">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("pricing.eyebrow")}</p>
+            <h2 className="text-4xl font-extrabold tracking-tight">{t("pricing.title")}</h2>
+            <p className="text-slate-500 dark:text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">{t("pricing.subtitle")}</p>
+          </div>
+        </ScrollReveal>
+      )}
 
       <div className="flex flex-wrap items-center justify-center gap-3 mb-6 text-xs font-medium text-slate-500 dark:text-[#94A3B8]">
         {[t("pricing.badgePayg"), t("pricing.badgeNoSub"), t("pricing.badgeNeverExpire"), t("pricing.badgeFreeStart")].map((b) => (
