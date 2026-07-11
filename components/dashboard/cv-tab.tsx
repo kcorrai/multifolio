@@ -16,7 +16,7 @@ import { CvPreview } from "./cv-preview";
 import { scoreCv, atsVerdict, hasFillerPhrase } from "@/lib/cv/ats";
 import { extractKeywordsFromText, matchKeywords } from "@/lib/cv/keywords";
 import { arrayMove } from "@/lib/cv/reorder";
-import { CV_TEMPLATES, CV_ACCENTS, CV_ACCENT_HEX, type CvTemplate } from "@/lib/cv/theme";
+import { CV_TEMPLATES, CV_ACCENTS, CV_ACCENT_HEX, CV_SINGLE_COLUMN, isAtsSafe, type CvTemplate } from "@/lib/cv/theme";
 import type {
   CvContent, CvExperience, CvEducation, CvProject, CvCertification, CvLanguage,
 } from "@/lib/validation/schemas/cv";
@@ -347,23 +347,23 @@ function DesignAndPreview({ content, patch }: { content: CvContent; patch: (n: P
         <CardDescription>{t("designHint")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
-        {/* Şablon kartları */}
-        <div className="grid grid-cols-3 gap-2">
+        {/* Şablon kartları — tek-sütun ATS şablonları önce (yeşil ATS rozetli) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {CV_TEMPLATES.map((tpl) => (
             <TemplateCard
               key={tpl}
               template={tpl}
               label={t(`template.${tpl}`)}
               accent={CV_ACCENT_HEX[content.theme.accent] ?? CV_ACCENT_HEX.blue}
-              atsSafe={tpl === "clean"}
+              atsSafe={isAtsSafe(tpl)}
               atsSafeLabel={t("atsSafeBadge")}
               selected={content.theme.template === tpl}
               onSelect={() => patch({ theme: { ...content.theme, template: tpl } })}
             />
           ))}
         </div>
-        {/* Görsel şablon → ATS uyarısı (araştırma: çok-sütun ayrıştırıcıyı bozar) */}
-        {content.theme.template !== "clean" && (
+        {/* Görsel (çok-sütun) şablon → ATS uyarısı (araştırma: ayrıştırıcıyı bozar) */}
+        {!isAtsSafe(content.theme.template) && (
           <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
             <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />{t("atsVisualWarning")}
           </div>
@@ -459,12 +459,27 @@ function TemplateThumb({ template, accent }: { template: CvTemplate; accent: str
       </div>
     );
   }
-  // clean
+  // Tek-sütun ATS şablonları (clean/classic/minimal/modern/compact) — stil config'ini yansıtır.
+  const s = CV_SINGLE_COLUMN[template] ?? CV_SINGLE_COLUMN.clean;
+  const headC = s.accentHeadings ? accent : "#94a3b8";
+  const nameC = s.nameAccent ? accent : "#64748b";
+  const alignCls = s.headerAlign === "center" ? "items-center" : "items-start";
+  const heading = (w: string) =>
+    s.headingDecoration === "leftbar" ? (
+      <span className="flex w-full items-center gap-0.5">
+        <span className="h-1 w-0.5 shrink-0 rounded" style={{ backgroundColor: accent }} />
+        {line(w, headC)}
+      </span>
+    ) : (
+      line(w, headC)
+    );
   return (
-    <div className="flex h-full flex-col items-center gap-1 p-2">
-      {line("50%", accent)}{line("35%")}
-      <span className="mt-0.5 block w-full space-y-1">{line("100%")}</span>
+    <div className={`flex h-full flex-col gap-1 p-2 ${alignCls}`}>
+      {line("50%", nameC)}{line("32%")}
+      {heading("42%")}
       {line("100%")}{line("90%")}
+      {heading("38%")}
+      {line("100%")}
     </div>
   );
 }

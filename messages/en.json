@@ -778,7 +778,11 @@
       "sidebar": "Sidebar",
       "banner": "Banner",
       "monogram": "Monogram",
-      "clean": "Clean (ATS)"
+      "clean": "Clean (ATS)",
+      "classic": "Classic (ATS)",
+      "minimal": "Minimal (ATS)",
+      "modern": "Modern (ATS)",
+      "compact": "Compact (ATS)"
     },
     "sectionContact": "Contact",
     "sectionSummary": "Professional summary",

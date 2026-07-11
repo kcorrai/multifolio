@@ -778,7 +778,11 @@
       "sidebar": "Kenar çubuğu",
       "banner": "Banner",
       "monogram": "Monogram",
-      "clean": "Sade (ATS)"
+      "clean": "Sade (ATS)",
+      "classic": "Klasik (ATS)",
+      "minimal": "Minimal (ATS)",
+      "modern": "Modern (ATS)",
+      "compact": "Kompakt (ATS)"
     },
     "sectionContact": "İletişim",
     "sectionSummary": "Profesyonel özet",

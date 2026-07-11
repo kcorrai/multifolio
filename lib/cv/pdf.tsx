@@ -7,7 +7,7 @@ import path from "node:path";
 import { Document, Page, Text, View, Link, Font } from "@react-pdf/renderer";
 import type { CvContent } from "@/lib/validation/schemas/cv";
 import type { Locale } from "@/i18n/detect";
-import { CV_ACCENT_HEX, CV_ACCENT_TINT, initialsOf } from "./theme";
+import { CV_ACCENT_HEX, CV_ACCENT_TINT, CV_SINGLE_COLUMN, initialsOf, type CvHeadingDecoration } from "./theme";
 
 // Türkçe (ı/ğ/ş/İ/ç/ö/ü) destekli font — @react-pdf yerleşik Helvetica'sı Latin-1 ile
 // sınırlı ve TR karakterleri bozuyor. Roboto TTF gömülü (lib/cv/fonts, repo'da).
@@ -52,13 +52,30 @@ function SideHeading({ children }: { children: string }) {
   );
 }
 
-// Ana bölüm başlığı (vurgu renkli, alt çizgi).
-function MainHeading({ children, accent }: { children: string; accent: string }) {
+// Ana bölüm başlığı — renk + dekorasyon parametreli (underline/leftbar/plain).
+// Tek-sütun ATS şablonları farklı stil için bunu doğrudan kullanır.
+function CvHeading({ children, color, decoration = "underline" }: { children: string; color: string; decoration?: CvHeadingDecoration }) {
+  if (decoration === "leftbar") {
+    return (
+      <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12, marginBottom: 6 }}>
+        <View style={{ width: 3, height: 10, backgroundColor: color, marginRight: 5 }} />
+        <Text style={{ fontSize: 11, fontFamily: BOLD, color, textTransform: "uppercase", letterSpacing: 1 }}>{children}</Text>
+      </View>
+    );
+  }
+  const border = decoration === "plain"
+    ? { borderBottomWidth: 0.75, borderBottomColor: "#B0B0B0" }
+    : { borderBottomWidth: 1, borderBottomColor: color };
   return (
-    <Text style={{ fontSize: 11, fontFamily: BOLD, color: accent, textTransform: "uppercase", letterSpacing: 1, marginTop: 12, marginBottom: 6, borderBottomWidth: 1, borderBottomColor: accent, paddingBottom: 2 }}>
+    <Text style={{ fontSize: 11, fontFamily: BOLD, color, textTransform: "uppercase", letterSpacing: 1, marginTop: 12, marginBottom: 6, paddingBottom: 2, ...border }}>
       {children}
     </Text>
   );
+}
+
+// Görsel şablonlar için kısayol (vurgu renkli, alt çizgi — eski davranış).
+function MainHeading({ children, accent }: { children: string; accent: string }) {
+  return <CvHeading color={accent} decoration="underline">{children}</CvHeading>;
 }
 
 function Bullet({ text, color }: { text: string; color: string }) {
@@ -113,19 +130,25 @@ function SidebarContent({ content, L }: { content: CvContent; L: Record<string, 
   );
 }
 
-// Ana içerik: özet + deneyim + eğitim + projeler (vurgu başlıklı).
-function MainContent({ content, L, accent }: { content: CvContent; L: Record<string, string>; accent: string }) {
+// Ana içerik: özet + deneyim + eğitim + projeler. Başlık rengi/dekorasyonu
+// parametreli (görsel şablonlar için varsayılan: vurgu + alt çizgi).
+function MainContent({
+  content, L, accent, headingColor = accent, headingDecoration = "underline",
+}: {
+  content: CvContent; L: Record<string, string>; accent: string;
+  headingColor?: string; headingDecoration?: CvHeadingDecoration;
+}) {
   return (
     <>
       {content.summary.trim() && (
         <View>
-          <MainHeading accent={accent}>{L.summary}</MainHeading>
+          <CvHeading color={headingColor} decoration={headingDecoration}>{L.summary}</CvHeading>
           <Text style={{ fontSize: 9.5, color: "#222222" }}>{content.summary}</Text>
         </View>
       )}
       {content.experience.length > 0 && (
         <View>
-          <MainHeading accent={accent}>{L.experience}</MainHeading>
+          <CvHeading color={headingColor} decoration={headingDecoration}>{L.experience}</CvHeading>
           {content.experience.map((e, i) => (
             <View key={i} style={{ marginBottom: 8 }} wrap={false}>
               <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -140,7 +163,7 @@ function MainContent({ content, L, accent }: { content: CvContent; L: Record<str
       )}
       {content.education.length > 0 && (
         <View>
-          <MainHeading accent={accent}>{L.education}</MainHeading>
+          <CvHeading color={headingColor} decoration={headingDecoration}>{L.education}</CvHeading>
           {content.education.map((e, i) => (
             <View key={i} style={{ marginBottom: 6 }} wrap={false}>
               <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -154,7 +177,7 @@ function MainContent({ content, L, accent }: { content: CvContent; L: Record<str
       )}
       {content.projects.length > 0 && (
         <View>
-          <MainHeading accent={accent}>{L.projects}</MainHeading>
+          <CvHeading color={headingColor} decoration={headingDecoration}>{L.projects}</CvHeading>
           {content.projects.map((p, i) => (
             <View key={i} style={{ marginBottom: 8 }} wrap={false}>
               <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -171,10 +194,10 @@ function MainContent({ content, L, accent }: { content: CvContent; L: Record<str
   );
 }
 
-function NameBlock({ content, color, align = "left" }: { content: CvContent; color: string; align?: "left" | "center" }) {
+function NameBlock({ content, color, align = "left", namePt = 21 }: { content: CvContent; color: string; align?: "left" | "center"; namePt?: number }) {
   return (
     <View style={{ marginBottom: 4 }}>
-      {content.fullName ? <Text style={{ fontSize: 21, fontFamily: BOLD, color, lineHeight: 1.15, textAlign: align }}>{content.fullName}</Text> : null}
+      {content.fullName ? <Text style={{ fontSize: namePt, fontFamily: BOLD, color, lineHeight: 1.15, textAlign: align }}>{content.fullName}</Text> : null}
       {content.title ? <Text style={{ fontSize: 11, color: MUTED, marginTop: 3, lineHeight: 1.2, textAlign: align }}>{content.title}</Text> : null}
     </View>
   );
@@ -191,31 +214,37 @@ export function CvDocument({ content }: { content: CvContent }) {
   const c = content.contact;
   const contactParts = [c.email, c.phone, c.location, c.linkedin, c.website].filter((x) => x.trim());
 
-  // ── clean: tek sütun (en ATS-güvenli) ──
-  if (tpl === "clean") {
+  // ── Tek-sütun ATS şablonları (clean/classic/minimal/modern/compact) ──
+  // Tümü CV_SINGLE_COLUMN config'iyle tek render yolundan; stil parametrelerle ayrışır.
+  const single = CV_SINGLE_COLUMN[tpl];
+  if (single) {
+    const headingColor = single.accentHeadings ? accent : INK;
+    const nameColor = single.nameAccent ? accent : INK;
+    const align = single.headerAlign;
+    const dec = single.headingDecoration;
     return (
       <Document title={content.fullName || "CV"} author={content.fullName || undefined}>
-        <Page size="A4" style={{ paddingVertical: 42, paddingHorizontal: 48, fontFamily: REG, fontSize: 10, color: INK, lineHeight: 1.4 }}>
-          <View style={{ textAlign: "center", marginBottom: 6 }}>
-            <NameBlock content={content} color={accent} align="center" />
-            {contactParts.length > 0 ? <Text style={{ fontSize: 9, color: SUBTLE, textAlign: "center", marginTop: 4 }}>{contactParts.join("  ·  ")}</Text> : null}
+        <Page size="A4" style={{ paddingVertical: single.padV, paddingHorizontal: single.padH, fontFamily: REG, fontSize: 10, color: INK, lineHeight: 1.4 }}>
+          <View style={{ marginBottom: 6 }}>
+            <NameBlock content={content} color={nameColor} align={align} namePt={single.namePt} />
+            {contactParts.length > 0 ? <Text style={{ fontSize: 9, color: SUBTLE, textAlign: align, marginTop: 4 }}>{contactParts.join("  ·  ")}</Text> : null}
           </View>
-          <MainContent content={content} L={L} accent={accent} />
+          <MainContent content={content} L={L} accent={accent} headingColor={headingColor} headingDecoration={dec} />
           {content.skills.hard.length + content.skills.soft.length > 0 && (
             <View>
-              <MainHeading accent={accent}>{L.skills}</MainHeading>
+              <CvHeading color={headingColor} decoration={dec}>{L.skills}</CvHeading>
               <Text style={{ fontSize: 9.5 }}>{[...content.skills.hard, ...content.skills.soft].filter((x) => x.trim()).join(", ")}</Text>
             </View>
           )}
           {content.certifications.length > 0 && (
             <View>
-              <MainHeading accent={accent}>{L.certifications}</MainHeading>
+              <CvHeading color={headingColor} decoration={dec}>{L.certifications}</CvHeading>
               {content.certifications.map((x, i) => <Text key={i} style={{ fontSize: 9.5, color: "#222" }}>{[x.name, x.issuer, x.date].filter(Boolean).join(" — ")}</Text>)}
             </View>
           )}
           {content.languages.length > 0 && (
             <View>
-              <MainHeading accent={accent}>{L.languages}</MainHeading>
+              <CvHeading color={headingColor} decoration={dec}>{L.languages}</CvHeading>
               <Text style={{ fontSize: 9.5 }}>{content.languages.map((l) => l.name + (l.level ? ` (${l.level})` : "")).join(", ")}</Text>
             </View>
           )}
