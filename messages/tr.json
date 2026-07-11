@@ -407,6 +407,12 @@
     },
     "close": "Kapat",
     "deleteError": "İlan silinemedi.",
+    "statusError": "Durum güncellenemedi.",
+    "board": {
+      "list": "Liste",
+      "board": "Pano",
+      "moveTo": "Duruma taşı"
+    },
     "statApplied": "Başvurulan",
     "statAwaiting": "Yanıt Bekleniyor",
     "statActive": "Aktif",

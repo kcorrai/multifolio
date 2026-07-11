@@ -407,6 +407,12 @@
     },
     "close": "Close",
     "deleteError": "Could not delete the job.",
+    "statusError": "Could not update the status.",
+    "board": {
+      "list": "List",
+      "board": "Board",
+      "moveTo": "Move to status"
+    },
     "statApplied": "Applied",
     "statAwaiting": "Awaiting Reply",
     "statActive": "Active",

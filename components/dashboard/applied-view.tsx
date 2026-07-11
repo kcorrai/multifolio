@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, AlertCircle, Briefcase } from "lucide-react";
+import { Plus, Trash2, AlertCircle, Briefcase, List, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { JobAddModal } from "@/components/job-add-modal";
 import { JobDetailPanel } from "@/components/job-detail-panel";
+import { KanbanBoard } from "./kanban-board";
 import { STATUS_DOT, scoreColor, scoreBarColor, type JobRow } from "./shared";
 import { useDashboard } from "./dashboard-context";
+import type { JobStatus } from "@/lib/validation/schemas/job";
 
 export function AppliedView({
   initialJobs, profileSaved,
@@ -22,9 +24,28 @@ export function AppliedView({
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [jobError, setJobError] = useState("");
+  const [mode, setMode] = useState<"list" | "board">("list");
 
   // Sidebar rozetini iş listesiyle senkron tut.
   useEffect(() => { setJobsCount(jobs.length); }, [jobs.length, setJobsCount]);
+
+  // Pano sürükle-bırak / select ile durum değişimi: optimistic + PATCH; hata geri alır.
+  async function changeStatus(id: string, status: JobStatus) {
+    const prev = jobs.find((j) => j.id === id);
+    if (!prev || prev.status === status) return;
+    setJobError("");
+    setJobs((list) => list.map((j) => (j.id === id ? { ...j, status } : j)));
+    const res = await fetch(`/api/jobs/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      setJobError(body?.error?.message ?? t("statusError"));
+      setJobs((list) => list.map((j) => (j.id === id ? { ...j, status: prev.status } : j)));
+    }
+  }
 
   function handleJobAdded(job: JobRow) {
     setJobs((prev) => {
@@ -71,11 +92,34 @@ export function AppliedView({
         </div>
       )}
 
-      {/* Add + error */}
-      <div className="flex items-center justify-between">
-        <Button variant="outline" onClick={() => setJobAddModalOpen(true)} className="gap-2">
-          <Plus className="h-4 w-4" />{t("addJob")}
-        </Button>
+      {/* Add + görünüm toggle + error */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Button variant="outline" onClick={() => setJobAddModalOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />{t("addJob")}
+          </Button>
+          {jobs.length > 0 && (
+            <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5">
+              {([
+                { m: "list" as const, Icon: List, label: t("board.list") },
+                { m: "board" as const, Icon: LayoutGrid, label: t("board.board") },
+              ]).map(({ m, Icon, label }) => (
+                <button
+                  key={m}
+                  onClick={() => setMode(m)}
+                  aria-pressed={mode === m}
+                  title={label}
+                  aria-label={label}
+                  className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+                    mode === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />{label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         {jobError && (
           <div className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
             <AlertCircle className="h-4 w-4 shrink-0" />{jobError}
@@ -93,6 +137,8 @@ export function AppliedView({
             {t("emptyHint")}
           </p>
         </div>
+      ) : mode === "board" ? (
+        <KanbanBoard jobs={jobs} onChangeStatus={changeStatus} onSelect={setSelectedJobId} />
       ) : (
         <div className="grid lg:grid-cols-5 gap-3">
           {/* Sol: iş listesi */}
