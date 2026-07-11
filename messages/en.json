@@ -19,6 +19,7 @@
       "howItWorks": "How it works",
       "analyze": "Free profile check",
       "earnings": "Earnings calculator",
+      "rate": "Rate calculator",
       "compare": "Platform comparison",
       "trTax": "Turkey tax guide",
       "pricing": "Pricing",
@@ -112,6 +113,10 @@
       "earnings": {
         "title": "Earnings calculator",
         "desc": "See exactly what lands in your pocket after platform, payment and tax cuts."
+      },
+      "rate": {
+        "title": "Rate calculator",
+        "desc": "Find the hourly rate you need to hit your income goal."
       },
       "compare": {
         "title": "Platform comparison",
@@ -1284,6 +1289,41 @@
     },
     "disclaimer": "All rates are editable estimates and can change over time; this is not tax or financial advice. Check current platform and bank fees before deciding.",
     "ctaTitle": "Keep more of what you earn",
+    "ctaBody": "Multifolio helps you win better-paying work across platforms — optimized profiles, matched jobs and proposals. Start free with 100 credits.",
+    "ctaButton": "Start free"
+  },
+  "rate": {
+    "metaTitle": "Freelance Rate Calculator — What Should I Charge? | Multifolio",
+    "metaDescription": "Work out the hourly and day rate you need to hit your income goal — after platform fees, taxes and expenses. Free, instant, no sign-up.",
+    "heroEyebrow": "Free tool",
+    "heroTitle": "What rate should you charge?",
+    "heroSubtitle": "Set your target take-home income and we'll work backwards to the hourly and day rate you need — after platform commission, tax and expenses.",
+    "targetNet": "Target monthly take-home",
+    "currency": "Currency",
+    "expenses": "Monthly business expenses",
+    "expensesHint": "Software, equipment, accountant, etc. — leave 0 if none.",
+    "billableHours": "Billable hours / week",
+    "billableHint": "Only hours you can actually invoice — admin, sales and breaks don't count.",
+    "weeksOff": "Weeks off / year",
+    "platform": "Platform commission",
+    "platformDirect": "Direct client",
+    "platformFee": "Commission (%)",
+    "tax": "Tax rate (%)",
+    "taxHint": "Simplified estimate on income after platform fees — pick 0 if you handle tax separately.",
+    "resultTitle": "Rate you should charge",
+    "perHour": "hr",
+    "perDay": "day",
+    "rows": {
+      "monthlyGross": "Monthly invoice (gross)",
+      "platformFee": "Platform commission",
+      "tax": "Tax",
+      "expenses": "Expenses",
+      "net": "Your take-home"
+    },
+    "hoursNote": "Based on {monthly} billable hours/month across {weeks} working weeks.",
+    "infeasible": "Add some billable hours and keep commission + tax under 100% to see a rate.",
+    "disclaimer": "All values are editable estimates and can change over time; this is not tax or financial advice. Check current platform and tax rates before deciding.",
+    "ctaTitle": "Charge what you're worth",
     "ctaBody": "Multifolio helps you win better-paying work across platforms — optimized profiles, matched jobs and proposals. Start free with 100 credits.",
     "ctaButton": "Start free"
   },

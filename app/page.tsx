@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   Layers, Globe, Briefcase, ArrowRight, ArrowUpRight,
   CheckCircle2, Target, Sparkles, ShieldCheck,
-  FileText, Download, Compass, Gauge, Calculator, Scale, Puzzle, Gift,
+  FileText, Download, Compass, Gauge, Calculator, Scale, Puzzle, Gift, Tag,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { CountUp } from "@/components/count-up";
@@ -150,7 +150,8 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const tools = [
     { href: "/analyze",  icon: Gauge,      key: "analyze",  accent: "#00F0FF" },
     { href: "/earnings", icon: Calculator, key: "earnings", accent: "#a78bfa" },
-    { href: "/compare",  icon: Scale,      key: "compare",  accent: "#00F0FF" },
+    { href: "/rate",     icon: Tag,        key: "rate",     accent: "#00F0FF" },
+    { href: "/compare",  icon: Scale,      key: "compare",  accent: "#a78bfa" },
   ] as const;
 
   const steps = [
@@ -629,7 +630,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {tools.map(({ href, icon: Icon, key, accent }, i) => (
             <ScrollReveal key={key} delay={i * 80}>
               <Tilt fill>

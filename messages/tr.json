@@ -19,6 +19,7 @@
       "howItWorks": "Nasıl Çalışır",
       "analyze": "Ücretsiz Profil Analizi",
       "earnings": "Net Kazanç Hesaplayıcı",
+      "rate": "Ücret hesaplayıcı",
       "compare": "Platform Karşılaştırma",
       "trTax": "Türkiye vergi rehberi",
       "pricing": "Fiyat",
@@ -112,6 +113,10 @@
       "earnings": {
         "title": "Kazanç hesaplayıcı",
         "desc": "Platform, transfer ve vergi kesintilerinden sonra elime net ne geçer, tam olarak gör."
+      },
+      "rate": {
+        "title": "Ücret hesaplayıcı",
+        "desc": "Gelir hedefine ulaşmak için gereken saatlik ücreti bul."
       },
       "compare": {
         "title": "Platform karşılaştırma",
@@ -1285,6 +1290,41 @@
     "disclaimer": "Tüm oranlar düzenlenebilir tahminlerdir ve zamanla değişebilir; bu bir vergi/finans danışmanlığı değildir. Karar vermeden önce güncel platform ve banka ücretlerini kontrol et.",
     "ctaTitle": "Kazancından daha fazlasını elinde tut",
     "ctaBody": "Multifolio platformlar arası daha iyi işler kazanmana yardım eder — optimize profiller, eşleşen ilanlar ve teklifler. 100 ücretsiz krediyle başla.",
+    "ctaButton": "Ücretsiz başla"
+  },
+  "rate": {
+    "metaTitle": "Freelance Ücret Hesaplayıcı — Ne Ücret İstemeliyim? | Multifolio",
+    "metaDescription": "Gelir hedefine ulaşmak için gereken saatlik ve günlük ücreti hesapla — platform komisyonu, vergi ve giderler sonrası. Ücretsiz, anında, kayıt yok.",
+    "heroEyebrow": "Ücretsiz araç",
+    "heroTitle": "Ne ücret istemelisin?",
+    "heroSubtitle": "Hedeflediğin net geliri gir; komisyon, vergi ve giderler sonrası ihtiyacın olan saatlik ve günlük ücreti geriye doğru hesaplayalım.",
+    "targetNet": "Hedef aylık net gelir",
+    "currency": "Para birimi",
+    "expenses": "Aylık işletme gideri",
+    "expensesHint": "Yazılım, ekipman, mali müşavir vb. — yoksa 0 bırak.",
+    "billableHours": "Faturalanabilir saat / hafta",
+    "billableHint": "Yalnızca gerçekten faturalayabildiğin saatler — idari iş, pazarlama ve molalar sayılmaz.",
+    "weeksOff": "Yıllık izin (hafta)",
+    "platform": "Platform komisyonu",
+    "platformDirect": "Doğrudan müşteri",
+    "platformFee": "Komisyon (%)",
+    "tax": "Vergi oranı (%)",
+    "taxHint": "Platform kesintisi sonrası gelir üzerinden basitleştirilmiş tahmin — vergiyi ayrı hallediyorsan 0 seç.",
+    "resultTitle": "İstemen gereken ücret",
+    "perHour": "saat",
+    "perDay": "gün",
+    "rows": {
+      "monthlyGross": "Aylık fatura (brüt)",
+      "platformFee": "Platform komisyonu",
+      "tax": "Vergi",
+      "expenses": "Giderler",
+      "net": "Eline geçen"
+    },
+    "hoursNote": "{weeks} çalışma haftasında aylık {monthly} faturalanabilir saate göre.",
+    "infeasible": "Bir ücret görmek için faturalanabilir saat ekle ve komisyon + vergiyi %100 altında tut.",
+    "disclaimer": "Tüm değerler düzenlenebilir tahmindir ve zamanla değişebilir; vergi/finansal tavsiye değildir. Karar vermeden önce güncel platform ve vergi oranlarını kontrol et.",
+    "ctaTitle": "Hak ettiğin ücreti iste",
+    "ctaBody": "Multifolio platformlar arası daha iyi ücretli işler kazanmana yardım eder — optimize profiller, eşleşen işler ve teklifler. 100 ücretsiz krediyle başla.",
     "ctaButton": "Ücretsiz başla"
   },
   "compare": {

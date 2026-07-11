@@ -15,6 +15,7 @@ import { LanguageToggle } from "@/components/language-toggle";
 const LINKS = [
   { key: "nav.analyze",     href: "/analyze" },
   { key: "nav.earnings",    href: "/earnings" },
+  { key: "nav.rate",        href: "/rate" },
   { key: "nav.compare",     href: "/compare" },
   // TR vergi rehberi yalnız Türk kullanıcılara (masaüstü nav ile aynı kural).
   { key: "nav.trTax",       href: "/vergi", trOnly: true },
