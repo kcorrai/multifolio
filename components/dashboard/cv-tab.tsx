@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Sparkles, Upload, Save, Check, AlertCircle, Download, Wand2, Plus, X, Gauge, Target,
@@ -55,6 +55,19 @@ export function CvTab({
 
   const ats = useMemo(() => (content ? scoreCv(content) : null), [content]);
 
+  // ATS skor geçmişi (trend grafiği). CV varsa yükle + kayıt sonrası tazele. Tablo
+  // yoksa (migration bekliyor) route boş döner → sessizce boş kalır.
+  const [scoreHistory, setScoreHistory] = useState<{ score: number; created_at: string }[]>([]);
+  const refreshHistory = useCallback(() => {
+    fetch("/api/cv/history")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((b) => setScoreHistory(Array.isArray(b?.history) ? b.history : []))
+      .catch(() => {});
+  }, []);
+  useEffect(() => {
+    if (initialCv.content) refreshHistory();
+  }, [initialCv.content, refreshHistory]);
+
   // Değişiklik + kaydedilmemiş işaretle.
   function patch(next: Partial<CvContent>) {
     setContent((prev) => (prev ? { ...prev, ...next } : prev));
@@ -97,6 +110,7 @@ export function CvTab({
     if (!res.ok) { setError(body?.error?.message ?? t("errorGenerate")); setSaving(false); return; }
     setContent(body.cv.content); setDirty(false);
     setSaving(false);
+    refreshHistory(); // kayıt skoru değiştirmiş olabilir → trendi tazele
   }
 
   async function tailor(payload: { jobId: string } | { jobText: string }) {
@@ -235,7 +249,7 @@ export function CvTab({
           {/* ── Tasarım (şablon + vurgu) + canlı önizleme ───────── */}
           <DesignAndPreview content={content} patch={patch} />
 
-          <AtsPanel ats={ats!} />
+          <AtsPanel ats={ats!} history={scoreHistory} />
 
           {/* ── Anahtar kelime eşleşmesi (deterministik, kredisiz) ── */}
           <KeywordMatchCard content={content} patch={patch} />
@@ -502,9 +516,26 @@ function scrollToSection(id: string) {
 }
 
 /* ── ATS skor paneli ──────────────────────────────────────────────── */
-function AtsPanel({ ats }: { ats: ReturnType<typeof scoreCv> }) {
+// ATS skor trendi mini grafiği (SAF SVG, ek bağımlılık yok). Kayıtlı anlık görüntüler.
+function ScoreSparkline({ points }: { points: number[] }) {
+  const w = 120, h = 32, pad = 3;
+  const min = Math.min(...points), max = Math.max(...points);
+  const range = max - min || 1;
+  const step = points.length > 1 ? (w - pad * 2) / (points.length - 1) : 0;
+  const coords = points
+    .map((p, i) => `${(pad + i * step).toFixed(1)},${(pad + (h - pad * 2) * (1 - (p - min) / range)).toFixed(1)}`)
+    .join(" ");
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden>
+      <polyline points={coords} fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function AtsPanel({ ats, history }: { ats: ReturnType<typeof scoreCv>; history: { score: number; created_at: string }[] }) {
   const t = useTranslations("cv");
   const verdict = atsVerdict(ats.score);
+  const trend = history.length >= 2 ? { delta: history[history.length - 1].score - history[0].score } : null;
   const color =
     verdict === "strong" ? "text-green-600 dark:text-green-400"
       : verdict === "average" ? "text-amber-600 dark:text-amber-400"
@@ -518,9 +549,19 @@ function AtsPanel({ ats }: { ats: ReturnType<typeof scoreCv> }) {
         <CardDescription>{t("atsHint")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col sm:flex-row gap-5">
-        <div className={`flex h-24 w-24 shrink-0 flex-col items-center justify-center rounded-2xl bg-muted/50 ring-4 ${ring}`}>
-          <span className={`text-3xl font-extrabold tabular-nums ${color}`}>{ats.score}</span>
-          <span className="text-[11px] font-medium text-muted-foreground">{t(`verdict.${verdict}`)}</span>
+        <div className="flex shrink-0 flex-col items-center gap-2">
+          <div className={`flex h-24 w-24 flex-col items-center justify-center rounded-2xl bg-muted/50 ring-4 ${ring}`}>
+            <span className={`text-3xl font-extrabold tabular-nums ${color}`}>{ats.score}</span>
+            <span className="text-[11px] font-medium text-muted-foreground">{t(`verdict.${verdict}`)}</span>
+          </div>
+          {trend && (
+            <div className="flex flex-col items-center gap-0.5">
+              <div className={color}><ScoreSparkline points={history.map((h) => h.score)} /></div>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                {trend.delta >= 0 ? `+${trend.delta}` : trend.delta} · {t("trend30d")}
+              </span>
+            </div>
+          )}
         </div>
         <div className="flex-1 space-y-2">
           <p className="text-sm font-medium">{t("issuesTitle")}</p>

@@ -919,6 +919,7 @@
     "remove": "Kaldır",
     "atsTitle": "ATS skoru",
     "atsHint": "Bir Aday Takip Sistemi'nin (ATS) CV'ni ne kadar iyi okuyabildiği. Düzenledikçe güncellenir.",
+    "trend30d": "son 30 gün",
     "verdict": {
       "strong": "Güçlü",
       "average": "Geliştirilebilir",

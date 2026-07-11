@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 import { AuthError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { cvUpdateSchema } from "@/lib/validation/schemas/cv";
+import { scoreCv } from "@/lib/cv/ats";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const GET = withErrorHandler(async () => {
@@ -41,6 +42,21 @@ export const PUT = withErrorHandler(async (req) => {
     .select("id, content, updated_at")
     .single();
   if (error) throw error;
+
+  // ATS skoru anlık görüntüsü (trend grafiği). Best-effort: yalnız skor DEĞİŞTİYSE
+  // yeni satır (autosave/tekrar-kayıt spam'i yok). Tablo henüz yoksa (migration 0036
+  // uygulanmadıysa) select hata döner → sessizce atlanır, CV kaydını BOZMAZ.
+  const score = scoreCv(input.content).score;
+  const { data: last, error: lastErr } = await supabase
+    .from("cv_score_history")
+    .select("score")
+    .eq("cv_id", data.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!lastErr && (!last || last.score !== score)) {
+    await supabase.from("cv_score_history").insert({ user_id: user.id, cv_id: data.id, score });
+  }
 
   return NextResponse.json({ cv: data });
 });

@@ -919,6 +919,7 @@
     "remove": "Remove",
     "atsTitle": "ATS score",
     "atsHint": "How well an Applicant Tracking System can read your CV. Updates as you edit.",
+    "trend30d": "last 30 days",
     "verdict": {
       "strong": "Strong",
       "average": "Needs work",
