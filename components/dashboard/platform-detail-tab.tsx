@@ -105,7 +105,7 @@ export function PlatformDetailTab({
   const [syncError, setSyncError] = useState("");
   const [ppTranslating, setPpTranslating] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
-  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
+  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number; title?: string; description?: string } | null>(null);
   const canFetch = SERVER_FETCHABLE.includes(platform);
   const isExtensionOnly = EXTENSION_ONLY.includes(platform);
 
@@ -562,7 +562,7 @@ export function PlatformDetailTab({
                           <button
                             key={img.src + k}
                             type="button"
-                            onClick={() => setLightbox({ images: imgs, index: k })}
+                            onClick={() => setLightbox({ images: imgs, index: k, title: p.title, description: p.description })}
                             title={img.alt}
                             className="group relative aspect-square overflow-hidden rounded-lg border border-border cursor-zoom-in"
                           >
@@ -758,7 +758,7 @@ export function PlatformDetailTab({
 
       {/* Foto lightbox (avatar + portfolyo görselleri; ileri/geri gezinme). */}
       {lightbox && (
-        <ImageLightbox images={lightbox.images} index={lightbox.index} onClose={() => setLightbox(null)} />
+        <ImageLightbox images={lightbox.images} index={lightbox.index} title={lightbox.title} description={lightbox.description} onClose={() => setLightbox(null)} />
       )}
     </div>
   );

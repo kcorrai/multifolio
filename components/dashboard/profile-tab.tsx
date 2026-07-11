@@ -42,7 +42,7 @@ export function ProfileTab({
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>(initialProfile?.portfolio ?? []);
   // İçe aktarılan yapılandırılmış projeler (Upwork) — profilde gruplu gösterilir; Kaydet'te korunur.
   const projects = initialProfile?.projects ?? [];
-  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
+  const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number; title?: string; description?: string } | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [picked, setPicked] = useState<Set<string>>(new Set());
 
@@ -590,7 +590,7 @@ export function ProfileTab({
                           <button
                             key={img.src + k}
                             type="button"
-                            onClick={() => setLightbox({ images: imgs, index: k })}
+                            onClick={() => setLightbox({ images: imgs, index: k, title: p.title, description: p.description })}
                             title={img.alt}
                             className="group relative aspect-square overflow-hidden rounded-lg border border-border cursor-zoom-in"
                           >
@@ -613,6 +613,8 @@ export function ProfileTab({
         <ImageLightbox
           images={lightbox.images}
           index={lightbox.index}
+          title={lightbox.title}
+          description={lightbox.description}
           onClose={() => setLightbox(null)}
           closeLabel={t("lightboxClose")}
           prevLabel={t("prev")}

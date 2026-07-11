@@ -14,6 +14,7 @@ export interface LightboxImage { src: string; alt?: string }
 export function ImageLightbox({
   images, index = 0, onClose,
   closeLabel, prevLabel, nextLabel,
+  title, description,
 }: {
   images: LightboxImage[];
   index?: number;
@@ -21,6 +22,10 @@ export function ImageLightbox({
   closeLabel?: string;
   prevLabel?: string;
   nextLabel?: string;
+  /** Proje bağlamı: verilirse resmin altında proje başlığı/açıklaması gösterilir
+      (bir proje resmine tıklayınca "tüm proje öne çıkar"). */
+  title?: string;
+  description?: string;
 }) {
   // Etiket verilmezse common namespace'inden (çağıranlar her yerde geçmek zorunda kalmaz).
   const tc = useTranslations("common");
@@ -85,9 +90,6 @@ export function ImageLightbox({
           >
             <ChevronRight className="h-6 w-6" />
           </button>
-          <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold tabular-nums text-white">
-            {i + 1} / {count}
-          </span>
         </>
       )}
 
@@ -97,8 +99,21 @@ export function ImageLightbox({
         src={cur.src}
         alt={cur.alt ?? ""}
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[90vh] max-w-[92vw] rounded-lg object-contain shadow-2xl"
+        className={`max-w-[92vw] rounded-lg object-contain shadow-2xl ${title || description ? "max-h-[76vh]" : "max-h-[90vh]"}`}
       />
+
+      {/* Proje bağlamı + altyazı + sayaç paneli (alt-orta) */}
+      {(title || description || cur.alt || hasNav) && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 max-w-[92vw] rounded-xl bg-black/60 px-4 py-2.5 text-center text-white backdrop-blur-sm"
+        >
+          {title && <p className="text-sm font-bold leading-snug">{title}</p>}
+          {description && <p className="mt-0.5 max-w-[72vw] text-xs leading-relaxed text-white/70 line-clamp-2">{description}</p>}
+          {cur.alt && cur.alt !== title && <p className="mt-0.5 text-[11px] text-white/60">{cur.alt}</p>}
+          {hasNav && <p className="mt-1 text-[11px] font-semibold tabular-nums text-white/70">{i + 1} / {count}</p>}
+        </div>
+      )}
     </div>,
     document.body,
   );
