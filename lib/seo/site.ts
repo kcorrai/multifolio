@@ -13,6 +13,7 @@ export const PUBLIC_ROUTES: string[] = [
   "/earnings",
   "/rate",
   "/proposal-checker",
+  "/headline-optimizer",
   "/compare",
   "/vergi",
   "/guides",

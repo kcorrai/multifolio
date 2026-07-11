@@ -17,6 +17,7 @@ const LINKS = [
   { key: "nav.earnings",    href: "/earnings" },
   { key: "nav.rate",        href: "/rate" },
   { key: "nav.proposalChecker", href: "/proposal-checker" },
+  { key: "nav.headlineOptimizer", href: "/headline-optimizer" },
   { key: "nav.compare",     href: "/compare" },
   // TR vergi rehberi yalnız Türk kullanıcılara (masaüstü nav ile aynı kural).
   { key: "nav.trTax",       href: "/vergi", trOnly: true },

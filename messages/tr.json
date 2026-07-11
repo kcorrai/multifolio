@@ -23,6 +23,7 @@
       "earnings": "Net Kazanç Hesaplayıcı",
       "rate": "Ücret hesaplayıcı",
       "proposalChecker": "Teklif denetçisi",
+      "headlineOptimizer": "Başlık optimize",
       "compare": "Platform Karşılaştırma",
       "trTax": "Türkiye vergi rehberi",
       "pricing": "Fiyat",
@@ -124,6 +125,10 @@
       "proposalChecker": {
         "title": "Teklif denetçisi",
         "desc": "Kapak mektubunu müşteri kazandıran kriterlere göre puanla."
+      },
+      "headlineOptimizer": {
+        "title": "Başlık optimize",
+        "desc": "Profil başlığını müşteri getiren kriterlere göre puanla."
       },
       "compare": {
         "title": "Platform karşılaştırma",
@@ -1414,6 +1419,34 @@
     "ctaTitle": "Uygulamaya geçir",
     "ctaButton": "Ücretsiz aracı dene",
     "backToGuides": "Tüm rehberler"
+  },
+  "headlineOptimizer": {
+    "metaTitle": "Ücretsiz Freelance Başlık Optimize Edici — Multifolio",
+    "metaDescription": "Profil başlığını gerçekten müşteri getiren kriterlere göre puanla — spesifik rol, net sonuç, klişe yok. Ücretsiz, anında, kayıt yok.",
+    "heroEyebrow": "Ücretsiz araç",
+    "heroTitle": "Profil başlığın işe yarıyor mu?",
+    "heroSubtitle": "Başlığını yapıştır, müşteriyi tıklatan unsurlara göre anında puan al — ücretsiz, kayıt yok.",
+    "inputLabel": "Profil başlığın",
+    "placeholder": "örn. SaaS ekiplerinin daha hızlı yayına almasına yardım eden React geliştirici",
+    "charCount": "{count} karakter",
+    "resultTitle": "Başlık puanı",
+    "verdict": {
+      "strong": "Güçlü",
+      "ok": "İdare eder",
+      "weak": "Geliştirilmeli"
+    },
+    "checks": {
+      "length": "İyi uzunluk (yaklaşık 20–90 karakter)",
+      "role": "Spesifik rol/beceri belirtiyor (\"freelancer\" değil)",
+      "outcome": "Ne teslim ettiğini söylüyor — sonuç/değer",
+      "noBuzzwords": "Klişe veya boş sıfat yok"
+    },
+    "buzzwordLabel": "Kaldırılacak klişeler",
+    "formula": "Güçlü formül: [rol], [kime] [sonuç] için yardım eder. örn. \"SaaS ekiplerinin daha hızlı yayına almasına yardım eden React geliştirici\".",
+    "disclaimer": "Hızlı bir sezgisel kontrol, kural değil. Çekmek istediğin spesifik müşteriler için yaz.",
+    "ctaTitle": "Tüm profilini optimize et",
+    "ctaBody": "Multifolio profilinin tamamını LinkedIn, Upwork, Fiverr ve daha fazlası için puanlar ve yeniden yazar — her platformun diliyle. 100 ücretsiz krediyle başla.",
+    "ctaButton": "Ücretsiz başla"
   },
   "compare": {
     "metaTitle": "Freelance Platform Net Gelir Karşılaştırması — Multifolio",

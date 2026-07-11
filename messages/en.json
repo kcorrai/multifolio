@@ -23,6 +23,7 @@
       "earnings": "Earnings calculator",
       "rate": "Rate calculator",
       "proposalChecker": "Proposal checker",
+      "headlineOptimizer": "Headline optimizer",
       "compare": "Platform comparison",
       "trTax": "Turkey tax guide",
       "pricing": "Pricing",
@@ -124,6 +125,10 @@
       "proposalChecker": {
         "title": "Proposal checker",
         "desc": "Score your cover letter against what actually wins clients."
+      },
+      "headlineOptimizer": {
+        "title": "Headline optimizer",
+        "desc": "Score your profile headline against what gets clients."
       },
       "compare": {
         "title": "Platform comparison",
@@ -1414,6 +1419,34 @@
     "ctaTitle": "Put it into practice",
     "ctaButton": "Try the free tool",
     "backToGuides": "All guides"
+  },
+  "headlineOptimizer": {
+    "metaTitle": "Free Freelance Headline Optimizer — Multifolio",
+    "metaDescription": "Score your profile headline against what actually gets clients — a specific role, a clear outcome, no buzzwords. Free, instant, no sign-up.",
+    "heroEyebrow": "Free tool",
+    "heroTitle": "Is your profile headline working?",
+    "heroSubtitle": "Paste your headline and get an instant score against the things that make clients click — free, no sign-up.",
+    "inputLabel": "Your profile headline",
+    "placeholder": "e.g. React developer helping SaaS teams ship faster",
+    "charCount": "{count} characters",
+    "resultTitle": "Headline score",
+    "verdict": {
+      "strong": "Strong",
+      "ok": "Decent",
+      "weak": "Needs work"
+    },
+    "checks": {
+      "length": "A good length (about 20–90 characters)",
+      "role": "Names a specific role or skill (not just \"freelancer\")",
+      "outcome": "Says what you deliver — an outcome or result",
+      "noBuzzwords": "No buzzwords or empty adjectives"
+    },
+    "buzzwordLabel": "Buzzwords to remove",
+    "formula": "A strong formula: [role] helping [who] [outcome]. e.g. \"React developer helping SaaS teams ship faster\".",
+    "disclaimer": "A quick heuristic check, not a rule. Write for the specific clients you want to attract.",
+    "ctaTitle": "Get your whole profile optimized",
+    "ctaBody": "Multifolio scores and rewrites your full profile for LinkedIn, Upwork, Fiverr and more — in each platform's voice. Start free with 100 credits.",
+    "ctaButton": "Start free"
   },
   "compare": {
     "metaTitle": "Freelance Platform Net Income Comparison — Multifolio",

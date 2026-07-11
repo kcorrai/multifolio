@@ -12,6 +12,7 @@ export async function SiteFooter() {
     { href: "/earnings", label: t("nav.earnings") },
     { href: "/rate", label: t("nav.rate") },
     { href: "/proposal-checker", label: t("nav.proposalChecker") },
+    { href: "/headline-optimizer", label: t("nav.headlineOptimizer") },
     { href: "/compare", label: t("nav.compare") },
     { href: "/guides", label: t("nav.guides") },
     { href: "/vergi", label: t("nav.trTax") },
