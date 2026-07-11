@@ -172,6 +172,209 @@ export const GUIDES: Guide[] = [
       ],
     },
   },
+  {
+    slug: "fiverr-gig-guide",
+    readingMinutes: 4,
+    toolHref: "/analyze",
+    en: {
+      title: "How to optimize your Fiverr gig for more orders",
+      description:
+        "The levers that actually move Fiverr gigs — title, images, packages and first reviews — in a short, practical checklist.",
+      sections: [
+        {
+          heading: "Write a title buyers actually search",
+          body: [
+            "Your gig title is your main keyword. Lead with the exact service a buyer would type — \"I will design a modern Shopify store\", not \"Creative solutions for your brand\". Put the clearest keyword first; Fiverr search and buyers both scan the start.",
+            "Match your title, tags and category so search understands what you offer.",
+          ],
+        },
+        {
+          heading: "Make the thumbnail do the selling",
+          body: [
+            "The gig image wins the click in a grid of competitors. Show the actual result — a clean mockup, a before/after — keep any text minimal and readable at thumbnail size, and stay consistent across your gigs so your profile looks intentional.",
+          ],
+        },
+        {
+          heading: "Structure packages to raise average order",
+          body: [
+            "Three tiers beat one price. Anchor with a Basic that's easy to say yes to, make Standard the obvious best value, and let Premium capture bigger budgets. Describe each tier in concrete deliverables, not vague adjectives.",
+          ],
+        },
+        {
+          heading: "Earn the first reviews fast",
+          body: [
+            "New gigs rank low until they have social proof. Deliver your first orders quickly, over-deliver slightly, then politely ask happy buyers for a review. Early momentum compounds — reviews lift ranking, ranking brings orders.",
+          ],
+        },
+      ],
+    },
+    tr: {
+      title: "Fiverr gig'ini daha çok sipariş için nasıl optimize edersin",
+      description:
+        "Fiverr gig'lerini gerçekten hareket ettiren kaldıraçlar — başlık, görseller, paketler ve ilk yorumlar — kısa, pratik bir kontrol listesinde.",
+      sections: [
+        {
+          heading: "Alıcıların gerçekten arattığı bir başlık yaz",
+          body: [
+            "Gig başlığın ana anahtar kelimendir. Alıcının yazacağı tam hizmetle aç — \"Modern bir Shopify mağazası tasarlarım\", \"Markanız için yaratıcı çözümler\" değil. En net anahtar kelimeyi başa koy; hem Fiverr araması hem alıcı başı tarar.",
+            "Başlık, etiket ve kategorini eşleştir ki arama ne sunduğunu anlasın.",
+          ],
+        },
+        {
+          heading: "Küçük görsel satışı yapsın",
+          body: [
+            "Gig görseli, rakip ızgarasında tıklamayı kazanan şeydir. Gerçek sonucu göster — temiz bir mockup, bir öncesi/sonrası — varsa metni az ve küçük boyutta okunur tut, gig'lerin arasında tutarlı ol ki profilin bilinçli görünsün.",
+          ],
+        },
+        {
+          heading: "Ortalama siparişi artıracak paketler kur",
+          body: [
+            "Üç kademe tek fiyatı yener. Evet demesi kolay bir Basic ile çıpala, Standard'ı bariz en iyi değer yap, Premium daha büyük bütçeleri yakalasın. Her kademeyi belirsiz sıfatlarla değil somut çıktılarla anlat.",
+          ],
+        },
+        {
+          heading: "İlk yorumları hızlı kazan",
+          body: [
+            "Yeni gig'ler sosyal kanıt olana kadar düşük sıralanır. İlk siparişleri hızlı teslim et, biraz fazlasını ver, sonra memnun alıcılardan kibarca yorum iste. Erken ivme birikir — yorumlar sıralamayı, sıralama siparişi getirir.",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: "profile-optimization-guide",
+    readingMinutes: 4,
+    toolHref: "/analyze",
+    en: {
+      title: "Freelance profile optimization: a headline & summary that convert",
+      description:
+        "Turn a generic profile into one that ranks in search and makes clients want to hire you — headline, summary and keywords.",
+      sections: [
+        {
+          heading: "Lead your headline with the outcome",
+          body: [
+            "Your headline is the one line clients and search both read. Skip \"Passionate freelancer\". State who you help and the result you deliver — \"React developer helping SaaS teams ship faster\". Specific beats broad.",
+          ],
+        },
+        {
+          heading: "Structure the summary: hook, proof, offer",
+          body: [
+            "Open with one sentence on the problem you solve. Follow with proof — a result, a metric, a recognizable client or stack. Close with what to do next. Keep it skimmable: short paragraphs, no wall of text.",
+          ],
+        },
+        {
+          heading: "Add the keywords clients search for",
+          body: [
+            "Platforms rank profiles on keywords. Weave the exact skills and tools buyers search (React, Next.js, Shopify) naturally into your headline, summary and skills — spelled out, and where useful with acronyms.",
+          ],
+        },
+        {
+          heading: "Cut the things that quietly hurt you",
+          body: [
+            "Remove buzzwords (\"ninja\", \"guru\", \"passionate\"), fix typos, and don't list skills you can't back up. A tight, honest profile converts better than an inflated one.",
+          ],
+        },
+      ],
+    },
+    tr: {
+      title: "Freelance profil optimizasyonu: dönüştüren bir başlık ve özet",
+      description:
+        "Jenerik bir profili, aramada üst sırada çıkan ve müşterilere seni işe aldırtan bir profile çevir — başlık, özet ve anahtar kelimeler.",
+      sections: [
+        {
+          heading: "Başlığını sonuçla aç",
+          body: [
+            "Başlığın, hem müşterinin hem aramanın okuduğu tek satırdır. \"Tutkulu freelancer\"ı geç. Kime yardım ettiğini ve verdiğin sonucu söyle — \"SaaS ekiplerinin daha hızlı yayına almasına yardım eden React geliştirici\". Spesifik, geneli yener.",
+          ],
+        },
+        {
+          heading: "Özeti kur: kanca, kanıt, teklif",
+          body: [
+            "Çözdüğün problemle tek cümlede aç. Kanıtla devam et — bir sonuç, bir metrik, tanınan bir müşteri veya teknoloji. Ne yapılacağıyla bitir. Taranabilir tut: kısa paragraflar, metin duvarı yok.",
+          ],
+        },
+        {
+          heading: "Müşterilerin arattığı anahtar kelimeleri ekle",
+          body: [
+            "Platformlar profilleri anahtar kelimeye göre sıralar. Alıcıların arattığı tam beceri ve araçları (React, Next.js, Shopify) başlık, özet ve becerilerine doğal biçimde yerleştir — açık yazılmış, gerektiğinde akronimlerle.",
+          ],
+        },
+        {
+          heading: "Sessizce zarar veren şeyleri çıkar",
+          body: [
+            "Klişeleri (\"ninja\", \"guru\", \"tutkulu\") kaldır, yazım hatalarını düzelt ve arkasında duramayacağın becerileri listeleme. Sıkı ve dürüst bir profil, şişirilmişten daha iyi dönüşür.",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: "first-clients-guide",
+    readingMinutes: 4,
+    toolHref: "/proposal-checker",
+    en: {
+      title: "How to land your first 5 freelance clients",
+      description:
+        "A practical path from zero to your first paying clients — niche, proof, outreach and pricing that gets you started.",
+      sections: [
+        {
+          heading: "Niche down so you're the obvious choice",
+          body: [
+            "\"I do everything\" attracts no one. Pick one service for one type of client — \"landing pages for SaaS startups\". A narrow focus makes your pitch, portfolio and pricing all sharper, and makes referrals easy.",
+          ],
+        },
+        {
+          heading: "Build proof before you have clients",
+          body: [
+            "No clients yet? Create 2–3 sample projects for real or imagined brands, or offer one discounted project in exchange for a testimonial. A portfolio with real work beats an empty profile every time.",
+          ],
+        },
+        {
+          heading: "Go where your first clients already are",
+          body: [
+            "Don't just wait on job boards. Answer questions where your buyers hang out, reach out to small businesses that clearly need your service, and tell your network exactly what you do. Your first client is often one warm intro away.",
+          ],
+        },
+        {
+          heading: "Price to start, then raise fast",
+          body: [
+            "Your first few projects can be priced to win — the goal is reviews and momentum, not maximizing this invoice. Over-deliver, collect the testimonial, then raise your rate for the next client.",
+          ],
+        },
+      ],
+    },
+    tr: {
+      title: "İlk 5 freelance müşterini nasıl kazanırsın",
+      description:
+        "Sıfırdan ilk ödeyen müşterilerine pratik bir yol — niş, kanıt, ulaşım ve seni başlatan fiyatlama.",
+      sections: [
+        {
+          heading: "Nişe in ki bariz tercih ol",
+          body: [
+            "\"Her şeyi yaparım\" kimseyi çekmez. Bir müşteri tipi için tek hizmet seç — \"SaaS girişimleri için landing page'ler\". Dar bir odak; pitch'ini, portfolyonu ve fiyatlamanı keskinleştirir, referansı kolaylaştırır.",
+          ],
+        },
+        {
+          heading: "Müşterin olmadan kanıt oluştur",
+          body: [
+            "Henüz müşteri yok mu? Gerçek veya hayali markalar için 2–3 örnek proje üret ya da bir yorum karşılığında indirimli bir proje sun. Gerçek işli bir portfolyo, boş profili her zaman yener.",
+          ],
+        },
+        {
+          heading: "İlk müşterilerinin zaten olduğu yere git",
+          body: [
+            "Sadece ilan panolarında bekleme. Alıcılarının bulunduğu yerde sorulara cevap ver, hizmetine açıkça ihtiyacı olan küçük işletmelere ulaş ve çevrene tam olarak ne yaptığını söyle. İlk müşterin çoğu zaman bir sıcak tanışma uzağındadır.",
+          ],
+        },
+        {
+          heading: "Başlamak için fiyatla, sonra hızlı yükselt",
+          body: [
+            "İlk birkaç projeni kazanmak için fiyatlayabilirsin — amaç bu faturayı büyütmek değil, yorum ve ivme. Fazlasını ver, yorumu topla, sonraki müşteri için ücretini yükselt.",
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {
