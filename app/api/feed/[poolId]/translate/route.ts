@@ -54,16 +54,28 @@ export const POST = withErrorHandler(async (_req, { params }) => {
 
   const result = await translateJobDescription(poolRes.data.description, locale);
 
-  // Paylaşımlı cache'e yaz (service-role: job_translations insert politikası yok).
-  // Eşzamanlı iki istek yarışırsa upsert son yazanı tutar — ikisi de geçerli çeviridir.
+  // Paylaşımlı cache'e İDEMPOTENT yazım (service-role: insert politikası yok).
+  // score route ScoreRaceLost deseni: insert(→select) satır döndürdüyse yarışı
+  // KAZANDIK; 23505 (unique) veya boşsa başka istek zaten yazmış → yarışı KAYBETTİK,
+  // kazananın çevirisini oku ve dön (böylece iki racer TUTARLI aynı metni görür).
   const admin = createSupabaseAdminClient();
-  const { error: upsertErr } = await admin.from("job_translations").upsert(
-    { job_pool_id: poolId, locale, description: result.translated },
-    { onConflict: "job_pool_id,locale" },
-  );
-  if (upsertErr) throw upsertErr;
+  const { data: inserted, error: insertErr } = await admin
+    .from("job_translations")
+    .insert({ job_pool_id: poolId, locale, description: result.translated })
+    .select("id")
+    .maybeSingle();
+  if (insertErr && insertErr.code !== "23505") throw insertErr;
+  if (insertErr || !inserted) {
+    const { data: winner } = await supabase
+      .from("job_translations")
+      .select("description")
+      .eq("job_pool_id", poolId)
+      .eq("locale", locale)
+      .maybeSingle();
+    return NextResponse.json({ description: winner?.description ?? result.translated, cached: true });
+  }
 
-  // Maliyet + rate-limit kaydı (kredi düşmez).
+  // Kazandık → maliyet + rate-limit kaydı (kredi düşmez).
   const { error: usageError } = await admin.from("usage_events").insert({
     user_id: user.id, kind: "job_translate", model: result.model,
     input_tokens: result.inputTokens, output_tokens: result.outputTokens,
