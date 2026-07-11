@@ -408,6 +408,16 @@
     "close": "Kapat",
     "deleteError": "İlan silinemedi.",
     "statusError": "Durum güncellenemedi.",
+    "pipeline": {
+      "applications": "Başvurular",
+      "responseRate": "Yanıt oranı",
+      "interviewRate": "Mülakat oranı",
+      "offers": "Teklifler",
+      "fSent": "Gönderilen",
+      "fResponded": "Yanıtlanan",
+      "fInterview": "Mülakat",
+      "fOffer": "Teklif"
+    },
     "board": {
       "list": "Liste",
       "board": "Pano",

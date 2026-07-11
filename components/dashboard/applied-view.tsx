@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { JobAddModal } from "@/components/job-add-modal";
 import { JobDetailPanel } from "@/components/job-detail-panel";
 import { KanbanBoard } from "./kanban-board";
+import { PipelineStats } from "./pipeline-stats";
 import { STATUS_DOT, scoreColor, scoreBarColor, type JobRow } from "./shared";
 import { useDashboard } from "./dashboard-context";
 import type { JobStatus } from "@/lib/validation/schemas/job";
@@ -66,31 +67,11 @@ export function AppliedView({
   }
 
   const selectedJob = selectedJobId ? jobs.find((j) => j.id === selectedJobId) ?? null : null;
-  const awaitingCount = jobs.filter((j) => j.status === "awaiting_reply").length;
-  const appliedCount = jobs.filter((j) => j.status === "applied").length;
-  const activeCount = jobs.filter((j) => j.status !== "rejected" && j.status !== "offer").length;
 
   return (
     <div className="space-y-4">
-      {/* Stat bar */}
-      {jobs.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          <div className="flex items-center gap-1.5 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/40 px-3 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            {t("statApplied")} · {appliedCount}
-          </div>
-          {awaitingCount > 0 && (
-            <div className="flex items-center gap-1.5 rounded-full bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800/40 px-3 py-1.5 text-xs font-semibold text-cyan-700 dark:text-cyan-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-              {t("statAwaiting")} · {awaitingCount}
-            </div>
-          )}
-          <div className="flex items-center gap-1.5 rounded-full bg-muted border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
-            {t("statActive")} · {activeCount}
-          </div>
-        </div>
-      )}
+      {/* Pipeline analitiği (huni + dönüşüm oranları) */}
+      {jobs.length > 0 && <PipelineStats jobs={jobs} />}
 
       {/* Add + görünüm toggle + error */}
       <div className="flex items-center justify-between gap-3">

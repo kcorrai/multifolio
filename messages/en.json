@@ -408,6 +408,16 @@
     "close": "Close",
     "deleteError": "Could not delete the job.",
     "statusError": "Could not update the status.",
+    "pipeline": {
+      "applications": "Applications",
+      "responseRate": "Response rate",
+      "interviewRate": "Interview rate",
+      "offers": "Offers",
+      "fSent": "Sent",
+      "fResponded": "Responded",
+      "fInterview": "Interview",
+      "fOffer": "Offer"
+    },
     "board": {
       "list": "List",
       "board": "Board",
