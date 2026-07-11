@@ -2,10 +2,11 @@
 
 // Portfolyo "gelen talepler" yönetimi: public portfolyodan gelen lead'leri listeler,
 // durumunu (new/contacted/converted/archived) günceller, e-posta ile yanıtlamayı kolaylaştırır.
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Inbox, Mail } from "lucide-react";
 import type { LeadRow, LeadStatus } from "@/lib/validation/schemas/lead";
+import { scoreLead, LEAD_TIER_RANK, type LeadTier } from "@/lib/portfolio/lead-score";
 
 const STATUS_ORDER: LeadStatus[] = ["new", "contacted", "converted", "archived"];
 const STATUS_STYLE: Record<LeadStatus, string> = {
@@ -13,6 +14,11 @@ const STATUS_STYLE: Record<LeadStatus, string> = {
   contacted: "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300",
   converted: "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
   archived: "border-border bg-muted/50 text-muted-foreground",
+};
+const TIER_STYLE: Record<LeadTier, string> = {
+  hot: "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400",
+  good: "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  cold: "border-border bg-muted/50 text-muted-foreground",
 };
 
 export function LeadsManager() {
@@ -36,6 +42,14 @@ export function LeadsManager() {
   }
 
   const newCount = items.filter((l) => l.status === "new").length;
+  // Kural-tabanlı nitelendirme + hot'ları öne sırala (kararlı: eşit tier'da gelen sıra korunur).
+  const ranked = useMemo(
+    () =>
+      items
+        .map((lead) => ({ lead, score: scoreLead(lead) }))
+        .sort((a, b) => LEAD_TIER_RANK[a.score.tier] - LEAD_TIER_RANK[b.score.tier]),
+    [items],
+  );
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
@@ -55,11 +69,16 @@ export function LeadsManager() {
         <p className="text-xs text-muted-foreground">{t("empty")}</p>
       ) : (
         <div className="space-y-2.5">
-          {items.map((l) => (
+          {ranked.map(({ lead: l, score }) => (
             <div key={l.id} className="rounded-xl border border-border p-3 space-y-2">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold truncate">{l.name}</p>
+                  <p className="flex items-center gap-1.5 text-sm font-semibold">
+                    <span className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-bold ${TIER_STYLE[score.tier]}`}>
+                      {t(`tier.${score.tier}`)}
+                    </span>
+                    <span className="truncate">{l.name}</span>
+                  </p>
                   <a href={`mailto:${l.email}`} className="inline-flex items-center gap-1 text-[11px] text-[#00c2cc] dark:text-[#00F0FF] hover:underline">
                     <Mail className="h-3 w-3" />{l.email}
                   </a>

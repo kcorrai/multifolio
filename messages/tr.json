@@ -790,6 +790,11 @@
           "contacted": "İletişimde",
           "converted": "Kazanıldı",
           "archived": "Arşiv"
+        },
+        "tier": {
+          "hot": "Sıcak",
+          "good": "Uygun",
+          "cold": "Zayıf"
         }
       },
     "preset": {
