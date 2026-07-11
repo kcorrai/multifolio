@@ -10,7 +10,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Archivo, Space_Grotesk, Fraunces } from "next/font/google";
 import { getTranslations, getLocale } from "next-intl/server";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Download } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
 import { portfolioTheme, ACCENT_HEX } from "@/lib/portfolio/theme";
@@ -187,16 +187,26 @@ export default async function PortfolioPage({ params }: PageProps) {
                 ))}
               </div>
             )}
-            {contactHref && (
+            <div className="anim-fade-up anim-d3 flex flex-wrap items-center gap-3">
+              {contactHref && (
+                <a
+                  href={contactHref}
+                  {...(contactUrl && !contactEmail ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[var(--pf-accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+                >
+                  {t("hireCta")}
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+              )}
+              {/* PDF sürümü — seçilebilir-metinli, paylaşılabilir (AI/kredi yok). */}
               <a
-                href={contactHref}
-                {...(contactUrl && !contactEmail ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="anim-fade-up anim-d3 inline-flex items-center gap-1.5 rounded-full bg-[var(--pf-accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+                href={`/api/portfolio/export?slug=${encodeURIComponent(slug)}`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--pf-border)] px-5 py-2.5 text-sm font-semibold text-[var(--pf-text)] transition-colors hover:bg-[var(--pf-surface)]"
               >
-                {t("hireCta")}
-                <ArrowUpRight className="h-4 w-4" />
+                <Download className="h-4 w-4" />
+                {t("downloadPdf")}
               </a>
-            )}
+            </div>
           </div>
         </div>
       </header>
