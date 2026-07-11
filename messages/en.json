@@ -1142,7 +1142,9 @@
     "showLowScores": "Show low scores",
     "settingsProposalPrompt": "Proposal prompt",
     "settingsProposalPromptPlaceholder": "e.g. Always mention my 5 years of React experience, keep it under 150 words, end with a question…",
-    "settingsProposalPromptHint": "Applied when generating proposals for jobs that came from this feed. Leave empty to use the default style.",
+    "settingsProposalPromptReset": "Reset to recommended",
+    "proposalPromptDefault": "Write a concise, personalized proposal (120-180 words). Open by showing you understand the client's specific goal and reference a concrete detail from their posting. Add one proof-of-fit line: their need + a relevant result you delivered (with a number when possible) + confidence you can repeat it. Keep the tone warm and direct with no generic filler or buzzwords, and don't restate the whole job post. Close with a short, specific call to action or a question that invites a reply.",
+    "settingsProposalPromptHint": "Pre-filled with a recommended, research-based prompt — edit it to fit your style, or clear it to use the built-in default. Applied when generating proposals for jobs from this feed.",
     "time": {
       "all": "All time",
       "hour": "Last hour",

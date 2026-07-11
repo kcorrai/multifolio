@@ -40,10 +40,11 @@ export interface GenerateProposalOptions {
   voiceExamples?: string[];
 }
 
-// Feed'e özel serbest yönerge bloğu (boş/whitespace ise eklenmez).
+// Teklif yönerge bloğu (feed'e özel kullanıcı prompt'u veya kriter bazlı varsayılan;
+// boş/whitespace ise eklenmez).
 function buildFeedPromptBlock(p: string | null | undefined): string {
   if (!p || !p.trim()) return "";
-  return ["", "Kullanıcının bu feed için tanımladığı teklif yönergesi (uygula):", p.trim()].join("\n");
+  return ["", "Teklif yönergesi (uygula):", p.trim()].join("\n");
 }
 
 const SYSTEM_PROMPT =

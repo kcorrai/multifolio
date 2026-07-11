@@ -28,6 +28,8 @@ export function FeedSettingsPanel({
   onSaved: (feed: JobFeedRow) => void;
 }) {
   const t = useTranslations("feed");
+  // Feed'in özel prompt'u yoksa önerilen (kriter bazlı) varsayılanı göster — düzenlenebilir.
+  const defaultPrompt = t("proposalPromptDefault");
   const [name, setName] = useState(feed.name);
   const [platform, setPlatform] = useState(feed.platform ?? "");
   const [keywords, setKeywords] = useState<string[]>(feed.keywords);
@@ -38,7 +40,7 @@ export function FeedSettingsPanel({
   const [minClientSpent, setMinClientSpent] = useState(feed.min_client_spent?.toString() ?? "");
   const [minScore, setMinScore] = useState(feed.min_score ?? 0);
   const [notify, setNotify] = useState(feed.notify);
-  const [proposalPrompt, setProposalPrompt] = useState(feed.proposal_prompt ?? "");
+  const [proposalPrompt, setProposalPrompt] = useState(feed.proposal_prompt ?? defaultPrompt);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -54,7 +56,8 @@ export function FeedSettingsPanel({
     numOrNull(minClientSpent) !== feed.min_client_spent ||
     (minScore > 0 ? minScore : null) !== feed.min_score ||
     notify !== feed.notify ||
-    (proposalPrompt.trim() || null) !== feed.proposal_prompt;
+    // Önden dolu varsayılan "değişiklik" sayılmasın: taban = mevcut prompt ya da varsayılan.
+    proposalPrompt.trim() !== (feed.proposal_prompt ?? defaultPrompt).trim();
 
   function discard() {
     setName(feed.name);
@@ -67,7 +70,7 @@ export function FeedSettingsPanel({
     setMinClientSpent(feed.min_client_spent?.toString() ?? "");
     setMinScore(feed.min_score ?? 0);
     setNotify(feed.notify);
-    setProposalPrompt(feed.proposal_prompt ?? "");
+    setProposalPrompt(feed.proposal_prompt ?? defaultPrompt);
     setError("");
   }
 
@@ -192,9 +195,20 @@ export function FeedSettingsPanel({
 
       {/* ── Teklif yönergesi (feed'e özel AI prompt'u) ───────────────── */}
       <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
-        <h4 className="text-sm font-bold flex items-center gap-2">
-          <FileText className="h-4 w-4 text-[#00F0FF]" />{t("settingsProposalPrompt")}
-        </h4>
+        <div className="flex items-center justify-between gap-2">
+          <h4 className="text-sm font-bold flex items-center gap-2">
+            <FileText className="h-4 w-4 text-[#00F0FF]" />{t("settingsProposalPrompt")}
+          </h4>
+          {proposalPrompt.trim() !== defaultPrompt.trim() && (
+            <button
+              type="button"
+              onClick={() => setProposalPrompt(defaultPrompt)}
+              className="text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t("settingsProposalPromptReset")}
+            </button>
+          )}
+        </div>
         <textarea
           value={proposalPrompt}
           onChange={(e) => setProposalPrompt(e.target.value)}

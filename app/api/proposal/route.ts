@@ -128,6 +128,10 @@ export const POST = withErrorHandler(async (req) => {
   }
 
   const proposalLocale = await getUserLocale();
+  // Feed'e özel prompt yoksa kriter bazlı VARSAYILAN yönerge uygulanır (UI'daki
+  // önerilen prompt'un aynısı) → teklifler varsayılan olarak da iyi kurgulanır.
+  const effectiveFeedPrompt =
+    feedPrompt && feedPrompt.trim() ? feedPrompt : (await getTranslations("feed"))("proposalPromptDefault");
   // AI üretimi + teklifin kaydı tek closure'da: kayıt patlarsa spendCredits krediyi iade eder
   // (kredi öde-sonuç kaybolma durumunu önler). usage_events (analitik) dışarıda kalır.
   const { result, balance, spent } = await spendCredits(user.id, "proposal", async () => {
@@ -140,7 +144,7 @@ export const POST = withErrorHandler(async (req) => {
         focusRequirements: input.focus_requirements,
         locale: proposalLocale,
         platformProfile: platformProfileRes.data as { headline: string; summary: string; skills: string[] } | null,
-        feedPrompt,
+        feedPrompt: effectiveFeedPrompt,
         tone: input.tone,
         length: input.length,
         voiceExamples: ((voiceRes.data ?? []) as { content: string }[]).map((p) => p.content),

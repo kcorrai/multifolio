@@ -1142,7 +1142,9 @@
     "showLowScores": "Düşük skorluları göster",
     "settingsProposalPrompt": "Teklif yönergesi",
     "settingsProposalPromptPlaceholder": "örn. 5 yıllık React deneyimimi mutlaka an, 150 kelimeyi geçme, soruyla bitir…",
-    "settingsProposalPromptHint": "Bu feed'den gelen ilanlara teklif üretirken uygulanır. Boş bırakılırsa varsayılan stil kullanılır.",
+    "settingsProposalPromptReset": "Önerilene sıfırla",
+    "proposalPromptDefault": "Kısa ve kişiselleştirilmiş bir teklif yaz (120-180 kelime). Açılışta müşterinin spesifik hedefini anladığını göster ve ilandan somut bir ayrıntıya değin. Tek bir uyum kanıtı cümlesi ekle: ihtiyaçları + verdiğin ilgili bir sonuç (mümkünse sayıyla) + tekrarlayabileceğin güveni. Ton sıcak ve doğrudan olsun; genel dolgu veya klişe kelime kullanma ve ilanı baştan sona tekrarlama. Yanıt davet eden kısa, spesifik bir eylem çağrısı ya da soruyla bitir.",
+    "settingsProposalPromptHint": "Araştırmaya dayalı önerilen bir yönergeyle önceden dolduruldu — kendi stiline göre düzenle ya da yerleşik varsayılanı kullanmak için temizle. Bu feed'den gelen ilanlara teklif üretirken uygulanır.",
     "time": {
       "all": "Tümü",
       "hour": "Son 1 saat",
