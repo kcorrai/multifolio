@@ -32,6 +32,8 @@ export const jobUpdateSchema = z.object({
   // Kart bazlı hatırlatıcı + teslim tarihi (Batch 3).
   reminder_date: optionalDateField,
   deadline_date: optionalDateField,
+  // Serbest etiketler (mini-CRM sınıflandırması). Trim + boşları ele.
+  tags: z.array(z.string().trim().min(1).max(30)).max(12).optional(),
 });
 
 // Rubrik: sabit 4 boyut — ilanlar arası karşılaştırılabilirlik için anahtar seti kilitli.

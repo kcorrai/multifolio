@@ -111,6 +111,14 @@ export function KanbanBoard({
                         </span>
                       );
                     })()}
+                    {(job.tags?.length ?? 0) > 0 && (
+                      <div className="mt-1.5 flex flex-wrap gap-1">
+                        {job.tags!.slice(0, 3).map((tag) => (
+                          <span key={tag} className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">{tag}</span>
+                        ))}
+                        {job.tags!.length > 3 && <span className="text-[9px] text-muted-foreground/60">+{job.tags!.length - 3}</span>}
+                      </div>
+                    )}
                   </button>
 
                   <div className="flex items-center justify-between gap-2 mt-2">

@@ -439,6 +439,10 @@
       "board": "Board",
       "moveTo": "Move to status"
     },
+    "tagFilter": {
+      "label": "Filter by tag:",
+      "clear": "Clear"
+    },
     "statApplied": "Applied",
     "statAwaiting": "Awaiting Reply",
     "statActive": "Active",
@@ -464,7 +468,10 @@
       "deadline": "Deadline",
       "due_overdue": "Overdue",
       "due_today": "Today",
-      "due_soon": "Soon"
+      "due_soon": "Soon",
+      "tags": "Tags",
+      "tagsPlaceholder": "Add a tag…",
+      "tagRemove": "Remove tag"
     },
     "followup": {
       "waiting": "{days, plural, one {No reply for # day} other {No reply for # days}}",

@@ -439,6 +439,10 @@
       "board": "Pano",
       "moveTo": "Duruma taşı"
     },
+    "tagFilter": {
+      "label": "Etikete göre filtrele:",
+      "clear": "Temizle"
+    },
     "statApplied": "Başvurulan",
     "statAwaiting": "Yanıt Bekleniyor",
     "statActive": "Aktif",
@@ -464,7 +468,10 @@
       "deadline": "Son tarih",
       "due_overdue": "Gecikti",
       "due_today": "Bugün",
-      "due_soon": "Yakında"
+      "due_soon": "Yakında",
+      "tags": "Etiketler",
+      "tagsPlaceholder": "Etiket ekle…",
+      "tagRemove": "Etiketi kaldır"
     },
     "followup": {
       "waiting": "{days, plural, one {# gündür yanıt yok} other {# gündür yanıt yok}}",

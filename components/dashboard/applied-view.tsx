@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, AlertCircle, Briefcase, List, LayoutGrid } from "lucide-react";
+import { Plus, Trash2, AlertCircle, Briefcase, List, LayoutGrid, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { JobAddModal } from "@/components/job-add-modal";
 import { JobDetailPanel } from "@/components/job-detail-panel";
@@ -26,6 +26,18 @@ export function AppliedView({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [jobError, setJobError] = useState("");
   const [mode, setMode] = useState<"list" | "board">("list");
+  const [activeTags, setActiveTags] = useState<string[]>([]);
+
+  // Tüm işlerdeki benzersiz etiketler (filtre çubuğu). Alfabetik.
+  const allTags = Array.from(new Set(jobs.flatMap((j) => j.tags ?? []))).sort((a, b) => a.localeCompare(b));
+  // Aktif etiket varsa: en az birini içeren işler (OR). Yoksa hepsi.
+  const visibleJobs = activeTags.length === 0
+    ? jobs
+    : jobs.filter((j) => (j.tags ?? []).some((tag) => activeTags.includes(tag)));
+
+  function toggleTag(tag: string) {
+    setActiveTags((prev) => (prev.includes(tag) ? prev.filter((x) => x !== tag) : [...prev, tag]));
+  }
 
   // Sidebar rozetini iş listesiyle senkron tut.
   useEffect(() => { setJobsCount(jobs.length); }, [jobs.length, setJobsCount]);
@@ -108,6 +120,34 @@ export function AppliedView({
         )}
       </div>
 
+      {/* Etiket filtresi (etiketli iş varsa) */}
+      {allTags.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+            <Tag className="h-3 w-3" />{t("tagFilter.label")}
+          </span>
+          {allTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => toggleTag(tag)}
+              aria-pressed={activeTags.includes(tag)}
+              className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-colors ${
+                activeTags.includes(tag)
+                  ? "bg-[#00F0FF]/15 text-foreground ring-1 ring-[#00F0FF]/40"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+          {activeTags.length > 0 && (
+            <button onClick={() => setActiveTags([])} className="text-[11px] text-muted-foreground/60 hover:text-foreground underline underline-offset-2">
+              {t("tagFilter.clear")}
+            </button>
+          )}
+        </div>
+      )}
+
       {jobs.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
           <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
@@ -120,7 +160,7 @@ export function AppliedView({
         </div>
       ) : mode === "board" ? (
         <div className="space-y-4">
-          <KanbanBoard jobs={jobs} onChangeStatus={changeStatus} onSelect={setSelectedJobId} selectedId={selectedJobId} />
+          <KanbanBoard jobs={visibleJobs} onChangeStatus={changeStatus} onSelect={setSelectedJobId} selectedId={selectedJobId} />
           {/* Panoda kart seçilince detay paneli panonun altında açılır */}
           {selectedJob && (
             <div className="rounded-2xl border border-border overflow-hidden min-h-[400px]">
@@ -137,7 +177,7 @@ export function AppliedView({
         <div className="grid lg:grid-cols-5 gap-3">
           {/* Sol: iş listesi */}
           <div className={`space-y-1.5 ${selectedJob ? "lg:col-span-2" : "lg:col-span-5"}`}>
-            {jobs.map((job) => (
+            {visibleJobs.map((job) => (
               <div
                 key={job.id}
                 role="button"
@@ -165,6 +205,13 @@ export function AppliedView({
                       </p>
                     )}
                     <p className="text-[10px] text-muted-foreground/60 mt-0.5">{t(`status.${job.status}`)}</p>
+                    {(job.tags?.length ?? 0) > 0 && (
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {job.tags!.map((tag) => (
+                          <span key={tag} className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">{tag}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     {job.match_score !== null && (

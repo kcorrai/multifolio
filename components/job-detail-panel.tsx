@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ProposalModal } from "@/components/proposal-modal";
 import { CreditCost } from "@/components/credit-cost";
 import { CopyButton } from "@/components/dashboard/copy-button";
+import { ChipsInput } from "@/components/dashboard/chips-input";
 import { MatchRubric, VerdictBadge, RiskBadges, MatchImprovements } from "@/components/dashboard/match-rubric";
 import { followUpDays } from "@/lib/followup";
 import { reminderUrgency, type ReminderUrgency } from "@/lib/jobs/reminder";
@@ -19,7 +20,7 @@ import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 interface JobRow {
   id: string; title: string; company: string | null; platform: string | null;
   status: JobStatus; match_score: number | null; match_result: JobMatchResult | null; created_at: string;
-  reminder_date?: string | null; deadline_date?: string | null;
+  reminder_date?: string | null; deadline_date?: string | null; tags?: string[] | null;
 }
 
 interface JobDetail extends JobRow {
@@ -80,6 +81,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
   const [savingNotes, setSavingNotes] = useState(false);
   const [reminderDate, setReminderDate] = useState("");
   const [deadlineDate, setDeadlineDate] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [showProposal, setShowProposal] = useState(false);
   const [rematching, setRematching] = useState(false);
   const [followUpMsg, setFollowUpMsg] = useState("");
@@ -100,6 +102,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
           setStatus((b.job.status as JobStatus) ?? job.status);
           setReminderDate(b.job.reminder_date ?? "");
           setDeadlineDate(b.job.deadline_date ?? "");
+          setTags(Array.isArray(b.job.tags) ? b.job.tags : []);
           setLoadedJobId(job.id);
         }
       })
@@ -132,6 +135,21 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
     if (res.ok && body?.job) {
       onJobUpdated(body.job as JobRow);
       setDetail((prev) => (prev ? { ...prev, [field]: value || null } : prev));
+    }
+  }
+
+  // Etiketleri kaydeder (kart rozetleri + filtre güncellensin diye listeye yansır).
+  async function saveTags(next: string[]) {
+    setTags(next);
+    const res = await fetch(`/api/jobs/${job.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tags: next }),
+    });
+    const body = await res.json().catch(() => null);
+    if (res.ok && body?.job) {
+      onJobUpdated(body.job as JobRow);
+      setDetail((prev) => (prev ? { ...prev, tags: next } : prev));
     }
   }
 
@@ -407,6 +425,18 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                 {t("detail.viewListing")}
               </a>
             )}
+
+            {/* Etiketler */}
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">{t("detail.tags")}</p>
+              <ChipsInput
+                values={tags}
+                onChange={saveTags}
+                placeholder={t("detail.tagsPlaceholder")}
+                removeTitle={t("detail.tagRemove")}
+                max={12}
+              />
+            </div>
 
             {/* Notlar */}
             <div className="space-y-1.5">

@@ -17,7 +17,7 @@ export const GET = withErrorHandler(async (_req, { params }) => {
 
   const { data, error } = await supabase
     .from("job_listings")
-    .select("id, title, company, platform, status, match_score, match_result, description, url, notes, budget, created_at, updated_at, status_changed_at, reminder_date, deadline_date")
+    .select("id, title, company, platform, status, match_score, match_result, description, url, notes, budget, created_at, updated_at, status_changed_at, reminder_date, deadline_date, tags")
     .eq("id", id)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -46,13 +46,23 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
   // Tarih alanlarında "" = temizle → null (date kolonu boş string kabul etmez).
   if ("reminder_date" in input) patch.reminder_date = input.reminder_date || null;
   if ("deadline_date" in input) patch.deadline_date = input.deadline_date || null;
+  // Etiketler: trim + case-insensitive tekilleştirme (ilk yazımı korur).
+  if (input.tags) {
+    const seen = new Set<string>();
+    patch.tags = input.tags.filter((tag) => {
+      const key = tag.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
 
   const { data, error } = await supabase
     .from("job_listings")
     .update(patch)
     .eq("id", id)
     .eq("user_id", user.id)
-    .select("id, title, company, platform, status, match_score, match_result, notes, created_at, reminder_date, deadline_date")
+    .select("id, title, company, platform, status, match_score, match_result, notes, created_at, reminder_date, deadline_date, tags")
     .maybeSingle();
 
   if (error) throw error;

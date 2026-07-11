@@ -42,6 +42,8 @@ export interface JobRow {
   status: JobStatus; match_score: number | null; match_result: JobMatchResult | null; created_at: string;
   // Kart bazlı hatırlatıcı + teslim tarihi (opsiyonel; migration 0033).
   reminder_date?: string | null; deadline_date?: string | null;
+  // Serbest etiketler (opsiyonel; migration 0034).
+  tags?: string[] | null;
 }
 export interface AnalyticsData {
   totalCredits: number; totalCount: number;

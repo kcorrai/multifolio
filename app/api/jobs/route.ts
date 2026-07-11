@@ -16,7 +16,7 @@ export const GET = withErrorHandler(async () => {
 
   const { data, error } = await supabase
     .from("job_listings")
-    .select("id, title, company, platform, status, match_score, match_result, created_at, reminder_date, deadline_date")
+    .select("id, title, company, platform, status, match_score, match_result, created_at, reminder_date, deadline_date, tags")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -38,7 +38,7 @@ export const POST = withErrorHandler(async (req) => {
   const { data, error } = await supabase
     .from("job_listings")
     .insert({ user_id: user.id, ...input })
-    .select("id, title, company, platform, status, match_score, match_result, created_at, reminder_date, deadline_date")
+    .select("id, title, company, platform, status, match_score, match_result, created_at, reminder_date, deadline_date, tags")
     .single();
 
   if (error) throw error;
