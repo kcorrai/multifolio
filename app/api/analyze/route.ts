@@ -45,8 +45,10 @@ export const POST = withErrorHandler(async (req) => {
     if ((count ?? 0) >= USER_HOURLY_LIMIT) throw new RateLimitError(t("analyzeRateLimited"));
   } else {
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-    // Salt env'i yoksa service-role anahtarından türetilir (deterministik, gizli).
-    const salt = process.env.ANALYZE_IP_SALT || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+    // Salt SABİT olmalı: service-role anahtarına düşerse anahtar rotasyonunda tüm
+    // geçmiş IP-hash'leri geçersizleşir → rate-limit sayacı sıfırlanır (bypass).
+    // IP-hash yalnız kaba anon bucketing içindir; kriptografik gizlilik gerektirmez.
+    const salt = process.env.ANALYZE_IP_SALT || "multifolio-analyze-ip-salt-v1";
     ipHash = hashIp(ip, salt);
     const { count, error } = await admin
       .from("public_analyses")
@@ -86,7 +88,11 @@ export const POST = withErrorHandler(async (req) => {
         throw new ValidationError(t("analyzeNoContent"));
       }
       const text = htmlToText(html);
-      if (text.length < 80) throw new ValidationError(t("analyzeNoContent")); // bot duvarı/boş sayfa
+      // Anlamlı içerik eşiği: bot duvarı/hata sayfası ("403 Forbidden", "404 Not
+      // Found") 80+ karakter olabilir ama çok az kelime içerir. Kelime sayısı
+      // eşiği bu tür sayfaları "içerik yok" olarak daha güvenilir eler.
+      const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+      if (wordCount < 20) throw new ValidationError(t("analyzeNoContent")); // bot duvarı/boş sayfa
       analyzeInput = { text };
     }
   } else {
