@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeNetEarnings, PLATFORM_FEE_DEFAULTS, TRANSFER_METHOD_DEFAULTS } from "./calculator";
+import { computeNetEarnings, compareNetByPlatform, PLATFORM_FEE_DEFAULTS, TRANSFER_METHOD_DEFAULTS } from "./calculator";
 
 describe("computeNetEarnings", () => {
   it("zinciri doğru hesaplar: komisyon → transfer → vergi → net", () => {
@@ -47,5 +47,24 @@ describe("computeNetEarnings", () => {
     const r = computeNetEarnings({ gross: 10, platformFeePct: 0, transferFeePct: 0, transferFeeFixed: 50, taxPct: 0 });
     expect(r.transferFee).toBe(10);
     expect(r.net).toBe(0);
+  });
+});
+
+describe("compareNetByPlatform", () => {
+  const input = { gross: 1000, platformFeePct: 10, transferFeePct: 0, transferFeeFixed: 0, taxPct: 0 };
+
+  it("komisyon alan platformları net'e göre azalan sıralar (custom hariç)", () => {
+    const rows = compareNetByPlatform(input);
+    expect(rows.map((r) => r.platform)).not.toContain("custom");
+    // Upwork (%10) en düşük komisyon → en yüksek net → ilk sırada.
+    expect(rows[0].platform).toBe("upwork");
+    expect(rows[0].net).toBeGreaterThanOrEqual(rows[rows.length - 1].net);
+  });
+
+  it("her platform kendi VARSAYILAN komisyonunu kullanır (kullanıcı girdisini değil)", () => {
+    const rows = compareNetByPlatform(input);
+    const fiverr = rows.find((r) => r.platform === "fiverr")!;
+    expect(fiverr.platformFeePct).toBe(PLATFORM_FEE_DEFAULTS.fiverr);
+    expect(fiverr.net).toBe(1000 * (1 - PLATFORM_FEE_DEFAULTS.fiverr / 100));
   });
 });

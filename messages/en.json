@@ -1427,6 +1427,9 @@
     "fxAuto": "Live rate filled in automatically — you can edit it.",
     "resultTitle": "Your net take-home",
     "netPct": "{pct}% of gross stays with you",
+    "compareTitle": "Which platform pays more?",
+    "compareFee": "{pct}% fee",
+    "compareHint": "Same gross, transfer and tax — only platform commission differs.",
     "rows": {
       "gross": "Gross",
       "platformFee": "Platform commission",

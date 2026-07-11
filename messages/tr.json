@@ -1427,6 +1427,9 @@
     "fxAuto": "Güncel kur otomatik dolduruldu — düzenleyebilirsin.",
     "resultTitle": "Eline net geçen",
     "netPct": "Brütün %{pct}'i sende kalıyor",
+    "compareTitle": "Hangi platform daha çok bırakır?",
+    "compareFee": "%{pct} komisyon",
+    "compareHint": "Aynı brüt, transfer ve vergi — yalnız platform komisyonu değişir.",
     "rows": {
       "gross": "Brüt",
       "platformFee": "Platform komisyonu",

@@ -9,7 +9,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Wallet, Info, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
-  computeNetEarnings, PLATFORM_FEE_DEFAULTS, TRANSFER_METHOD_DEFAULTS, TAX_PRESETS,
+  computeNetEarnings, compareNetByPlatform, PLATFORM_FEE_DEFAULTS, TRANSFER_METHOD_DEFAULTS, TAX_PRESETS,
   type EarningsPlatform, type TransferMethod,
 } from "@/lib/earnings/calculator";
 import { parseLocaleNumber } from "@/lib/format/parse-number";
@@ -73,6 +73,17 @@ export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolea
   }
 
   const result = useMemo(() => computeNetEarnings({
+    gross: numOr(gross),
+    platformFeePct: numOr(platformFee),
+    transferFeePct: numOr(transferPct),
+    transferFeeFixed: numOr(transferFixed),
+    taxPct: numOr(taxPct),
+    fxRate: currency === "USD" ? numOr(fxRate) || null : null,
+  }), [gross, platformFee, transferPct, transferFixed, taxPct, fxRate, currency, numOr]);
+
+  // Platform ROI karşılaştırması: aynı brüt/transfer/vergi altında yalnız komisyon
+  // değişir → hangi platformda daha çok net kalır (saf, kredisiz).
+  const comparison = useMemo(() => compareNetByPlatform({
     gross: numOr(gross),
     platformFeePct: numOr(platformFee),
     transferFeePct: numOr(transferPct),
@@ -211,6 +222,23 @@ export function EarningsCalculator({ isLoggedIn = false }: { isLoggedIn?: boolea
               <span className="font-bold text-[#00F0FF]">{fmt.format(result.net)}</span>
             </div>
           </div>
+        </div>
+
+        {/* Platform ROI karşılaştırması: aynı koşulda hangi platform daha çok net bırakır. */}
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-2.5">
+          <p className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">{t("compareTitle")}</p>
+          <div className="space-y-1 text-xs tabular-nums">
+            {comparison.map((r, i) => (
+              <div key={r.platform} className={`flex items-center justify-between rounded-lg px-2 py-1.5 ${i === 0 ? "bg-emerald-500/10" : ""}`}>
+                <span className="flex items-center gap-1.5">
+                  <span className="font-medium">{PLATFORM_LABELS[r.platform]}</span>
+                  <span className="text-[10px] text-muted-foreground">{t("compareFee", { pct: r.platformFeePct })}</span>
+                </span>
+                <span className={i === 0 ? "font-bold text-emerald-600 dark:text-emerald-400" : "font-semibold"}>{fmt.format(r.net)}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-[11px] text-muted-foreground/70">{t("compareHint")}</p>
         </div>
 
         <p className="flex items-start gap-2 text-[11px] text-muted-foreground/70 leading-relaxed">

@@ -60,6 +60,29 @@ export const TAX_PRESETS = [0, 15, 20, 27] as const;
 const round2 = (n: number) => Math.round(n * 100) / 100;
 const clampPct = (n: number) => Math.min(100, Math.max(0, n));
 
+export interface PlatformNetRow {
+  platform: Exclude<EarningsPlatform, "custom">;
+  platformFeePct: number;
+  net: number;
+  netPct: number;
+}
+
+/** Aynı brüt + transfer + vergi altında komisyon alan platformların (upwork/fiverr/
+ *  bionluk) net karşılaştırması: yalnız platform komisyonu değişir → sıralama komisyon
+ *  farkını yansıtır. 'custom' (kullanıcı tanımlı) matrise girmez. Net'e göre azalan sıralı. */
+export function compareNetByPlatform(input: EarningsInput): PlatformNetRow[] {
+  const platforms = (Object.keys(PLATFORM_FEE_DEFAULTS) as EarningsPlatform[]).filter(
+    (p): p is Exclude<EarningsPlatform, "custom"> => p !== "custom",
+  );
+  return platforms
+    .map((platform) => {
+      const platformFeePct = PLATFORM_FEE_DEFAULTS[platform];
+      const b = computeNetEarnings({ ...input, platformFeePct });
+      return { platform, platformFeePct, net: b.net, netPct: b.netPct };
+    })
+    .sort((a, b) => b.net - a.net);
+}
+
 export function computeNetEarnings(input: EarningsInput): EarningsBreakdown {
   const gross = Math.max(0, input.gross || 0);
   const platformFee = round2(gross * (clampPct(input.platformFeePct) / 100));
