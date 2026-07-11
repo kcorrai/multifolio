@@ -101,6 +101,7 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder={t("urlPlaceholder")}
+              aria-label={t("mode.url")}
               className={input}
             />
             <p className="text-[11px] text-slate-400 dark:text-[#94A3B8]/70">{t("urlHint")}</p>
@@ -113,6 +114,7 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
               rows={8}
               maxLength={15000}
               placeholder={t("textPlaceholder")}
+              aria-label={t("mode.text")}
               className={`${input} resize-y leading-relaxed`}
             />
             <p className="text-[11px] text-slate-400 dark:text-[#94A3B8]/70">{t("textHint")}</p>

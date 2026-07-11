@@ -26,7 +26,7 @@ function CircleScore({ score }: { score: number }) {
   const circ = 2 * Math.PI * r;
   const offset = circ * (1 - score / 100);
   return (
-    <svg width="140" height="140" viewBox="0 0 130 130" className="-rotate-90">
+    <svg width="140" height="140" viewBox="0 0 130 130" className="-rotate-90" aria-hidden="true">
       <circle cx="65" cy="65" r={r} fill="none" stroke="var(--ring-track)" strokeWidth="9" />
       <circle
         cx="65" cy="65" r={r} fill="none"

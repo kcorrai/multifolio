@@ -73,6 +73,7 @@ function PlatformHubMockup() {
 
         {/* Connecting lines */}
         <svg
+          aria-hidden="true"
           className="absolute inset-0 w-full h-full"
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
@@ -136,7 +137,7 @@ function PlatformHubMockup() {
 /* ─── Sparkle decoration ──────────────────────────────────────── */
 function SparkleDecor({ className }: { className?: string }) {
   return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className={className}>
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
       <path
         d="M16 2 L17.8 13.2 L28 16 L17.8 18.8 L16 30 L14.2 18.8 L4 16 L14.2 13.2 Z"
         fill="url(#sparkDecorGrad)"
@@ -178,7 +179,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
           <div className="login-blob-3 absolute -bottom-24 left-1/4 h-[400px] w-[400px] rounded-full blur-[90px]
                           bg-blue-200/40 dark:bg-indigo-600/10" />
           {/* Dot grid */}
-          <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
+          <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <defs>
               <pattern id="left-dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
                 <circle cx="1.5" cy="1.5" r="1.5"
@@ -225,8 +226,9 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
               </span>
             </div>
 
-            {/* Headline — 2 sütun genişliğinde */}
-            <h1 className="anim-fade-up anim-d2 text-[3rem] font-extrabold tracking-[-0.005em] leading-[1.12]">
+            {/* Headline — 2 sütun genişliğinde. Sayfanın h1'i form başlığı ("Sign in"/
+                "Sign up") olduğu için bu pazarlama başlığı <p> (tek h1 kuralı). */}
+            <p className="anim-fade-up anim-d2 text-[3rem] font-extrabold tracking-[-0.005em] leading-[1.12]">
               <span className="text-slate-900 dark:text-white">{t("layout.headlinePre")}</span>
               <span className="relative inline-block">
                 <span className="bg-gradient-to-r from-indigo-500 to-violet-500
@@ -240,7 +242,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
               </span>
               {" "}
               <span className="text-slate-900 dark:text-white">{t("layout.headlinePost")}</span>
-            </h1>
+            </p>
           </div>
 
           {/* ② 2-sütun: Features | Büyük mockup */}
@@ -330,6 +332,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
       >
         {/* Dot grid */}
         <svg
+          aria-hidden="true"
           className="pointer-events-none absolute inset-0 h-full w-full"
           xmlns="http://www.w3.org/2000/svg"
         >
