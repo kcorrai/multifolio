@@ -321,7 +321,8 @@
       "platforms": "Platformlar",
       "portfolio": "Portfolyo",
       "cv": "CV",
-      "jobs": "İlanlar"
+      "jobs": "İlanlar",
+      "feedback": "Geri Bildirim"
     },
     "shell": {
       "credits": "Kredi",
@@ -1005,6 +1006,25 @@
     "hireBody": "Aklında bir proje mi var? Konuşalım.",
     "madeWith": "Multifolio ile yapıldı",
     "testimonials": "Müşteriler ne diyor"
+  },
+  "feedback": {
+    "title": "Geri bildirimini paylaş",
+    "description": "Bir hata mı buldun ya da bir fikrin mi var? Bize yaz — doğrudan ekibe ulaşır ve sıradaki geliştirmeleri şekillendirir.",
+    "categoryLabel": "Tür",
+    "category": {
+      "bug": "Hata",
+      "feature": "Fikir",
+      "general": "Genel"
+    },
+    "messageLabel": "Mesajın",
+    "messagePlaceholder": "Hatayı, fikri ya da aklındakini yaz…",
+    "send": "Geri bildirim gönder",
+    "sending": "Gönderiliyor…",
+    "thanks": "Teşekkürler! Geri bildirimin gönderildi.",
+    "tooShort": "Lütfen biraz daha yaz.",
+    "errorSend": "Geri bildirim gönderilemedi. Lütfen tekrar dene.",
+    "rateLimited": "Son zamanlarda çok geri bildirim gönderdin. Lütfen daha sonra tekrar dene.",
+    "historyTitle": "Geçmiş geri bildirimlerin"
   },
   "recommend": {
     "metaTitle": "Yorum bırak",

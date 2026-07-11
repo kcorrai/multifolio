@@ -1,6 +1,6 @@
 import {
   User, Layers, Globe, Briefcase, Target, LayoutDashboard, Languages, BellRing, Wand2,
-  FileText, Download, RefreshCw, Gauge, Sparkles,
+  FileText, Download, RefreshCw, Gauge, Sparkles, MessageSquare,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
@@ -65,6 +65,7 @@ export const NAV_ITEMS: { href: string; labelKey: string; icon: LucideIcon; badg
   { href: "/dashboard/portfolio", labelKey: "portfolio", icon: Globe },
   { href: "/dashboard/cv",        labelKey: "cv",        icon: FileText },
   { href: "/dashboard/jobs",      labelKey: "jobs",      icon: Briefcase, badge: "jobs" },
+  { href: "/dashboard/feedback",  labelKey: "feedback",  icon: MessageSquare },
 ];
 
 /** Nav aktif durumu: /dashboard yalnız exact; diğerleri alt-route'ları da kapsar. */

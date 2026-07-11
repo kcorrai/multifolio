@@ -321,7 +321,8 @@
       "platforms": "Platforms",
       "portfolio": "Portfolio",
       "cv": "CV",
-      "jobs": "Jobs"
+      "jobs": "Jobs",
+      "feedback": "Feedback"
     },
     "shell": {
       "credits": "Credits",
@@ -1005,6 +1006,25 @@
     "hireBody": "Have a project in mind? Let's talk.",
     "madeWith": "Made with Multifolio",
     "testimonials": "What clients say"
+  },
+  "feedback": {
+    "title": "Share your feedback",
+    "description": "Found a bug or have an idea? Tell us — it goes straight to the team and shapes what we build next.",
+    "categoryLabel": "Type",
+    "category": {
+      "bug": "Bug",
+      "feature": "Idea",
+      "general": "General"
+    },
+    "messageLabel": "Your message",
+    "messagePlaceholder": "Describe the bug, the idea, or anything on your mind…",
+    "send": "Send feedback",
+    "sending": "Sending…",
+    "thanks": "Thanks! Your feedback was sent.",
+    "tooShort": "Please write a bit more.",
+    "errorSend": "Couldn't send your feedback. Please try again.",
+    "rateLimited": "You've sent a lot of feedback recently. Please try again later.",
+    "historyTitle": "Your past feedback"
   },
   "recommend": {
     "metaTitle": "Leave a recommendation",
