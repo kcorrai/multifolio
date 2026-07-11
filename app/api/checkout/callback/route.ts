@@ -31,7 +31,7 @@ export const POST = withErrorHandler(async (req) => {
     // Token'la eşleşen bekleyen satın alımı bul (service-role; token UNIQUE).
     const { data: purchase } = await admin
       .from("purchases")
-      .select("id, user_id, credits, status")
+      .select("id, user_id, credits, status, amount, currency, conversation_id")
       .eq("token", token)
       .maybeSingle();
 
@@ -39,6 +39,23 @@ export const POST = withErrorHandler(async (req) => {
     if (purchase.status === "paid") return resultRedirect(req, "success"); // idempotent
 
     if (!isPaymentSuccessful(result)) {
+      await admin.from("purchases").update({ status: "failed" }).eq("id", purchase.id);
+      return resultRedirect(req, "failed");
+    }
+
+    // Tutar/para birimi/conversation teyidi: iyzico'nun döndürdüğü ödeme, sunucuda
+    // kaydedilen bekleyen satın alımla BİREBİR eşleşmeli. Eşleşmezse (kısmi ödeme,
+    // init-fiyat kayması, yanlış callback) kredi VERME. undefined alan NaN/false →
+    // güvenli tarafta 'failed' sayılır.
+    const amountOk = Number(result.paidPrice) === Number(purchase.amount);
+    const currencyOk = result.currency === purchase.currency;
+    const convOk = result.conversationId === purchase.conversation_id;
+    if (!amountOk || !currencyOk || !convOk) {
+      console.error("checkout callback: tutar/para/conversation uyuşmazlığı", {
+        token,
+        expected: { amount: purchase.amount, currency: purchase.currency, conversationId: purchase.conversation_id },
+        got: { paidPrice: result.paidPrice, currency: result.currency, conversationId: result.conversationId },
+      });
       await admin.from("purchases").update({ status: "failed" }).eq("id", purchase.id);
       return resultRedirect(req, "failed");
     }
