@@ -582,6 +582,24 @@
     "winRateApplied": "{count} başvuru"
   },
   "proposal": {
+    "quality": {
+      "label": "Teklif kalitesi",
+      "wordCount": "{count} kelime",
+      "band": {
+        "excellent": "Mükemmel",
+        "good": "İyi",
+        "fair": "Orta",
+        "weak": "Geliştir"
+      },
+      "allGood": "Güçlü görünüyor — net, somut ve doğru uzunlukta.",
+      "issue": {
+        "wordCountLow": "Çok kısa — biraz daha detay veya kanıt ekle.",
+        "wordCountHigh": "Çok uzun — müşteri göz gezdirir; kısalt.",
+        "noCta": "Eylem çağrısı yok — 'Görüşelim' gibi bir kapanışla bitir.",
+        "generic": "Jenerik açılış — kendi uzmanlığınla değil, müşterinin sorunuyla başla.",
+        "placeholder": "Düzenlenmemiş yer tutucu kalmış — göndermeden {…} / […] kaldır."
+      }
+    },
     "modal": {
       "copy": "Kopyala",
       "copied": "Kopyalandı",

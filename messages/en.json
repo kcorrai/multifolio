@@ -582,6 +582,24 @@
     "winRateApplied": "{count} applied"
   },
   "proposal": {
+    "quality": {
+      "label": "Proposal quality",
+      "wordCount": "{count} words",
+      "band": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "fair": "Fair",
+        "weak": "Needs work"
+      },
+      "allGood": "Looks strong — clear, specific, and the right length.",
+      "issue": {
+        "wordCountLow": "Too short — add a bit more detail or proof.",
+        "wordCountHigh": "Too long — clients skim; tighten it up.",
+        "noCta": "No call-to-action — end with 'Let's discuss' or similar.",
+        "generic": "Generic opening — start with the client's problem, not your expertise.",
+        "placeholder": "Unedited placeholder left in — remove {…} / […] before sending."
+      }
+    },
     "modal": {
       "copy": "Copy",
       "copied": "Copied",
