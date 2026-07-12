@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/auth";
 import { PlatformsHubTab } from "@/components/dashboard/platforms-hub-tab";
 import type { PlatformId } from "@/lib/ai/platforms";
 
 export default async function PlatformsPage() {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) redirect("/login");
 
   const [profileRes, connRes, jobsRes, adaptRes] = await Promise.all([

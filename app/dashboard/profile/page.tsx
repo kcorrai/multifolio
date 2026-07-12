@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/auth";
 import { ProfileTab } from "@/components/dashboard/profile-tab";
 import type { InitialProfile, ConnectedProfile } from "@/components/dashboard/shared";
 import { PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
@@ -7,7 +8,7 @@ import type { PortfolioItem, ProfileProject } from "@/lib/validation/schemas/pro
 
 export default async function ProfilePage() {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) redirect("/login");
 
   // Çekirdek profil + platformlardan çekilmiş public profiller tek turda.

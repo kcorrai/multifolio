@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/auth";
 import { JobsTab } from "@/components/dashboard/jobs-tab";
 import type { JobRow } from "@/components/dashboard/shared";
 import type { PoolJob, PoolJobRow, JobFeedRow } from "@/lib/validation/schemas/feed";
@@ -11,7 +12,7 @@ const VIEWS: View[] = ["feed", "search", "starred", "applied"];
 
 export default async function JobsPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) redirect("/login");
 
   const { view: viewParam } = await searchParams;

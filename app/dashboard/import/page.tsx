@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/auth";
 import { ImportWizard } from "@/components/dashboard/import-wizard";
 import { profileDraftSchema, profileImportMediaSchema } from "@/lib/validation/schemas/profile-import";
 import { PLATFORMS, platformIdSchema } from "@/lib/ai/platforms";
@@ -19,7 +20,7 @@ export default async function ImportPage({
   searchParams: Promise<{ source?: string }>;
 }) {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) redirect("/login");
 
   // ?source=extension → tarayıcı eklentisinin bıraktığı bekleyen taslağı yükle.

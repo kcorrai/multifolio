@@ -1,14 +1,13 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/auth";
 import { CvTab } from "@/components/dashboard/cv-tab";
 import type { InitialCv, CvJobOption } from "@/components/dashboard/shared";
 import { cvContentSchema } from "@/lib/validation/schemas/cv";
 
 export default async function CvPage() {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) redirect("/login");
 
   const [profileRes, cvRes, jobsRes] = await Promise.all([

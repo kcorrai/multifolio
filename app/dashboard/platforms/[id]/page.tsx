@@ -1,5 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/auth";
 import { platformIdSchema } from "@/lib/ai/platforms";
 import { PlatformDetailTab } from "@/components/dashboard/platform-detail-tab";
 import type { JobRow, InitialProfile } from "@/components/dashboard/shared";
@@ -18,7 +19,7 @@ export default async function PlatformDetailPage({ params }: PageProps) {
   const platform = parsed.data;
 
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) redirect("/login");
 
   const [profileRes, connRes, jobsRes, proposalsRes, adaptRes, platformProfileRes] = await Promise.all([

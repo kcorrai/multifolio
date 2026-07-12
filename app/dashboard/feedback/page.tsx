@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/auth";
 import { FeedbackTab } from "@/components/dashboard/feedback-tab";
 import type { FeedbackRow } from "@/lib/validation/schemas/feedback";
 
 export default async function FeedbackPage() {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) redirect("/login");
 
   // Kullanıcının kendi geri bildirim geçmişi (RLS select-own).

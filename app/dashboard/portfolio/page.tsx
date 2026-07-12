@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/auth";
 import { PortfolioTab } from "@/components/dashboard/portfolio-tab";
 import type { InitialPortfolio } from "@/components/dashboard/shared";
 import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
@@ -8,7 +9,7 @@ import type { ProfileProject } from "@/lib/validation/schemas/profile";
 
 export default async function PortfolioPage() {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) redirect("/login");
 
   // profiles.projects'i de çek: "proje-proje" gruplarını canlı profilden kur (ücretsiz)

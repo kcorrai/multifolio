@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/auth";
 import { maybeGrantSignupCredits } from "@/lib/credits/signup-bonus";
 import { isAdminEmail } from "@/lib/admin";
 import { DashboardShell } from "@/components/dashboard/shell";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) redirect("/login");
 
   // Reklamı yapılan kayıt kredisini ilk ziyarette ver (idempotent; bakiye çekilmeden ÖNCE).
