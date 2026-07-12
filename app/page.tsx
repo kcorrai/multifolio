@@ -5,7 +5,7 @@ import {
   CheckCircle2, Target, Sparkles, ShieldCheck,
   FileText, Download, Compass, Gauge, Calculator, Scale, Puzzle, Gift, Tag, ClipboardCheck, Wand2,
 } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { CountUp } from "@/components/count-up";
 import { PlatformLogo } from "@/components/platform-logo";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -21,9 +21,10 @@ import { PricingSection } from "@/components/pricing-section";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaqSection } from "@/components/faq-section";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import type { PlatformId } from "@/lib/ai/platforms";
-
-const PLATFORMS: PlatformId[] = ["linkedin", "upwork", "fiverr", "bionluk", "armut"];
+import { PLATFORMS, type PlatformId } from "@/lib/ai/platforms";
+import { getUserMarketId } from "@/lib/markets/server";
+import { marketPlatforms } from "@/lib/markets/config";
+import { platformListText } from "@/lib/markets/platform-text";
 
 // Landing self-canonical (kök title/description korunur; yalnız canonical eklenir).
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -74,6 +75,7 @@ function ScoreBar({ label, value, delay = 0 }: { label: string; value: number; d
 /* ─── Product mockup shown in hero ─────────────────────────────── */
 async function ProductMockup() {
   const t = await getTranslations("landing.mockup");
+  const platforms = marketPlatforms(await getUserMarketId()); // pazara göre logo satırı
   return (
     <div className="relative flex items-center justify-center py-10 anim-fade-in anim-d2">
       <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[380px] w-[380px] rounded-full bg-indigo-400/8 dark:bg-cyan-400/8 blur-[90px]" />
@@ -126,7 +128,7 @@ async function ProductMockup() {
           <div className="h-px bg-slate-100 dark:bg-white/5 mx-6" />
 
           <div className="px-6 py-5 flex items-center justify-between">
-            {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id, i) => (
+            {platforms.map((id, i) => (
               <div
                 key={id}
                 className="rounded-xl border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.04] p-1.5 logo-pop"
@@ -148,21 +150,29 @@ async function ProductMockup() {
 async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = await getTranslations("landing");
   const tc = await getTranslations("common");
+  // Pazara göre platformlar (global: 3, TR: 5) — kopyalarda ve logo satırlarında.
+  const marketId = await getUserMarketId();
+  const locale = await getLocale();
+  const platforms = marketPlatforms(marketId);
+  const platformList = platformListText(marketId, locale);
 
   /* Her adımın yanında yaşayan mini demo — .sr-visible görününce oynar */
   const demoCard = "rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-5 h-44 flex flex-col justify-center";
   const demoLine = "h-2 rounded-full bg-slate-200 dark:bg-white/12 demo-grow";
   const cardBase = "group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 transition-all";
 
-  /* Ücretsiz araçlar (kayıt gerektirmeyen public sayfalar) */
+  /* Ücretsiz araçlar (kayıt gerektirmeyen public sayfalar). TR-özel araçlar
+     (net kazanç/karşılaştırma — TR komisyon+vergisine dayalı) yalnız TR pazarında. */
   const tools = [
     { href: "/analyze",  icon: Gauge,      key: "analyze",  accent: "#00F0FF" },
-    { href: "/earnings", icon: Calculator, key: "earnings", accent: "#a78bfa" },
     { href: "/rate",     icon: Tag,           key: "rate",             accent: "#00F0FF" },
     { href: "/proposal-checker", icon: ClipboardCheck, key: "proposalChecker", accent: "#a78bfa" },
     { href: "/headline-optimizer", icon: Wand2, key: "headlineOptimizer", accent: "#00F0FF" },
-    { href: "/compare",  icon: Scale,         key: "compare",          accent: "#a78bfa" },
-  ] as const;
+    ...(marketId === "tr" ? [
+      { href: "/earnings", icon: Calculator, key: "earnings", accent: "#a78bfa" },
+      { href: "/compare",  icon: Scale,      key: "compare",  accent: "#a78bfa" },
+    ] : []),
+  ];
 
   const steps = [
     {
@@ -211,7 +221,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             <div className="h-2 w-4/6 rounded-full bg-slate-100 dark:bg-white/8 demo-shimmer" />
           </div>
           <div className="flex items-center justify-between pt-1">
-            {PLATFORMS.map((id, i) => (
+            {platforms.map((id, i) => (
               <div key={id} className="demo-pop rounded-lg border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-white/[0.04] p-1.5" style={{ animationDelay: `${400 + i * 120}ms` }}>
                 <PlatformLogo platform={id} size={14} />
               </div>
@@ -339,11 +349,11 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </h1>
 
             <p className="anim-fade-up anim-d2 text-lg text-slate-500 dark:text-[#94A3B8] leading-relaxed max-w-md font-medium">
-              {t("hero.subtitle")}
+              {t("hero.subtitle", { platforms: platformList })}
             </p>
 
             <div className="anim-fade-up anim-d3 flex items-center gap-2 flex-wrap pt-1">
-              {(["linkedin","upwork","fiverr","bionluk","armut"] as PlatformId[]).map((id) => (
+              {platforms.map((id) => (
                 <div key={id} className="rounded-lg border border-white/8 bg-white/[0.05] p-1.5 backdrop-blur-sm">
                   <PlatformLogo platform={id} size={16} />
                 </div>
@@ -467,16 +477,10 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           {t("platformsStrip.title")}
         </p>
         <div className="drift-x flex flex-wrap items-center justify-center gap-3" style={{ "--drift": "26px" } as React.CSSProperties}>
-          {([
-            { id: "linkedin" as PlatformId, label: "LinkedIn" },
-            { id: "upwork"   as PlatformId, label: "Upwork"   },
-            { id: "fiverr"   as PlatformId, label: "Fiverr"   },
-            { id: "bionluk"  as PlatformId, label: "Bionluk"  },
-            { id: "armut"    as PlatformId, label: "Armut"    },
-          ]).map(({ id, label }) => (
+          {platforms.map((id) => (
             <div key={id} className="flex items-center gap-2.5 rounded-2xl border border-white/8 bg-white/[0.05] px-5 py-3 backdrop-blur-sm hover:bg-white/[0.09] hover:border-white/15 transition-colors">
               <PlatformLogo platform={id} size={20} />
-              <span className="text-sm font-semibold text-slate-700 dark:text-[#94A3B8]">{label}</span>
+              <span className="text-sm font-semibold text-slate-700 dark:text-[#94A3B8]">{PLATFORMS[id].label}</span>
             </div>
           ))}
         </div>
@@ -508,7 +512,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                   <div className="space-y-1.5">
                     <h3 className="font-bold text-slate-900 dark:text-white">{t("features.adapt.title")}</h3>
                     <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">
-                      {t("features.adapt.desc")}
+                      {t("features.adapt.desc", { platforms: platformList })}
                     </p>
                   </div>
                 </div>
@@ -523,7 +527,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
                     <div className="h-px flex-1 bg-gradient-to-r from-violet-400/50 to-[#00F0FF]/50" />
                   </div>
                   <div className="flex items-center justify-between">
-                    {PLATFORMS.map((id, i) => (
+                    {platforms.map((id, i) => (
                       <div key={id} className="demo-pop rounded-lg border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.05] p-1.5" style={{ animationDelay: `${500 + i * 120}ms` }}>
                         <PlatformLogo platform={id} size={16} />
                       </div>

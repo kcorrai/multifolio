@@ -1,12 +1,20 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { JsonLd } from "@/components/seo/json-ld";
+import { getUserMarketId } from "@/lib/markets/server";
+import { platformListText } from "@/lib/markets/platform-text";
 
 const FAQ_KEYS = ["credits", "expire", "subscription", "platforms", "beta"];
+
+// "platforms" cevabı pazara göre platform listesi alır; diğerleri parametresiz.
+function faqParams(key: string, platforms: string): Record<string, string> {
+  return key === "platforms" ? { platforms } : {};
+}
 
 /* ─── Paylaşılan SSS bölümü (landing + /pricing) ────────────────── */
 export async function FaqSection() {
   const t = await getTranslations("landing");
+  const platformList = platformListText(await getUserMarketId(), await getLocale());
 
   // FAQPage structured data (Google zengin sonuç: açılır SSS).
   const faqLd = {
@@ -15,7 +23,7 @@ export async function FaqSection() {
     mainEntity: FAQ_KEYS.map((key) => ({
       "@type": "Question",
       name: t(`faq.q.${key}`),
-      acceptedAnswer: { "@type": "Answer", text: t(`faq.a.${key}`) },
+      acceptedAnswer: { "@type": "Answer", text: t(`faq.a.${key}`, faqParams(key, platformList)) },
     })),
   };
 
@@ -38,7 +46,7 @@ export async function FaqSection() {
                   <span className="ml-4 shrink-0 text-[#00F0FF] transition-transform group-open:rotate-45 text-xl leading-none">+</span>
                 </summary>
                 <p className="mt-3 text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">
-                  {t(`faq.a.${key}`)}
+                  {t(`faq.a.${key}`, faqParams(key, platformList))}
                 </p>
               </details>
             </ScrollReveal>

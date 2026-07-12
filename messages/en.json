@@ -39,7 +39,7 @@
     "hero": {
       "badge": "Beta — first 100 users free",
       "title": "Manage your freelance career <hl>from one platform</hl>.",
-      "subtitle": "Enter your profile once. AI adapts it for LinkedIn, Upwork, Fiverr, Bionluk and Armut, builds your CV and portfolio, and finds jobs that fit — all in one place.",
+      "subtitle": "Enter your profile once. AI adapts it for {platforms}, builds your CV and portfolio, and finds jobs that fit — all in one place.",
       "platformsSupported": "5 platforms supported",
       "ctaPrimary": "Get started now",
       "ctaSecondary": "See features",
@@ -100,7 +100,7 @@
       "subtitle": "All the tools you need as a freelancer, connected and automated.",
       "adapt": {
         "title": "Platform adaptation",
-        "desc": "Enter your experience once. AI rewrites it into a tailored profile for LinkedIn, Upwork, Fiverr, Bionluk and Armut — each in that platform's voice."
+        "desc": "Enter your experience once. AI rewrites it into a tailored profile for {platforms} — each in that platform's voice."
       },
       "portfolio": {
         "title": "Portfolio site",
@@ -237,7 +237,7 @@
         "credits": "Credits are what you spend on AI actions. Adapting a profile or matching a job costs 2 credits, a proposal 3, a full portfolio or CV 5. You always see your balance before you spend.",
         "expire": "No. Credits never expire — buy once, use whenever. There's no monthly reset.",
         "subscription": "No subscription and no auto-renew. It's pay-as-you-go: top up credits only when you want to.",
-        "platforms": "LinkedIn, Upwork, Fiverr, Bionluk and Armut — with more on the way.",
+        "platforms": "{platforms} — with more on the way.",
         "beta": "Yes. Every new account starts with 100 free credits — enough to adapt all five platforms, build a portfolio and match several jobs."
       }
     },
@@ -1208,6 +1208,9 @@
     },
     "urlPlaceholder": "https://www.linkedin.com/in/you or bionluk.com/you",
     "urlHint": "LinkedIn and Bionluk links work directly. For Upwork/Fiverr, paste your profile text instead.",
+    "metaDescriptionGlobal": "Paste your Upwork, Fiverr or LinkedIn profile and get an instant AI score with improvement tips. Free, no signup needed.",
+    "urlPlaceholderGlobal": "https://www.linkedin.com/in/you",
+    "urlHintGlobal": "LinkedIn links work directly. For Upwork/Fiverr, paste your profile text instead.",
     "textPlaceholder": "Paste your headline, overview and skills here…",
     "textHint": "At least 40 characters. Nothing is stored — we only analyze.",
     "analyzeCta": "Analyze my profile",

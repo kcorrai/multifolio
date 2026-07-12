@@ -7,20 +7,23 @@ export async function SiteFooter() {
   const t = await getTranslations("landing");
   const market = await getUserMarket();
 
-  // /vergi (TR vergi hesabı) yalnız KVKK pazarında (TR'ye özel araç).
+  // TR-özel araçlar (net kazanç/karşılaştırma/vergi — TR komisyon+vergisine dayalı)
+  // yalnız TR pazarında. Global kitleye alakasız → gizli.
   const productLinks = [
     { href: "/#features", label: t("nav.features") },
     { href: "/#how", label: t("nav.howItWorks") },
     { href: "/analyze", label: t("nav.analyze") },
-    { href: "/earnings", label: t("nav.earnings") },
     { href: "/rate", label: t("nav.rate") },
     { href: "/proposal-checker", label: t("nav.proposalChecker") },
     { href: "/headline-optimizer", label: t("nav.headlineOptimizer") },
     { href: "/ats-check", label: t("nav.atsCheck") },
-    { href: "/compare", label: t("nav.compare") },
     { href: "/guides", label: t("nav.guides") },
     { href: "/freelance", label: t("nav.freelance") },
-    ...(market.hasKvkk ? [{ href: "/vergi", label: t("nav.trTax") }] : []),
+    ...(market.hasKvkk ? [
+      { href: "/earnings", label: t("nav.earnings") },
+      { href: "/compare", label: t("nav.compare") },
+      { href: "/vergi", label: t("nav.trTax") },
+    ] : []),
     { href: "/pricing", label: t("nav.pricing") },
   ];
   // KVKK bildirimi yalnız KVKK pazarında (TR). Global'de privacy/terms yeterli.

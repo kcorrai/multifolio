@@ -13,12 +13,12 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 const LINKS = [
   { key: "nav.analyze",     href: "/analyze" },
-  { key: "nav.earnings",    href: "/earnings" },
   { key: "nav.rate",        href: "/rate" },
   { key: "nav.proposalChecker", href: "/proposal-checker" },
   { key: "nav.headlineOptimizer", href: "/headline-optimizer" },
-  { key: "nav.compare",     href: "/compare" },
-  // TR vergi rehberi yalnız Türk kullanıcılara (masaüstü nav ile aynı kural).
+  // TR-özel araçlar (net kazanç/karşılaştırma/vergi TR komisyon+vergisine dayalı) yalnız TR pazarında.
+  { key: "nav.earnings",    href: "/earnings", trOnly: true },
+  { key: "nav.compare",     href: "/compare", trOnly: true },
   { key: "nav.trTax",       href: "/vergi", trOnly: true },
   { key: "nav.pricing",     href: "/pricing" },
 ];

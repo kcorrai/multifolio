@@ -39,7 +39,7 @@
     "hero": {
       "badge": "Beta — İlk 100 kullanıcı ücretsiz",
       "title": "Freelancer kariyerini <hl>tek platformdan</hl> yönet.",
-      "subtitle": "Profilini bir kez gir. AI onu LinkedIn, Upwork, Fiverr, Bionluk ve Armut için uyarlasın, CV'ni ve portfolyonu kursun, sana uygun işleri bulsun — hepsi tek yerde.",
+      "subtitle": "Profilini bir kez gir. AI onu {platforms} için uyarlasın, CV'ni ve portfolyonu kursun, sana uygun işleri bulsun — hepsi tek yerde.",
       "platformsSupported": "5 platform destekleniyor",
       "ctaPrimary": "Hemen Başla",
       "ctaSecondary": "Özellikleri Gör",
@@ -100,7 +100,7 @@
       "subtitle": "Freelancer olarak ihtiyacın olan tüm araçlar, birbirine bağlı ve otomatik.",
       "adapt": {
         "title": "Platform Uyarlama",
-        "desc": "Deneyimini bir kez gir. AI onu LinkedIn, Upwork, Fiverr, Bionluk ve Armut için ayrı ayrı, her platformun kendi diliyle yeniden yazar."
+        "desc": "Deneyimini bir kez gir. AI onu {platforms} için ayrı ayrı, her platformun kendi diliyle yeniden yazar."
       },
       "portfolio": {
         "title": "Portfolyo Sitesi",
@@ -237,7 +237,7 @@
         "credits": "Krediler AI aksiyonlarında harcadığın birimlerdir. Profil uyarlama veya iş eşleştirme 2 kredi, teklif 3, tam portfolyo veya CV 5 kredidir. Harcamadan önce bakiyeni her zaman görürsün.",
         "expire": "Hayır. Krediler süresizdir — bir kez al, istediğinde kullan. Aylık sıfırlama yok.",
         "subscription": "Abonelik ve otomatik yenileme yok. Kullandıkça öde: sadece istediğinde kredi yükle.",
-        "platforms": "LinkedIn, Upwork, Fiverr, Bionluk ve Armut — yenileri yolda.",
+        "platforms": "{platforms} — yenileri yolda.",
         "beta": "Evet. Her yeni hesap 100 ücretsiz krediyle başlar — beş platformu uyarlamaya, portfolyo kurmaya ve birkaç işi eşleştirmeye yeter."
       }
     },
@@ -1208,6 +1208,9 @@
     },
     "urlPlaceholder": "https://www.linkedin.com/in/sen veya bionluk.com/sen",
     "urlHint": "LinkedIn ve Bionluk linkleri doğrudan çalışır. Upwork/Fiverr için profil metnini yapıştır.",
+    "metaDescriptionGlobal": "Upwork, Fiverr veya LinkedIn profilini yapıştır; anında AI skoru ve iyileştirme önerileri al. Ücretsiz, kayıt gerekmez.",
+    "urlPlaceholderGlobal": "https://www.linkedin.com/in/sen",
+    "urlHintGlobal": "LinkedIn linkleri doğrudan çalışır. Upwork/Fiverr için profil metnini yapıştır.",
     "textPlaceholder": "Başlığını, özetini ve becerilerini buraya yapıştır…",
     "textHint": "En az 40 karakter. Hiçbir şey saklanmaz — yalnız analiz ederiz.",
     "analyzeCta": "Profilimi analiz et",

@@ -1,15 +1,16 @@
 import Link from "next/link";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileNav } from "@/components/mobile-nav";
 import { FreeToolsNav } from "@/components/free-tools-nav";
+import { getUserMarketId } from "@/lib/markets/server";
 
 /* ─── Paylaşılan üst gezinme (landing + pricing) ─────────────────── */
 export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = await getTranslations("landing");
   const tc = await getTranslations("common");
-  const locale = await getLocale();
+  const isTr = (await getUserMarketId()) === "tr";
 
   return (
     <header className="border-b border-slate-200 dark:border-white/5 anim-fade-in anim-d0">
@@ -27,13 +28,15 @@ export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean 
             label={t("nav.freeTools")}
             items={[
               { label: t("nav.analyze"),  href: "/analyze" },
-              { label: t("nav.earnings"), href: "/earnings" },
               { label: t("nav.rate"),     href: "/rate" },
               { label: t("nav.proposalChecker"), href: "/proposal-checker" },
               { label: t("nav.headlineOptimizer"), href: "/headline-optimizer" },
-              { label: t("nav.compare"),  href: "/compare" },
-              // TR vergi rehberi yalnız Türk kullanıcılara (global kitleye alakasız).
-              ...(locale.startsWith("tr") ? [{ label: t("nav.trTax"), href: "/vergi" }] : []),
+              // TR-özel araçlar (net kazanç/karşılaştırma/vergi TR komisyon+vergisine dayalı) yalnız TR pazarında.
+              ...(isTr ? [
+                { label: t("nav.earnings"), href: "/earnings" },
+                { label: t("nav.compare"),  href: "/compare" },
+                { label: t("nav.trTax"),    href: "/vergi" },
+              ] : []),
             ]}
           />
           <Link href="/pricing" className="text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
