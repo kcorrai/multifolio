@@ -426,7 +426,8 @@
     "referral": {
       "title": "Invite & earn credits",
       "body": "Share your link — you both get {bonus} credits when your friend saves their first profile.",
-      "stats": "{invited, plural, =0 {No invites yet} one {# invite} other {# invites}} · {credits} credits earned"
+      "stats": "{invited, plural, =0 {No invites yet} one {# invite} other {# invites}} · {credits} credits earned",
+      "shareText": "I'm using Multifolio to win more freelance work across platforms — try it free:"
     },
     "weeklyDigest": {
       "label": "Weekly summary email",

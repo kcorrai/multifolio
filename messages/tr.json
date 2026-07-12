@@ -426,7 +426,8 @@
     "referral": {
       "title": "Davet et, kredi kazan",
       "body": "Linkini paylaş — arkadaşın ilk profilini kaydettiğinde ikiniz de {bonus} kredi kazanırsınız.",
-      "stats": "{invited, plural, =0 {Henüz davet yok} one {# davet} other {# davet}} · {credits} kredi kazanıldı"
+      "stats": "{invited, plural, =0 {Henüz davet yok} one {# davet} other {# davet}} · {credits} kredi kazanıldı",
+      "shareText": "Platformlar arası daha çok freelance iş kazanmak için Multifolio kullanıyorum — ücretsiz dene:"
     },
     "weeklyDigest": {
       "label": "Haftalık özet e-postası",

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Gift } from "lucide-react";
 import { CopyButton } from "./copy-button";
+import { ShareButtons } from "@/components/share-buttons";
 
 interface ReferralInfo {
   code: string;
@@ -47,9 +48,12 @@ export function ReferralCard() {
       </div>
       <p className="text-xs text-muted-foreground">{t("body", { bonus: 20 })}</p>
       {info ? (
-        <div className="flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2">
-          <code className="flex-1 min-w-0 truncate text-xs">{inviteUrl}</code>
-          <CopyButton text={inviteUrl} />
+        <div className="space-y-2.5">
+          <div className="flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2">
+            <code className="flex-1 min-w-0 truncate text-xs">{inviteUrl}</code>
+            <CopyButton text={inviteUrl} />
+          </div>
+          <ShareButtons url={inviteUrl} text={t("shareText")} />
         </div>
       ) : (
         <div className="h-9 rounded-lg bg-muted/50 animate-pulse" />
