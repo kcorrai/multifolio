@@ -1133,6 +1133,11 @@
     "bonusJustEarned": "+{count} bonus kredi kazandın!",
     "bonusEarned": "+{count} bonus kredi kazanıldı",
     "exploreTitle": "Ücretsiz araçları keşfet",
+    "rewardPill": "Kurulumu bitir, +{count} kredi kazan",
+    "rewardDone": "Bonus kredi kazanıldı",
+    "statusDone": "Bitti",
+    "statusNext": "Buradan başla",
+    "journeyHint": "Yaklaşık 5 dakika, adım adım.",
     "steps": {
       "verifyEmail": { "title": "E-postanı doğrula", "desc": "Hesabını güvene almak için adresini onayla.", "cta": "Doğrula" },
       "profile": { "title": "Profilini oluştur", "desc": "Başlığını, özetini ve becerilerini bir kez içe aktar ya da yaz.", "cta": "Başla" },

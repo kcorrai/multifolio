@@ -1133,6 +1133,11 @@
     "bonusJustEarned": "You just earned +{count} bonus credits!",
     "bonusEarned": "+{count} bonus credits earned",
     "exploreTitle": "Explore free tools",
+    "rewardPill": "Finish setup to unlock +{count} credits",
+    "rewardDone": "Bonus credits unlocked",
+    "statusDone": "Done",
+    "statusNext": "Start here",
+    "journeyHint": "About 5 minutes, one step at a time.",
     "steps": {
       "verifyEmail": { "title": "Verify your email", "desc": "Confirm your address to secure your account.", "cta": "Verify" },
       "profile": { "title": "Build your profile", "desc": "Import or write your headline, summary and skills once.", "cta": "Start" },
