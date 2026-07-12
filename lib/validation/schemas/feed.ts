@@ -15,6 +15,7 @@ export const feedCreateSchema = z.object({
   minScore: z.number().int().min(0).max(100).optional(),
   notify: z.boolean().default(false),
   proposalPrompt: z.string().trim().max(2000).optional(),
+  autoDraftDaily: z.number().int().min(0).max(10).optional(),
 });
 
 // Güncellemede alanlar null gönderilerek TEMİZLENEBİLİR (undefined = dokunma).
@@ -31,6 +32,7 @@ export const feedUpdateSchema = z.object({
   minScore: z.number().int().min(0).max(100).nullable().optional(),
   notify: z.boolean().optional(),
   proposalPrompt: z.string().trim().max(2000).nullable().optional(),
+  autoDraftDaily: z.number().int().min(0).max(10).optional(),
 });
 
 // Query: liste sayfalama
@@ -96,6 +98,9 @@ export interface JobFeedRow {
   min_score: number | null;
   notify: boolean;
   proposal_prompt: string | null;
+  // Opt-in arka-plan otomatik taslak: 0=kapalı, 1-10=açık (günlük tavan). Opsiyonel →
+  // bu alanı seçmeyen sorgularda undefined = kapalı sayılır.
+  auto_draft_daily?: number;
   created_at: string;
 }
 

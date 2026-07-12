@@ -6,7 +6,7 @@ import { parseJson, parseUuidParam } from "@/lib/validation";
 import { feedUpdateSchema } from "@/lib/validation/schemas/feed";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const FEED_COLS = "id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at";
+const FEED_COLS = "id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, auto_draft_daily, created_at";
 
 export const PATCH = withErrorHandler(async (req, { params }) => {
   const id = parseUuidParam((await params).id as string);
@@ -28,6 +28,7 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
   if (input.minScore !== undefined) patch.min_score = input.minScore;
   if (input.notify !== undefined) patch.notify = input.notify;
   if (input.proposalPrompt !== undefined) patch.proposal_prompt = input.proposalPrompt?.trim() ? input.proposalPrompt : null;
+  if (input.autoDraftDaily !== undefined) patch.auto_draft_daily = input.autoDraftDaily;
 
   const { data, error } = await supabase.from("job_feeds").update(patch).eq("id", id).eq("user_id", user.id).select(FEED_COLS).maybeSingle();
   if (error) throw error;
