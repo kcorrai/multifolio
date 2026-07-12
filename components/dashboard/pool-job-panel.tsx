@@ -5,10 +5,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { X, Sparkles, ExternalLink, Check, Languages, RefreshCw, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
-import { CopyButton } from "./copy-button";
+import { ProposalModal } from "@/components/proposal-modal";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
-import { PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
 import { poolJobTitle } from "@/lib/feed/filter";
 import { RELEVANCE_WARN_BELOW } from "@/lib/feed/relevance";
 import { scoreColor, scoreBarColor } from "./shared";
@@ -32,9 +31,10 @@ export function PoolJobPanel({
   const [applying, setApplying] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
-  // Üretilen teklif (asistanlı başvuru): ilan değişince RENDER'da sıfırlanır.
-  const [prop, setProp] = useState({ jobId: job.id, text: null as string | null });
-  if (prop.jobId !== job.id) setProp({ jobId: job.id, text: null });
+  // Asistanlı başvuru teklif modalı (zengin deneyim: ton/uzunluk/kapsama/kalite/çeviri).
+  // İlan değişince RENDER'da sıfırlanır. jobId = oluşturulan job_listings satırı.
+  const [proposal, setProposalState] = useState({ jobIdFor: job.id, open: false, jobId: null as string | null });
+  if (proposal.jobIdFor !== job.id) setProposalState({ jobIdFor: job.id, open: false, jobId: null });
   // Düşük-alaka skorlama uyarısı (kredi israfını önler); ilan değişince RENDER'da sıfırlanır.
   const [gate, setGate] = useState({ jobId: job.id, warned: false });
   if (gate.jobId !== job.id) setGate({ jobId: job.id, warned: false });
@@ -105,9 +105,9 @@ export function PoolJobPanel({
     }
   }
 
-  // Asistanlı başvuru: (1) job_listings oluştur (başvuruldu + pool bağı) → (2) O İŞE ÖZEL
-  // teklif üret/kaydet (bu "latest proposal" olur; uzantı Upwork'te yapıştırır) → (3) platformda aç.
-  // Gönderim OTOMATİK DEĞİL — kullanıcı kutuyu görüp kendi gönderir.
+  // Asistanlı başvuru: (1) job_listings oluştur (başvuruldu + pool bağı) → (2) platformda aç →
+  // (3) zengin teklif modalını AÇ (autoGenerate — o işe özel teklif + ton/uzunluk/kapsama/kalite/
+  // çeviri). Teklif "latest" olur; uzantı Upwork'te yapıştırır. Gönderim OTOMATİK DEĞİL.
   async function generateAndApply() {
     if (generating || applying) return;
     setGenerating(true); setError("");
@@ -123,24 +123,8 @@ export function PoolJobPanel({
       if (!jobRes.ok) { setError(jobBody?.error?.message ?? t("actionFailed")); setGenerating(false); return; }
       setApplied(true); onApplied(job.id);
       const jobId = jobBody.job?.id as string;
-
-      // Teklif platformu: pool source geçerli bir PlatformId ise onu, değilse (remotive/remoteok/
-      // sample) Upwork yönergesini (proposal/cover-letter odaklı, EN) kullan.
-      const proposalPlatform: PlatformId =
-        (PLATFORM_IDS as readonly string[]).includes(job.source) ? (job.source as PlatformId) : "upwork";
-      const propRes = await fetch("/api/proposal", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          job_id: jobId,
-          job_description: (job.description || job.title).slice(0, 10000),
-          platform: proposalPlatform,
-        }),
-      });
-      const propBody = await propRes.json().catch(() => null);
-      if (!propRes.ok) { setError(propBody?.error?.message ?? t("actionFailed")); setGenerating(false); return; }
-      setProp({ jobId: job.id, text: propBody.proposal?.content ?? null });
-      if (propBody.credits) onCreditsUpdate(propBody.credits);
       if (job.url) window.open(job.url, "_blank", "noopener");
+      setProposalState({ jobIdFor: job.id, open: true, jobId });
     } catch {
       setError(t("actionFailed"));
     } finally {
@@ -262,20 +246,20 @@ export function PoolJobPanel({
           </p>
         </div>
 
-        {/* Asistanlı başvuru: üretilen teklif (kopyala + uzantıyla yapıştır). */}
-        {prop.text && (
-          <div className="rounded-xl border border-[#00F0FF]/25 bg-[#00F0FF]/[0.04] p-3 space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-bold flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-[#00F0FF]" />{t("proposalReady")}</p>
-              <CopyButton text={prop.text} />
-            </div>
-            <p className="text-sm whitespace-pre-wrap break-words max-h-52 overflow-y-auto">{prop.text}</p>
-            <p className="text-[11px] text-muted-foreground">{t("proposalReadyHint")}</p>
-          </div>
-        )}
-
         {error && <p className="text-sm text-destructive">{error}</p>}
       </div>
+
+      {/* Asistanlı başvuru: zengin teklif modalı (açılışta otomatik üretir). */}
+      {proposal.open && proposal.jobId && (
+        <ProposalModal
+          jobId={proposal.jobId}
+          jobDescription={job.description}
+          defaultPlatform={job.source}
+          autoGenerate
+          onClose={() => setProposalState((s) => ({ ...s, open: false }))}
+          onCreditsUpdate={onCreditsUpdate}
+        />
+      )}
 
       <div className="border-t border-border p-4 space-y-2">
         <Button onClick={generateAndApply} disabled={generating || applying} aria-busy={generating} className="w-full gap-2">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { X, Sparkles, Copy, Check, ChevronDown, Clock, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,8 @@ interface Props {
   defaultPlatform?: string;
   onClose: () => void;
   onCreditsUpdate?: (c: { balance: number; spent: number }) => void;
+  // Açılışta teklifi otomatik üret (asistanlı 1-tık başvuru akışı) — kredi harcar.
+  autoGenerate?: boolean;
 }
 
 function CopyBtn({ text }: { text: string }) {
@@ -85,7 +87,7 @@ function TranslationBlock({ proposalId, platform }: { proposalId: string; platfo
   );
 }
 
-export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose, onCreditsUpdate }: Props) {
+export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose, onCreditsUpdate, autoGenerate = false }: Props) {
   const t = useTranslations("proposal");
   const locale = useLocale();
   const { triggerComingSoon } = useDashboard();
@@ -146,6 +148,17 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
     if (body.credits) onCreditsUpdate?.(body.credits);
     setGenerating(false);
   }
+
+  // Asistanlı 1-tık başvuru: açılışta bir kez otomatik üret (ref ile mükerrer önlenir).
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (autoGenerate && !autoRan.current && jobDescription) {
+      autoRan.current = true;
+      void generate();
+    }
+    // generate closure'ı state setter'larına bağlı; yalnız açılışta bir kez tetiklenmeli.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoGenerate, jobDescription]);
 
   return (
     <div
