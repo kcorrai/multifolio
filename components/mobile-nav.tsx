@@ -10,7 +10,6 @@ import { Menu, X } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { RegionToggle } from "@/components/region-toggle";
 
 const LINKS = [
   { key: "nav.analyze",     href: "/analyze" },
@@ -85,7 +84,6 @@ export function MobileNav({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </nav>
 
             <div className="flex items-center gap-3 pt-4">
-              <RegionToggle />
               <ThemeToggle />
             </div>
 

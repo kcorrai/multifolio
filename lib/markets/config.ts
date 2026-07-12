@@ -48,14 +48,8 @@ export const MARKETS: Record<MarketId, Market> = {
 export const MARKET_IDS = Object.keys(MARKETS) as MarketId[];
 export const defaultMarket: MarketId = "global";
 
-// Cookie/header adları — SAF sabitler (middleware next/headers'a bağımlı server.ts'i
-// çekmeden bunları kullanabilsin diye burada).
-export const MARKET_COOKIE = "NEXT_MARKET";
+// Vercel geo header adı — SAF sabit (middleware/server ortak).
 export const MARKET_GEO_HEADER = "x-vercel-ip-country";
-
-function isMarketId(v: string | undefined): v is MarketId {
-  return v === "global" || v === "tr";
-}
 
 // Ülke kodu (ISO-3166 alpha-2) → pazar. Şimdilik yalnız TR ayrı; gerisi global.
 function marketForCountry(country: string | null | undefined): MarketId | null {
@@ -63,14 +57,12 @@ function marketForCountry(country: string | null | undefined): MarketId | null {
   return country.toUpperCase() === "TR" ? "tr" : "global";
 }
 
-// Pazar çözümü. Öncelik: geçerli cookie override → geo ülke → Accept-Language (tr* → tr)
-// → varsayılan global. Konumdan VARSAYILAN seçilir ama cookie ile override edilebilir.
+// Pazar TAMAMEN konumdan çözülür (manuel seçim/override YOK): geo ülke →
+// Accept-Language (tr* → tr) → varsayılan global. TR'den bağlanan tr, gerisi global.
 export function resolveMarket(
-  cookieValue: string | undefined,
   country: string | null | undefined,
   acceptLanguage: string | null,
 ): MarketId {
-  if (isMarketId(cookieValue)) return cookieValue;
   const byGeo = marketForCountry(country);
   if (byGeo) return byGeo;
   if ((acceptLanguage ?? "").toLowerCase().startsWith("tr")) return "tr";

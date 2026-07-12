@@ -8,31 +8,27 @@ import {
   marketHasKvkk,
 } from "./config";
 
-describe("resolveMarket", () => {
-  it("geçerli cookie override her şeyi yener", () => {
-    expect(resolveMarket("tr", "US", "en-US")).toBe("tr");
-    expect(resolveMarket("global", "TR", "tr-TR")).toBe("global");
-  });
-
-  it("cookie yoksa geo ülkeden çözer (TR → tr, diğerleri global)", () => {
-    expect(resolveMarket(undefined, "TR", null)).toBe("tr");
-    expect(resolveMarket(undefined, "tr", null)).toBe("tr"); // küçük harf toleransı
-    expect(resolveMarket(undefined, "DE", null)).toBe("global");
-    expect(resolveMarket(undefined, "US", null)).toBe("global");
+describe("resolveMarket (saf-geo, override YOK)", () => {
+  it("geo ülkeden çözer (TR → tr, diğerleri global)", () => {
+    expect(resolveMarket("TR", null)).toBe("tr");
+    expect(resolveMarket("tr", null)).toBe("tr"); // küçük harf toleransı
+    expect(resolveMarket("DE", null)).toBe("global");
+    expect(resolveMarket("US", null)).toBe("global");
   });
 
   it("geo yoksa Accept-Language'e düşer (tr* → tr)", () => {
-    expect(resolveMarket(undefined, null, "tr-TR,tr;q=0.9")).toBe("tr");
-    expect(resolveMarket(undefined, null, "en-US")).toBe("global");
+    expect(resolveMarket(null, "tr-TR,tr;q=0.9")).toBe("tr");
+    expect(resolveMarket(null, "en-US")).toBe("global");
+  });
+
+  it("geo, Accept-Language'i yener (konum belirleyici)", () => {
+    expect(resolveMarket("US", "tr-TR")).toBe("global");
+    expect(resolveMarket("TR", "en-US")).toBe("tr");
   });
 
   it("hiçbir sinyal yoksa varsayılan global", () => {
-    expect(resolveMarket(undefined, null, null)).toBe("global");
-    expect(resolveMarket("", "", "")).toBe("global");
-  });
-
-  it("geçersiz cookie yok sayılır, geo devam eder", () => {
-    expect(resolveMarket("xx", "TR", null)).toBe("tr");
+    expect(resolveMarket(null, null)).toBe("global");
+    expect(resolveMarket("", "")).toBe("global");
   });
 });
 

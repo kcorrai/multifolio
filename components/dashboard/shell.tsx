@@ -7,7 +7,6 @@ import { useTranslations } from "next-intl";
 import { Wallet, LogOut, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { RegionToggle } from "@/components/region-toggle";
 import { NotificationBell } from "./notification-bell";
 import { NAV_ITEMS, isNavActive, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
@@ -175,7 +174,6 @@ export function DashboardShell({
             {/* Actions */}
             <div className="flex items-center gap-2">
               <NotificationBell />
-              <RegionToggle />
               <ThemeToggle />
               <form action="/auth/signout" method="post" className="lg:hidden">
                 <Button type="submit" variant="ghost" size="sm" title={t("shell.logout")} aria-label={t("shell.logout")} className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
