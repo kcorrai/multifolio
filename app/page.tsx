@@ -272,6 +272,16 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
     },
   };
 
+  // Organization structured data (marka bilgi paneli — ad/logo/URL).
+  const orgLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/opengraph-image`,
+    description: tc("metaDescription"),
+  };
+
   // HowTo structured data ("nasıl çalışır" 3 adımı) — Google zengin sonuç.
   const howToLd = {
     "@context": "https://schema.org",
@@ -288,6 +298,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
     <div className="relative min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
       <JsonLd data={softwareLd} />
+      <JsonLd data={orgLd} />
       <JsonLd data={howToLd} />
 
       {/* Sakin ambient aurora (2D CSS — WebGL yok); üst folda yumuşak gradyan,
