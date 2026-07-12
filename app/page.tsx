@@ -12,7 +12,7 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { LandingMotion } from "@/components/landing/landing-motion";
 import { Tilt } from "@/components/landing/tilt";
 import { BrowserFrame } from "@/components/landing/browser-frame";
-import { FeedShowcase } from "@/components/landing/product-showcase";
+import { FeedShowcase, PortfolioShowcase, CvShowcase } from "@/components/landing/product-showcase";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -404,6 +404,35 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               <FeedShowcase />
             </BrowserFrame>
           </Tilt>
+        </ScrollReveal>
+
+        {/* Portfolyo vitrini */}
+        <ScrollReveal delay={80} className="mt-20">
+          <div className="mx-auto max-w-2xl text-center space-y-2 mb-6">
+            <h3 className="text-2xl font-bold tracking-tight">{t("showcase.portfolio.title")}</h3>
+            <p className="text-slate-500 dark:text-[#94A3B8] font-medium">{t("showcase.portfolio.desc")}</p>
+          </div>
+          <Tilt>
+            <BrowserFrame url="multifolio.app/p/ahmet-yilmaz" className="mx-auto max-w-4xl">
+              <PortfolioShowcase />
+            </BrowserFrame>
+          </Tilt>
+          <p className="text-center mt-4">
+            <Link href={isLoggedIn ? "/dashboard/portfolio" : "/signup"} className="inline-flex items-center gap-1 text-sm font-bold text-[#00F0FF]">
+              {t("showcase.portfolio.viewLive")} <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </p>
+        </ScrollReveal>
+
+        {/* CV vitrini */}
+        <ScrollReveal delay={80} className="mt-20">
+          <div className="mx-auto max-w-2xl text-center space-y-2 mb-6">
+            <h3 className="text-2xl font-bold tracking-tight">{t("showcase.cv.title")}</h3>
+            <p className="text-slate-500 dark:text-[#94A3B8] font-medium">{t("showcase.cv.desc")}</p>
+          </div>
+          <div className="mx-auto max-w-4xl">
+            <CvShowcase />
+          </div>
         </ScrollReveal>
       </section>
 

@@ -2,7 +2,7 @@
    (statik, sunucu bileşeni). Gerçek ekran görüntüsü yerine gerçek bileşen stilleriyle kurulmuş
    sahne. Renk vurgusu #00F0FF; PlatformLogo gerçek logolar. */
 import { getTranslations } from "next-intl/server";
-import { Layers, Rss, Search, Star, Briefcase, Plus, CheckCheck, SlidersHorizontal, Sparkles, Zap } from "lucide-react";
+import { Layers, Rss, Search, Star, Briefcase, Plus, CheckCheck, SlidersHorizontal, Sparkles, Zap, Mail } from "lucide-react";
 import { PlatformLogo } from "@/components/platform-logo";
 import type { PlatformId } from "@/lib/ai/platforms";
 
@@ -124,6 +124,116 @@ export async function FeedShowcase() {
           </div>
         </div>
       </aside>
+    </div>
+  );
+}
+
+/* ── Portfolyo vitrini: public /p/[slug] sayfası yansıması ─────────── */
+export async function PortfolioShowcase() {
+  const t = await getTranslations("landing.showcase.portfolio");
+  // Galeri döşemeleri — gradyan yer tutucu (gerçek görsel yok).
+  const tiles = [
+    "h-24 from-indigo-400/30 to-violet-400/20",
+    "h-32 from-[#00F0FF]/25 to-cyan-300/15",
+    "h-20 from-violet-400/25 to-fuchsia-300/15",
+    "h-28 from-emerald-400/25 to-teal-300/15",
+    "h-24 from-amber-400/25 to-orange-300/15",
+    "h-20 from-rose-400/25 to-pink-300/15",
+  ];
+  return (
+    <div className="text-left">
+      {/* Hero */}
+      <div className="relative overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#00F0FF]/8 via-transparent to-violet-500/8" />
+        <div className="relative flex flex-col items-center gap-3 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#00F0FF]/30 to-violet-400/20 text-lg font-extrabold text-slate-700 dark:text-white">AY</div>
+          <div>
+            <p className="text-xl font-extrabold text-slate-900 dark:text-white">Ahmet Yılmaz</p>
+            <p className="text-sm font-medium text-slate-500 dark:text-white/50">{t("role")}</p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-1.5">
+            {["React", "Next.js", "UI/UX", "Figma"].map((s) => (
+              <span key={s} className="rounded-full border border-slate-200 bg-white/60 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-white/60">{s}</span>
+            ))}
+          </div>
+          <span className="mt-1 inline-flex items-center gap-1.5 rounded-lg bg-[#00F0FF] px-4 py-1.5 text-[12px] font-bold text-[#04121a]">
+            <Mail className="h-3.5 w-3.5" />{t("hire")}
+          </span>
+        </div>
+      </div>
+      {/* Galeri (masonry) */}
+      <div className="border-t border-slate-100 px-6 py-6 dark:border-white/5 sm:px-10">
+        <div className="columns-2 gap-3 sm:columns-3 [&>*]:mb-3">
+          {tiles.map((c, i) => (
+            <div key={i} className={`break-inside-avoid rounded-xl bg-gradient-to-br ${c}`} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── CV vitrini: ATS şablon önizlemeleri ──────────────────────────── */
+export async function CvShowcase() {
+  const t = await getTranslations("landing.showcase.cv");
+  const td = await getTranslations("landing.demos");
+  const line = "h-1.5 rounded-full bg-slate-200 dark:bg-white/12";
+
+  // Ortak mini-bölüm (deneyim + skiller).
+  const body = (accent: string) => (
+    <>
+      <p className="text-[8px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/30">{td("experience")}</p>
+      <div className={`${line} w-full`} />
+      <div className={`${line} w-5/6`} />
+      <div className={`${line} w-4/6`} />
+      <div className="flex flex-wrap gap-1 pt-1">
+        {["React", "Node", "SQL"].map((s) => (
+          <span key={s} className="rounded px-1.5 py-0.5 text-[7px] font-bold" style={{ backgroundColor: `${accent}1a`, color: accent }}>{s}</span>
+        ))}
+      </div>
+    </>
+  );
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-3">
+      {/* Clean — üst vurgu şeridi */}
+      <div className="rounded-lg bg-white p-3 shadow-sm ring-1 ring-slate-200 dark:bg-[#0f1119] dark:ring-white/10">
+        <div className="mb-2 flex items-center justify-between">
+          <div>
+            <p className="text-[11px] font-extrabold text-slate-900 dark:text-white">Ahmet Yılmaz</p>
+            <p className="text-[8px] font-medium text-slate-400 dark:text-white/40">Product Designer</p>
+          </div>
+          <span className="text-[8px] font-bold uppercase tracking-wide text-[#0891b2]">{t("tplClean")}</span>
+        </div>
+        <div className="mb-2 h-0.5 w-full rounded bg-[#0891b2]/60" />
+        <div className="space-y-1.5">{body("#0891b2")}</div>
+      </div>
+
+      {/* Modern — renkli isim */}
+      <div className="rounded-lg bg-white p-3 shadow-sm ring-1 ring-slate-200 dark:bg-[#0f1119] dark:ring-white/10">
+        <div className="mb-2 flex items-center justify-between">
+          <div>
+            <p className="text-[12px] font-extrabold text-[#7c3aed]">Ahmet Yılmaz</p>
+            <p className="text-[8px] font-medium text-slate-400 dark:text-white/40">Product Designer</p>
+          </div>
+          <span className="text-[8px] font-bold uppercase tracking-wide text-[#7c3aed]">{t("tplModern")}</span>
+        </div>
+        <div className="space-y-1.5">{body("#7c3aed")}</div>
+      </div>
+
+      {/* Sidebar — sol renkli kolon */}
+      <div className="flex overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-slate-200 dark:bg-[#0f1119] dark:ring-white/10">
+        <div className="w-1/3 shrink-0 space-y-1.5 bg-[#0f766e]/10 p-2">
+          <div className="mx-auto h-7 w-7 rounded-full bg-[#0f766e]/40" />
+          <div className="h-1 w-full rounded bg-[#0f766e]/30" />
+          <div className="h-1 w-4/5 rounded bg-[#0f766e]/30" />
+          <p className="pt-1 text-[7px] font-bold uppercase text-[#0f766e]">{t("tplSidebar")}</p>
+        </div>
+        <div className="flex-1 space-y-1.5 p-2.5">
+          <p className="text-[10px] font-extrabold text-slate-900 dark:text-white">Ahmet Yılmaz</p>
+          {body("#0f766e")}
+        </div>
+      </div>
     </div>
   );
 }
