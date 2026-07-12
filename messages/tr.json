@@ -1075,7 +1075,11 @@
     "leadBody": "Kısa bir talep gönder, sana e-posta ile döneyim.",
     "hireBody": "Aklında bir proje mi var? Konuşalım.",
     "madeWith": "Multifolio ile yapıldı",
-    "testimonials": "Müşteriler ne diyor"
+    "testimonials": "Müşteriler ne diyor",
+    "demoRibbon": "Canlı demo — Multifolio portfolyon böyle görünür.",
+    "demoCtaTitle": "Kendininkini dakikalar içinde kur",
+    "demoCtaBody": "Profilini bir kez içe aktar, böyle bir portfolyo yayınla — ücretsiz başla, kart yok.",
+    "demoCtaButton": "Portfolyomu oluştur"
   },
   "admin": {
     "title": "Geri Bildirim",

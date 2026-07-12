@@ -1075,7 +1075,11 @@
     "leadBody": "Send a quick request and I'll get back to you by email.",
     "hireBody": "Have a project in mind? Let's talk.",
     "madeWith": "Made with Multifolio",
-    "testimonials": "What clients say"
+    "testimonials": "What clients say",
+    "demoRibbon": "Live demo — this is what your Multifolio portfolio looks like.",
+    "demoCtaTitle": "Build your own in minutes",
+    "demoCtaBody": "Import your profile once and publish a portfolio like this — free to start, no card.",
+    "demoCtaButton": "Create my portfolio"
   },
   "admin": {
     "title": "Feedback",

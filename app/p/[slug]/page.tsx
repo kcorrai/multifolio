@@ -12,7 +12,8 @@ import { Archivo, Space_Grotesk, Fraunces } from "next/font/google";
 import { getTranslations, getLocale } from "next-intl/server";
 import { ArrowUpRight, Download } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { portfolioContentSchema } from "@/lib/validation/schemas/portfolio";
+import { portfolioContentSchema, type PortfolioContent } from "@/lib/validation/schemas/portfolio";
+import { SITE_URL } from "@/lib/seo/site";
 import { portfolioTheme, ACCENT_HEX } from "@/lib/portfolio/theme";
 import { LeadForm } from "@/components/portfolio/lead-form";
 import { getSafeEmbed } from "@/lib/portfolio/embed";
@@ -42,8 +43,35 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// Herkese açık "canlı demo" portfolyo (slug = "demo"): DB/auth GEREKTİRMEZ — landing'den
+// gelen ziyaretçiye gerçek çıktı kalitesini gösterir. CTA'lar signup'a gider (dönüşüm).
+const DEMO_TESTIMONIALS = [
+  { id: "d1", author_name: "Deniz K.", author_role: "Founder, SaaS startup", quote: "Elif redesigned our dashboard and daily active use doubled. Clear thinking, fast delivery." },
+  { id: "d2", author_name: "Marco R.", author_role: "Head of Product", quote: "One of the few designers who also ships production React. Rare and worth it." },
+];
+const demoContent = (): PortfolioContent => ({
+  headline: "Elif Demir — Product Designer & Frontend Developer",
+  bio:
+    "I help startups turn messy ideas into clean, shippable products. Over 6 years I've designed and built web apps end-to-end — from user research and UI to production React. I care about clarity, speed, and results you can measure.\n\nCurrently open to freelance product design and frontend work.",
+  skills: ["Product Design", "UI/UX", "Figma", "React", "Next.js", "TypeScript", "Design Systems", "Accessibility", "Prototyping", "Webflow"],
+  projects: [
+    { title: "SaaS analytics dashboard", description: "Redesigned a cluttered analytics tool into a focused dashboard used daily by 4,000+ teams.", problem: "Users couldn't find key metrics and support tickets were rising.", solution: "Ran 12 interviews, rebuilt the information architecture, and shipped a new React dashboard with saved views.", result: "Support tickets down 38%, daily active use up 2.1x." },
+    { title: "Fintech onboarding flow", description: "Designed and built a 3-step onboarding that replaced a 9-screen form.", problem: "60% of new users dropped off before funding their account.", solution: "Cut the flow to 3 steps with inline validation and clear progress feedback.", result: "Activation rose from 40% to 71% in six weeks." },
+    { title: "E-commerce design system", description: "Built a component library and Figma kit for a fast-growing store.", problem: "Every page looked different and engineering was slow.", solution: "Created 40+ reusable components with design tokens and documentation.", result: "New pages ship 3x faster with a consistent brand." },
+  ],
+  layout: "gallery",
+  theme: { preset: "studio", accent: "blue" },
+  media: { avatarUrl: null, gallery: [], projectGroups: [] },
+  contactEmail: null,
+  contactUrl: `${SITE_URL}/signup`,
+  embedUrl: null,
+});
+
 // cache() ile aynı istek içinde generateMetadata + page tek sorgu yapar.
 const fetchPortfolio = cache(async (slug: string) => {
+  if (slug === "demo") {
+    return { content: demoContent(), updatedAt: "2026-07-01T00:00:00.000Z", userId: "demo" };
+  }
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("portfolios")
@@ -94,20 +122,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function PortfolioPage({ params }: PageProps) {
   const { slug } = await params;
+  const isDemo = slug === "demo";
   const portfolio = await fetchPortfolio(slug);
   if (!portfolio) notFound();
   const { content, updatedAt } = portfolio;
 
   // Onaylı müşteri yorumları ("Wall of Love"). RLS approved-or-own → anon onaylıları okur.
-  const supabase = await createSupabaseServerClient();
-  const { data: testimonialRows } = await supabase
-    .from("testimonials")
-    .select("id, author_name, author_role, quote")
-    .eq("user_id", portfolio.userId)
-    .eq("status", "approved")
-    .order("created_at", { ascending: false })
-    .limit(12);
-  const testimonials = testimonialRows ?? [];
+  // Demo'da DB sorgusu yok — sabit örnek yorumlar (portfolio.userId gerçek değil).
+  let testimonials: { id: string; author_name: string; author_role: string | null; quote: string }[] = DEMO_TESTIMONIALS;
+  if (!isDemo) {
+    const supabase = await createSupabaseServerClient();
+    const { data: testimonialRows } = await supabase
+      .from("testimonials")
+      .select("id, author_name, author_role, quote")
+      .eq("user_id", portfolio.userId)
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(12);
+    testimonials = testimonialRows ?? [];
+  }
   const { headline, bio, skills, projects, media, theme, layout } = content;
   const projectGroups = media.projectGroups ?? [];
   const showProjectGroups = layout === "projects" && projectGroups.length > 0;
@@ -142,6 +175,17 @@ export default async function PortfolioPage({ params }: PageProps) {
     >
       {/* schema.org Person yapısal veri */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+
+      {/* Demo bandı: dürüstlük + dönüşüm (yalnız /p/demo) */}
+      {isDemo && (
+        <a
+          href={`${SITE_URL}/signup?ref=portfolio-demo`}
+          className="flex items-center justify-center gap-2 bg-[var(--pf-accent)] px-4 py-2 text-center text-xs font-semibold text-white transition-opacity hover:opacity-90"
+        >
+          {t("demoRibbon")}
+          <ArrowUpRight className="h-3.5 w-3.5" />
+        </a>
+      )}
 
       {/* Üst vurgu şeridi */}
       <div className="h-1 w-full bg-[var(--pf-accent)]" />
@@ -198,14 +242,16 @@ export default async function PortfolioPage({ params }: PageProps) {
                   <ArrowUpRight className="h-4 w-4" />
                 </a>
               )}
-              {/* PDF sürümü — seçilebilir-metinli, paylaşılabilir (AI/kredi yok). */}
-              <a
-                href={`/api/portfolio/export?slug=${encodeURIComponent(slug)}`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--pf-border)] px-5 py-2.5 text-sm font-semibold text-[var(--pf-text)] transition-colors hover:bg-[var(--pf-surface)]"
-              >
-                <Download className="h-4 w-4" />
-                {t("downloadPdf")}
-              </a>
+              {/* PDF sürümü — seçilebilir-metinli, paylaşılabilir (AI/kredi yok). Demo'da yok. */}
+              {!isDemo && (
+                <a
+                  href={`/api/portfolio/export?slug=${encodeURIComponent(slug)}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--pf-border)] px-5 py-2.5 text-sm font-semibold text-[var(--pf-text)] transition-colors hover:bg-[var(--pf-surface)]"
+                >
+                  <Download className="h-4 w-4" />
+                  {t("downloadPdf")}
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -361,17 +407,33 @@ export default async function PortfolioPage({ params }: PageProps) {
         </section>
       )}
 
-      {/* ── İşe al: lead formu (her yayınlanan portfolyoda; talep → owner dashboard) ── */}
-      <section className="mx-auto max-w-2xl px-6 py-12">
-        <div className="anim-fade-up rounded-3xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-6 sm:p-8">
-          <SectionLabel style={heading}>{t("leadEyebrow")}</SectionLabel>
-          <h2 style={heading} className="mt-2 text-2xl font-bold">{t("leadHeading")}</h2>
-          <p className="mt-2 text-[var(--pf-muted)]">{t("leadBody")}</p>
-          <div className="mt-6">
-            <LeadForm slug={slug} accentHex={accentHex} />
+      {/* ── İşe al: lead formu (yayınlanan portfolyolarda). Demo'da → "kendininkini kur" CTA. ── */}
+      {isDemo ? (
+        <section className="mx-auto max-w-2xl px-6 py-12">
+          <div className="anim-fade-up rounded-3xl border border-[var(--pf-border)] p-8 text-center sm:p-10" style={{ backgroundColor: accentTint }}>
+            <h2 style={heading} className="text-2xl font-bold sm:text-3xl">{t("demoCtaTitle")}</h2>
+            <p className="mx-auto mt-2 max-w-md text-[var(--pf-muted)]">{t("demoCtaBody")}</p>
+            <a
+              href={`${SITE_URL}/signup?ref=portfolio-demo`}
+              className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-[var(--pf-accent)] px-6 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+            >
+              {t("demoCtaButton")}
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section className="mx-auto max-w-2xl px-6 py-12">
+          <div className="anim-fade-up rounded-3xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-6 sm:p-8">
+            <SectionLabel style={heading}>{t("leadEyebrow")}</SectionLabel>
+            <h2 style={heading} className="mt-2 text-2xl font-bold">{t("leadHeading")}</h2>
+            <p className="mt-2 text-[var(--pf-muted)]">{t("leadBody")}</p>
+            <div className="mt-6">
+              <LeadForm slug={slug} accentHex={accentHex} />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Footer ───────────────────────────────────────────────────── */}
       <footer className="mx-auto max-w-5xl px-6 pb-16 pt-10">

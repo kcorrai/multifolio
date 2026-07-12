@@ -429,7 +429,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
             </BrowserFrame>
           </Tilt>
           <p className="text-center mt-4">
-            <Link href={isLoggedIn ? "/dashboard/portfolio" : "/signup"} className="inline-flex items-center gap-1 text-sm font-bold text-[#00F0FF]">
+            <Link href="/p/demo" className="inline-flex items-center gap-1 text-sm font-bold text-[#00F0FF]">
               {t("showcase.portfolio.viewLive")} <ArrowUpRight className="h-4 w-4" />
             </Link>
           </p>

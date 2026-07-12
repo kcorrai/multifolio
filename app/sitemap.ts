@@ -20,6 +20,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // Herkese açık canlı demo portfolyo (DB'siz, statik) — SEO + sosyal kanıt.
+  const demoRoute = { url: `${SITE_URL}/p/demo`, changeFrequency: "monthly" as const, priority: 0.6 };
+
   let portfolioRoutes: MetadataRoute.Sitemap = [];
   try {
     const supabase = createSupabaseAdminClient();
@@ -35,5 +38,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Sitemap DB olmadan da geçerli kalmalı (build/edge güvenliği).
   }
 
-  return [...staticRoutes, ...guideRoutes, ...portfolioRoutes];
+  return [...staticRoutes, ...guideRoutes, demoRoute, ...portfolioRoutes];
 }
