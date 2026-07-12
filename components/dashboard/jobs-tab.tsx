@@ -12,11 +12,13 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Briefcase, Plus, Trash2, Rss, Layers, Sparkles, ArrowRight, Search, Star, CheckCheck } from "lucide-react";
+import { Briefcase, Plus, Trash2, Rss, Layers, Sparkles, ArrowRight, Search, Star, CheckCheck, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CreditCost } from "@/components/credit-cost";
 import type { JobRow } from "./shared";
 import type { PoolJob, JobFeedRow } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
+import { PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
 import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
 import { PoolJobRow } from "./pool-job-row";
 import { PoolJobPanel } from "./pool-job-panel";
@@ -28,12 +30,14 @@ import { StarredView } from "./starred-view";
 import { AppliedView } from "./applied-view";
 import { useDashboard } from "./dashboard-context";
 
-type View = "feed" | "search" | "starred" | "applied";
+type View = "feed" | "queue" | "search" | "starred" | "applied";
 // Sayfa boyutu SSR'ın ilk dilimiyle (jobs/page.tsx slice(0, 25)) tutarlı.
 const PAGE_SIZE = 25;
+// Toplu taslak: kuyruğun ilk N işine teklif üret (kredi harcar → iki adımlı onay).
+const BULK_DRAFT_N = 3;
 
 export function JobsTab({
-  initialJobs, profileSaved, initialFeedJobs, initialFeedTotal, initialFeeds, initialView,
+  initialJobs, profileSaved, initialFeedJobs, initialFeedTotal, initialFeeds, initialQueue, initialView,
   weakRelevanceSignal = false,
 }: {
   initialJobs: JobRow[];
@@ -41,6 +45,7 @@ export function JobsTab({
   initialFeedJobs: PoolJob[];
   initialFeedTotal: number;
   initialFeeds: JobFeedRow[];
+  initialQueue: PoolJob[];
   initialView: View;
   weakRelevanceSignal?: boolean;
 }) {
@@ -60,11 +65,22 @@ export function JobsTab({
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [showLowScores, setShowLowScores] = useState(false);
   const [actionError, setActionError] = useState("");
+  // Başvuru kuyruğu (kredisiz toplanır; taslak istek üzerine).
+  const [queue, setQueue] = useState<PoolJob[]>(initialQueue);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [bulkConfirm, setBulkConfirm] = useState(false);
+  const [bulkMsg, setBulkMsg] = useState("");
+  const [notice, setNotice] = useState(""); // bilgi bildirimi (cyan)
   useEffect(() => {
     if (!actionError) return;
     const id = setTimeout(() => setActionError(""), 5000);
     return () => clearTimeout(id);
   }, [actionError]);
+  useEffect(() => {
+    if (!notice) return;
+    const id = setTimeout(() => setNotice(""), 5000);
+    return () => clearTimeout(id);
+  }, [notice]);
 
   function syncViewUrl(v: View) {
     const next = new URLSearchParams(params.toString());
@@ -77,6 +93,8 @@ export function JobsTab({
     setSelectedFeedId(null);
     setSelectedJobId(null);
     setConfirmingDelete(false);
+    setBulkConfirm(false);
+    if (v === "queue") void refreshQueue();
     syncViewUrl(v);
   }
 
@@ -130,30 +148,38 @@ export function JobsTab({
     void refresh();
   }
 
+  // Feed + kuyruk aynı ilanı içerebilir → tek id güncellemesi ikisine de uygulanır.
+  const patchBoth = (id: string, patch: Partial<PoolJob>) => {
+    setJobs((prev) => prev.map((j) => (j.id === id ? { ...j, ...patch } : j)));
+    setQueue((prev) => prev.map((j) => (j.id === id ? { ...j, ...patch } : j)));
+  };
+
   async function toggleStar(job: PoolJob) {
     const next = !job.isStarred;
     setActionError("");
-    setJobs((prev) => prev.map((j) => j.id === job.id ? { ...j, isStarred: next } : j));
+    patchBoth(job.id, { isStarred: next });
     const res = await fetch(`/api/starred${next ? "" : `?jobPoolId=${job.id}`}`, {
       method: next ? "POST" : "DELETE",
       headers: next ? { "Content-Type": "application/json" } : undefined,
       body: next ? JSON.stringify({ jobPoolId: job.id }) : undefined,
     });
     if (!res.ok) {
-      setJobs((prev) => prev.map((j) => j.id === job.id ? { ...j, isStarred: !next } : j));
+      patchBoth(job.id, { isStarred: !next });
       setActionError(t("actionFailed"));
     }
   }
 
   function onScored(poolId: string, score: number, result: JobMatchResult) {
-    setJobs((prev) => prev.map((j) => j.id === poolId ? { ...j, score, scoreResult: result } : j));
+    patchBoth(poolId, { score, scoreResult: result });
   }
 
   // Okundu işaretle (fire-and-forget; iyimser). id listesi boşsa no-op.
   function markRead(ids: string[]) {
-    const fresh = ids.filter((id) => jobs.some((j) => j.id === id && !j.isRead));
+    const all = [...jobs, ...queue];
+    const fresh = ids.filter((id) => all.some((j) => j.id === id && !j.isRead));
     if (fresh.length === 0) return;
     setJobs((prev) => prev.map((j) => fresh.includes(j.id) ? { ...j, isRead: true } : j));
+    setQueue((prev) => prev.map((j) => fresh.includes(j.id) ? { ...j, isRead: true } : j));
     void fetch("/api/job-reads", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -166,6 +192,45 @@ export function JobsTab({
     markRead([job.id]);
   }
 
+  async function refreshQueue() {
+    const res = await fetch("/api/feed/queue").then((r) => r.json()).catch(() => ({ jobs: [] }));
+    setQueue(res.jobs ?? []);
+  }
+
+  // Toplu taslak: kuyruğun ilk N işine SIRAYLA teklif üret (create-job + generate).
+  // Her biri kredi harcar; başvurulan iş kuyruktan çıkar (Applied'a düşer). AUTO-SUBMIT YOK.
+  async function bulkDraft(n: number) {
+    if (bulkBusy) return;
+    const targets = queue.slice(0, n);
+    if (targets.length === 0) return;
+    setBulkBusy(true); setBulkConfirm(false); setActionError("");
+    let done = 0;
+    for (const job of targets) {
+      setBulkMsg(t("queueDrafting", { done: done + 1, total: targets.length }));
+      try {
+        const jobRes = await fetch("/api/jobs", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: job.title, description: job.description, platform: job.source, url: job.url ?? undefined, budget: job.budget ?? undefined, source_pool_id: job.id }),
+        });
+        const jb = await jobRes.json().catch(() => null);
+        if (!jobRes.ok) { setActionError(jb?.error?.message ?? t("actionFailed")); break; }
+        const jobId = jb.job?.id as string;
+        const pp: PlatformId = (PLATFORM_IDS as readonly string[]).includes(job.source) ? (job.source as PlatformId) : "upwork";
+        const propRes = await fetch("/api/proposal", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ job_id: jobId, job_description: (job.description || job.title).slice(0, 10000), platform: pp }),
+        });
+        const pb = await propRes.json().catch(() => null);
+        if (!propRes.ok) { setActionError(pb?.error?.message ?? t("actionFailed")); break; }
+        if (pb.credits) applyCredits(pb.credits);
+        done += 1;
+        setQueue((prev) => prev.filter((q) => q.id !== job.id));
+      } catch { setActionError(t("actionFailed")); break; }
+    }
+    setBulkBusy(false); setBulkMsg("");
+    if (done > 0) setNotice(t("queueDrafted", { count: done }));
+  }
+
   const activeFeed = selectedFeedId ? feeds.find((f) => f.id === selectedFeedId) ?? null : null;
   const countFor = (f: JobFeedRow) => jobs.filter((j) => matchesFeed(j, feedCriteria(f), j.score)).length;
   const unreadFor = (f: JobFeedRow) => jobs.filter((j) => !j.isRead && matchesFeed(j, feedCriteria(f), j.score)).length;
@@ -174,9 +239,10 @@ export function JobsTab({
     ? { ...feedCriteria(activeFeed), min_score: showLowScores ? null : activeFeed.min_score }
     : null;
   const visibleJobs = activeCriteria ? jobs.filter((j) => matchesFeed(j, activeCriteria, j.score)) : jobs;
-  const selectedJob = selectedJobId ? jobs.find((j) => j.id === selectedJobId) ?? null : null;
+  const selectedJob = selectedJobId ? (jobs.find((j) => j.id === selectedJobId) ?? queue.find((j) => j.id === selectedJobId) ?? null) : null;
 
   const navItems: { key: View; label: string; Icon: typeof Search }[] = [
+    { key: "queue", label: t("navQueue"), Icon: ListChecks },
     { key: "search", label: t("navSearch"), Icon: Search },
     { key: "starred", label: t("navStarred"), Icon: Star },
     { key: "applied", label: t("navApplied"), Icon: Briefcase },
@@ -204,6 +270,11 @@ export function JobsTab({
         >
           {actionError}
         </button>
+      )}
+      {notice && (
+        <div role="status" className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-[#00F0FF]/30 bg-[#00F0FF]/10 px-4 py-2 text-sm font-medium text-[#00F0FF] shadow-lg backdrop-blur">
+          {notice}
+        </div>
       )}
 
       {/* ── [Sol] feed sidebar ─────────────────────────────────────────── */}
@@ -245,6 +316,49 @@ export function JobsTab({
               {view === "search" && <SearchView />}
               {view === "starred" && <StarredView />}
               {view === "applied" && <AppliedView initialJobs={initialJobs} profileSaved={profileSaved} />}
+              {view === "queue" && (
+                <div className="mx-auto max-w-2xl space-y-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h2 className="text-lg font-bold">{t("queueTitle")}</h2>
+                      <p className="text-xs text-muted-foreground mt-0.5">{t("queueSubtitle")}</p>
+                    </div>
+                    {queue.length > 0 && (
+                      <Button
+                        onClick={() => (bulkConfirm ? bulkDraft(BULK_DRAFT_N) : setBulkConfirm(true))}
+                        onBlur={() => setBulkConfirm(false)}
+                        disabled={bulkBusy}
+                        aria-busy={bulkBusy}
+                        className="gap-2 shrink-0"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        {bulkBusy
+                          ? (bulkMsg || t("queueDraftingShort"))
+                          : bulkConfirm
+                            ? t("queueDraftConfirm")
+                            : t("queueDraftTop", { count: Math.min(BULK_DRAFT_N, queue.length) })}
+                        {!bulkBusy && !bulkConfirm && <CreditCost kind="proposal" />}
+                      </Button>
+                    )}
+                  </div>
+                  {queue.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
+                      <ListChecks className="h-7 w-7 text-muted-foreground/40 mb-3" />
+                      <p className="text-sm font-semibold text-muted-foreground">{t("queueEmptyTitle")}</p>
+                      <p className="text-xs text-muted-foreground/60 mt-1 max-w-xs">{t("queueEmptyHint")}</p>
+                      <button onClick={() => selectFeed(null)} className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-[#00F0FF]/10 px-4 py-2 text-sm font-semibold text-[#00F0FF] hover:bg-[#00F0FF]/15 transition-colors cursor-pointer">
+                        {t("browseFeed")}<ArrowRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {queue.map((job) => (
+                        <PoolJobRow key={job.id} job={job} selected={job.id === selectedJobId} onStar={toggleStar} onOpen={openJob} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </section>
         )}
@@ -346,7 +460,7 @@ export function JobsTab({
             job={selectedJob}
             onClose={() => setSelectedJobId(null)}
             onScored={onScored}
-            onApplied={() => {}}
+            onApplied={(poolId) => setQueue((prev) => prev.filter((q) => q.id !== poolId))}
             onCreditsUpdate={(c) => applyCredits(c)}
           />
         </JobSlideOver>
