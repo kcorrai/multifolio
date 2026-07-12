@@ -13,6 +13,8 @@
   "captureSending": { "message": "Kaydediliyor…" },
   "captureSuccess": { "message": "İş kaydedildi — Multifolio › İşler'de bul." },
   "captureEmpty": { "message": "Bu sayfada iş başlığı/açıklaması okunamadı." },
+  "generateFill": { "message": "Teklif üret & doldur" },
+  "generating": { "message": "Üretiliyor…" },
   "pasteProposal": { "message": "Son teklifimi ekle" },
   "pasteSending": { "message": "Getiriliyor…" },
   "pasteSuccess": { "message": "Teklif eklendi — kontrol edip kendin gönder." },

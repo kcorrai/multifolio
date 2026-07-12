@@ -13,6 +13,8 @@
   "captureSending": { "message": "Saving…" },
   "captureSuccess": { "message": "Job saved — find it in Multifolio › Jobs." },
   "captureEmpty": { "message": "Couldn't read the job title/description on this page." },
+  "generateFill": { "message": "Generate & fill proposal" },
+  "generating": { "message": "Generating…" },
   "pasteProposal": { "message": "Insert my latest proposal" },
   "pasteSending": { "message": "Fetching…" },
   "pasteSuccess": { "message": "Proposal inserted — review and submit yourself." },

@@ -13,6 +13,8 @@ const FALLBACK = {
   captureSending: "Saving…",
   captureSuccess: "Job saved — find it in Multifolio › Jobs.",
   captureEmpty: "Couldn't read the job title/description on this page.",
+  generateFill: "Generate & fill proposal",
+  generating: "Generating…",
   pasteProposal: "Insert my latest proposal",
   pasteSending: "Fetching…",
   pasteSuccess: "Proposal inserted — review and submit yourself.",

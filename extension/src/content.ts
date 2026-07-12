@@ -22,6 +22,10 @@ type ProposalResponse =
   | { ok: true; content: string }
   | { ok: false; reason: "auth" | "empty" | "error" };
 
+type GenerateResponse =
+  | { ok: true; content: string }
+  | { ok: false; reason: "auth" | "rate" | "generate" | "error"; message?: string };
+
 function removeButton() {
   document.getElementById(HOST_ID)?.remove();
   injectedForPath = "";
@@ -546,7 +550,7 @@ function injectButton(target: InjectTarget) {
 
   const btn = document.createElement("button");
   btn.className = "mf-btn";
-  btn.textContent = target.kind === "apply" ? msg("pasteProposal") : isJob ? msg("captureJob") : msg("button");
+  btn.textContent = target.kind === "apply" ? msg("generateFill") : isJob ? msg("captureJob") : msg("button");
   root.appendChild(btn);
 
   const note = document.createElement("div");
@@ -569,22 +573,45 @@ function injectButton(target: InjectTarget) {
     note.hidden = true;
 
     if (target.kind === "apply") {
-      // Sayfaya yapıştır: son teklifi çek → cover-letter kutusuna yaz (auto-submit YOK).
+      // Asistanlı başvuru: ÖNCE bu işe özel teklif üret (iş bağlamını başvuru sayfasından
+      // topla → generate) → cover-letter kutusuna yaz. Üretilemezse (bağlam yok/genel hata)
+      // "son teklifi yapıştır"a düş. AUTO-SUBMIT YOK — kullanıcı gözden geçirip kendi gönderir.
       btn.disabled = true;
-      btn.textContent = msg("pasteSending");
-      chrome.runtime.sendMessage({ type: "fetch_latest_proposal" }, (res: ProposalResponse | undefined) => {
-        btn.disabled = false;
-        btn.textContent = msg("pasteProposal");
-        if (res?.ok) {
-          show(insertProposalIntoPage(res.content) ? msg("pasteSuccess") : msg("pasteNoBox"));
-          return;
-        }
-        switch (res?.reason) {
-          case "auth": show(msg("authNeeded"), true); break;
-          case "empty": show(msg("pasteNoProposal")); break;
-          default: show(msg("genericError"));
-        }
-      });
+
+      // Fallback: kullanıcının EN SON ürettiği teklifi çek → yapıştır.
+      const insertLatest = () => {
+        btn.textContent = msg("pasteSending");
+        chrome.runtime.sendMessage({ type: "fetch_latest_proposal" }, (res: ProposalResponse | undefined) => {
+          btn.disabled = false;
+          btn.textContent = msg("generateFill");
+          if (res?.ok) { show(insertProposalIntoPage(res.content) ? msg("pasteSuccess") : msg("pasteNoBox")); return; }
+          switch (res?.reason) {
+            case "auth": show(msg("authNeeded"), true); break;
+            case "empty": show(msg("pasteNoProposal")); break;
+            default: show(msg("genericError"));
+          }
+        });
+      };
+
+      btn.textContent = msg("generating");
+      const ctx = collectJobPayload("upwork"); // başlık + açıklama (başvuru sayfasından)
+      if (!ctx) { insertLatest(); return; }     // iş bağlamı okunamadı → son teklife düş
+      chrome.runtime.sendMessage(
+        { type: "generate_proposal", title: ctx.title, description: ctx.description, url: ctx.url },
+        (res: GenerateResponse | undefined) => {
+          if (res?.ok) {
+            btn.disabled = false;
+            btn.textContent = msg("generateFill");
+            show(insertProposalIntoPage(res.content) ? msg("pasteSuccess") : msg("pasteNoBox"));
+            return;
+          }
+          // Auth ve kredi/profil (generate+mesaj) yollarında kullanıcıyı bilgilendir; diğer
+          // hatalarda sessizce son teklife düş.
+          if (res?.reason === "auth") { btn.disabled = false; btn.textContent = msg("generateFill"); show(msg("authNeeded"), true); return; }
+          if (res?.reason === "generate" && res.message) { btn.disabled = false; btn.textContent = msg("generateFill"); show(res.message); return; }
+          insertLatest();
+        },
+      );
       return;
     }
 

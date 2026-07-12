@@ -1,7 +1,7 @@
 // Background service worker: content script'ten gelen payload'ı Multifolio API'sine
 // cookie'li POST'lar (host_permissions sayesinde kullanıcının oturum cookie'leri
 // eklenir — spike ile doğrulandı). Başarıda inceleme wizard'ını yeni sekmede açar.
-import { IMPORT_ENDPOINT, JOBS_ENDPOINT, PROPOSAL_LATEST_ENDPOINT, WIZARD_URL, LOGIN_URL } from "./config";
+import { IMPORT_ENDPOINT, JOBS_ENDPOINT, PROPOSAL_ENDPOINT, PROPOSAL_LATEST_ENDPOINT, WIZARD_URL, LOGIN_URL } from "./config";
 
 interface ImportProject {
   title: string;
@@ -49,8 +49,67 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     void handleLatestProposal().then(sendResponse);
     return true;
   }
+  if (message?.type === "generate_proposal") {
+    void handleGenerateProposal(message as GenerateProposalMessage).then(sendResponse);
+    return true;
+  }
   return false;
 });
+
+// Başvuru sayfasında O İŞE ÖZEL teklif üretir: (1) /api/jobs ile işi kaydet (Applied) →
+// (2) /api/proposal ile tailored teklif üret. Uzantı içeriği cover-letter kutusuna yazar
+// (AUTO-SUBMIT YOK). Yeni backend yok — mevcut iki endpoint zincirlenir.
+interface GenerateProposalMessage {
+  type: "generate_proposal";
+  title: string;
+  description: string;
+  url?: string;
+}
+
+async function handleGenerateProposal(msg: GenerateProposalMessage) {
+  try {
+    const jobRes = await fetch(JOBS_ENDPOINT, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: msg.title,
+        description: msg.description,
+        platform: "upwork",
+        ...(msg.url ? { url: msg.url } : {}),
+      }),
+    });
+    if (jobRes.status === 401) return { ok: false as const, reason: "auth" as const };
+    if (jobRes.status === 429) return { ok: false as const, reason: "rate" as const };
+    if (!jobRes.ok) return { ok: false as const, reason: "error" as const };
+    const jobBody = await jobRes.json().catch(() => null);
+    const jobId: string | undefined = jobBody?.job?.id;
+    if (!jobId) return { ok: false as const, reason: "error" as const };
+
+    const propRes = await fetch(PROPOSAL_ENDPOINT, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        job_id: jobId,
+        job_description: msg.description.slice(0, 10000),
+        platform: "upwork",
+      }),
+    });
+    if (propRes.status === 401) return { ok: false as const, reason: "auth" as const };
+    if (!propRes.ok) {
+      // Kredi yetersiz / profil yok gibi durumlar: sunucunun yerelleştirilmiş mesajını taşı.
+      const b = await propRes.json().catch(() => null);
+      return { ok: false as const, reason: "generate" as const, message: b?.error?.message as string | undefined };
+    }
+    const propBody = await propRes.json().catch(() => null);
+    const content: string | undefined = propBody?.proposal?.content;
+    if (!content) return { ok: false as const, reason: "error" as const };
+    return { ok: true as const, content };
+  } catch {
+    return { ok: false as const, reason: "error" as const };
+  }
+}
 
 // Kullanıcının en son ürettiği teklifi çeker (cover-letter kutusuna yapıştırmak için).
 async function handleLatestProposal() {
