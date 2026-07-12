@@ -375,6 +375,144 @@ export const GUIDES: Guide[] = [
       ],
     },
   },
+  {
+    slug: "linkedin-freelance-clients-guide",
+    readingMinutes: 4,
+    toolHref: "/headline-optimizer",
+    en: {
+      title: "How to get freelance clients on LinkedIn",
+      description:
+        "Turn your LinkedIn profile into a steady source of inbound freelance work — headline, profile, content and outreach that actually land clients.",
+      sections: [
+        {
+          heading: "Make your headline say who you help",
+          body: [
+            "Your LinkedIn headline shows up everywhere — in search, comments and messages. \"Freelancer\" or a job title tells a client nothing. Say who you help and the outcome you deliver: \"I help SaaS teams ship faster as a freelance React developer.\"",
+            "Specific beats broad. A clear headline makes the right people click, and the wrong ones scroll past.",
+          ],
+        },
+        {
+          heading: "Turn your profile into a landing page",
+          body: [
+            "Treat your About section like a pitch, not a résumé. Open with the problem you solve, back it with proof — results, recognizable clients, a stack — and end with a clear next step (\"DM me to talk about your project\").",
+            "Feature your best work in the Featured section so a visitor sees proof without leaving your profile.",
+          ],
+        },
+        {
+          heading: "Post so the right clients find you",
+          body: [
+            "You don't need to go viral. Share short, useful posts about the problems your clients face — a fix you shipped, a mistake you see often, a before/after. Consistency compounds: a few focused posts a week keeps you visible to the people who hire.",
+          ],
+        },
+        {
+          heading: "Reach out without being spammy",
+          body: [
+            "Cold pitches that open with \"I offer web development services\" get ignored. Comment thoughtfully on a prospect's posts first, then send a short message that references their work and offers a specific idea — not a sales script.",
+          ],
+        },
+      ],
+    },
+    tr: {
+      title: "LinkedIn'de freelance müşteri nasıl bulunur",
+      description:
+        "LinkedIn profilini istikrarlı bir inbound freelance iş kaynağına çevir — başlık, profil, içerik ve gerçekten müşteri kazandıran ulaşım.",
+      sections: [
+        {
+          heading: "Başlığın kime yardım ettiğini söylesin",
+          body: [
+            "LinkedIn başlığın her yerde görünür — aramada, yorumlarda, mesajlarda. \"Freelancer\" veya bir unvan müşteriye bir şey anlatmaz. Kime yardım ettiğini ve verdiğin sonucu söyle: \"SaaS ekiplerinin daha hızlı yayına almasına yardım eden freelance React geliştiricisiyim.\"",
+            "Spesifik, geneli yener. Net bir başlık doğru insanları tıklatır, yanlışları kaydırıp geçirir.",
+          ],
+        },
+        {
+          heading: "Profilini bir landing page'e çevir",
+          body: [
+            "Hakkında bölümünü özgeçmiş gibi değil, bir pitch gibi ele al. Çözdüğün problemle aç, kanıtla destekle — sonuçlar, tanınan müşteriler, teknoloji — ve net bir sonraki adımla bitir (\"Projeni konuşmak için DM at\").",
+            "En iyi işlerini Öne Çıkanlar bölümünde göster ki ziyaretçi profilden çıkmadan kanıtı görsün.",
+          ],
+        },
+        {
+          heading: "Doğru müşteriler seni bulsun diye paylaş",
+          body: [
+            "Viral olmana gerek yok. Müşterilerinin karşılaştığı sorunlara dair kısa, faydalı gönderiler paylaş — teslim ettiğin bir çözüm, sık gördüğün bir hata, bir öncesi/sonrası. Tutarlılık birikir: haftada birkaç odaklı gönderi seni işe alacak kişilerin gözünde tutar.",
+          ],
+        },
+        {
+          heading: "Spam yapmadan ulaş",
+          body: [
+            "\"Web geliştirme hizmeti sunuyorum\" diye açılan soğuk mesajlar görmezden gelinir. Önce adayın gönderilerine düşünceli yorum yap, sonra işine değinen ve spesifik bir fikir sunan kısa bir mesaj gönder — satış metni değil.",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: "avoid-freelance-scams-guide",
+    readingMinutes: 4,
+    toolHref: "/analyze",
+    en: {
+      title: "How to spot freelance job scams before they cost you",
+      description:
+        "The red flags of fake freelance jobs — off-platform payment, upfront fees, too-good offers — and simple rules to keep your time and money safe.",
+      sections: [
+        {
+          heading: "Never move off-platform to get paid",
+          body: [
+            "The most common scam is a \"client\" who wants to move to Telegram, WhatsApp or email right away and pay outside the platform. Off-platform means no protection: no dispute, no record, no recourse. Keep conversations and payments where the platform can back you up.",
+          ],
+        },
+        {
+          heading: "No legitimate job asks you to pay first",
+          body: [
+            "If you're asked to buy software, pay a \"training\" or \"registration\" fee, or send money to unlock a job, it's a scam. Real clients pay you — you never pay to work. Walk away the moment money flows the wrong direction.",
+          ],
+        },
+        {
+          heading: "Be wary of offers that are too good",
+          body: [
+            "\"$50/hour for simple data entry, no experience needed\" is bait. Unusually high pay for trivial work, instant hiring with no interview, or vague job descriptions are classic red flags. If it feels too easy, it usually is.",
+          ],
+        },
+        {
+          heading: "Check the client before you invest time",
+          body: [
+            "Look at the client's history, reviews and verification before writing a long proposal. A brand-new account, no payment verified, a rushed tone, or a copy-paste message sent to everyone are all signals to slow down. A quick check saves hours.",
+          ],
+        },
+      ],
+    },
+    tr: {
+      title: "Freelance iş dolandırıcılığını sana pahalıya patlamadan nasıl anlarsın",
+      description:
+        "Sahte freelance işlerin kırmızı bayrakları — platform dışı ödeme, peşin ücret, fazla iyi teklifler — ve zamanını ve paranı koruyan basit kurallar.",
+      sections: [
+        {
+          heading: "Ödeme için asla platform dışına çıkma",
+          body: [
+            "En sık dolandırıcılık, hemen Telegram, WhatsApp veya e-postaya geçip platform dışında ödemek isteyen bir \"müşteri\"dir. Platform dışı = koruma yok: itiraz yok, kayıt yok, başvuru yolu yok. Konuşmayı ve ödemeyi platformun seni koruyabildiği yerde tut.",
+          ],
+        },
+        {
+          heading: "Meşru bir iş senden önce ödeme istemez",
+          body: [
+            "Yazılım satın alman, bir \"eğitim\" veya \"kayıt\" ücreti ödemen ya da işi açmak için para göndermen isteniyorsa, bu dolandırıcılıktır. Gerçek müşteriler sana öder — çalışmak için asla ödeme yapmazsın. Para ters yöne aktığı an uzaklaş.",
+          ],
+        },
+        {
+          heading: "Fazla iyi tekliflerden şüphelen",
+          body: [
+            "\"Basit veri girişi için saati 50$, deneyim gerekmez\" bir yemdir. Önemsiz iş için alışılmadık yüksek ödeme, mülakatsız anında işe alım veya belirsiz iş açıklamaları klasik kırmızı bayraklardır. Fazla kolay geliyorsa, genelde öyledir.",
+          ],
+        },
+        {
+          heading: "Zaman yatırmadan müşteriyi kontrol et",
+          body: [
+            "Uzun bir teklif yazmadan önce müşterinin geçmişine, yorumlarına ve doğrulamasına bak. Yepyeni bir hesap, doğrulanmamış ödeme, aceleci bir ton veya herkese gönderilen kopyala-yapıştır bir mesaj; hepsi yavaşlama sinyalidir. Hızlı bir kontrol saatler kazandırır.",
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {
