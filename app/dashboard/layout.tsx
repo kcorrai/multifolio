@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getRequestUser } from "@/lib/supabase/auth";
+import { getCreditUsage } from "@/lib/credits/usage";
 import { maybeGrantSignupCredits } from "@/lib/credits/signup-bonus";
 import { isAdminEmail } from "@/lib/admin";
 import { DashboardShell } from "@/components/dashboard/shell";
@@ -13,15 +14,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
   // Reklamı yapılan kayıt kredisini ilk ziyarette ver (idempotent; bakiye çekilmeden ÖNCE).
   await maybeGrantSignupCredits(user);
 
-  const [creditsRes, usageRes, jobsCountRes, connCountRes] = await Promise.all([
+  const [creditsRes, usage, jobsCountRes, connCountRes] = await Promise.all([
     supabase.from("credits").select("balance").eq("user_id", user.id).maybeSingle(),
-    supabase.from("usage_events").select("credits_spent").eq("user_id", user.id),
+    getCreditUsage(),
     supabase.from("job_listings").select("id", { count: "exact", head: true }).eq("user_id", user.id),
     supabase.from("platform_connections").select("platform", { count: "exact", head: true }).eq("user_id", user.id),
   ]);
 
   const credits = creditsRes.data?.balance ?? 0;
-  const creditsUsed = (usageRes.data ?? []).reduce((sum, r) => sum + Number(r.credits_spent ?? 0), 0);
+  const creditsUsed = usage.totalCredits;
   const emailVerified = user.app_metadata?.email_verified === true;
   const isAdmin = isAdminEmail(user.email);
 

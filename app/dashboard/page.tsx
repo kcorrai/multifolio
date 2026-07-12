@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getRequestUser } from "@/lib/supabase/auth";
+import { getCreditUsage } from "@/lib/credits/usage";
 import { OverviewTab } from "@/components/dashboard/overview-tab";
 import type { JobRow } from "@/components/dashboard/shared";
-import { aggregateCreditUsage } from "@/lib/credits/analytics";
 import { computeProfileStrength } from "@/lib/profile-strength";
 
 export default async function DashboardPage() {
@@ -11,10 +11,10 @@ export default async function DashboardPage() {
   const user = await getRequestUser();
   if (!user) redirect("/login");
 
-  const [profileRes, jobsRes, usageRes, connRes, ppRes, adaptRes] = await Promise.all([
+  const [profileRes, jobsRes, analytics, connRes, ppRes, adaptRes] = await Promise.all([
     supabase.from("profiles").select("user_id, headline, summary, skills, avatar_url, portfolio").eq("user_id", user.id).maybeSingle(),
     supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
-    supabase.from("usage_events").select("kind, credits_spent, created_at").eq("user_id", user.id).order("created_at", { ascending: false }),
+    getCreditUsage(),
     supabase.from("platform_connections").select("id", { count: "exact", head: true }).eq("user_id", user.id),
     supabase.from("platform_profiles").select("id", { count: "exact", head: true }).eq("user_id", user.id),
     supabase.from("adaptations").select("id", { count: "exact", head: true }).eq("user_id", user.id),
@@ -25,8 +25,6 @@ export default async function DashboardPage() {
   if (!profileRes.data) redirect("/dashboard/import");
   const profile = profileRes.data;
   const jobs = (jobsRes.data ?? []) as unknown as JobRow[];
-  // eslint-disable-next-line react-hooks/purity
-  const analytics = aggregateCreditUsage(usageRes.data ?? [], Date.now());
 
   const strength = computeProfileStrength({
     headline: (profile.headline as string | null) ?? null,
