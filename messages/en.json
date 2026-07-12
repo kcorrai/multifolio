@@ -1341,6 +1341,13 @@
       "title": "Assisted apply",
       "desc": "Generate a proposal tailored to a job, then paste it into the platform's apply form in one click with the Multifolio browser extension. You always review and submit — no auto-submit."
     },
+    "autoDraft": {
+      "label": "Auto-draft proposals",
+      "off": "Off",
+      "perDay": "{count}/day",
+      "hint": "When on, we draft proposals for new jobs matching this feed in the background, so they're ready in Applied when you return.",
+      "warning": "Spends up to {count} × proposal credits per day, automatically. You always review and send yourself — never auto-submitted."
+    },
     "score": "Match",
     "postedRelative": "{time} ago",
     "budget": "Budget",

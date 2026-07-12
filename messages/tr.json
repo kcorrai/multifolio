@@ -1341,6 +1341,13 @@
       "title": "Asistanlı başvuru",
       "desc": "Bir işe özel teklif üret, sonra Multifolio tarayıcı uzantısıyla tek tıkta platformun başvuru formuna yapıştır. Gönderimi hep sen gözden geçirip yaparsın — otomatik gönderim yok."
     },
+    "autoDraft": {
+      "label": "Otomatik teklif taslakla",
+      "off": "Kapalı",
+      "perDay": "{count}/gün",
+      "hint": "Açıkken, bu feed'e uyan yeni işlere arka planda teklif taslaklar — sen döndüğünde Başvurulanlar'da hazır bekler.",
+      "warning": "Her gün otomatik en fazla {count} × teklif kredisi harcar. Göndermeyi hep sen gözden geçirip yaparsın — asla otomatik gönderilmez."
+    },
     "score": "Uyum",
     "postedRelative": "{time} önce",
     "budget": "Bütçe",

@@ -7,7 +7,7 @@
 // ile remount eder (state tazelenir).
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, Bell, SlidersHorizontal, Sparkles, Check, FileText, Gauge, Plus, Zap } from "lucide-react";
+import { ChevronDown, Bell, SlidersHorizontal, Sparkles, Check, FileText, Gauge, Plus, Zap, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { JobFeedRow, PoolJob } from "@/lib/validation/schemas/feed";
@@ -43,6 +43,8 @@ export function FeedSettingsPanel({
   const [minScore, setMinScore] = useState(feed.min_score ?? 0);
   const [notify, setNotify] = useState(feed.notify);
   const [proposalPrompt, setProposalPrompt] = useState(feed.proposal_prompt ?? defaultPrompt);
+  // Arka-plan otomatik taslak: 0=kapalı, 1-10=açık (günlük tavan). Kredi harcar.
+  const [autoDraftDaily, setAutoDraftDaily] = useState(feed.auto_draft_daily ?? 0);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -66,7 +68,8 @@ export function FeedSettingsPanel({
     (minScore > 0 ? minScore : null) !== feed.min_score ||
     notify !== feed.notify ||
     // Önden dolu varsayılan "değişiklik" sayılmasın: taban = mevcut prompt ya da varsayılan.
-    proposalPrompt.trim() !== (feed.proposal_prompt ?? defaultPrompt).trim();
+    proposalPrompt.trim() !== (feed.proposal_prompt ?? defaultPrompt).trim() ||
+    autoDraftDaily !== (feed.auto_draft_daily ?? 0);
 
   function discard() {
     setName(feed.name);
@@ -80,6 +83,7 @@ export function FeedSettingsPanel({
     setMinScore(feed.min_score ?? 0);
     setNotify(feed.notify);
     setProposalPrompt(feed.proposal_prompt ?? defaultPrompt);
+    setAutoDraftDaily(feed.auto_draft_daily ?? 0);
     setError("");
   }
 
@@ -97,6 +101,7 @@ export function FeedSettingsPanel({
       minScore: minScore > 0 ? minScore : null,
       notify,
       proposalPrompt: proposalPrompt.trim() ? proposalPrompt.trim() : null,
+      autoDraftDaily,
     };
     const res = await fetch(`/api/feeds/${feed.id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
@@ -275,12 +280,38 @@ export function FeedSettingsPanel({
         <p className="text-[11px] text-muted-foreground/70">{t("settingsProposalPromptHint")}</p>
       </div>
 
-      {/* ── Asistanlı başvuru (gerçek özellik — uzantı akışı; auto-submit YOK) ─────── */}
-      <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] p-4 space-y-2">
+      {/* ── Asistanlı başvuru + opt-in arka-plan otomatik taslak (auto-submit YOK) ─────── */}
+      <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] p-4 space-y-3">
         <h4 className="text-sm font-bold flex items-center gap-2">
           <Zap className="h-4 w-4 text-[#00F0FF]" />{t("assistedApply.title")}
         </h4>
         <p className="text-[11px] leading-relaxed text-muted-foreground">{t("assistedApply.desc")}</p>
+
+        {/* Arka-plan otomatik taslak: opt-in, feed başına günlük tavan (kredi harcar). */}
+        <div className="pt-2 border-t border-[#00F0FF]/15 space-y-2">
+          <label className="flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold">{t("autoDraft.label")}</span>
+            <div className="relative shrink-0">
+              <select
+                value={autoDraftDaily}
+                onChange={(e) => setAutoDraftDaily(Number(e.target.value))}
+                className="appearance-none rounded-lg border border-border bg-background px-3 py-1.5 pr-8 text-xs font-medium cursor-pointer"
+              >
+                <option value={0}>{t("autoDraft.off")}</option>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                  <option key={n} value={n}>{t("autoDraft.perDay", { count: n })}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+            </div>
+          </label>
+          <p className="text-[11px] text-muted-foreground/70">{t("autoDraft.hint")}</p>
+          {autoDraftDaily > 0 && (
+            <p className="flex items-start gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-2 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+              <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-px" />{t("autoDraft.warning", { count: autoDraftDaily })}
+            </p>
+          )}
+        </div>
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
