@@ -42,7 +42,9 @@ export async function FeedShowcase() {
   const navItem = "flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-slate-500 dark:text-white/50";
 
   return (
-    <div className="flex text-left">
+    // Dekoratif vitrin: bölüm başlığı/açıklaması anlamı taşır; ekran okuyucu sahte
+    // mockup içeriğini (isim/ilan başlıkları) gerçek içerik gibi okumasın.
+    <div className="flex text-left" aria-hidden="true">
       {/* Sol: feed sidebar */}
       <aside className="hidden sm:flex w-44 shrink-0 flex-col gap-1 border-r border-slate-200 p-3 dark:border-white/8">
         <div className="mb-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#00F0FF] py-1.5 text-[11px] font-bold text-[#04121a]">
@@ -141,7 +143,7 @@ export async function PortfolioShowcase() {
     "h-20 from-rose-400/25 to-pink-300/15",
   ];
   return (
-    <div className="text-left">
+    <div className="text-left" aria-hidden="true">
       {/* Hero */}
       <div className="relative overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#00F0FF]/8 via-transparent to-violet-500/8" />
@@ -195,7 +197,7 @@ export async function CvShowcase() {
   );
 
   return (
-    <div className="grid gap-4 sm:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-3" aria-hidden="true">
       {/* Clean — üst vurgu şeridi */}
       <div className="rounded-lg bg-white p-3 shadow-sm ring-1 ring-slate-200 dark:bg-[#0f1119] dark:ring-white/10">
         <div className="mb-2 flex items-center justify-between">
