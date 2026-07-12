@@ -8,14 +8,10 @@ import { SiteFooter } from "@/components/site-footer";
 import { ToolCta } from "@/components/tool-cta";
 import { AnalyzeForm } from "@/components/analyze/analyze-form";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { getUserMarketId } from "@/lib/markets/server";
-import { marketHasPlatform } from "@/lib/markets/config";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("publicAnalysis");
-  // Bionluk yalnız TR pazarında sunulur → global'de Bionluk'suz açıklama.
-  const global = !marketHasPlatform(await getUserMarketId(), "bionluk");
-  return { title: t("metaTitle"), description: t(global ? "metaDescriptionGlobal" : "metaDescription"), alternates: { canonical: "/analyze" } };
+  return { title: t("metaTitle"), description: t("metaDescription"), alternates: { canonical: "/analyze" } };
 }
 
 export default async function AnalyzePage() {
@@ -24,7 +20,6 @@ export default async function AnalyzePage() {
   const isLoggedIn = !!user;
 
   const t = await getTranslations("publicAnalysis");
-  const global = !marketHasPlatform(await getUserMarketId(), "bionluk");
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
@@ -47,11 +42,7 @@ export default async function AnalyzePage() {
 
       {/* Analiz formu + sonuç */}
       <section className="relative mx-auto max-w-2xl px-8 py-12">
-        <AnalyzeForm
-          isLoggedIn={isLoggedIn}
-          urlPlaceholder={t(global ? "urlPlaceholderGlobal" : "urlPlaceholder")}
-          urlHint={t(global ? "urlHintGlobal" : "urlHint")}
-        />
+        <AnalyzeForm isLoggedIn={isLoggedIn} />
       </section>
 
       <ToolCta current="/analyze" isLoggedIn={isLoggedIn} />

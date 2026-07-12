@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -16,18 +16,13 @@ const LINKS = [
   { key: "nav.rate",        href: "/rate" },
   { key: "nav.proposalChecker", href: "/proposal-checker" },
   { key: "nav.headlineOptimizer", href: "/headline-optimizer" },
-  // TR-özel araçlar (net kazanç/karşılaştırma/vergi TR komisyon+vergisine dayalı) yalnız TR pazarında.
-  { key: "nav.earnings",    href: "/earnings", trOnly: true },
-  { key: "nav.compare",     href: "/compare", trOnly: true },
-  { key: "nav.trTax",       href: "/vergi", trOnly: true },
   { key: "nav.pricing",     href: "/pricing" },
 ];
 
 export function MobileNav({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const t = useTranslations("landing");
   const tc = useTranslations("common");
-  const locale = useLocale();
-  const links = LINKS.filter((l) => !l.trOnly || locale.startsWith("tr"));
+  const links = LINKS;
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 

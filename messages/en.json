@@ -1171,7 +1171,7 @@
     "steps": {
       "verifyEmail": { "title": "Verify your email", "desc": "Confirm your address to secure your account.", "cta": "Verify" },
       "profile": { "title": "Build your profile", "desc": "Import or write your headline, summary and skills once.", "cta": "Start" },
-      "connect": { "title": "Connect a platform", "desc": "Link LinkedIn, Upwork, Fiverr, Bionluk or Armut.", "cta": "Connect" },
+      "connect": { "title": "Connect a platform", "desc": "Link LinkedIn, Upwork or Fiverr.", "cta": "Connect" },
       "adapt": { "title": "Generate a platform version", "desc": "Turn your profile into optimized text for a platform.", "cta": "Generate" },
       "feed": { "title": "Set up a job feed", "desc": "Create a filtered feed of matching freelance jobs.", "cta": "Create" },
       "portfolio": { "title": "Publish your portfolio", "desc": "Spin up a shareable portfolio site in one click.", "cta": "Publish" }
@@ -1198,7 +1198,7 @@
   },
   "publicAnalysis": {
     "metaTitle": "Free Freelancer Profile Check — Multifolio",
-    "metaDescription": "Paste your Upwork, Fiverr, LinkedIn or Bionluk profile and get an instant AI score with improvement tips. Free, no signup needed.",
+    "metaDescription": "Paste your Upwork, Fiverr or LinkedIn profile and get an instant AI score with improvement tips. Free, no signup needed.",
     "heroEyebrow": "Free tool",
     "heroTitle": "How strong is your freelancer profile?",
     "heroSubtitle": "Paste your profile link or text and get an instant AI score — including whether it would pass Upwork's approval bar.",
@@ -1206,11 +1206,8 @@
       "url": "Profile URL",
       "text": "Paste text"
     },
-    "urlPlaceholder": "https://www.linkedin.com/in/you or bionluk.com/you",
-    "urlHint": "LinkedIn and Bionluk links work directly. For Upwork/Fiverr, paste your profile text instead.",
-    "metaDescriptionGlobal": "Paste your Upwork, Fiverr or LinkedIn profile and get an instant AI score with improvement tips. Free, no signup needed.",
-    "urlPlaceholderGlobal": "https://www.linkedin.com/in/you",
-    "urlHintGlobal": "LinkedIn links work directly. For Upwork/Fiverr, paste your profile text instead.",
+    "urlPlaceholder": "https://www.linkedin.com/in/you",
+    "urlHint": "LinkedIn links work directly. For Upwork/Fiverr, paste your profile text instead.",
     "textPlaceholder": "Paste your headline, overview and skills here…",
     "textHint": "At least 40 characters. Nothing is stored — we only analyze.",
     "analyzeCta": "Analyze my profile",
@@ -1523,7 +1520,7 @@
     "tabFile": "Upload CV",
     "urlLabel": "Your public profile URL",
     "urlPlaceholder": "https://www.upwork.com/freelancers/~...",
-    "urlHint": "Upwork, Fiverr, Bionluk, Armut or LinkedIn profile link.",
+    "urlHint": "Upwork, Fiverr or LinkedIn profile link.",
     "textLabel": "Profile or CV text",
     "textPlaceholder": "Open your profile page, select all, copy — and paste here.",
     "fileLabel": "PDF file (max 5MB)",

@@ -45,7 +45,6 @@ export interface RateBreakdown {
 export const RATE_PLATFORM_DEFAULTS = {
   upwork: 10,
   fiverr: 20,
-  bionluk: 20,
   direct: 0,
 } as const;
 

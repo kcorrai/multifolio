@@ -65,13 +65,13 @@ describe("scanContent — yanlış-pozitif önleme", () => {
   });
 
   it("normal cümledeki kelimeler ödeme/mesaj sanılmaz", () => {
-    expect(scanContent("Hızlı teslim ve net kapsam sunarım.", "bionluk")).toEqual([]);
+    expect(scanContent("Hızlı teslim ve net kapsam sunarım.", "fiverr")).toEqual([]);
   });
 });
 
 describe("scanContent — tür başına tek bulgu", () => {
   it("birden çok e-posta → tek email bulgusu", () => {
-    const f = scanContent("a@x.com ve b@y.com", "armut");
+    const f = scanContent("a@x.com ve b@y.com", "upwork");
     expect(f.filter((x) => x.type === "email")).toHaveLength(1);
   });
 

@@ -52,7 +52,7 @@ export const POST = withErrorHandler(async (_req, { params }) => {
     throw new RateLimitError((await getTranslations("errors"))("translateRateLimited"));
   }
 
-  const result = await translateJobDescription(poolRes.data.description, locale);
+  const result = await translateJobDescription(poolRes.data.description);
 
   // Paylaşımlı cache'e İDEMPOTENT yazım (service-role: insert politikası yok).
   // score route ScoreRaceLost deseni: insert(→select) satır döndürdüyse yarışı

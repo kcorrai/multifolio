@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 import {
   Mail, User, Layers, Sparkles, ListFilter, Globe,
   Check, ArrowRight, PartyPopper, Gift,
-  Search, Wallet, GitCompare, Puzzle, type LucideIcon,
+  Search, Puzzle, type LucideIcon,
 } from "lucide-react";
 import { CountUp } from "@/components/count-up";
 import { ELEVATED } from "./shared";
@@ -28,8 +28,6 @@ const STEPS: { key: StepKey; icon: LucideIcon; href: string }[] = [
 
 const TIPS: { key: string; icon: LucideIcon; href: string; external?: boolean }[] = [
   { key: "analyze",   icon: Search,     href: "/analyze" },
-  { key: "earnings",  icon: Wallet,     href: "/earnings" },
-  { key: "compare",   icon: GitCompare, href: "/compare" },
   { key: "extension", icon: Puzzle,     href: EXTENSION_STORE_URL, external: true },
 ];
 

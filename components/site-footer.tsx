@@ -1,14 +1,10 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { getUserMarket } from "@/lib/markets/server";
 
 /* ─── Paylaşılan alt bilgi (landing + pricing + yasal sayfalar) ──────── */
 export async function SiteFooter() {
   const t = await getTranslations("landing");
-  const market = await getUserMarket();
 
-  // TR-özel araçlar (net kazanç/karşılaştırma/vergi — TR komisyon+vergisine dayalı)
-  // yalnız TR pazarında. Global kitleye alakasız → gizli.
   const productLinks = [
     { href: "/#features", label: t("nav.features") },
     { href: "/#how", label: t("nav.howItWorks") },
@@ -19,18 +15,11 @@ export async function SiteFooter() {
     { href: "/ats-check", label: t("nav.atsCheck") },
     { href: "/guides", label: t("nav.guides") },
     { href: "/freelance", label: t("nav.freelance") },
-    ...(market.hasKvkk ? [
-      { href: "/earnings", label: t("nav.earnings") },
-      { href: "/compare", label: t("nav.compare") },
-      { href: "/vergi", label: t("nav.trTax") },
-    ] : []),
     { href: "/pricing", label: t("nav.pricing") },
   ];
-  // KVKK bildirimi yalnız KVKK pazarında (TR). Global'de privacy/terms yeterli.
   const legalLinks = [
     { href: "/privacy", label: t("footer.privacy") },
     { href: "/terms", label: t("footer.terms") },
-    ...(market.hasKvkk ? [{ href: "/kvkk", label: t("footer.kvkk") }] : []),
     { href: "/contact", label: t("footer.contact") },
   ];
 

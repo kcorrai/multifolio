@@ -14,7 +14,7 @@ const FEATURES = [
   { key: "layout.feature4", Icon: LayoutDashboard },
 ];
 
-const PLATFORMS: PlatformId[] = ["linkedin", "upwork", "fiverr", "bionluk", "armut"];
+const PLATFORMS: PlatformId[] = ["linkedin", "upwork", "fiverr"];
 
 interface HubPlatform {
   id: PlatformId;
@@ -23,19 +23,15 @@ interface HubPlatform {
 }
 
 const HUB_PLATFORMS: HubPlatform[] = [
-  { id: "linkedin", style: { top: "8%",    left: "8%"   }, delay: "0s"   },
-  { id: "upwork",   style: { top: "8%",    right: "8%"  }, delay: "0.7s" },
-  { id: "fiverr",   style: { top: "42%",   right: "2%"  }, delay: "1.4s" },
-  { id: "bionluk",  style: { bottom: "8%", right: "16%" }, delay: "2.1s" },
-  { id: "armut",    style: { bottom: "8%", left: "16%"  }, delay: "2.8s" },
+  { id: "linkedin", style: { top: "10%",  left: "12%"  }, delay: "0s"   },
+  { id: "upwork",   style: { top: "10%",  right: "12%" }, delay: "0.7s" },
+  { id: "fiverr",   style: { bottom: "12%", left: "50%" }, delay: "1.4s" },
 ];
 
 const LINE_ENDPOINTS = [
-  { x2: "14", y2: "14" },  // linkedin
-  { x2: "86", y2: "14" },  // upwork
-  { x2: "92", y2: "50" },  // fiverr
-  { x2: "78", y2: "86" },  // bionluk
-  { x2: "22", y2: "86" },  // armut
+  { x2: "18", y2: "18" },  // linkedin
+  { x2: "82", y2: "18" },  // upwork
+  { x2: "50", y2: "84" },  // fiverr
 ];
 
 /* ─── Platform hub mockup (full-height) ───────────────────────── */

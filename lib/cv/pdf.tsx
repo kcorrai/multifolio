@@ -28,11 +28,6 @@ const LABELS: Record<Locale, Record<string, string>> = {
     education: "Education", projects: "Projects", certifications: "Certifications",
     languages: "Languages", present: "Present",
   },
-  tr: {
-    contact: "İletişim", summary: "Profil", skills: "Beceriler", experience: "İş Deneyimi",
-    education: "Eğitim", projects: "Projeler", certifications: "Sertifikalar",
-    languages: "Diller", present: "Halen",
-  },
 };
 
 const BOLD = "CVSans-Bold";
@@ -207,7 +202,7 @@ function NameBlock({ content, color, align = "left", namePt = 21 }: { content: C
 
 export function CvDocument({ content }: { content: CvContent }) {
   ensureFonts();
-  const L = LABELS[content.locale] ?? LABELS.en;
+  const L = LABELS.en; // global-only: CV etiketleri İngilizce
   const accent = CV_ACCENT_HEX[content.theme.accent] ?? CV_ACCENT_HEX.blue;
   const tint = CV_ACCENT_TINT[content.theme.accent] ?? CV_ACCENT_TINT.blue;
   const tpl = content.theme.template;

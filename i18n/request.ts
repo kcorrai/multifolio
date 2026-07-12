@@ -1,10 +1,7 @@
 import { getRequestConfig } from "next-intl/server";
-import { getUserLocale } from "./locale";
 
-export default getRequestConfig(async () => {
-  const locale = await getUserLocale();
-  return {
-    locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
-  };
-});
+// Global-only: tek katalog (İngilizce).
+export default getRequestConfig(async () => ({
+  locale: "en",
+  messages: (await import("../messages/en.json")).default,
+}));

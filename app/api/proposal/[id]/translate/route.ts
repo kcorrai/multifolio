@@ -50,7 +50,7 @@ export const POST = withErrorHandler(async (_req, { params }) => {
     throw new RateLimitError((await getTranslations("errors"))("translateRateLimited"));
   }
 
-  const result = await translateProposalContent(proposal.content as string, locale);
+  const result = await translateProposalContent(proposal.content as string);
 
   // Maliyet + rate-limit kaydı (kredi düşmez).
   const admin = createSupabaseAdminClient();

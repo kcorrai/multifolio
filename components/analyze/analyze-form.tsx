@@ -36,7 +36,7 @@ function scoreBar(score: number): string {
   return "bg-red-500";
 }
 
-export function AnalyzeForm({ isLoggedIn, urlPlaceholder, urlHint }: { isLoggedIn: boolean; urlPlaceholder: string; urlHint: string }) {
+export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
   const t = useTranslations("publicAnalysis");
   const [mode, setMode] = useState<"url" | "text">("url");
   const [url, setUrl] = useState("");
@@ -100,11 +100,11 @@ export function AnalyzeForm({ isLoggedIn, urlPlaceholder, urlHint }: { isLoggedI
             <input
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder={urlPlaceholder}
+              placeholder={t("urlPlaceholder")}
               aria-label={t("mode.url")}
               className={input}
             />
-            <p className="text-[11px] text-slate-400 dark:text-[#94A3B8]/70">{urlHint}</p>
+            <p className="text-[11px] text-slate-400 dark:text-[#94A3B8]/70">{t("urlHint")}</p>
           </div>
         ) : (
           <div className="space-y-1.5">

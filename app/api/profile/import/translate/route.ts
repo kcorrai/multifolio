@@ -5,7 +5,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getTranslations } from "next-intl/server";
-import { getUserLocale } from "@/i18n/locale";
 import { AuthError, RateLimitError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -26,7 +25,6 @@ export const POST = withErrorHandler(async (req) => {
   if (!user) throw new AuthError();
 
   const input = await parseJson(req, bodySchema);
-  const target = await getUserLocale();
 
   // Rate-limit: son 1 saatteki profile_translate sayısı.
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
@@ -41,7 +39,7 @@ export const POST = withErrorHandler(async (req) => {
     throw new RateLimitError((await getTranslations("errors"))("translateRateLimited"));
   }
 
-  const result = await translateProfileDraft(input, target);
+  const result = await translateProfileDraft(input);
 
   // Maliyet + rate-limit kaydı (kredi düşmez, server-otoritatif).
   const admin = createSupabaseAdminClient();

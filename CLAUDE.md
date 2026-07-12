@@ -1,15 +1,15 @@
 # Multifolio
 
 Çoklu platform freelancer kariyer aracı. Kullanıcı işlerini/becerilerini/sonuçlarını
-**bir kez** girer; sistem her platform (LinkedIn, Upwork, Fiverr, Bionluk, Armut) için
+**bir kez** girer; sistem her platform (LinkedIn, Upwork, Fiverr) için
 optimize profil/başvuru metni üretir, otomatik portfolyo sitesi kurar, ilanlarla eşleştirir
-ve başvuruları takip eder. Teknik dil İngilizce/global; ilk kullanıcılar Türkiye'den.
-**Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/{en,tr}.json`) — EN varsayılan, TR opsiyonel; sabit string yazma, `useTranslations`/`getTranslations` kullan (yeni anahtar ekleyince iki katalogu da güncelle). **Kod yorumları Türkçe kalır.** AI çıktı dili UI locale'ine uyar.
+ve başvuruları takip eder. **GLOBAL-ONLY / İngilizce-only** (2026-07-12 deep geçiş: TR pazarı + Bionluk/Armut + KVKK + TR araçları KALDIRILDI).
+**Dil:** Kullanıcıya görünen TÜM metin i18n katalogunda (`messages/en.json` — TEK katalog); sabit string yazma, `useTranslations`/`getTranslations` kullan. **Kod yorumları Türkçe kalır.** AI çıktısı İngilizce.
 Para modeli: kredi tabanlı (pay-as-you-go). **Şu an: prod'da canlı** (https://multifolio-ecru.vercel.app). **TÜM migration'lar (→0034) PROD'DA.** Tamamlanan: çekirdek (profil/uyarlama/teklif/eşleştirme/portfolyo), **CV modülü** (`lib/cv`, `/dashboard/cv`, `/api/cv/*`; ATS şablonları+skor), ücretsiz SEO araçları (`/analyze`, `/earnings`, `/compare`, `/vergi`, `/headline-optimizer`, rehberler), feed/scrape + scam filtresi, referral, haftalık digest, **dashboard içi bildirim merkezi** (`notification-bell`), portfolyo lead/gömme/PDF, jobs hatırlatıcı/etiket/nakit-akışı, tarayıcı uzantısı (profil import + iş yakalama + sayfaya yapıştır, v0.2.16). **Iyzico ödeme KODLANDI** (`lib/payments/*`, `/api/checkout` + callback, `purchases` migration 0027) ama anahtar yok → UI "yakında". **Kod-DIŞI blokajlar (kullanıcı tarafı):** Resend domain doğrulama (auth mail/bildirim/digest kapalı), Iyzico anahtarları + `NEXT_PUBLIC_APP_URL`, tüzel kişilik YOK (KVKK "veri sorumlusu" yer tutucuları nötr dolduruldu). Yayına-çıkış adımları `docs/GO-LIVE-CHECKLIST.md`.
 
 ## Yığın
 Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Storage, RLS açık,
-`@supabase/ssr`) · OpenAI `gpt-4o-mini` (uyarlama motoru) · **next-intl (i18n, cookie tabanlı; EN varsayılan + TR)** · Sentry · Zod · DOMPurify · Vercel.
+`@supabase/ssr`) · OpenAI `gpt-4o-mini` (uyarlama motoru) · **next-intl (i18n; İngilizce-only tek katalog)** · Sentry · Zod · DOMPurify · Vercel.
 
 ## Neyin nerede
 - `app/page.tsx` — ana sayfa (sunucu): her zaman landing gösterir; oturum açıksa nav'da "Dashboard" butonu.
@@ -92,8 +92,8 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `lib/utils.ts` — `cn()`.
   `components/region-toggle.tsx` — bölge (pazar) seçici (Global/Türkiye; landing nav + dashboard topbar). Dil pazardan türer — ayrı dil seçici YOK.
   `components/count-up.tsx` — görünüme girince 0'dan hedefe sayan rakam (landing hero skoru + stats; reduced-motion'da direkt hedef).
-- `lib/markets/` — **PAZAR (market) katmanı — global-first, SAF-GEO** (birim = dil DEĞİL pazar; **manuel seçim/toggle YOK**): `config.ts` (SAF, vitest'li — `Market` tipi + `MARKETS` {`global`: en/USD/[linkedin,upwork,fiverr]/KVKK yok/ödeme yok · `tr`: tr+en/TRY/5 platform/KVKK/iyzico} + `resolveMarket(country, acceptLanguage)` = geo `x-vercel-ip-country`→Accept-Language(tr*)→global + `marketPlatforms`/`marketCurrency`/`marketDefaultLocale`/`marketHasKvkk`). `server.ts` (`getUserMarket`/`getUserMarketId` — **yalnız geo header + Accept-Language**, cookie YOK). **Locale TAMAMEN konumdan türer** (`i18n/locale.ts` → `marketDefaultLocale`): TR'den bağlanan tr, gerisi en. Enumerate eden UI'lar (platforms-hub, feed/search/profil platform filtreleri, `/api/adapt/all`) platformu **pazardan** okur (dashboard context'te `market`+`platforms`). KVKK/`/vergi` + para birimi + signup consent pazara göre gate'lenir.
-- `i18n/` — next-intl (URL routing YOK; **dil seçimi YOK — konumdan otomatik**): `detect.ts` (saf `resolveLocale`, test edilebilir — legacy), `locale.ts` (`getUserLocale` — **pazardan/konumdan türer**), `request.ts` (getRequestConfig). `messages/{en,tr}.json` — çeviri katalogları (**EN varsayılan + TR opsiyonel**; anahtar setleri eşit, `messages/catalog.test.ts` doğrular).
+- `lib/markets/` — **PAZAR katmanı — GLOBAL-ONLY** (tek pazar; TR kaldırıldı): `config.ts` (`MARKETS`={`global`: en/USD/[linkedin,upwork,fiverr]/KVKK yok/ödeme yok} + `resolveMarket()`→hep `global` + `marketPlatforms`/`marketCurrency`/`marketHasKvkk` helper'ları). `server.ts` (`getUserMarket`/`getUserMarketId`). İnce kaldı (çağıranlar kırılmasın diye API korundu; hepsi global döner). Enumerate eden UI'lar `market.platforms` (=3 platform) okur.
+- `i18n/` — next-intl, **İngilizce-only** (URL routing YOK, dil seçimi YOK): `detect.ts` (`Locale="en"`), `locale.ts` (`getUserLocale`→hep "en"), `request.ts` (hep en.json). `messages/en.json` — TEK katalog (tr.json + catalog.test SİLİNDİ).
 - `lib/ai/language.ts` — `languageDirective(locale)`: AI üretim prompt'una eklenen dil direktifi (çıktı UI diline uyar). AI route'ları `getUserLocale()` okuyup üretim fonksiyonuna geçirir.
 - `supabase/migrations/` — SQL şema + RLS politikaları (`supabase db push`).
   `0007_proposals.sql` — proposals tablosu; job_listings'e url/notes/budget + awaiting_reply status.

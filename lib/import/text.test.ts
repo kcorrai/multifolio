@@ -22,8 +22,6 @@ describe("detectPlatformFromUrl", () => {
   it("bilinen platform host'larını tanır (www/subdomain dahil)", () => {
     expect(detectPlatformFromUrl("https://www.upwork.com/freelancers/~01ab")).toBe("upwork");
     expect(detectPlatformFromUrl("https://tr.fiverr.com/kaan")).toBe("fiverr");
-    expect(detectPlatformFromUrl("https://bionluk.com/kaan")).toBe("bionluk");
-    expect(detectPlatformFromUrl("https://armut.com/hizmet/kaan")).toBe("armut");
     expect(detectPlatformFromUrl("https://www.linkedin.com/in/kaan")).toBe("linkedin");
     expect(detectPlatformFromUrl("https://evil-upwork.com/x")).toBeNull();
     expect(detectPlatformFromUrl("https://ornek.com/cv")).toBeNull();

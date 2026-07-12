@@ -11,7 +11,6 @@ import { ValidationError, RateLimitError, withErrorHandler } from "@/lib/errors"
 import { parseJson } from "@/lib/validation";
 import { publicAnalyzeRequestSchema } from "@/lib/validation/schemas/analyze";
 import { htmlToText, detectPlatformFromUrl, isSafeExternalUrl, fetchExternalHtml } from "@/lib/import/text";
-import { parseBionlukUsername, fetchBionlukProfile } from "@/lib/import/bionluk";
 import { parseLinkedinUsername, fetchLinkedinProfile } from "@/lib/import/linkedin";
 import { analyzeProfileText, type ProfileAnalyzeInput } from "@/lib/ai/profile-analyze";
 import { computeAnalysisScore, analysisVerdict } from "@/lib/analyze/score";
@@ -59,18 +58,13 @@ export const POST = withErrorHandler(async (req) => {
     if ((count ?? 0) >= ANON_HOURLY_LIMIT) throw new RateLimitError(t("analyzeRateLimited"));
   }
 
-  // İçerik çözümü: Bionluk/LinkedIn URL → yapılandırılmış çekim (AI'sız fetch);
+  // İçerik çözümü: LinkedIn URL → yapılandırılmış çekim (AI'sız fetch, public JSON-LD);
   // diğer URL'ler → SSRF-güvenli HTML fetch; text → doğrudan.
   let analyzeInput: ProfileAnalyzeInput;
   if (input.url) {
     if (!isSafeExternalUrl(input.url)) throw new ValidationError(t("analyzeNoContent"));
     const platform = detectPlatformFromUrl(input.url);
-    if (platform === "bionluk") {
-      const username = parseBionlukUsername(input.url);
-      const profile = username ? await fetchBionlukProfile(username) : null;
-      if (!profile) throw new ValidationError(t("analyzeNoContent"));
-      analyzeInput = { profile: profile.draft };
-    } else if (platform === "linkedin") {
+    if (platform === "linkedin") {
       const username = parseLinkedinUsername(input.url);
       let profile = null;
       try {

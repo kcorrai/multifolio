@@ -6,25 +6,18 @@ import { getTranslations } from "next-intl/server";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { SITE_URL } from "@/lib/seo/site";
 import { ShareButtons } from "@/components/share-buttons";
-import { getUserMarketId } from "@/lib/markets/server";
 
 const TOOLS = [
   { key: "analyze", href: "/analyze" },
-  { key: "earnings", href: "/earnings" },
   { key: "rate", href: "/rate" },
   { key: "proposalChecker", href: "/proposal-checker" },
   { key: "headlineOptimizer", href: "/headline-optimizer" },
-  { key: "compare", href: "/compare" },
 ] as const;
-
-// TR-özel araçlar (TR komisyon+vergisine dayalı) global kitleye önerilmez.
-const TR_ONLY_TOOLS = ["/earnings", "/compare"];
 
 export async function ToolCta({ current, isLoggedIn }: { current: string; isLoggedIn: boolean }) {
   const t = await getTranslations("landing.toolCta");
   const tt = await getTranslations("landing.tools");
-  const isTr = (await getUserMarketId()) === "tr";
-  const others = TOOLS.filter((x) => x.href !== current && (isTr || !TR_ONLY_TOOLS.includes(x.href)));
+  const others = TOOLS.filter((x) => x.href !== current);
   const ref = current.replace(/^\//, "") || "tool";
 
   return (

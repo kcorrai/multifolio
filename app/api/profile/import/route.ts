@@ -10,7 +10,6 @@ import { importRequestSchema, type ImportRequest, type ProfileImportMedia } from
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import { htmlToText, detectPlatformFromUrl, isSafeExternalUrl, fetchExternalHtml } from "@/lib/import/text";
 import { pdfToText } from "@/lib/import/pdf";
-import { parseBionlukUsername, fetchBionlukProfile, type BionlukProfile } from "@/lib/import/bionluk";
 import { parseLinkedinUsername, fetchLinkedinProfile, type LinkedinProfile } from "@/lib/import/linkedin";
 import { extractProfile, type ProfileImportResult } from "@/lib/ai/profile-import";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -63,7 +62,6 @@ export const POST = withErrorHandler(async (req) => {
   let text = "";
   let platform: PlatformId | null = null;
   let sourceUrl: string | null = null;
-  let bionluk: BionlukProfile | null = null;
   let linkedin: LinkedinProfile | null = null;
   let extensionInput: Extract<ImportRequest, { mode: "extension" }> | null = null;
   const contentType = req.headers.get("content-type") ?? "";
@@ -97,12 +95,7 @@ export const POST = withErrorHandler(async (req) => {
       platform = detectPlatformFromUrl(input.url);
       sourceUrl = input.url;
 
-      if (platform === "bionluk") {
-        const username = parseBionlukUsername(input.url);
-        if (!username) throw new ValidationError(t("importFetchFailed"));
-        bionluk = await fetchBionlukProfile(username);
-        if (!bionluk) throw new ValidationError(t("importFetchFailed"));
-      } else if (platform === "linkedin") {
+      if (platform === "linkedin") {
         // LinkedIn public profil sayfasındaki JSON-LD → yapılandırılmış taslak + foto.
         const username = parseLinkedinUsername(input.url);
         if (!username) throw new ValidationError(t("importFetchFailed"));
@@ -126,11 +119,9 @@ export const POST = withErrorHandler(async (req) => {
     }
   }
 
-  // Taslak: Bionluk/LinkedIn yapılandırılmış (AI'sız, maliyetsiz); diğerleri AI çıkarımı.
+  // Taslak: LinkedIn yapılandırılmış (AI'sız, maliyetsiz); diğerleri AI çıkarımı.
   let result: ProfileImportResult;
-  if (bionluk) {
-    result = { draft: bionluk.draft, model: "bionluk-structured", inputTokens: 0, outputTokens: 0, costUsd: 0 };
-  } else if (linkedin) {
+  if (linkedin) {
     result = { draft: linkedin.draft, model: "linkedin-structured", inputTokens: 0, outputTokens: 0, costUsd: 0 };
   } else {
     // Kaynak dilini KORUR (çeviri wizard'da ayrı "kendi dilime çevir" adımıyla).
@@ -170,9 +161,7 @@ export const POST = withErrorHandler(async (req) => {
   // gösterir ve kaydederken profile yazar. Bionluk portfolyo verir; LinkedIn yalnız
   // avatar (public ld+json portfolyo içermez). Eklenti best-effort görsel URL'leri yollar.
   let media: ProfileImportMedia | undefined;
-  if (bionluk) {
-    media = { avatarUrl: bionluk.avatarUrl, portfolio: bionluk.portfolio, projects: [] };
-  } else if (linkedin) {
+  if (linkedin) {
     media = { avatarUrl: linkedin.avatarUrl, portfolio: [], projects: [] };
   } else if (extensionInput) {
     // Yapılandırılmış projeler (Upwork window.__NUXT__) → hem PROJE olarak (media.projects,
@@ -204,7 +193,7 @@ export const POST = withErrorHandler(async (req) => {
   // Platform verisi elimizdeyken platform_profiles'a da yaz (platform detay
   // sayfası "X'teki profilin" kartı buradan hydrate olur). Yalnız gerçek platform
   // verisi olan yollar: Bionluk/LinkedIn yapılandırılmış çekim + uzantı.
-  if (platform && sourceUrl && (bionluk || linkedin || extensionInput)) {
+  if (platform && sourceUrl && (linkedin || extensionInput)) {
     const { error: ppError } = await supabase.from("platform_profiles").upsert(
       {
         user_id: user.id,

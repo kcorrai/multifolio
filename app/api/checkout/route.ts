@@ -65,8 +65,7 @@ export const POST = withErrorHandler(async (req) => {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "85.34.78.112";
 
   const init = await initializeCheckoutForm({
-    locale: currency === "TRY" ? "tr" : "en", // iyzico form dili pazara/paraya uyar
-
+    locale: "en", // global-only: iyzico form dili İngilizce
     conversationId,
     price: priceStr,
     paidPrice: priceStr,

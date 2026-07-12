@@ -33,9 +33,9 @@ import { HealthWarnings } from "./health-warnings";
 import { useDashboard } from "./dashboard-context";
 import { useAdapt } from "./use-adapt";
 
-// Sunucudan yapılandırılmış çekim yapılabilen platformlar; kalanı (Upwork/Fiverr)
-// bot duvarı nedeniyle yalnız tarayıcı uzantısıyla dolar. Armut'ta public veri yok.
-const SERVER_FETCHABLE: PlatformId[] = ["bionluk", "linkedin"];
+// Sunucudan yapılandırılmış çekim yapılabilen platform (LinkedIn public JSON-LD);
+// kalanı (Upwork/Fiverr) bot duvarı nedeniyle yalnız tarayıcı uzantısıyla dolar.
+const SERVER_FETCHABLE: PlatformId[] = ["linkedin"];
 const EXTENSION_ONLY: PlatformId[] = ["upwork", "fiverr"];
 
 export function PlatformDetailTab({

@@ -24,7 +24,6 @@ function ensureFonts() {
 
 const LABELS: Record<Locale, Record<string, string>> = {
   en: { about: "About", skills: "Skills", projects: "Projects", problem: "Problem", solution: "Solution", result: "Result", contact: "Contact" },
-  tr: { about: "Hakkında", skills: "Beceriler", projects: "Projeler", problem: "Problem", solution: "Çözüm", result: "Sonuç", contact: "İletişim" },
 };
 
 const BOLD = "PfSans-Bold";

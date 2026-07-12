@@ -7,7 +7,6 @@ import { getTranslations } from "next-intl/server";
 import { AuthError, ValidationError, NotFoundError, RateLimitError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { platformProfileSyncSchema, platformProfileUpdateSchema } from "@/lib/validation/schemas/platform-profile";
-import { parseBionlukUsername, fetchBionlukProfile } from "@/lib/import/bionluk";
 import { parseLinkedinUsername, fetchLinkedinProfile } from "@/lib/import/linkedin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -50,13 +49,7 @@ export const POST = withErrorHandler(async (req) => {
     headline: string; summary: string; skills: string[];
     avatar_url: string | null; portfolio: unknown[]; model: string;
   };
-  if (platform === "bionluk") {
-    const username = parseBionlukUsername(url);
-    if (!username) throw new ValidationError(t("importFetchFailed"));
-    const p = await fetchBionlukProfile(username);
-    if (!p) throw new ValidationError(t("importFetchFailed"));
-    row = { ...p.draft, avatar_url: p.avatarUrl, portfolio: p.portfolio, model: "bionluk-structured" };
-  } else if (platform === "linkedin") {
+  if (platform === "linkedin") {
     const username = parseLinkedinUsername(url);
     if (!username) throw new ValidationError(t("importFetchFailed"));
     let p = null;
@@ -68,7 +61,7 @@ export const POST = withErrorHandler(async (req) => {
     if (!p) throw new ValidationError(t("importFetchFailed"));
     row = { ...p.draft, avatar_url: p.avatarUrl, portfolio: [], model: "linkedin-structured" };
   } else {
-    // Upwork/Fiverr/Armut sunucudan çekilemez — uzantı akışı platform_profiles'a yazar.
+    // Upwork/Fiverr sunucudan çekilemez — uzantı akışı platform_profiles'a yazar.
     throw new ValidationError(t("syncUnsupported"));
   }
 

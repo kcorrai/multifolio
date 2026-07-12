@@ -8,7 +8,6 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { InternalError } from "@/lib/errors";
-import type { Locale } from "@/i18n/detect";
 
 export interface AiUsage {
   model: string;
@@ -97,10 +96,9 @@ const PROPOSAL_TRANSLATE_SYSTEM_PROMPT =
 /** Teklif metnini hedef dile çevirir (TR kullanıcının EN teklifi anlaması için). */
 export async function translateProposalContent(
   text: string,
-  target: Locale,
 ): Promise<{ translated: string } & AiUsage> {
   const client = getOpenAIClient();
-  const targetName = target === "tr" ? "Türkçe" : "İngilizce";
+  const targetName = "İngilizce"; // global-only: hedef her zaman İngilizce
 
   const completion = await client.chat.completions.create({
     model: AI_MODEL,
@@ -148,10 +146,9 @@ const PROFILE_TRANSLATE_SYSTEM_PROMPT =
  *  "kendi dilime çevir" adımı — kaynak dili korunmuş taslağı kullanıcının diline getirir). */
 export async function translateProfileDraft(
   draft: { headline: string; summary: string; skills: string[] },
-  target: Locale,
 ): Promise<{ draft: { headline: string; summary: string; skills: string[] } } & AiUsage> {
   const client = getOpenAIClient();
-  const targetName = target === "tr" ? "Türkçe" : "İngilizce";
+  const targetName = "İngilizce"; // global-only: hedef her zaman İngilizce
 
   const completion = await client.chat.completions.parse({
     model: AI_MODEL,
@@ -193,10 +190,9 @@ export async function translateProfileDraft(
 /** Tek ilan açıklamasını hedef dile çevirir; düz metin döner. */
 export async function translateJobDescription(
   text: string,
-  target: Locale,
 ): Promise<{ translated: string } & AiUsage> {
   const client = getOpenAIClient();
-  const targetName = target === "tr" ? "Türkçe" : "İngilizce";
+  const targetName = "İngilizce"; // global-only: hedef her zaman İngilizce
 
   const completion = await client.chat.completions.create({
     model: AI_MODEL,

@@ -39,26 +39,5 @@ export function PlatformLogo({ platform, size = 20, className = "" }: Props) {
         </svg>
       );
 
-    case "bionluk":
-      return (
-        <svg {...s} viewBox="0 0 24 24" fill="none">
-          <rect width="24" height="24" rx="5" fill="#7C3AED" />
-          <path
-            d="M7 6h5c1.1 0 2 .4 2.5 1.1.4.5.5 1.1.5 1.7 0 1-.4 1.8-1.1 2.2.9.4 1.6 1.3 1.6 2.4 0 .8-.3 1.5-.9 2-.6.5-1.5.8-2.6.8H7V6zm2 1.8v2.4h2.6c.5 0 .9-.1 1.1-.4.2-.2.3-.5.3-.8 0-.3-.1-.6-.3-.8-.2-.2-.6-.3-1.1-.3H9zm0 4.1v2.8h3c.6 0 1-.1 1.3-.4.3-.3.4-.6.4-1s-.1-.7-.4-1c-.3-.3-.7-.4-1.3-.4H9z"
-            fill="white"
-          />
-        </svg>
-      );
-
-    case "armut":
-      return (
-        <svg {...s} viewBox="0 0 24 24" fill="none">
-          <rect width="24" height="24" rx="5" fill="#EA580C" />
-          <path
-            d="M12 5.5L7.5 18.5h2.1l1.1-3.1h2.6l1.1 3.1h2.1L12 5.5zm0 3.9 0.9 2.7h-1.8L12 9.4z"
-            fill="white"
-          />
-        </svg>
-      );
   }
 }

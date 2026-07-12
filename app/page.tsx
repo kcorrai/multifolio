@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import {
   Layers, Globe, Briefcase, ArrowRight, ArrowUpRight,
   CheckCircle2, Target, Sparkles, ShieldCheck,
-  FileText, Download, Compass, Gauge, Calculator, Scale, Puzzle, Gift, Tag, ClipboardCheck, Wand2,
+  FileText, Download, Compass, Gauge, Puzzle, Gift, Tag, ClipboardCheck, Wand2,
 } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { CountUp } from "@/components/count-up";
@@ -161,17 +161,12 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const demoLine = "h-2 rounded-full bg-slate-200 dark:bg-white/12 demo-grow";
   const cardBase = "group h-full rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 transition-all";
 
-  /* Ücretsiz araçlar (kayıt gerektirmeyen public sayfalar). TR-özel araçlar
-     (net kazanç/karşılaştırma — TR komisyon+vergisine dayalı) yalnız TR pazarında. */
+  /* Ücretsiz araçlar (kayıt gerektirmeyen public sayfalar). */
   const tools = [
     { href: "/analyze",  icon: Gauge,      key: "analyze",  accent: "#00F0FF" },
     { href: "/rate",     icon: Tag,           key: "rate",             accent: "#00F0FF" },
     { href: "/proposal-checker", icon: ClipboardCheck, key: "proposalChecker", accent: "#a78bfa" },
     { href: "/headline-optimizer", icon: Wand2, key: "headlineOptimizer", accent: "#00F0FF" },
-    ...(marketId === "tr" ? [
-      { href: "/earnings", icon: Calculator, key: "earnings", accent: "#a78bfa" },
-      { href: "/compare",  icon: Scale,      key: "compare",  accent: "#a78bfa" },
-    ] : []),
   ];
 
   const steps = [

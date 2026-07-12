@@ -28,8 +28,6 @@ const SCANNED: Record<PlatformId, boolean> = {
   linkedin: false,
   upwork: true,
   fiverr: true,
-  bionluk: true,
-  armut: true,
 };
 
 // Tür başına tek desen (ya da IBAN gibi ek desen). Sıra = UI gösterim sırası.

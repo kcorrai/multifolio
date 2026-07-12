@@ -17,7 +17,6 @@ import { parseLocaleNumber } from "@/lib/format/parse-number";
 const PLATFORM_LABELS: Record<RatePlatform, string> = {
   upwork: "Upwork",
   fiverr: "Fiverr",
-  bionluk: "Bionluk",
   direct: "", // i18n'den (platformDirect)
 };
 
@@ -41,8 +40,7 @@ export function RateCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean })
   function pickPlatform(p: RatePlatform) {
     setPlatform(p);
     setPlatformFee(String(RATE_PLATFORM_DEFAULTS[p]));
-    if (p === "bionluk") setCurrency("TRY");
-    else if (p !== "direct") setCurrency("USD");
+    if (p !== "direct") setCurrency("USD");
   }
 
   const result = useMemo(() => computeSuggestedRate({
