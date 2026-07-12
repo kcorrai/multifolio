@@ -9,6 +9,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { runScrape } from "@/lib/scrape/run";
 import { translateNewTitles } from "@/lib/scrape/translate-titles";
 import { notifyFeedMatches } from "@/lib/scrape/notify";
+import { runAutoDraft } from "@/lib/queue/auto-draft";
 import { translateJobTitles } from "@/lib/ai/translate";
 import { sendFeedDigestEmail } from "@/lib/notifications/email";
 import { remotiveSource } from "@/lib/scrape/sources/remotive";
@@ -53,6 +54,9 @@ export const POST = withErrorHandler(async (req) => {
   after(async () => {
     await translateNewTitles(admin, translateJobTitles);
     await notifyFeedMatches(admin, sendFeedDigestEmail, startedAt);
+    // Opt-in feed'lere uyan yeni ilanlara arka-plan teklif taslağı (feed günlük tavanı +
+    // bakiye ile sınırlı; AUTO-SUBMIT YOK). Hata izole — patlasa da scrape sonucu döner.
+    await runAutoDraft(admin, startedAt);
   });
 
   return NextResponse.json({ ok: true, results });
