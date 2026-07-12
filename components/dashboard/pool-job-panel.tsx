@@ -5,8 +5,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { X, Sparkles, ExternalLink, Check, Languages, RefreshCw, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
+import { CopyButton } from "./copy-button";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
+import { PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
 import { poolJobTitle } from "@/lib/feed/filter";
 import { RELEVANCE_WARN_BELOW } from "@/lib/feed/relevance";
 import { scoreColor, scoreBarColor } from "./shared";
@@ -28,7 +30,11 @@ export function PoolJobPanel({
   const [scoring, setScoring] = useState(false);
   const [applied, setApplied] = useState(false);
   const [applying, setApplying] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
+  // Üretilen teklif (asistanlı başvuru): ilan değişince RENDER'da sıfırlanır.
+  const [prop, setProp] = useState({ jobId: job.id, text: null as string | null });
+  if (prop.jobId !== job.id) setProp({ jobId: job.id, text: null });
   // Düşük-alaka skorlama uyarısı (kredi israfını önler); ilan değişince RENDER'da sıfırlanır.
   const [gate, setGate] = useState({ jobId: job.id, warned: false });
   if (gate.jobId !== job.id) setGate({ jobId: job.id, warned: false });
@@ -96,6 +102,49 @@ export function PoolJobPanel({
       setError(t("actionFailed"));
     } finally {
       setApplying(false);
+    }
+  }
+
+  // Asistanlı başvuru: (1) job_listings oluştur (başvuruldu + pool bağı) → (2) O İŞE ÖZEL
+  // teklif üret/kaydet (bu "latest proposal" olur; uzantı Upwork'te yapıştırır) → (3) platformda aç.
+  // Gönderim OTOMATİK DEĞİL — kullanıcı kutuyu görüp kendi gönderir.
+  async function generateAndApply() {
+    if (generating || applying) return;
+    setGenerating(true); setError("");
+    try {
+      const jobRes = await fetch("/api/jobs", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: job.title, description: job.description, platform: job.source,
+          url: job.url ?? undefined, budget: job.budget ?? undefined, source_pool_id: job.id,
+        }),
+      });
+      const jobBody = await jobRes.json().catch(() => null);
+      if (!jobRes.ok) { setError(jobBody?.error?.message ?? t("actionFailed")); setGenerating(false); return; }
+      setApplied(true); onApplied(job.id);
+      const jobId = jobBody.job?.id as string;
+
+      // Teklif platformu: pool source geçerli bir PlatformId ise onu, değilse (remotive/remoteok/
+      // sample) Upwork yönergesini (proposal/cover-letter odaklı, EN) kullan.
+      const proposalPlatform: PlatformId =
+        (PLATFORM_IDS as readonly string[]).includes(job.source) ? (job.source as PlatformId) : "upwork";
+      const propRes = await fetch("/api/proposal", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          job_id: jobId,
+          job_description: (job.description || job.title).slice(0, 10000),
+          platform: proposalPlatform,
+        }),
+      });
+      const propBody = await propRes.json().catch(() => null);
+      if (!propRes.ok) { setError(propBody?.error?.message ?? t("actionFailed")); setGenerating(false); return; }
+      setProp({ jobId: job.id, text: propBody.proposal?.content ?? null });
+      if (propBody.credits) onCreditsUpdate(propBody.credits);
+      if (job.url) window.open(job.url, "_blank", "noopener");
+    } catch {
+      setError(t("actionFailed"));
+    } finally {
+      setGenerating(false);
     }
   }
 
@@ -213,18 +262,36 @@ export function PoolJobPanel({
           </p>
         </div>
 
+        {/* Asistanlı başvuru: üretilen teklif (kopyala + uzantıyla yapıştır). */}
+        {prop.text && (
+          <div className="rounded-xl border border-[#00F0FF]/25 bg-[#00F0FF]/[0.04] p-3 space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs font-bold flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-[#00F0FF]" />{t("proposalReady")}</p>
+              <CopyButton text={prop.text} />
+            </div>
+            <p className="text-sm whitespace-pre-wrap break-words max-h-52 overflow-y-auto">{prop.text}</p>
+            <p className="text-[11px] text-muted-foreground">{t("proposalReadyHint")}</p>
+          </div>
+        )}
+
         {error && <p className="text-sm text-destructive">{error}</p>}
       </div>
 
-      <div className="border-t border-border p-4 flex items-center gap-2">
-        {job.url && (
-          <Button asChild variant="outline" className="gap-2 flex-1">
-            <a href={job.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4" />{t("openOnPlatform")}</a>
-          </Button>
-        )}
-        <Button onClick={apply} disabled={applied || applying} className="gap-2 flex-1">
-          {applied ? <><Check className="h-4 w-4" />{t("applied")}</> : t("markApplied")}
+      <div className="border-t border-border p-4 space-y-2">
+        <Button onClick={generateAndApply} disabled={generating || applying} aria-busy={generating} className="w-full gap-2">
+          <Sparkles className="h-4 w-4" />{generating ? t("generating") : t("generateAndApply")}
+          <CreditCost kind="proposal" />
         </Button>
+        <div className="flex items-center gap-2">
+          {job.url && (
+            <Button asChild variant="outline" className="gap-2 flex-1">
+              <a href={job.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4" />{t("openOnPlatform")}</a>
+            </Button>
+          )}
+          <Button variant="ghost" onClick={apply} disabled={applied || applying} className="gap-2 flex-1">
+            {applied ? <><Check className="h-4 w-4" />{t("applied")}</> : t("markApplied")}
+          </Button>
+        </div>
       </div>
     </div>
   );

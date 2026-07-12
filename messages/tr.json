@@ -1279,6 +1279,14 @@
     "openOnPlatform": "Platformda aç",
     "markApplied": "Başvurdum olarak işaretle",
     "applied": "Başvuruldu",
+    "generateAndApply": "Teklif üret & başvur",
+    "generating": "Üretiliyor…",
+    "proposalReady": "Teklifin hazır",
+    "proposalReadyHint": "Multifolio uzantısıyla Upwork başvuru sayfasında otomatik yapıştır, ya da kopyala. Son gönderimi hep sen yaparsın.",
+    "assistedApply": {
+      "title": "Asistanlı başvuru",
+      "desc": "Bir işe özel teklif üret, sonra Multifolio tarayıcı uzantısıyla tek tıkta platformun başvuru formuna yapıştır. Gönderimi hep sen gözden geçirip yaparsın — otomatik gönderim yok."
+    },
     "score": "Uyum",
     "postedRelative": "{time} önce",
     "budget": "Bütçe",

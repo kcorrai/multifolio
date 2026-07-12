@@ -275,23 +275,12 @@ export function FeedSettingsPanel({
         <p className="text-[11px] text-muted-foreground/70">{t("settingsProposalPromptHint")}</p>
       </div>
 
-      {/* ── Otomatik başvuru (YAKINDA yer tutucu — işlevsel değil) ─────── */}
-      <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-4 space-y-2.5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h4 className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
-            <Zap className="h-4 w-4" />{t("autoApplyTitle")}
-          </h4>
-          <span className="rounded-full border border-[#00F0FF]/30 bg-[#00F0FF]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#00F0FF]">
-            {t("autoApplyComingSoon")}
-          </span>
-        </div>
-        <p className="text-[11px] leading-relaxed text-muted-foreground/70">{t("autoApplyDesc")}</p>
-        <label className="flex cursor-not-allowed items-center justify-between gap-2 opacity-50">
-          <span className="text-xs font-medium">{t("autoApplyEnable")}</span>
-          <span className="relative inline-flex h-5 w-9 shrink-0 items-center rounded-full bg-muted">
-            <span className="ml-0.5 h-4 w-4 rounded-full bg-muted-foreground/40" />
-          </span>
-        </label>
+      {/* ── Asistanlı başvuru (gerçek özellik — uzantı akışı; auto-submit YOK) ─────── */}
+      <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] p-4 space-y-2">
+        <h4 className="text-sm font-bold flex items-center gap-2">
+          <Zap className="h-4 w-4 text-[#00F0FF]" />{t("assistedApply.title")}
+        </h4>
+        <p className="text-[11px] leading-relaxed text-muted-foreground">{t("assistedApply.desc")}</p>
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}

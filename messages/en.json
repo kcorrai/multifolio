@@ -1279,6 +1279,14 @@
     "openOnPlatform": "Open on platform",
     "markApplied": "Mark as applied",
     "applied": "Applied",
+    "generateAndApply": "Generate proposal & apply",
+    "generating": "Generating…",
+    "proposalReady": "Your proposal is ready",
+    "proposalReadyHint": "Auto-paste it on the Upwork apply page with the Multifolio extension, or copy it. You always review and submit yourself.",
+    "assistedApply": {
+      "title": "Assisted apply",
+      "desc": "Generate a proposal tailored to a job, then paste it into the platform's apply form in one click with the Multifolio browser extension. You always review and submit — no auto-submit."
+    },
     "score": "Match",
     "postedRelative": "{time} ago",
     "budget": "Budget",
