@@ -11,6 +11,9 @@
     "prev": "Önceki",
     "next": "Sonraki",
     "toggleLanguage": "Dili değiştir",
+    "switchRegion": "Bölge değiştir",
+    "regionGlobal": "Global",
+    "regionTr": "Türkiye",
     "metaDescription": "Çoklu platform freelancer kariyer aracı — profilini bir kez gir, her platform için optimize et."
   },
   "landing": {
@@ -57,6 +60,16 @@
       "feed": {
         "title": "Profiline göre skorlanan canlı iş akışı",
         "desc": "Solda kayıtlı feed'ler, ortada eşleşen ilanlar, sağda filtreler ve AI skorlama. Yeni ilanlar açana kadar okunmamış işaretli kalır."
+      },
+      "autoPilot": {
+        "title": "Otomatik Pilot: işi bulur, teklifini yazar",
+        "desc": "Herhangi bir feed için Otomatik Pilot'u aç. Gece boyunca eşleşen her yeni işe özel bir teklif taslaklar — Başvurulanlar'da hazır bekler. Sen gözden geçirip tek tıkla gönderirsin. Asla otomatik gönderilmez, hesabın güvende kalır.",
+        "step1Title": "Gece taslaklar",
+        "step1Desc": "Eşleşen yeni işlere otomatik özel teklif üretilir.",
+        "step2Title": "Sen gözden geçirirsin",
+        "step2Desc": "Her taslak, düzenlemen ve onayın için Başvurulanlar'da bekler.",
+        "step3Title": "Tek tıkla başvur",
+        "step3Desc": "Tarayıcı uzantısı teklifi platformun formuna yapıştırır — gönder tuşuna sen basarsın."
       },
       "portfolio": {
         "title": "Müşteri kazandıran public portfolyo",
@@ -299,7 +312,8 @@
       "errorRegistered": "Bu e-posta zaten kayıtlı.",
       "errorNoSession": "Kayıt oluşturuldu ama oturum açılamadı. Giriş yapmayı dene.",
       "consent": "<terms>Kullanım Şartları</terms>'nı ve <kvkk>KVKK Aydınlatma Metni</kvkk>'ni okudum, kabul ediyorum.",
-      "consentRequired": "Devam etmek için Şartlar ve KVKK metnini kabul etmelisin.",
+      "consentGlobal": "<terms>Kullanım Şartları</terms>'nı ve <privacy>Gizlilik Politikası</privacy>'nı okudum, kabul ediyorum.",
+      "consentRequired": "Devam etmek için Şartları kabul etmelisin.",
       "confirmLabel": "Şifre (tekrar)",
       "submitting": "Oluşturuluyor…",
       "submit": "Hesap oluştur",
@@ -1302,10 +1316,14 @@
     "navStarred": "Yıldızlı ilanlar",
     "navApplied": "Başvurulanlar",
     "unread": "Okunmamış",
-    "autoApplyTitle": "Otomatik başvuru",
-    "autoApplyComingSoon": "Yakında",
-    "autoApplyDesc": "Eşleşen ilanlara AI teklifini otomatik gönder. Yolda — şimdilik her teklifi kendin gözden geçirip gönderiyorsun.",
-    "autoApplyEnable": "Otomatik başvuruyu aç",
+    "autoPilot": {
+      "title": "Otomatik Pilot",
+      "on": "Açık",
+      "dailyDrafts": "3/gün taslak",
+      "noSubmit": "Otomatik gönderim yok",
+      "tagline": "İşi bulur, teklifini yazar — sen sadece gözden geçirip gönderirsin.",
+      "cost": "Taslak başına {count} kredi"
+    },
     "settingsPlaceholderTitle": "Bir feed seç",
     "settingsPlaceholderHint": "Filtre, AI skorlama ve teklif yönergesini ayarlamak için soldan bir feed seç — ya da yeni bir feed oluştur.",
     "searchPlaceholder": "Keyword ile iş ara…",
@@ -1338,11 +1356,11 @@
     "proposalReady": "Teklifin hazır",
     "proposalReadyHint": "Multifolio uzantısıyla Upwork başvuru sayfasında otomatik yapıştır, ya da kopyala. Son gönderimi hep sen yaparsın.",
     "assistedApply": {
-      "title": "Asistanlı başvuru",
-      "desc": "Bir işe özel teklif üret, sonra Multifolio tarayıcı uzantısıyla tek tıkta platformun başvuru formuna yapıştır. Gönderimi hep sen gözden geçirip yaparsın — otomatik gönderim yok."
+      "title": "Tek tıkla başvur",
+      "desc": "Platformun başvuru sayfasında, Multifolio tarayıcı uzantısı teklifini tek tıkta cover-letter kutusuna yapıştırır. Gönderimi hep sen gözden geçirip yaparsın — otomatik gönderim yok."
     },
     "autoDraft": {
-      "label": "Otomatik teklif taslakla",
+      "label": "Gece boyunca teklif taslakla",
       "off": "Kapalı",
       "perDay": "{count}/gün",
       "hint": "Açıkken, bu feed'e uyan yeni işlere arka planda teklif taslaklar — sen döndüğünde Başvurulanlar'da hazır bekler.",

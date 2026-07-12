@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { JobFeedRow } from "@/lib/validation/schemas/feed";
 import { ChipsInput } from "./chips-input";
+import { useDashboard } from "./dashboard-context";
 
 // Sayısal opsiyonel alan: boş string → undefined, aksi halde Number.
 function numOrUndef(v: string): number | undefined {
@@ -39,6 +40,7 @@ export function FeedModal({
   initial?: FeedPrefill;
 }) {
   const t = useTranslations("feed");
+  const { platforms } = useDashboard();
   const [name, setName] = useState(feed?.name ?? initial?.name ?? "");
   const [platform, setPlatform] = useState(feed?.platform ?? initial?.platform ?? "");
   const [keywords, setKeywords] = useState<string[]>(feed?.keywords ?? initial?.keywords ?? []);
@@ -114,7 +116,7 @@ export function FeedModal({
                 className="w-full appearance-none rounded-lg border border-border bg-background px-3 py-2 pr-8 text-sm cursor-pointer"
               >
                 <option value="">{t("modal.allPlatforms")}</option>
-                {Object.values(PLATFORMS).map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+                {platforms.map((id) => <option key={id} value={id}>{PLATFORMS[id].label}</option>)}
               </select>
               <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             </div>

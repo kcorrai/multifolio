@@ -35,7 +35,7 @@ function numOrNull(v: string): number | null {
 
 export function SearchView() {
   const t = useTranslations("feed");
-  const { applyCredits } = useDashboard();
+  const { applyCredits, platforms } = useDashboard();
   const [q, setQ] = useState("");
   const [jobs, setJobs] = useState<PoolJob[]>([]);
   const [total, setTotal] = useState(0);
@@ -242,7 +242,7 @@ export function SearchView() {
                   className="w-full appearance-none rounded-lg border border-border bg-background px-3 py-2 pr-8 text-sm cursor-pointer"
                 >
                   <option value="">{t("modal.allPlatforms")}</option>
-                  {Object.values(PLATFORMS).map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+                  {platforms.map((id) => <option key={id} value={id}>{PLATFORMS[id].label}</option>)}
                 </select>
                 <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               </div>

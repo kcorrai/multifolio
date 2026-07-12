@@ -12,7 +12,7 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { LandingMotion } from "@/components/landing/landing-motion";
 import { Tilt } from "@/components/landing/tilt";
 import { BrowserFrame } from "@/components/landing/browser-frame";
-import { FeedShowcase, PortfolioShowcase, CvShowcase } from "@/components/landing/product-showcase";
+import { FeedShowcase, AutoPilotShowcase, PortfolioShowcase, CvShowcase } from "@/components/landing/product-showcase";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -415,6 +415,17 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
               <FeedShowcase />
             </BrowserFrame>
           </Tilt>
+        </ScrollReveal>
+
+        {/* Otomatik Pilot vitrini */}
+        <ScrollReveal delay={80} className="mt-20">
+          <div className="mx-auto max-w-2xl text-center space-y-2 mb-6">
+            <h3 className="text-2xl font-bold tracking-tight">{t("showcase.autoPilot.title")}</h3>
+            <p className="text-slate-500 dark:text-[#94A3B8] font-medium">{t("showcase.autoPilot.desc")}</p>
+          </div>
+          <div className="mx-auto max-w-4xl">
+            <AutoPilotShowcase />
+          </div>
         </ScrollReveal>
 
         {/* Portfolyo vitrini */}

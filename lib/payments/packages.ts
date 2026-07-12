@@ -26,7 +26,5 @@ export function packagePrice(pkg: CreditPackage, currency: PayCurrency): number 
   return currency === "TRY" ? pkg.priceTry : pkg.priceUsd;
 }
 
-// UI locale → ödeme para birimi (TR kullanıcı TL, diğerleri USD).
-export function currencyForLocale(locale: string): PayCurrency {
-  return locale === "tr" ? "TRY" : "USD";
-}
+// NOT: Para birimi artık DİLE değil PAZARA bağlı (lib/markets `marketCurrency`).
+// currencyForLocale kaldırıldı — checkout marketCurrency kullanır.

@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
-export function SignupForm() {
+export function SignupForm({ hasKvkk }: { hasKvkk: boolean }) {
   const t = useTranslations("auth");
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -92,10 +92,15 @@ export function SignupForm() {
             className="mt-0.5 h-4 w-4 shrink-0 rounded border-input accent-[#00F0FF] cursor-pointer"
           />
           <span className="text-xs text-muted-foreground leading-relaxed">
-            {t.rich("signup.consent", {
-              terms: (chunks) => <Link href="/terms" target="_blank" className="font-semibold text-foreground hover:underline underline-offset-2">{chunks}</Link>,
-              kvkk: (chunks) => <Link href="/kvkk" target="_blank" className="font-semibold text-foreground hover:underline underline-offset-2">{chunks}</Link>,
-            })}
+            {hasKvkk
+              ? t.rich("signup.consent", {
+                  terms: (chunks) => <Link href="/terms" target="_blank" className="font-semibold text-foreground hover:underline underline-offset-2">{chunks}</Link>,
+                  kvkk: (chunks) => <Link href="/kvkk" target="_blank" className="font-semibold text-foreground hover:underline underline-offset-2">{chunks}</Link>,
+                })
+              : t.rich("signup.consentGlobal", {
+                  terms: (chunks) => <Link href="/terms" target="_blank" className="font-semibold text-foreground hover:underline underline-offset-2">{chunks}</Link>,
+                  privacy: (chunks) => <Link href="/privacy" target="_blank" className="font-semibold text-foreground hover:underline underline-offset-2">{chunks}</Link>,
+                })}
           </span>
         </label>
 

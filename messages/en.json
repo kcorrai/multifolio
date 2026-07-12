@@ -11,6 +11,9 @@
     "prev": "Previous",
     "next": "Next",
     "toggleLanguage": "Toggle language",
+    "switchRegion": "Switch region",
+    "regionGlobal": "Global",
+    "regionTr": "Türkiye",
     "metaDescription": "Multi-platform freelancer career tool — enter your profile once, optimize it for every platform."
   },
   "landing": {
@@ -57,6 +60,16 @@
       "feed": {
         "title": "A live job feed, scored to your profile",
         "desc": "Saved feeds on the left, matched jobs in the middle, filters and AI scoring on the right. New roles stay marked unread until you open them."
+      },
+      "autoPilot": {
+        "title": "Auto-Pilot: it finds the jobs and writes the proposal",
+        "desc": "Turn on Auto-Pilot for any feed. Overnight it drafts a tailored proposal for each new matching job — ready and waiting in Applied. You review and send in one click. Never auto-submitted, so your account stays safe.",
+        "step1Title": "Drafts overnight",
+        "step1Desc": "New matching jobs get a tailored proposal automatically.",
+        "step2Title": "You review",
+        "step2Desc": "Every draft waits in Applied for your edits and approval.",
+        "step3Title": "One-click apply",
+        "step3Desc": "The browser extension pastes it into the platform's form — you hit send."
       },
       "portfolio": {
         "title": "A public portfolio that wins clients",
@@ -299,7 +312,8 @@
       "errorRegistered": "This email is already registered.",
       "errorNoSession": "Account created but the session couldn't be started. Try signing in.",
       "consent": "I have read and accept the <terms>Terms of Service</terms> and the <kvkk>Data Protection (KVKK) notice</kvkk>.",
-      "consentRequired": "Please accept the Terms and KVKK notice to continue.",
+      "consentGlobal": "I have read and accept the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+      "consentRequired": "Please accept the Terms to continue.",
       "confirmLabel": "Password (again)",
       "submitting": "Creating…",
       "submit": "Create account",
@@ -1302,10 +1316,14 @@
     "navStarred": "Starred jobs",
     "navApplied": "Applied jobs",
     "unread": "Unread",
-    "autoApplyTitle": "Auto-apply",
-    "autoApplyComingSoon": "Coming soon",
-    "autoApplyDesc": "Automatically send AI-generated proposals to matching jobs. In the works — for now, review and send each proposal yourself.",
-    "autoApplyEnable": "Enable auto-apply",
+    "autoPilot": {
+      "title": "Auto-Pilot",
+      "on": "On",
+      "dailyDrafts": "3/day drafts",
+      "noSubmit": "No auto-submit",
+      "tagline": "Finds jobs and writes your proposal — you just review and send.",
+      "cost": "{count} credits per draft"
+    },
     "settingsPlaceholderTitle": "Select a feed",
     "settingsPlaceholderHint": "Pick a feed on the left to configure its filters, AI scoring and proposal prompt — or create a new one.",
     "searchPlaceholder": "Search jobs by keyword…",
@@ -1338,11 +1356,11 @@
     "proposalReady": "Your proposal is ready",
     "proposalReadyHint": "Auto-paste it on the Upwork apply page with the Multifolio extension, or copy it. You always review and submit yourself.",
     "assistedApply": {
-      "title": "Assisted apply",
-      "desc": "Generate a proposal tailored to a job, then paste it into the platform's apply form in one click with the Multifolio browser extension. You always review and submit — no auto-submit."
+      "title": "One-click apply",
+      "desc": "On the platform's apply page, the Multifolio browser extension pastes your proposal into the cover-letter box in one click. You always review and submit — no auto-submit."
     },
     "autoDraft": {
-      "label": "Auto-draft proposals",
+      "label": "Draft proposals overnight",
       "off": "Off",
       "perDay": "{count}/day",
       "hint": "When on, we draft proposals for new jobs matching this feed in the background, so they're ready in Applied when you return.",

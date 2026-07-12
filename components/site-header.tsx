@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
+import { RegionToggle } from "@/components/region-toggle";
 import { MobileNav } from "@/components/mobile-nav";
 import { FreeToolsNav } from "@/components/free-tools-nav";
 
@@ -43,7 +43,7 @@ export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean 
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          <LanguageToggle />
+          <RegionToggle />
           <ThemeToggle />
           {isLoggedIn ? (
             <Button asChild size="sm" className="font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/30">

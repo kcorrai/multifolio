@@ -9,8 +9,9 @@ import { parseJson } from "@/lib/validation";
 import { checkoutCreateSchema } from "@/lib/validation/schemas/checkout";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { getUserLocale } from "@/i18n/locale";
-import { getPackage, packagePrice, currencyForLocale } from "@/lib/payments/packages";
+import { getPackage, packagePrice } from "@/lib/payments/packages";
+import { getUserMarketId } from "@/lib/markets/server";
+import { marketCurrency } from "@/lib/markets/config";
 import { initializeCheckoutForm, isIyzicoConfigured } from "@/lib/payments/iyzico";
 import { appBaseUrl } from "@/lib/payments/app-url";
 
@@ -30,8 +31,8 @@ export const POST = withErrorHandler(async (req) => {
   const pkg = getPackage(packageId);
   if (!pkg) throw new ValidationError("Geçersiz paket.");
 
-  const locale = await getUserLocale();
-  const currency = currencyForLocale(locale);
+  // Para birimi PAZARDAN (global → USD, TR → TRY); dilden bağımsız.
+  const currency = marketCurrency(await getUserMarketId());
   const amount = packagePrice(pkg, currency);
   const priceStr = amount.toFixed(2); // iyzico decimal string ister; basketItems toplamı = price
 
@@ -64,7 +65,8 @@ export const POST = withErrorHandler(async (req) => {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "85.34.78.112";
 
   const init = await initializeCheckoutForm({
-    locale: locale === "tr" ? "tr" : "en",
+    locale: currency === "TRY" ? "tr" : "en", // iyzico form dili pazara/paraya uyar
+
     conversationId,
     price: priceStr,
     paidPrice: priceStr,

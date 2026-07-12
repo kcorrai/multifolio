@@ -9,7 +9,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { adaptProfile } from "@/lib/ai/adapt";
 import { spendCredits } from "@/lib/credits/spend";
-import { PLATFORM_IDS } from "@/lib/ai/platforms";
+import { getUserMarketId } from "@/lib/markets/server";
+import { marketPlatforms } from "@/lib/markets/config";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 export const POST = withErrorHandler(async () => {
@@ -27,6 +28,9 @@ export const POST = withErrorHandler(async () => {
   if (!profileRow) throw new NotFoundError(errors("profileRequired"));
   const profile = profileRow as ProfileInput;
 
+  // Yalnız aktif pazarın sunduğu platformlara uyarla (global: 3, TR: 5).
+  const platforms = marketPlatforms(await getUserMarketId());
+
   const admin = createSupabaseAdminClient();
   const results: { platform: string; output: { headline: string; body: string } }[] = [];
   let balance: number | null = null;
@@ -34,7 +38,7 @@ export const POST = withErrorHandler(async () => {
   let stoppedForCredits = false;
 
   // Sıralı: kredi düşümü yarış olmadan atomik kalsın; biri patlarsa spendCredits iade eder.
-  for (const platform of PLATFORM_IDS) {
+  for (const platform of platforms) {
     try {
       const { result, balance: b, spent } = await spendCredits(user.id, "adaptation", async () => {
         const r = await adaptProfile(profile, platform, null);

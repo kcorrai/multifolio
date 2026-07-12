@@ -10,7 +10,7 @@ import {
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PLATFORM_IDS, PLATFORMS } from "@/lib/ai/platforms";
+import { PLATFORMS } from "@/lib/ai/platforms";
 import { computeInsights, hasInsightSignal } from "@/lib/jobs/insights";
 import { JOB_STATUSES } from "@/lib/validation/schemas/job";
 import {
@@ -36,10 +36,10 @@ export function OverviewTab({
   const ta = useTranslations("analytics");
   const ts = useTranslations("jobs");
   const locale = useLocale();
-  const { credits, creditsUsed, adaptResults, triggerComingSoon } = useDashboard();
+  const { credits, creditsUsed, adaptResults, triggerComingSoon, platforms } = useDashboard();
   const [onboardingDismissed, setOnboardingDismissed] = useState(profileSaved);
 
-  const readyPlatforms = PLATFORM_IDS.filter((id) => adaptResults[id]).length;
+  const readyPlatforms = platforms.filter((id) => adaptResults[id]).length;
   const onboardingStep = !profileSaved ? 1 : readyPlatforms === 0 ? 2 : 3;
 
   return (

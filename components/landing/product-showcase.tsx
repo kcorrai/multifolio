@@ -2,7 +2,7 @@
    (statik, sunucu bileşeni). Gerçek ekran görüntüsü yerine gerçek bileşen stilleriyle kurulmuş
    sahne. Renk vurgusu #00F0FF; PlatformLogo gerçek logolar. */
 import { getTranslations } from "next-intl/server";
-import { Layers, Rss, Search, Star, Briefcase, Plus, CheckCheck, SlidersHorizontal, Sparkles, Zap, Mail } from "lucide-react";
+import { Layers, Rss, Search, Star, Briefcase, Plus, CheckCheck, SlidersHorizontal, Sparkles, Zap, Mail, Moon, Eye, MousePointerClick } from "lucide-react";
 import { PlatformLogo } from "@/components/platform-logo";
 import type { PlatformId } from "@/lib/ai/platforms";
 
@@ -24,7 +24,6 @@ interface JobMock {
 
 /* ── Feed vitrini: 3-kolon iş keşfi (jobs-tab yansıması) ──────────── */
 export async function FeedShowcase() {
-  const t = await getTranslations("landing.showcase");
   const tf = await getTranslations("feed");
   const td = await getTranslations("landing.demos");
 
@@ -119,13 +118,43 @@ export async function FeedShowcase() {
           <div className="flex items-center justify-between text-[10px] text-slate-400 dark:text-white/40"><span>{tf("showLowScores")}</span><span className="font-bold text-[#00F0FF]">7</span></div>
           <div className="mt-1.5 h-1.5 rounded-full bg-slate-100 dark:bg-white/8"><div className="h-full w-[70%] rounded-full bg-[#00F0FF]" /></div>
         </div>
-        <div className="rounded-xl border border-dashed border-slate-200 p-3 dark:border-white/8">
+        <div className="rounded-xl border border-[#00F0FF]/30 bg-[#00F0FF]/[0.06] p-3">
           <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-400 dark:text-white/50"><Zap className="h-3.5 w-3.5" />{tf("autoApplyTitle")}</span>
-            <span className="rounded-full border border-[#00F0FF]/30 bg-[#00F0FF]/10 px-1.5 py-0.5 text-[8px] font-bold uppercase text-[#00F0FF]">{tf("autoApplyComingSoon")}</span>
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-700 dark:text-white/80"><Zap className="h-3.5 w-3.5 text-[#00F0FF]" />{tf("autoPilot.title")}</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#00F0FF] px-1.5 py-0.5 text-[8px] font-bold uppercase text-[#04121a]"><span className="h-1 w-1 rounded-full bg-[#04121a]" />{tf("autoPilot.on")}</span>
+          </div>
+          <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-500 dark:text-white/50">
+            <span>{tf("autoPilot.dailyDrafts")}</span>
+            <span className="font-semibold text-[#00F0FF]">{tf("autoPilot.noSubmit")}</span>
           </div>
         </div>
       </aside>
+    </div>
+  );
+}
+
+/* ── Otomatik Pilot vitrini: 3 adımlı akış şeridi (dekoratif) ──────── */
+export async function AutoPilotShowcase() {
+  const t = await getTranslations("landing.showcase.autoPilot");
+  const steps = [
+    { icon: Moon, title: t("step1Title"), desc: t("step1Desc") },
+    { icon: Eye, title: t("step2Title"), desc: t("step2Desc") },
+    { icon: MousePointerClick, title: t("step3Title"), desc: t("step3Desc") },
+  ];
+  return (
+    <div aria-hidden="true" className="grid gap-3 text-left sm:grid-cols-3">
+      {steps.map((s, i) => (
+        <div key={i} className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-white/8 dark:bg-[#0f1119]">
+          <div className="mb-2.5 flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00F0FF]/12 text-[#00F0FF]">
+              <s.icon className="h-4 w-4" />
+            </span>
+            <span className="text-[11px] font-bold tabular-nums text-slate-300 dark:text-white/25">0{i + 1}</span>
+          </div>
+          <p className="text-sm font-bold text-slate-900 dark:text-white">{s.title}</p>
+          <p className="mt-1 text-[12px] leading-relaxed text-slate-500 dark:text-white/50">{s.desc}</p>
+        </div>
+      ))}
     </div>
   );
 }

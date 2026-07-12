@@ -7,16 +7,17 @@ import { useTranslations } from "next-intl";
 import { Wallet, LogOut, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
+import { RegionToggle } from "@/components/region-toggle";
 import { NotificationBell } from "./notification-bell";
 import { NAV_ITEMS, isNavActive, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
 import { VerifyEmailBanner } from "./verify-email-banner";
 import { LowCreditsBanner } from "./low-credits-banner";
 import type { PlatformId } from "@/lib/ai/platforms";
+import { marketPlatforms, type MarketId } from "@/lib/markets/config";
 
 export function DashboardShell({
-  userEmail, credits: initialCredits, initialCreditsUsed, initialJobsCount, initialConnectionsCount, emailVerified, isAdmin = false, children,
+  userEmail, credits: initialCredits, initialCreditsUsed, initialJobsCount, initialConnectionsCount, emailVerified, isAdmin = false, market, children,
 }: {
   userEmail: string;
   credits: number;
@@ -25,6 +26,7 @@ export function DashboardShell({
   initialConnectionsCount: number;
   emailVerified: boolean;
   isAdmin?: boolean;
+  market: MarketId;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -54,6 +56,8 @@ export function DashboardShell({
   return (
     <DashboardContext.Provider
       value={{
+        market,
+        platforms: marketPlatforms(market),
         credits,
         creditsUsed,
         applyCredits: ({ balance, spent }) => {
@@ -171,7 +175,7 @@ export function DashboardShell({
             {/* Actions */}
             <div className="flex items-center gap-2">
               <NotificationBell />
-              <LanguageToggle />
+              <RegionToggle />
               <ThemeToggle />
               <form action="/auth/signout" method="post" className="lg:hidden">
                 <Button type="submit" variant="ghost" size="sm" title={t("shell.logout")} aria-label={t("shell.logout")} className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">

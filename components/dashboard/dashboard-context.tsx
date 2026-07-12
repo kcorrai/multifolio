@@ -2,9 +2,14 @@
 
 import { createContext, useContext, type Dispatch, type SetStateAction } from "react";
 import type { PlatformId } from "@/lib/ai/platforms";
+import type { MarketId } from "@/lib/markets/config";
 import type { AdaptOutput } from "./shared";
 
 export interface DashboardCtx {
+  /** Aktif pazar (bölge) — geo/tercihe göre. */
+  market: MarketId;
+  /** Bu pazarda kullanıcıya sunulan platformlar (enumerate eden UI'lar bunu okur). */
+  platforms: readonly PlatformId[];
   /** Canlı kredi bakiyesi — sekmeler arası. */
   credits: number;
   /** Canlı toplam kredi tüketimi — sekmeler arası. */

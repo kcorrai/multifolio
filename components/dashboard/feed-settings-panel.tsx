@@ -10,9 +10,11 @@ import { useTranslations } from "next-intl";
 import { ChevronDown, Bell, SlidersHorizontal, Sparkles, Check, FileText, Gauge, Plus, Zap, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/ai/platforms";
+import { CREDIT_COSTS } from "@/lib/credits/costs";
 import type { JobFeedRow, PoolJob } from "@/lib/validation/schemas/feed";
 import { feedStrength } from "@/lib/feed/strength";
 import { ChipsInput } from "./chips-input";
+import { useDashboard } from "./dashboard-context";
 
 // Sayısal opsiyonel alan: boş/geçersiz → null.
 function numOrNull(v: string): number | null {
@@ -30,6 +32,7 @@ export function FeedSettingsPanel({
   onSaved: (feed: JobFeedRow) => void;
 }) {
   const t = useTranslations("feed");
+  const { platforms } = useDashboard();
   // Feed'in özel prompt'u yoksa önerilen (kriter bazlı) varsayılanı göster — düzenlenebilir.
   const defaultPrompt = t("proposalPromptDefault");
   const [name, setName] = useState(feed.name);
@@ -158,6 +161,51 @@ export function FeedSettingsPanel({
         )}
       </div>
 
+      {/* ── Otomatik Pilot: arka-plan otomatik taslak (opt-in) + asistanlı başvuru (AUTO-SUBMIT YOK) ─── */}
+      <div className="rounded-2xl border border-[#00F0FF]/25 bg-[#00F0FF]/[0.05] p-4 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h4 className="text-sm font-bold flex items-center gap-2">
+            <Zap className="h-4 w-4 text-[#00F0FF]" />{t("autoPilot.title")}
+          </h4>
+          <span className="rounded-full bg-[#00F0FF]/12 px-2 py-0.5 text-[10px] font-semibold text-[#00F0FF]">
+            {t("autoPilot.cost", { count: CREDIT_COSTS.proposal })}
+          </span>
+        </div>
+        <p className="text-[11px] leading-relaxed text-muted-foreground">{t("autoPilot.tagline")}</p>
+
+        {/* ① Arka-plan otomatik taslak: opt-in, feed başına günlük tavan (kredi harcar). */}
+        <div className="space-y-2">
+          <label className="flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold">{t("autoDraft.label")}</span>
+            <div className="relative shrink-0">
+              <select
+                value={autoDraftDaily}
+                onChange={(e) => setAutoDraftDaily(Number(e.target.value))}
+                aria-label={t("autoDraft.label")}
+                className="appearance-none rounded-lg border border-border bg-background px-3 py-1.5 pr-8 text-xs font-medium cursor-pointer"
+              >
+                <option value={0}>{t("autoDraft.off")}</option>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                  <option key={n} value={n}>{t("autoDraft.perDay", { count: n })}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+            </div>
+          </label>
+          <p className="text-[11px] text-muted-foreground/70">{t("autoDraft.hint")}</p>
+          {autoDraftDaily > 0 && (
+            <p className="flex items-start gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-2 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+              <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-px" />{t("autoDraft.warning", { count: autoDraftDaily })}
+            </p>
+          )}
+        </div>
+
+        {/* ② Asistanlı başvuru — gönderimi hep kullanıcı yapar. */}
+        <p className="pt-2 border-t border-[#00F0FF]/15 text-[11px] leading-relaxed text-muted-foreground">
+          {t("assistedApply.desc")}
+        </p>
+      </div>
+
       {/* ── Ön filtre + AI skorlama yan yana (UpHunt üst sıra) ─────────── */}
       <div className="grid gap-3 xl:grid-cols-2">
       {/* ── Ön filtre ─────────────────────────────────────────────────── */}
@@ -173,7 +221,7 @@ export function FeedSettingsPanel({
               className="appearance-none rounded-lg border border-border bg-background px-3 py-1.5 pr-8 text-xs font-medium cursor-pointer"
             >
               <option value="">{t("modal.allPlatforms")}</option>
-              {Object.values(PLATFORMS).map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+              {platforms.map((id) => <option key={id} value={id}>{PLATFORMS[id].label}</option>)}
             </select>
             <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
           </div>
@@ -278,41 +326,6 @@ export function FeedSettingsPanel({
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono leading-relaxed resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40"
         />
         <p className="text-[11px] text-muted-foreground/70">{t("settingsProposalPromptHint")}</p>
-      </div>
-
-      {/* ── Asistanlı başvuru + opt-in arka-plan otomatik taslak (auto-submit YOK) ─────── */}
-      <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] p-4 space-y-3">
-        <h4 className="text-sm font-bold flex items-center gap-2">
-          <Zap className="h-4 w-4 text-[#00F0FF]" />{t("assistedApply.title")}
-        </h4>
-        <p className="text-[11px] leading-relaxed text-muted-foreground">{t("assistedApply.desc")}</p>
-
-        {/* Arka-plan otomatik taslak: opt-in, feed başına günlük tavan (kredi harcar). */}
-        <div className="pt-2 border-t border-[#00F0FF]/15 space-y-2">
-          <label className="flex items-center justify-between gap-2">
-            <span className="text-xs font-semibold">{t("autoDraft.label")}</span>
-            <div className="relative shrink-0">
-              <select
-                value={autoDraftDaily}
-                onChange={(e) => setAutoDraftDaily(Number(e.target.value))}
-                aria-label={t("autoDraft.label")}
-                className="appearance-none rounded-lg border border-border bg-background px-3 py-1.5 pr-8 text-xs font-medium cursor-pointer"
-              >
-                <option value={0}>{t("autoDraft.off")}</option>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                  <option key={n} value={n}>{t("autoDraft.perDay", { count: n })}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-            </div>
-          </label>
-          <p className="text-[11px] text-muted-foreground/70">{t("autoDraft.hint")}</p>
-          {autoDraftDaily > 0 && (
-            <p className="flex items-start gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-2 text-[11px] font-medium text-amber-600 dark:text-amber-400">
-              <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-px" />{t("autoDraft.warning", { count: autoDraftDaily })}
-            </p>
-          )}
-        </div>
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}

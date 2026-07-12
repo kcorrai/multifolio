@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Briefcase, Plus, Trash2, Rss, Layers, Sparkles, ArrowRight, Search, Star, CheckCheck, ListChecks } from "lucide-react";
+import { Briefcase, Plus, Trash2, Rss, Layers, Sparkles, ArrowRight, Search, Star, CheckCheck, ListChecks, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
 import type { JobRow } from "./shared";
@@ -291,7 +291,15 @@ export function JobsTab({
           </button>
           {feeds.map((f) => (
             <button key={f.id} onClick={() => selectFeed(f.id)} className={`${sideItem} ${view === "feed" && f.id === selectedFeedId ? sideActive : sideIdle}`}>
-              <span className="inline-flex items-center gap-2 min-w-0"><Rss className="h-3.5 w-3.5 shrink-0 text-[#00F0FF]/70" /><span className="truncate">{f.name}</span></span>
+              <span className="inline-flex items-center gap-2 min-w-0">
+                <Rss className="h-3.5 w-3.5 shrink-0 text-[#00F0FF]/70" />
+                <span className="truncate">{f.name}</span>
+                {(f.auto_draft_daily ?? 0) > 0 && (
+                  <span title={`${t("autoPilot.title")} · ${t("autoPilot.on")}`} className="inline-flex shrink-0">
+                    <Zap className="h-3 w-3 text-[#00F0FF]" aria-label={t("autoPilot.title")} />
+                  </span>
+                )}
+              </span>
               {countBadge(unreadFor(f), countFor(f))}
             </button>
           ))}

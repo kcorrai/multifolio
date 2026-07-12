@@ -7,13 +7,10 @@ import { CheckCircle2, Sparkles, Briefcase, ChevronRight, AlertCircle, Wand2, Lo
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlatformLogo } from "@/components/platform-logo";
-import { PLATFORMS, PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
+import { PLATFORMS, type PlatformId } from "@/lib/ai/platforms";
 import { CREDIT_COSTS } from "@/lib/credits/costs";
 import { ELEVATED, PLATFORM_STYLES } from "./shared";
 import { useDashboard } from "./dashboard-context";
-
-// Tüm platformları uyarlamanın toplam kredi maliyeti (platform sayısı × adaptation).
-const ADAPT_ALL_COST = PLATFORM_IDS.length * CREDIT_COSTS.adaptation;
 
 export function PlatformsHubTab({
   profileSaved, connections, jobsByPlatform, initialAdaptedPlatforms,
@@ -24,7 +21,9 @@ export function PlatformsHubTab({
   initialAdaptedPlatforms: PlatformId[];
 }) {
   const t = useTranslations("platforms");
-  const { adaptResults, setAdaptResult, applyCredits, triggerComingSoon } = useDashboard();
+  const { platforms, adaptResults, setAdaptResult, applyCredits, triggerComingSoon } = useDashboard();
+  // Tüm platformları uyarlamanın toplam kredi maliyeti (pazar platform sayısı × adaptation).
+  const adaptAllCost = platforms.length * CREDIT_COSTS.adaptation;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [summary, setSummary] = useState<{ count: number; stopped: boolean } | null>(null);
@@ -47,7 +46,7 @@ export function PlatformsHubTab({
     setBusy(false);
   }
 
-  const adaptedCount = PLATFORM_IDS.filter((id) => !!adaptResults[id] || initialAdaptedPlatforms.includes(id)).length;
+  const adaptedCount = platforms.filter((id) => !!adaptResults[id] || initialAdaptedPlatforms.includes(id)).length;
 
   return (
     <div className="space-y-5">
@@ -73,13 +72,13 @@ export function PlatformsHubTab({
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-bold">{t("adaptAll.title")}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{t("adaptAll.desc", { count: PLATFORM_IDS.length })}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("adaptAll.desc", { count: platforms.length })}</p>
               </div>
             </div>
             <Button onClick={adaptAll} disabled={busy} className="gap-2 shrink-0">
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               {busy ? t("adaptAll.busy") : t("adaptAll.button")}
-              <span className="rounded-full bg-black/10 dark:bg-white/15 px-1.5 py-0.5 text-[10px] font-bold tabular-nums">{ADAPT_ALL_COST}</span>
+              <span className="rounded-full bg-black/10 dark:bg-white/15 px-1.5 py-0.5 text-[10px] font-bold tabular-nums">{adaptAllCost}</span>
             </Button>
           </div>
           {error && (
@@ -92,13 +91,13 @@ export function PlatformsHubTab({
             </p>
           )}
           {!summary && adaptedCount > 0 && (
-            <p className="mt-3 text-[11px] text-muted-foreground">{t("adaptAll.already", { count: adaptedCount, total: PLATFORM_IDS.length })}</p>
+            <p className="mt-3 text-[11px] text-muted-foreground">{t("adaptAll.already", { count: adaptedCount, total: platforms.length })}</p>
           )}
         </div>
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {PLATFORM_IDS.map((id) => {
+        {platforms.map((id) => {
           const style = PLATFORM_STYLES[id];
           const connected = !!connections[id];
           // Oturum içi taze üretim VEYA DB'deki kalıcı kayıt.

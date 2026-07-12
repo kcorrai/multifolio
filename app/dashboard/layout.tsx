@@ -4,6 +4,7 @@ import { getRequestUser } from "@/lib/supabase/auth";
 import { getCreditUsage } from "@/lib/credits/usage";
 import { maybeGrantSignupCredits } from "@/lib/credits/signup-bonus";
 import { isAdminEmail } from "@/lib/admin";
+import { getUserMarketId } from "@/lib/markets/server";
 import { DashboardShell } from "@/components/dashboard/shell";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -25,6 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const creditsUsed = usage.totalCredits;
   const emailVerified = user.app_metadata?.email_verified === true;
   const isAdmin = isAdminEmail(user.email);
+  const market = await getUserMarketId();
 
   return (
     <DashboardShell
@@ -35,6 +37,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       initialConnectionsCount={connCountRes.count ?? 0}
       emailVerified={emailVerified}
       isAdmin={isAdmin}
+      market={market}
     >
       {children}
     </DashboardShell>
