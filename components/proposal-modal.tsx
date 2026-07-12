@@ -9,6 +9,7 @@ import { PLATFORMS, PLATFORM_IDS, PLATFORM_LANGUAGE, type PlatformId } from "@/l
 import { PROPOSAL_TONES, PROPOSAL_LENGTHS, type ProposalTone, type ProposalLength } from "@/lib/proposal/style";
 import { pendingRequirements, coverageSummary } from "@/lib/ai/coverage";
 import { HealthWarnings } from "./dashboard/health-warnings";
+import { ProposalQualityBadge } from "./proposal-quality";
 import { useDashboard } from "./dashboard/dashboard-context";
 import type { ProposalRow, ProposalCoverageItem } from "@/lib/validation/schemas/proposal";
 
@@ -228,6 +229,9 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                 <CopyBtn text={generated} />
               </div>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{generated}</p>
+              <div className="pt-2 border-t border-[#00F0FF]/15">
+                <ProposalQualityBadge text={generated} length={length} />
+              </div>
               <HealthWarnings text={generated} platform={platform} />
               {generatedId && <TranslationBlock key={generatedId} proposalId={generatedId} platform={platform} />}
               {coverage.length > 0 && (
