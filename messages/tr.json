@@ -1423,6 +1423,10 @@
   "import": {
     "title": "Profilini saniyeler içinde kur",
     "subtitle": "Zaten kullandığın bir platformdan içe aktar — Multifolio profilini biz taslaklayalım, sen parlat.",
+    "trustFree": "Ücretsiz — kredi yok",
+    "trustFast": "Yaklaşık 2 dakika",
+    "trustReview": "Kaydetmeden önce sen incelersin",
+    "reviewNote": "AI taslaklar, sen her alanı düzenlersin — kaydet demeden hiçbir şey saklanmaz.",
     "tabUrl": "Profil URL'i",
     "tabText": "Metin yapıştır",
     "tabFile": "CV yükle",

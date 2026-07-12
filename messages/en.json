@@ -1423,6 +1423,10 @@
   "import": {
     "title": "Set up your profile in seconds",
     "subtitle": "Import from a platform you already use — we'll draft your Multifolio profile, you polish it.",
+    "trustFree": "Free — no credits",
+    "trustFast": "About 2 minutes",
+    "trustReview": "You review before saving",
+    "reviewNote": "AI drafts it, you edit every field — nothing is saved until you hit save.",
     "tabUrl": "Profile URL",
     "tabText": "Paste text",
     "tabFile": "Upload CV",

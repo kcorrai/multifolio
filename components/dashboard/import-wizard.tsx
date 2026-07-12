@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Sparkles, Link2, ClipboardPaste, FileUp, ArrowRight, Languages } from "lucide-react";
+import { Sparkles, Link2, ClipboardPaste, FileUp, ArrowRight, Languages, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ImageLightbox, type LightboxImage } from "@/components/image-lightbox";
 import { ChipsInput } from "./chips-input";
@@ -258,6 +258,13 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
         <div className="mx-auto h-12 w-12 rounded-2xl bg-[#00F0FF]/10 flex items-center justify-center"><Sparkles className="h-6 w-6 text-[#00F0FF]" /></div>
         <h1 className="text-xl font-extrabold">{t("title")}</h1>
         <p className="text-sm text-muted-foreground max-w-md mx-auto">{t("subtitle")}</p>
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-1">
+          {[t("trustFree"), t("trustFast"), t("trustReview")].map((item) => (
+            <span key={item} className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <Check className="h-3.5 w-3.5 text-[#00F0FF]" />{item}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
@@ -296,6 +303,7 @@ export function ImportWizard({ initialDraft = null, initialExtras = null, initia
         <Button onClick={runImport} disabled={busy || !canImport} className="w-full gap-2">
           {busy ? t("importing") : t("import")}<Sparkles className="h-4 w-4" />
         </Button>
+        <p className="text-center text-[11px] text-muted-foreground/70">{t("reviewNote")}</p>
       </div>
 
       <p className="text-center">
