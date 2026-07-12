@@ -5,11 +5,13 @@ import Link from "next/link";
 import {
   Sparkles, X, AlertCircle, BarChart3,
   Wallet, Zap, Briefcase, ShoppingCart, ArrowRight, TrendingUp,
+  MessageCircle, CalendarCheck, Layers,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PLATFORM_IDS } from "@/lib/ai/platforms";
+import { PLATFORM_IDS, PLATFORMS } from "@/lib/ai/platforms";
+import { computeInsights, hasInsightSignal } from "@/lib/jobs/insights";
 import { JOB_STATUSES } from "@/lib/validation/schemas/job";
 import {
   StatCard, TINT_CYAN, TINT_VIOLET, ELEVATED, KIND_ICONS,
@@ -120,6 +122,36 @@ export function OverviewTab({
         <StatCard icon={Briefcase} tint={TINT_VIOLET} label={t("jobs")} value={jobs.length}
           sub={t("jobsTracked")} />
       </div>
+
+      {/* Sonuçların: yanıt oranı + görüşme + en aktif platform (yalnız başvuru sinyali varsa). */}
+      {hasInsightSignal(jobs) && (() => {
+        const ins = computeInsights(jobs);
+        const platformLabelOf = (p: string) => (PLATFORMS as Record<string, { label: string }>)[p]?.label ?? p;
+        const cards = [
+          { key: "rr", icon: MessageCircle, accent: "#00F0FF", label: t("insightsResponseRate"), value: ins.responseRate != null ? `${ins.responseRate}%` : "—", sub: t("insightsResponseSub") },
+          { key: "iv", icon: CalendarCheck, accent: "#a78bfa", label: t("insightsInterviews"), value: String(ins.interviewCount), sub: t("insightsInterviewsSub") },
+          { key: "tp", icon: Layers, accent: "#00F0FF", label: t("insightsTopPlatform"), value: ins.topPlatform ? platformLabelOf(ins.topPlatform.platform) : "—", sub: ins.topPlatform ? t("insightsTopPlatformSub", { count: ins.topPlatform.count }) : "" },
+        ];
+        return (
+          <div className="space-y-3">
+            <h2 className="text-sm font-bold">{t("insightsTitle")}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {cards.map((c) => (
+                <div key={c.key} className={`rounded-2xl border border-border bg-card p-4 ${ELEVATED}`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="h-8 w-8 rounded-lg flex items-center justify-center border" style={{ backgroundColor: `${c.accent}1a`, borderColor: `${c.accent}33` }}>
+                      <c.icon className="h-4 w-4" style={{ color: c.accent }} />
+                    </div>
+                    <span className="text-xs font-medium text-muted-foreground">{c.label}</span>
+                  </div>
+                  <p className="text-2xl font-bold tabular-nums">{c.value}</p>
+                  {c.sub && <p className="text-[11px] text-muted-foreground/70 mt-0.5">{c.sub}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Profil gücü + davet: kalıcı kartlar (onboarding banner'ından bağımsız) */}
       <div className="grid gap-4 lg:grid-cols-2">
