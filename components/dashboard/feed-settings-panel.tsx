@@ -295,6 +295,7 @@ export function FeedSettingsPanel({
               <select
                 value={autoDraftDaily}
                 onChange={(e) => setAutoDraftDaily(Number(e.target.value))}
+                aria-label={t("autoDraft.label")}
                 className="appearance-none rounded-lg border border-border bg-background px-3 py-1.5 pr-8 text-xs font-medium cursor-pointer"
               >
                 <option value={0}>{t("autoDraft.off")}</option>
