@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ToolCta } from "@/components/tool-cta";
 import { ProposalChecker } from "@/components/proposal-check/proposal-checker";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -42,6 +43,7 @@ export default async function ProposalCheckerPage() {
         <ProposalChecker isLoggedIn={isLoggedIn} />
       </section>
 
+      <ToolCta current="/proposal-checker" isLoggedIn={isLoggedIn} />
       <SiteFooter />
     </div>
   );

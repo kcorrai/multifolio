@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ToolCta } from "@/components/tool-cta";
 import { TrTaxCheck } from "@/components/compare/tr-tax-check";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -43,6 +44,7 @@ export default async function VergiPage() {
         <TrTaxCheck isLoggedIn={isLoggedIn} />
       </section>
 
+      <ToolCta current="/vergi" isLoggedIn={isLoggedIn} />
       <SiteFooter />
     </div>
   );

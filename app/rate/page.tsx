@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { RateCalculator } from "@/components/rate/rate-calculator";
+import { ToolCta } from "@/components/tool-cta";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -44,6 +45,7 @@ export default async function RatePage() {
         <RateCalculator isLoggedIn={isLoggedIn} />
       </section>
 
+      <ToolCta current="/rate" isLoggedIn={isLoggedIn} />
       <SiteFooter />
     </div>
   );

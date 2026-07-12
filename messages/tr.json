@@ -73,6 +73,16 @@
         "tplSidebar": "Yan panel"
       }
     },
+    "toolCta": {
+      "more": "Diğer ücretsiz araçlar",
+      "unlockTitle": "Tüm freelance akışın tek yerde",
+      "unlockDesc": "Profilini her platforma uyarla, eşleşen işleri keşfet, portfolyo ve CV oluştur — ücretsiz başla, kart yok.",
+      "unlockCta": "Ücretsiz başla",
+      "share": "Paylaş",
+      "shareText": "Multifolio'nun bu ücretsiz freelancer aracını kullandım:",
+      "copyLink": "Bağlantıyı kopyala",
+      "copied": "Kopyalandı!"
+    },
     "features": {
       "eyebrow": "Özellikler",
       "title": "Her şey tek bir yerde.",

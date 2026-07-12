@@ -73,6 +73,16 @@
         "tplSidebar": "Sidebar"
       }
     },
+    "toolCta": {
+      "more": "More free tools",
+      "unlockTitle": "Your whole freelance workflow, in one place",
+      "unlockDesc": "Adapt your profile to every platform, discover matching jobs, and build a portfolio and CV — free to start, no card.",
+      "unlockCta": "Start free",
+      "share": "Share",
+      "shareText": "I just used this free freelancer tool from Multifolio:",
+      "copyLink": "Copy link",
+      "copied": "Copied!"
+    },
     "features": {
       "eyebrow": "Features",
       "title": "Everything in one place.",

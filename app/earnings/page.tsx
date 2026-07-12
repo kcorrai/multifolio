@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ToolCta } from "@/components/tool-cta";
 import { EarningsCalculator } from "@/components/earnings/earnings-calculator";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -44,6 +45,7 @@ export default async function EarningsPage() {
         <EarningsCalculator isLoggedIn={isLoggedIn} />
       </section>
 
+      <ToolCta current="/earnings" isLoggedIn={isLoggedIn} />
       <SiteFooter />
     </div>
   );

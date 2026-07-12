@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ToolCta } from "@/components/tool-cta";
 import { AnalyzeForm } from "@/components/analyze/analyze-form";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -44,6 +45,7 @@ export default async function AnalyzePage() {
         <AnalyzeForm isLoggedIn={isLoggedIn} />
       </section>
 
+      <ToolCta current="/analyze" isLoggedIn={isLoggedIn} />
       <SiteFooter />
     </div>
   );

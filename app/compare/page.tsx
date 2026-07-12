@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ToolCta } from "@/components/tool-cta";
 import { PlatformCompare } from "@/components/compare/platform-compare";
 import { ArmutRoi } from "@/components/compare/armut-roi";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -44,6 +45,7 @@ export default async function ComparePage() {
         <ArmutRoi />
       </section>
 
+      <ToolCta current="/compare" isLoggedIn={isLoggedIn} />
       <SiteFooter />
     </div>
   );

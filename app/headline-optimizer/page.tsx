@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ToolCta } from "@/components/tool-cta";
 import { HeadlineOptimizer } from "@/components/headline/headline-optimizer";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -41,6 +42,7 @@ export default async function HeadlineOptimizerPage() {
         <HeadlineOptimizer isLoggedIn={isLoggedIn} />
       </section>
 
+      <ToolCta current="/headline-optimizer" isLoggedIn={isLoggedIn} />
       <SiteFooter />
     </div>
   );
