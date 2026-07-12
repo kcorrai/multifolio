@@ -1287,6 +1287,7 @@
     "searchEmpty": "No jobs found for this search.",
     "starredEmptyTitle": "No starred jobs",
     "starredEmptyHint": "Star jobs from the Feed or Search to save them here.",
+    "browseFeed": "Browse the feed",
     "star": "Star",
     "unstar": "Unstar",
     "analyze": "Analyze match",

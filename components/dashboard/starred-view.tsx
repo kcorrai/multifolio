@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Star } from "lucide-react";
+import { Star, ArrowRight } from "lucide-react";
 import type { PoolJob } from "@/lib/validation/schemas/feed";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
 import { PoolJobRow } from "./pool-job-row";
@@ -59,6 +60,9 @@ export function StarredView() {
         <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4"><Star className="h-7 w-7 text-muted-foreground/40" /></div>
         <p className="text-sm font-semibold text-muted-foreground">{t("starredEmptyTitle")}</p>
         <p className="text-xs text-muted-foreground/60 mt-1 max-w-xs">{t("starredEmptyHint")}</p>
+        <Link href="/dashboard/jobs?view=feed" className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-[#00F0FF]/10 px-4 py-2 text-sm font-semibold text-[#00F0FF] hover:bg-[#00F0FF]/15 transition-colors">
+          {t("browseFeed")}<ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
     );
   }

@@ -163,6 +163,9 @@ export function AppliedView({
           <p className="text-xs text-muted-foreground/60 mt-1 max-w-xs">
             {t("emptyHint")}
           </p>
+          <Button onClick={() => setJobAddModalOpen(true)} className="gap-2 mt-4">
+            <Plus className="h-4 w-4" />{t("addJob")}
+          </Button>
         </div>
       ) : mode === "board" ? (
         <div className="space-y-4">
