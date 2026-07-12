@@ -608,6 +608,12 @@
         "placeholder": "Unedited placeholder left in — remove {…} / […] before sending."
       }
     },
+    "tip": {
+      "title": "What wins on most platforms",
+      "hook": "Open with the client's problem, not your resume.",
+      "proof": "Add one concrete proof — a result, metric, or relevant project.",
+      "cta": "End with a clear next step: \"Let's discuss\" or \"When can we start?\""
+    },
     "modal": {
       "copy": "Copy",
       "copied": "Copied",

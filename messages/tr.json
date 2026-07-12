@@ -608,6 +608,12 @@
         "placeholder": "Düzenlenmemiş yer tutucu kalmış — göndermeden {…} / […] kaldır."
       }
     },
+    "tip": {
+      "title": "Çoğu platformda kazandıran",
+      "hook": "Kendi özgeçmişinle değil, müşterinin sorunuyla başla.",
+      "proof": "Somut bir kanıt ekle — bir sonuç, metrik veya ilgili proje.",
+      "cta": "Net bir sonraki adımla bitir: \"Görüşelim\" veya \"Ne zaman başlayalım?\""
+    },
     "modal": {
       "copy": "Kopyala",
       "copied": "Kopyalandı",

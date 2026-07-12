@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { X, Sparkles, Copy, Check, ChevronDown, Clock, Languages } from "lucide-react";
+import { X, Sparkles, Copy, Check, ChevronDown, Clock, Languages, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreditCost } from "@/components/credit-cost";
 import { PLATFORMS, PLATFORM_IDS, PLATFORM_LANGUAGE, type PlatformId } from "@/lib/ai/platforms";
@@ -229,6 +229,18 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
               </div>
             </label>
           </div>
+
+          {/* Kazanan teklif iskeleti (üretimden önce; kredisiz, kalite linter'ıyla uyumlu). */}
+          {!generated && (
+            <div className="rounded-xl border border-border bg-muted/30 p-3 space-y-1.5">
+              <p className="text-xs font-semibold flex items-center gap-1.5"><Lightbulb className="h-3.5 w-3.5 text-[#00F0FF]" />{t("tip.title")}</p>
+              <ul className="space-y-1 text-[11px] text-muted-foreground">
+                {(["hook", "proof", "cta"] as const).map((k) => (
+                  <li key={k} className="flex gap-1.5"><span className="text-[#00F0FF] shrink-0">→</span>{t(`tip.${k}`)}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {error && (
             <p className="text-sm text-destructive rounded-lg bg-destructive/10 px-3 py-2">{error}</p>
