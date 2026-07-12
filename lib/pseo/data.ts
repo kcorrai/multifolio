@@ -21,6 +21,10 @@ export const PSEO_ROLES: PseoRole[] = [
   { id: "digital-marketer", en: "Digital Marketer", tr: "Dijital Pazarlamacı", skills: ["SEO", "Paid Ads", "Analytics", "Email", "Social"], focusEn: "measurable growth", focusTr: "ölçülebilir büyüme" },
   { id: "video-editor", en: "Video Editor", tr: "Video Editörü", skills: ["Premiere Pro", "After Effects", "Motion", "Color"], focusEn: "scroll-stopping edits", focusTr: "dikkat çeken kurgular" },
   { id: "virtual-assistant", en: "Virtual Assistant", tr: "Sanal Asistan", skills: ["Admin", "Research", "Scheduling", "Data Entry"], focusEn: "reliable day-to-day support", focusTr: "güvenilir günlük destek" },
+  { id: "mobile-developer", en: "Mobile Developer", tr: "Mobil Geliştirici", skills: ["React Native", "Flutter", "iOS", "Android", "Swift"], focusEn: "polished mobile apps", focusTr: "cilalı mobil uygulamalar" },
+  { id: "wordpress-developer", en: "WordPress Developer", tr: "WordPress Geliştirici", skills: ["WordPress", "PHP", "WooCommerce", "Elementor", "SEO"], focusEn: "fast, custom WordPress sites", focusTr: "hızlı, özel WordPress siteleri" },
+  { id: "seo-specialist", en: "SEO Specialist", tr: "SEO Uzmanı", skills: ["SEO", "Keyword Research", "Link Building", "Analytics", "Content"], focusEn: "rankings that bring traffic", focusTr: "trafik getiren sıralamalar" },
+  { id: "social-media-manager", en: "Social Media Manager", tr: "Sosyal Medya Yöneticisi", skills: ["Content", "Instagram", "TikTok", "Copywriting", "Scheduling"], focusEn: "engaged, growing audiences", focusTr: "büyüyen, etkileşimli kitleler" },
 ];
 
 export const PSEO_PLATFORMS: PlatformId[] = [...PLATFORM_IDS];
