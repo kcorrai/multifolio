@@ -49,6 +49,30 @@
     "platformsStrip": {
       "title": "Supported platforms"
     },
+    "showcase": {
+      "eyebrow": "See it in action",
+      "title": "Your whole freelance workflow, in one place",
+      "subtitle": "Discover jobs, publish a portfolio, and export an ATS-ready CV — all from one profile.",
+      "feed": {
+        "title": "A live job feed, scored to your profile",
+        "desc": "Saved feeds on the left, matched jobs in the middle, filters and AI scoring on the right. New roles stay marked unread until you open them."
+      },
+      "portfolio": {
+        "title": "A public portfolio that wins clients",
+        "desc": "Publish a polished portfolio page in minutes. Visitors can request to hire you right from the page.",
+        "role": "Product Designer",
+        "hire": "Hire me",
+        "viewLive": "See a live portfolio"
+      },
+      "cv": {
+        "title": "An ATS-ready CV in one click",
+        "desc": "Generate a CV from your profile, pick from 8 templates, and export a clean PDF that passes applicant tracking systems.",
+        "download": "Download PDF",
+        "tplClean": "Clean",
+        "tplModern": "Modern",
+        "tplSidebar": "Sidebar"
+      }
+    },
     "features": {
       "eyebrow": "Features",
       "title": "Everything in one place.",

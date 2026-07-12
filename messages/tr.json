@@ -49,6 +49,30 @@
     "platformsStrip": {
       "title": "Desteklenen platformlar"
     },
+    "showcase": {
+      "eyebrow": "Nasıl görünüyor",
+      "title": "Tüm freelance akışın tek yerde",
+      "subtitle": "İş keşfet, portfolyo yayınla, ATS uyumlu CV indir — hepsi tek profilden.",
+      "feed": {
+        "title": "Profiline göre skorlanan canlı iş akışı",
+        "desc": "Solda kayıtlı feed'ler, ortada eşleşen ilanlar, sağda filtreler ve AI skorlama. Yeni ilanlar açana kadar okunmamış işaretli kalır."
+      },
+      "portfolio": {
+        "title": "Müşteri kazandıran public portfolyo",
+        "desc": "Dakikalar içinde cilalı bir portfolyo sayfası yayınla. Ziyaretçiler doğrudan sayfadan seni işe almak için başvurabilir.",
+        "role": "Ürün Tasarımcısı",
+        "hire": "İşe al",
+        "viewLive": "Canlı portfolyoya bak"
+      },
+      "cv": {
+        "title": "Tek tıkla ATS uyumlu CV",
+        "desc": "Profilinden CV üret, 8 şablondan seç, başvuru takip sistemlerinden geçen temiz bir PDF indir.",
+        "download": "PDF indir",
+        "tplClean": "Sade",
+        "tplModern": "Modern",
+        "tplSidebar": "Yan panel"
+      }
+    },
     "features": {
       "eyebrow": "Özellikler",
       "title": "Her şey tek bir yerde.",

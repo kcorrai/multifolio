@@ -11,6 +11,8 @@ import { PlatformLogo } from "@/components/platform-logo";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { LandingMotion } from "@/components/landing/landing-motion";
 import { Tilt } from "@/components/landing/tilt";
+import { BrowserFrame } from "@/components/landing/browser-frame";
+import { FeedShowcase } from "@/components/landing/product-showcase";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -380,6 +382,30 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
         </div>
       </section>
 
+
+      {/* Ürün vitrini — "nasıl görünüyor" (dashboard'a benzeyen gerçekçi mockup'lar) */}
+      <section id="showcase" className="mx-auto max-w-6xl px-8 pt-8 pb-16">
+        <ScrollReveal>
+          <div className="text-center space-y-3 mb-12">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("showcase.eyebrow")}</p>
+            <h2 className="text-4xl font-extrabold tracking-tight">{t("showcase.title")}</h2>
+            <p className="text-slate-500 dark:text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">{t("showcase.subtitle")}</p>
+          </div>
+        </ScrollReveal>
+
+        {/* Feed vitrini */}
+        <ScrollReveal delay={80}>
+          <div className="mx-auto max-w-2xl text-center space-y-2 mb-6">
+            <h3 className="text-2xl font-bold tracking-tight">{t("showcase.feed.title")}</h3>
+            <p className="text-slate-500 dark:text-[#94A3B8] font-medium">{t("showcase.feed.desc")}</p>
+          </div>
+          <Tilt>
+            <BrowserFrame url="multifolio.app/dashboard/jobs" className="mx-auto max-w-5xl">
+              <FeedShowcase />
+            </BrowserFrame>
+          </Tilt>
+        </ScrollReveal>
+      </section>
 
       {/* Sosyal kanıt — kayan yorum şeridi (desteklenen platformların hemen üstünde) */}
       <TestimonialsSection />
