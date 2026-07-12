@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL, PUBLIC_ROUTES } from "@/lib/seo/site";
 import { GUIDES } from "@/lib/guides/content";
+import { pseoCombos } from "@/lib/pseo/data";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 // Herkese açık rotaların sitemap'i (PUBLIC_ROUTES + rehberler + yayınlanmış portfolyolar).
@@ -23,6 +24,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Herkese açık canlı demo portfolyo (DB'siz, statik) — SEO + sosyal kanıt.
   const demoRoute = { url: `${SITE_URL}/p/demo`, changeFrequency: "monthly" as const, priority: 0.6 };
 
+  // pSEO: keşif hub'ı + platform×rol landing sayfaları (statik).
+  const freelanceRoutes = [
+    { url: `${SITE_URL}/freelance`, changeFrequency: "monthly" as const, priority: 0.6 },
+    ...pseoCombos().map((c) => ({
+      url: `${SITE_URL}/freelance/${c.platform}/${c.role}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+  ];
+
   let portfolioRoutes: MetadataRoute.Sitemap = [];
   try {
     const supabase = createSupabaseAdminClient();
@@ -38,5 +49,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Sitemap DB olmadan da geçerli kalmalı (build/edge güvenliği).
   }
 
-  return [...staticRoutes, ...guideRoutes, demoRoute, ...portfolioRoutes];
+  return [...staticRoutes, ...guideRoutes, demoRoute, ...freelanceRoutes, ...portfolioRoutes];
 }
