@@ -1219,6 +1219,8 @@
     "autoApplyComingSoon": "Coming soon",
     "autoApplyDesc": "Automatically send AI-generated proposals to matching jobs. In the works — for now, review and send each proposal yourself.",
     "autoApplyEnable": "Enable auto-apply",
+    "settingsPlaceholderTitle": "Select a feed",
+    "settingsPlaceholderHint": "Pick a feed on the left to configure its filters, AI scoring and proposal prompt — or create a new one.",
     "searchPlaceholder": "Search jobs by keyword…",
     "searchEmpty": "No jobs found for this search.",
     "starredEmptyTitle": "No starred jobs",

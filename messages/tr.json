@@ -1219,6 +1219,8 @@
     "autoApplyComingSoon": "Yakında",
     "autoApplyDesc": "Eşleşen ilanlara AI teklifini otomatik gönder. Yolda — şimdilik her teklifi kendin gözden geçirip gönderiyorsun.",
     "autoApplyEnable": "Otomatik başvuruyu aç",
+    "settingsPlaceholderTitle": "Bir feed seç",
+    "settingsPlaceholderHint": "Filtre, AI skorlama ve teklif yönergesini ayarlamak için soldan bir feed seç — ya da yeni bir feed oluştur.",
     "searchPlaceholder": "Keyword ile iş ara…",
     "searchEmpty": "Bu arama için iş bulunamadı.",
     "starredEmptyTitle": "Yıldızlı iş yok",

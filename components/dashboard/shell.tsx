@@ -47,6 +47,9 @@ export function DashboardShell({
   const userInitial = userEmail?.[0]?.toUpperCase() ?? "?";
   const activeItem = NAV_ITEMS.find((n) => isNavActive(n.href, pathname));
   const pageTitle = activeItem ? t(`nav.${activeItem.labelKey}`) : "Dashboard";
+  // Jobs sayfası UpHunt tarzı tam-ekran 3-kolon uygulama: dar ortalı kolon +
+  // dikey padding YOK; kendi tam-yükseklik düzenini yönetir (kolonlar ayrı kayar).
+  const fullBleed = pathname.startsWith("/dashboard/jobs");
 
   return (
     <DashboardContext.Provider
@@ -218,13 +221,17 @@ export function DashboardShell({
             )}
           </div>
 
-          {/* Scrollable content */}
-          <main className="flex-1 overflow-y-auto min-h-0">
-            <div className="mx-auto max-w-5xl 2xl:max-w-6xl px-4 sm:px-6 py-6 overflow-x-clip">
-              <VerifyEmailBanner emailVerified={emailVerified} email={userEmail} />
-              <LowCreditsBanner />
-              {children}
-            </div>
+          {/* Scrollable content — Jobs sayfası tam ekran (kendi düzeni), diğerleri dar ortalı kolon */}
+          <main className={fullBleed ? "flex-1 min-h-0 overflow-y-auto lg:overflow-hidden" : "flex-1 overflow-y-auto min-h-0"}>
+            {fullBleed ? (
+              children
+            ) : (
+              <div className="mx-auto max-w-5xl 2xl:max-w-6xl px-4 sm:px-6 py-6 overflow-x-clip">
+                <VerifyEmailBanner emailVerified={emailVerified} email={userEmail} />
+                <LowCreditsBanner />
+                {children}
+              </div>
+            )}
           </main>
         </div>
 
