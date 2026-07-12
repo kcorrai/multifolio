@@ -25,8 +25,12 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     },
   );
 
-  // getUser() oturumu doğrular/yeniler; sonucu kullanmasak da çağrı şart.
-  await supabase.auth.getUser();
+  // getClaims() JWT'yi YEREL doğrular (proje asimetrik ECC imzalama anahtarında —
+  // Supabase JWT Keys). getUser gibi her istekte GoTrue'ya /auth/v1/user turu atmaz;
+  // altındaki getSession süresi dolan token'ı yeniler (cookie tazeleme korunur).
+  // Sonucu kullanmasak da çağrı oturumu tazeler. Simetrik anahtara düşülürse
+  // getClaims otomatik getUser'a fallback yapar (davranış bozulmaz).
+  await supabase.auth.getClaims();
 
   return response;
 }
