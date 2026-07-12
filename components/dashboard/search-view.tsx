@@ -123,6 +123,18 @@ export function SearchView() {
     setJobs((prev) => prev.map((j) => j.id === poolId ? { ...j, score, scoreResult: result } : j));
   }
 
+  // İlanı açınca okundu işaretle (iyimser; okunmamış noktası temizlensin).
+  function openJob(job: PoolJob) {
+    setSelectedId(job.id);
+    if (job.isRead) return;
+    setJobs((prev) => prev.map((j) => j.id === job.id ? { ...j, isRead: true } : j));
+    void fetch("/api/job-reads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jobPoolIds: [job.id] }),
+    }).catch(() => {});
+  }
+
   function clearFilters() {
     setTime("all"); setPlatform(""); setExcludeCountries([]);
     setMinSpent(""); setMinHourly(""); setMinFixed("");
@@ -269,7 +281,7 @@ export function SearchView() {
 
       <div className="space-y-1.5">
         {visible.map((job) => (
-          <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={toggleStar} onOpen={(j) => setSelectedId(j.id)} />
+          <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={toggleStar} onOpen={openJob} />
         ))}
         {/* Ham yüklenen sayıya bakılır — istemci filtresi gizlese de sunucudaki kalan çekilebilmeli. */}
         {loaded && jobs.length < total && (

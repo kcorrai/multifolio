@@ -39,6 +39,18 @@ export function StarredView() {
     setJobs((prev) => prev.map((j) => j.id === poolId ? { ...j, score, scoreResult: result } : j));
   }
 
+  // İlanı açınca okundu işaretle (iyimser; okunmamış noktası temizlensin).
+  function openJob(job: PoolJob) {
+    setSelectedId(job.id);
+    if (job.isRead) return;
+    setJobs((prev) => prev.map((j) => j.id === job.id ? { ...j, isRead: true } : j));
+    void fetch("/api/job-reads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jobPoolIds: [job.id] }),
+    }).catch(() => {});
+  }
+
   const selected = selectedId ? jobs.find((j) => j.id === selectedId) ?? null : null;
 
   if (loaded && jobs.length === 0) {
@@ -63,7 +75,7 @@ export function StarredView() {
         </div>
       )}
       {jobs.map((job) => (
-        <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={unstar} onOpen={(j) => setSelectedId(j.id)} />
+        <PoolJobRow key={job.id} job={job} selected={job.id === selectedId} onStar={unstar} onOpen={openJob} />
       ))}
       {selected && (
         <JobSlideOver onClose={() => setSelectedId(null)}>

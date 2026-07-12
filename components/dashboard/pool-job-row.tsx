@@ -53,9 +53,17 @@ export function PoolJobRow({
       <div className="flex items-start gap-2.5">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
+            {/* Okunmamış ilan: cyan nokta + kalın başlık (kullanıcı açınca temizlenir). */}
+            {!job.isRead && (
+              <span
+                className="h-2 w-2 shrink-0 rounded-full bg-[#00F0FF]"
+                title={t("unread")}
+                aria-label={t("unread")}
+              />
+            )}
             {job.source && <PlatformBadge source={job.source} />}
             <JobScamBadge text={`${job.title} ${job.description}`} />
-            <h3 className="text-sm font-semibold leading-snug truncate">{poolJobTitle(job, locale)}</h3>
+            <h3 className={`text-sm leading-snug truncate ${job.isRead ? "font-medium text-muted-foreground" : "font-semibold"}`}>{poolJobTitle(job, locale)}</h3>
           </div>
           <div className="flex items-center gap-2 mt-1 text-[11px] text-muted-foreground">
             {job.budget && <span>{job.budget}</span>}
