@@ -17,13 +17,14 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
 
   const { view: viewParam } = await searchParams;
 
-  const [profileRes, jobsRes, feedsRes, poolRes, starRes, scoreRes] = await Promise.all([
+  const [profileRes, jobsRes, feedsRes, poolRes, starRes, scoreRes, readRes] = await Promise.all([
     supabase.from("profiles").select("user_id, headline, skills").eq("user_id", user.id).maybeSingle(),
     supabase.from("job_listings").select("id, title, company, platform, status, match_score, match_result, created_at, reminder_date, deadline_date, tags, budget").eq("user_id", user.id).order("created_at", { ascending: false }),
     supabase.from("job_feeds").select("id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at").eq("user_id", user.id),
     supabase.from("job_pool").select("id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr").order("posted_at", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(200),
     supabase.from("starred_jobs").select("job_pool_id").eq("user_id", user.id),
     supabase.from("job_scores").select("job_pool_id, score, result").eq("user_id", user.id),
+    supabase.from("job_reads").select("job_pool_id").eq("user_id", user.id),
   ]);
 
   const jobs = (jobsRes.data ?? []) as unknown as JobRow[];
@@ -32,6 +33,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const pool = (poolRes.data ?? []) as PoolJobRow[];
   const starred = new Set((starRes.data ?? []).map((r) => r.job_pool_id as string));
   const scores = new Map((scoreRes.data ?? []).map((r) => [r.job_pool_id as string, r]));
+  const reads = new Set((readRes.data ?? []).map((r) => r.job_pool_id as string));
   const relProfile: RelevanceProfile = {
     headline: (profileRes.data?.headline as string | undefined) ?? null,
     skills: (profileRes.data?.skills as string[] | undefined) ?? null,
@@ -52,6 +54,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
     return {
       ...p,
       isStarred: starred.has(p.id),
+      isRead: reads.has(p.id),
       score: s ? (s.score as number) : null,
       scoreResult: s ? s.result : null,
       relevance: jobRelevance(relProfile, p),

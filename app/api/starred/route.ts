@@ -21,15 +21,18 @@ export const GET = withErrorHandler(async () => {
   const ids = (stars ?? []).map((s) => s.job_pool_id as string);
   if (ids.length === 0) return NextResponse.json({ jobs: [] });
 
-  const [profileRes, poolRes, scoreRes] = await Promise.all([
+  const [profileRes, poolRes, scoreRes, readRes] = await Promise.all([
     supabase.from("profiles").select("headline, skills").eq("user_id", user.id).maybeSingle(),
     supabase.from("job_pool").select(POOL_COLS).in("id", ids),
     supabase.from("job_scores").select("job_pool_id, score, result").eq("user_id", user.id).in("job_pool_id", ids),
+    supabase.from("job_reads").select("job_pool_id").eq("user_id", user.id).in("job_pool_id", ids),
   ]);
   if (poolRes.error) throw poolRes.error;
   if (scoreRes.error) throw scoreRes.error;
+  if (readRes.error) throw readRes.error;
 
   const scores = new Map((scoreRes.data ?? []).map((r) => [r.job_pool_id as string, r]));
+  const reads = new Set((readRes.data ?? []).map((r) => r.job_pool_id as string));
   const byId = new Map(((poolRes.data as PoolJobRow[]) ?? []).map((p) => [p.id, p]));
   const relProfile: RelevanceProfile = { headline: profileRes.data?.headline ?? null, skills: profileRes.data?.skills ?? null };
 
@@ -39,6 +42,7 @@ export const GET = withErrorHandler(async () => {
     return {
       ...p,
       isStarred: true,
+      isRead: reads.has(p.id),
       score: s ? (s.score as number) : null,
       scoreResult: s ? s.result : null,
       relevance: jobRelevance(relProfile, p),

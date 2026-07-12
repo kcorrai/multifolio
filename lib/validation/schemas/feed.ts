@@ -53,6 +53,12 @@ export const starToggleSchema = z.object({
   jobPoolId: z.string().uuid(),
 });
 
+// Okundu işaretle: tek ilan veya toplu ("tümünü okundu"). En az 1, en çok 500 id
+// (istemcinin o an yüklü ilan penceresiyle sınırlı — pool tamamı değil).
+export const jobReadSchema = z.object({
+  jobPoolIds: z.array(z.string().uuid()).min(1).max(500),
+});
+
 export type FeedCreate = z.infer<typeof feedCreateSchema>;
 export type FeedUpdate = z.infer<typeof feedUpdateSchema>;
 
@@ -102,6 +108,8 @@ export interface SkillGap {
 // İstemciye dönen zenginleştirilmiş pool ilanı
 export interface PoolJob extends PoolJobRow {
   isStarred: boolean;
+  // Kullanıcı bu ilanı açtı mı (job_reads satırı var mı) — okunmamış rozeti için.
+  isRead: boolean;
   score: number | null;
   scoreResult: JobMatchResult | null;
   // Profil × ilan ücretsiz alaka skoru (0-100, saf hesap; sunucuda eklenir).
