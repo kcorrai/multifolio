@@ -78,7 +78,6 @@ export async function runAutoDraft(admin: SupabaseClient, sinceIso: string): Pro
       };
       const usedDelta: Record<string, number> = {};
       let userDrafted = 0;
-      let outOfCredits = false;
 
       for (const { job, feedId } of picks) {
         try {
@@ -112,7 +111,7 @@ export async function runAutoDraft(admin: SupabaseClient, sinceIso: string): Pro
           drafted += 1;
           usedDelta[feedId] = (usedDelta[feedId] ?? 0) + 1;
         } catch (err) {
-          if (err instanceof InsufficientCreditsError) { outOfCredits = true; break; }
+          if (err instanceof InsufficientCreditsError) break; // bakiye bitti → bu kullanıcıyı durdur
           // Diğer hata: bu işi atla, kullanıcının kalanına devam et.
         }
       }
@@ -127,13 +126,13 @@ export async function runAutoDraft(admin: SupabaseClient, sinceIso: string): Pro
 
       if (userDrafted > 0) {
         usersTouched += 1;
+        // TİP-BAZLI: sayı title'da DATUM olarak taşınır; notification-bell okuyucunun
+        // diline (en/tr) çevirir (cron'da kullanıcı locale'i yok → burada sabit metin YAZILMAZ).
         await createNotification(admin, {
           userId,
           type: "auto_draft",
-          title: userDrafted === 1 ? "1 proposal drafted for you" : `${userDrafted} proposals drafted for you`,
-          body: outOfCredits
-            ? "Ready to review in Applied. Some were skipped — you're low on credits."
-            : "Tailored drafts are ready in Applied — review and send.",
+          title: String(userDrafted),
+          body: null,
           link: "/dashboard/jobs?view=applied",
         });
       }

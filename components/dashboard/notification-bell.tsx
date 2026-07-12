@@ -120,24 +120,31 @@ export function NotificationBell() {
                 <p className="text-xs text-muted-foreground">{t("empty")}</p>
               </div>
             ) : (
-              items.map((n) => (
-                <button
-                  key={n.id}
-                  onClick={() => openItem(n)}
-                  className={`w-full text-left px-3 py-2.5 border-b border-border/60 last:border-0 transition-colors hover:bg-muted/50 ${
-                    n.read ? "" : "bg-[#00F0FF]/[0.04]"
-                  }`}
-                >
-                  <div className="flex items-start gap-2">
-                    {!n.read && <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#00F0FF] shrink-0" />}
-                    <div className={`flex-1 min-w-0 ${n.read ? "pl-3.5" : ""}`}>
-                      <p className="text-xs font-semibold leading-snug">{n.title}</p>
-                      {n.body && <p className="text-[11px] text-muted-foreground leading-snug mt-0.5 line-clamp-2">{n.body}</p>}
-                      <p className="text-[10px] text-muted-foreground/60 mt-1">{rel(n.created_at)}</p>
+              items.map((n) => {
+                // Arka-plan üretilen tipler (cron locale bilmez) OKUYUCUNUN diline çevrilir;
+                // auto_draft'ta sayı title'da datum olarak taşınır. Diğerleri stored metin.
+                const isAutoDraft = n.type === "auto_draft";
+                const title = isAutoDraft ? t("autoDraftNotif.title", { count: Number(n.title) || 1 }) : n.title;
+                const body = isAutoDraft ? t("autoDraftNotif.body") : n.body;
+                return (
+                  <button
+                    key={n.id}
+                    onClick={() => openItem(n)}
+                    className={`w-full text-left px-3 py-2.5 border-b border-border/60 last:border-0 transition-colors hover:bg-muted/50 ${
+                      n.read ? "" : "bg-[#00F0FF]/[0.04]"
+                    }`}
+                  >
+                    <div className="flex items-start gap-2">
+                      {!n.read && <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#00F0FF] shrink-0" />}
+                      <div className={`flex-1 min-w-0 ${n.read ? "pl-3.5" : ""}`}>
+                        <p className="text-xs font-semibold leading-snug">{title}</p>
+                        {body && <p className="text-[11px] text-muted-foreground leading-snug mt-0.5 line-clamp-2">{body}</p>}
+                        <p className="text-[10px] text-muted-foreground/60 mt-1">{rel(n.created_at)}</p>
+                      </div>
                     </div>
-                  </div>
-                </button>
-              ))
+                  </button>
+                );
+              })
             )}
           </div>
         </div>

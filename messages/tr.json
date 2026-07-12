@@ -1638,7 +1638,11 @@
     "markAllRead": "Tümünü okundu işaretle",
     "bellLabel": "Bildirimler",
     "matchTitle": "Yeni %{score} eşleşme",
-    "matchBody": "\"{title}\" profiline güçlü uyuyor."
+    "matchBody": "\"{title}\" profiline güçlü uyuyor.",
+    "autoDraftNotif": {
+      "title": "{count, plural, one {# teklif taslaklandı} other {# teklif taslaklandı}}",
+      "body": "Başvurulanlar'da hazır — gözden geçir ve gönder."
+    }
   },
   "proposalChecker": {
     "metaTitle": "Ücretsiz Teklif & Kapak Mektubu Denetçisi — Multifolio",
