@@ -7,7 +7,7 @@
 // ile remount eder (state tazelenir).
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, Bell, SlidersHorizontal, Sparkles, Check, FileText, Gauge, Plus } from "lucide-react";
+import { ChevronDown, Bell, SlidersHorizontal, Sparkles, Check, FileText, Gauge, Plus, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { JobFeedRow, PoolJob } from "@/lib/validation/schemas/feed";
@@ -153,6 +153,8 @@ export function FeedSettingsPanel({
         )}
       </div>
 
+      {/* ── Ön filtre + AI skorlama yan yana (UpHunt üst sıra) ─────────── */}
+      <div className="grid gap-3 xl:grid-cols-2">
       {/* ── Ön filtre ─────────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-border bg-card p-4 space-y-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -244,6 +246,8 @@ export function FeedSettingsPanel({
         <p className="text-[11px] text-muted-foreground/70">{t("modal.notifyHint")}</p>
       </div>
 
+      </div>
+
       {/* ── Teklif yönergesi (feed'e özel AI prompt'u) ───────────────── */}
       <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
         <div className="flex items-center justify-between gap-2">
@@ -269,6 +273,25 @@ export function FeedSettingsPanel({
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono leading-relaxed resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40"
         />
         <p className="text-[11px] text-muted-foreground/70">{t("settingsProposalPromptHint")}</p>
+      </div>
+
+      {/* ── Otomatik başvuru (YAKINDA yer tutucu — işlevsel değil) ─────── */}
+      <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-4 space-y-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h4 className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
+            <Zap className="h-4 w-4" />{t("autoApplyTitle")}
+          </h4>
+          <span className="rounded-full border border-[#00F0FF]/30 bg-[#00F0FF]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#00F0FF]">
+            {t("autoApplyComingSoon")}
+          </span>
+        </div>
+        <p className="text-[11px] leading-relaxed text-muted-foreground/70">{t("autoApplyDesc")}</p>
+        <label className="flex cursor-not-allowed items-center justify-between gap-2 opacity-50">
+          <span className="text-xs font-medium">{t("autoApplyEnable")}</span>
+          <span className="relative inline-flex h-5 w-9 shrink-0 items-center rounded-full bg-muted">
+            <span className="ml-0.5 h-4 w-4 rounded-full bg-muted-foreground/40" />
+          </span>
+        </label>
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
