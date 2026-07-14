@@ -190,7 +190,17 @@ Dalga 2'ye bırakıldı (canlı fizibilite ayrı iş). `npm run check` temiz (35
 7. **Rehberler** (`lib/guides/content.ts` + i18n): cover letter gerçeği, ATS efsaneleri vs gerçekler,
    takip zamanlaması, mülakat hazırlığı (STAR), Upwork teklif anatomisi — 🔴 istatistikler hariç.
 
-### Faz 4 — Rakip boşluğu özellikleri (öncelik kullanıcı onayına tabi)
+### Faz 4 — DURUM (2026-07-14, Opus): TAMAMLANDI (4/4) + büyük özellik
+Kullanıcı hepsini + "büyük yeni özellik" istedi. Yapıldı, hepsi push'lu, build temiz:
+- ✅ **Özgüllük skoru**: `assessProposal`'a opsiyonel JD + `notSpecific` (ilandan somut terim).
+- ✅ **Profil güç paneli**: `lib/profile/optimization.ts` (deterministik checklist) + profil sekmesi sidebar.
+- ✅ **AI cover letter**: `lib/ai/coverletter.ts` + `/api/coverletter` + modal + job-detail CTA.
+- ✅ **Uzantıda canlı skor**: `quickJobMatch` + `/api/match/quick` (ücretsiz) + uzantı v0.2.18.
+- ✅ **BÜYÜK: AI Sahte Mülakat** (interaktif): `lib/ai/mock-interview.ts` + `/api/interview/mock/{start,feedback}`
+  + `/dashboard/interview` + nav. Kullanıcı cevap yazar → AI puan + güçlü/gelişim + profilden model cevap.
+- YAPILMADI (kasıtlı): auto-apply/auto-submit (kanıtlı ban riski).
+
+### Faz 4 — orijinal detay (rakip boşluğu özellikleri)
 1. AI cover letter (proposal motorunun `cover_letter` modu).
 2. Teklif/başvuru özgüllük skoru (`lib/ai/coverage.ts` yanına saf specificity kontrolü).
 3. Uzantıda canlı eşleşme skoru (mevcut skor motoru + `detectJobPage` reuse).
