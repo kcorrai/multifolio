@@ -544,6 +544,11 @@
       "generating": "Writing…",
       "error": "Could not generate the follow-up message. Try again."
     },
+    "interview": {
+      "banner": "Interview coming up?",
+      "hint": "Get STAR stories from your own projects, a 'tell me about yourself' script, and questions to ask.",
+      "prepare": "Prepare for interview"
+    },
     "add": {
       "title": "Add Job",
       "jobTitle": "Job title",
@@ -584,7 +589,8 @@
       "cv_tailor": "CV Tailoring",
       "cv_import": "CV Import",
       "cv_bullets": "CV Bullet Boost",
-      "cv_summary": "CV Summary"
+      "cv_summary": "CV Summary",
+      "interview_prep": "Interview Prep"
     },
     "creditsSub": "{count} credits",
     "dailyTitle": "Last 30 days — daily credit usage",
@@ -1659,6 +1665,31 @@
       "title": "{count, plural, one {# proposal drafted} other {# proposals drafted}}",
       "body": "Ready in Applied — review and send."
     }
+  },
+  "interview": {
+    "title": "Interview prep",
+    "subtitle": "Tailored to this role, built from your profile",
+    "close": "Close",
+    "generating": "Preparing your interview kit…",
+    "retry": "Try again",
+    "error": "Could not generate interview prep. Please try again.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "tellMe": "\"Tell me about yourself\"",
+    "starTitle": "STAR stories",
+    "starHint": "Situation → Task → Action → Result. The Action is what you personally did — keep it the longest part.",
+    "star": {
+      "situation": "Situation",
+      "task": "Task",
+      "action": "Action",
+      "result": "Result"
+    },
+    "strengths": "Strengths for this role",
+    "weakness": "Weakness answer",
+    "weaknessImprovement": "How you're improving",
+    "questions": "Questions to ask them",
+    "thankYouTitle": "Send a thank-you note within 24 hours.",
+    "thankYouBody": "A short, specific thank-you email after the interview is a real, if small, edge — many candidates skip it."
   },
   "proposalChecker": {
     "metaTitle": "Free Proposal & Cover Letter Checker — Multifolio",

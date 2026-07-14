@@ -4,11 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   X, ExternalLink, Target, CheckCircle2, AlertCircle,
-  Sparkles, FileText, ChevronDown, RefreshCw, BellRing, CalendarClock,
+  Sparkles, FileText, ChevronDown, RefreshCw, BellRing, CalendarClock, MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ProposalModal } from "@/components/proposal-modal";
+import { InterviewPrepModal } from "@/components/interview-prep-modal";
 import { CreditCost } from "@/components/credit-cost";
 import { CopyButton } from "@/components/dashboard/copy-button";
 import { ChipsInput } from "@/components/dashboard/chips-input";
@@ -83,6 +84,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
   const [deadlineDate, setDeadlineDate] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [showProposal, setShowProposal] = useState(false);
+  const [showInterview, setShowInterview] = useState(false);
   const [rematching, setRematching] = useState(false);
   const [followUpMsg, setFollowUpMsg] = useState("");
   const [followUpBusy, setFollowUpBusy] = useState(false);
@@ -303,6 +305,29 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
               </div>
             )}
 
+            {/* Mülakat hazırlığı: durum "interview" → AI mülakat prep (STAR + sorular). */}
+            {status === "interview" && (
+              <div className="rounded-xl border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 p-3 space-y-2">
+                <p className="text-xs font-semibold text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
+                  <MessageSquare className="h-3.5 w-3.5 shrink-0" />
+                  {t("interview.banner")}
+                </p>
+                <p className="text-[11px] text-amber-600/70 dark:text-amber-400/60">{t("interview.hint")}</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowInterview(true)}
+                  disabled={!detail?.description}
+                  title={!detail?.description ? t("detail.descriptionRequired") : undefined}
+                  className="gap-2 w-full border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  {t("interview.prepare")}
+                  <CreditCost kind="interview_prep" />
+                </Button>
+              </div>
+            )}
+
             {/* Meta bilgiler */}
             <div className="grid grid-cols-2 gap-2 text-xs">
               {detail?.budget && (
@@ -462,6 +487,15 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
           jobDescription={detail.description}
           defaultPlatform={job.platform ?? undefined}
           onClose={() => setShowProposal(false)}
+          onCreditsUpdate={onCreditsUpdate}
+        />
+      )}
+
+      {showInterview && detail?.description && (
+        <InterviewPrepModal
+          jobId={job.id}
+          jobDescription={detail.description}
+          onClose={() => setShowInterview(false)}
           onCreditsUpdate={onCreditsUpdate}
         />
       )}

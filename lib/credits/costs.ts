@@ -10,6 +10,7 @@ export const CREDIT_COSTS = {
   cv_tailor: 3,
   cv_bullets: 3,
   cv_summary: 2,
+  interview_prep: 3,
 } as const;
 
 export type CreditKind = keyof typeof CREDIT_COSTS;
