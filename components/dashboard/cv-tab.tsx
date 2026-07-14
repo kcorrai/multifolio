@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CreditCost } from "@/components/credit-cost";
 import { CvPreview } from "./cv-preview";
 import { scoreCv, atsVerdict, hasFillerPhrase } from "@/lib/cv/ats";
-import { extractKeywordsFromText, matchKeywords } from "@/lib/cv/keywords";
+import { extractKeywordsFromText, matchKeywords, extractTargetTitle, titlePresentInCv } from "@/lib/cv/keywords";
 import { arrayMove } from "@/lib/cv/reorder";
 import { CV_TEMPLATES, CV_ACCENTS, CV_ACCENT_HEX, CV_SINGLE_COLUMN, isAtsSafe, type CvTemplate } from "@/lib/cv/theme";
 import type {
@@ -606,14 +606,21 @@ function KeywordMatchCard({ content, patch }: { content: CvContent; patch: (n: P
   const t = useTranslations("cv");
   const [jd, setJd] = useState("");
   const [keywords, setKeywords] = useState<string[] | null>(null);
+  const [targetTitle, setTargetTitle] = useState<string | null>(null);
 
   const result = useMemo(
     () => (keywords ? matchKeywords(content, keywords) : null),
     [keywords, content],
   );
+  // Birebir iş-unvanı: ATS'te en güçlü tek kaldıraç. Hedef unvan CV'de var mı?
+  const titlePresent = useMemo(
+    () => (targetTitle ? titlePresentInCv(content, targetTitle) : null),
+    [targetTitle, content],
+  );
 
   function analyze() {
     setKeywords(extractKeywordsFromText(jd));
+    setTargetTitle(extractTargetTitle(jd));
   }
 
   function addSkill(kw: string) {
@@ -640,6 +647,22 @@ function KeywordMatchCard({ content, patch }: { content: CvContent; patch: (n: P
         <Button onClick={analyze} disabled={!jd.trim()} variant="outline" size="sm" className="gap-2">
           <Target className="h-4 w-4" />{t("keywordAnalyze")}
         </Button>
+
+        {/* Birebir iş-unvanı: ATS'te en güçlü tek kaldıraç. */}
+        {targetTitle && titlePresent !== null && (
+          <div className={`rounded-xl border p-3 text-xs flex items-start gap-2 ${
+            titlePresent
+              ? "border-green-500/25 bg-green-500/[0.06] text-green-700 dark:text-green-400"
+              : "border-amber-500/30 bg-amber-500/[0.06] text-amber-700 dark:text-amber-400"
+          }`}>
+            <Target className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+            <span>
+              {titlePresent
+                ? t("titleMatchOk", { title: targetTitle })
+                : t("titleMatchMissing", { title: targetTitle })}
+            </span>
+          </div>
+        )}
 
         {result && keywords && keywords.length === 0 && (
           <p className="text-sm text-muted-foreground">{t("keywordNone")}</p>

@@ -1062,6 +1062,8 @@
     "keywordMissingLabel": "Missing ({count})",
     "keywordAddSkill": "Add to skills",
     "keywordNone": "No clear skill keywords found in that text. Try a fuller job description.",
+    "titleMatchOk": "Your CV includes the exact job title \"{title}\" — this is the single strongest ATS signal.",
+    "titleMatchMissing": "Add the exact job title \"{title}\" to your CV headline or a recent role — it's the single strongest ATS signal.",
     "keywordAllCovered": "Great — your CV covers all detected keywords.",
     "keywordApprox": "Approximate hint. For a precise rewrite, use “Tailor to a job” below.",
     "weakPhrase": "Weak phrasing — lead with an action verb.",

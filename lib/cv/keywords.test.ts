@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractKeywordsFromText, matchKeywords } from "./keywords";
+import { extractKeywordsFromText, matchKeywords, extractTargetTitle, titlePresentInCv } from "./keywords";
 import { cvContentSchema, type CvContent } from "@/lib/validation/schemas/cv";
 
 function makeCv(over: Partial<CvContent> = {}): CvContent {
@@ -63,5 +63,37 @@ describe("matchKeywords", () => {
     const res = matchKeywords(cv, ["go"]);
     expect(res.matched).toEqual([]);
     expect(res.missing).toEqual(["go"]);
+  });
+});
+
+describe("extractTargetTitle", () => {
+  it("açık önekten (Position:) unvanı çıkarır", () => {
+    expect(extractTargetTitle("Position: Senior React Developer\n\nWe are hiring...")).toBe("Senior React Developer");
+  });
+
+  it("ilk anlamlı satır başlık gibiyse onu döner", () => {
+    expect(extractTargetTitle("Frontend Engineer\n\nAbout the role: build UIs.")).toBe("Frontend Engineer");
+  });
+
+  it("ilk satır prose ise null döner", () => {
+    expect(extractTargetTitle("We are looking for a talented engineer to join our team.")).toBeNull();
+    expect(extractTargetTitle("")).toBeNull();
+  });
+});
+
+describe("titlePresentInCv", () => {
+  it("CV başlığı hedef unvanı birebir içeriyorsa true", () => {
+    const cv = makeCv({ title: "Senior React Developer building SaaS" });
+    expect(titlePresentInCv(cv, "Senior React Developer")).toBe(true);
+  });
+
+  it("deneyim rolünde geçiyorsa true", () => {
+    const cv = makeCv({ title: "Engineer", experience: [{ role: "Frontend Engineer", company: "X", location: "", current: false, startDate: "2020", endDate: "2022", bullets: [] }] });
+    expect(titlePresentInCv(cv, "frontend engineer")).toBe(true);
+  });
+
+  it("hiçbir yerde yoksa false", () => {
+    const cv = makeCv({ title: "Backend Developer" });
+    expect(titlePresentInCv(cv, "Product Designer")).toBe(false);
   });
 });

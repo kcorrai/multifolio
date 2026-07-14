@@ -89,6 +89,45 @@ function cvText(cv: CvContent): string {
     .toLowerCase();
 }
 
+// Prose olduğunu ele veren cümle işaretleri (başlık DEĞİL sinyali).
+const PROSE_HINT = /[.!?]|,\s|\b(we|our|the|is|are|looking|seeking|join|about)\b/i;
+
+/**
+ * İlan metninden HEDEF İŞ UNVANINI çıkarır (best-effort). Kaynak sinyalleri:
+ * (1) "Job Title:/Position:/Role:" öneki, (2) ilk anlamlı satır (kısa + az kelime +
+ * prose değil). Güvenilir bir unvan bulunamazsa null. Birebir unvan CV'de olmak, ATS'te
+ * en güçlü tek kaldıraç (Jobscan ~1M örneklem: 10.6x mülakat daveti) — bu yüzden ayrı sinyal.
+ */
+export function extractTargetTitle(jdText: string): string | null {
+  const lines = jdText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  // (1) Açık önek: "Job Title: X" / "Position: X" / "Role: X".
+  for (const line of lines.slice(0, 8)) {
+    const m = line.match(/^(?:job\s*title|position|role|title|pozisyon|unvan)\s*[:\-–]\s*(.+)$/i);
+    if (m) {
+      const cand = m[1].trim().replace(/[.;,]$/, "");
+      if (cand.length >= 3 && cand.length <= 70 && cand.split(/\s+/).length <= 8) return cand;
+    }
+  }
+  // (2) İlk anlamlı satır başlık gibi mi? (kısa, ≤8 kelime, prose işareti yok).
+  const first = lines[0];
+  if (!first) return null;
+  if (first.length < 3 || first.length > 70) return null;
+  if (first.split(/\s+/).length > 8) return null;
+  if (PROSE_HINT.test(first)) return null;
+  return first;
+}
+
+/** CV'nin başlığı veya bir deneyim rolü, hedef unvanı BİREBİR içeriyor mu (normalize). */
+export function titlePresentInCv(cv: CvContent, targetTitle: string): boolean {
+  const target = targetTitle.trim().toLowerCase();
+  if (!target) return false;
+  const hay = [cv.title, ...cv.experience.map((e) => e.role)]
+    .filter(Boolean)
+    .join(" | ")
+    .toLowerCase();
+  return hay.includes(target);
+}
+
 /** Verilen anahtar kelimelerin CV'de kapsanma durumunu döner (eşleşen/eksik/%). */
 export function matchKeywords(cv: CvContent, keywords: string[]): KeywordMatch {
   const unique = Array.from(new Set(keywords.map((k) => k.trim().toLowerCase()).filter(Boolean)));
