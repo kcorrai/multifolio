@@ -132,7 +132,16 @@ Desen: `sources/{id}.ts` (fetch I/O + saf `normalize` → `PoolJobUpsert`) + `so
 - HN Who-is-hiring Algolia: ilk dalgaya alınmadı (yorum parse maliyeti).
 - Kalite bekçisi ilkesi uygulandı: kategori-temizliği barını geçemeyen kaynak alınmadı. `npm run check` temiz.
 
-### Faz 2 — Platform genişletme (dalga yapısı)
+### Faz 2 — Platform genişletme — ✅ DALGA 1 TAMAMLANDI (2026-07-14, Opus)
+Yapıldı: `platformIdSchema` 3→8 (Freelancer.com/Contra/PeoplePerHour/99designs/Guru); tüm
+`Record<PlatformId>` noktaları + logo letter-mark'ları + pSEO (80 sayfa) + hub otomatik.
+Kredi kontrolü: `/api/adapt/all` opsiyonel `platforms[]` + hub platform seçim çipleri (16-kredi
+sürprizi önlendi). **GitHub importu EKLENDİ** (`lib/import/github.ts` + test): resmî REST API →
+repo dil+topic'lerinden beceri + öne çıkan (fork olmayan) repo'lar proje; canlı doğrulandı
+(gaearon: 4 dil + 6 gerçek proje). `GITHUB_TOKEN` opsiyonel (60→5000/saat). Contra sunucu-import
+Dalga 2'ye bırakıldı (canlı fizibilite ayrı iş). `npm run check` temiz (355 test).
+
+### Faz 2 — orijinal dalga yapısı
 **Dalga 1 — Tier A (uyarlama+teklif):** Freelancer.com, Contra, PeoplePerHour, 99designs, Guru.
   Dokunulan dosyalar: `lib/ai/platforms.ts` (guidance + PROPOSAL_GUIDANCE + PLATFORM_LANGUAGE:"en") +
   `components/platform-logo.tsx` SVG + `lib/health/scan.ts` kapsam kararı + `lib/import/text.ts` URL

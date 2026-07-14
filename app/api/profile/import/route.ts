@@ -11,6 +11,7 @@ import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import { htmlToText, detectPlatformFromUrl, isSafeExternalUrl, fetchExternalHtml } from "@/lib/import/text";
 import { pdfToText } from "@/lib/import/pdf";
 import { parseLinkedinUsername, fetchLinkedinProfile, type LinkedinProfile } from "@/lib/import/linkedin";
+import { parseGithubUsername, fetchGithubProfile, type GithubProfile } from "@/lib/import/github";
 import { extractProfile, type ProfileImportResult } from "@/lib/ai/profile-import";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -63,6 +64,7 @@ export const POST = withErrorHandler(async (req) => {
   let platform: PlatformId | null = null;
   let sourceUrl: string | null = null;
   let linkedin: LinkedinProfile | null = null;
+  let github: GithubProfile | null = null;
   let extensionInput: Extract<ImportRequest, { mode: "extension" }> | null = null;
   const contentType = req.headers.get("content-type") ?? "";
 
@@ -95,6 +97,7 @@ export const POST = withErrorHandler(async (req) => {
       platform = detectPlatformFromUrl(input.url);
       sourceUrl = input.url;
 
+      const githubUsername = parseGithubUsername(input.url);
       if (platform === "linkedin") {
         // LinkedIn public profil sayfasındaki JSON-LD → yapılandırılmış taslak + foto.
         const username = parseLinkedinUsername(input.url);
@@ -105,6 +108,16 @@ export const POST = withErrorHandler(async (req) => {
           throw new ValidationError(t("importFetchFailed"));
         }
         if (!linkedin) throw new ValidationError(t("importFetchFailed"));
+      } else if (githubUsername) {
+        // GitHub resmî API → repo dil+topic'lerinden beceriler + öne çıkan repo'lar proje.
+        // GitHub PlatformId DEĞİL (uyarlama hedefi değil) → platform null kalır,
+        // platform_connections/platform_profiles'a yazılmaz.
+        try {
+          github = await fetchGithubProfile(githubUsername);
+        } catch {
+          throw new ValidationError(t("importFetchFailed"));
+        }
+        if (!github) throw new ValidationError(t("importFetchFailed"));
       } else {
         // Diğer platformlar: SSRF-güvenli fetch (yönlendirmeler elle doğrulanır) → HTML→metin → AI.
         let html = "";
@@ -119,10 +132,12 @@ export const POST = withErrorHandler(async (req) => {
     }
   }
 
-  // Taslak: LinkedIn yapılandırılmış (AI'sız, maliyetsiz); diğerleri AI çıkarımı.
+  // Taslak: LinkedIn/GitHub yapılandırılmış (AI'sız, maliyetsiz); diğerleri AI çıkarımı.
   let result: ProfileImportResult;
   if (linkedin) {
     result = { draft: linkedin.draft, model: "linkedin-structured", inputTokens: 0, outputTokens: 0, costUsd: 0 };
+  } else if (github) {
+    result = { draft: github.draft, model: "github-structured", inputTokens: 0, outputTokens: 0, costUsd: 0 };
   } else {
     // Kaynak dilini KORUR (çeviri wizard'da ayrı "kendi dilime çevir" adımıyla).
     result = await extractProfile(text);
@@ -163,6 +178,9 @@ export const POST = withErrorHandler(async (req) => {
   let media: ProfileImportMedia | undefined;
   if (linkedin) {
     media = { avatarUrl: linkedin.avatarUrl, portfolio: [], projects: [] };
+  } else if (github) {
+    // GitHub: avatar + öne çıkan repo'lar PROJE olarak (profile kaydedilir).
+    media = { avatarUrl: github.avatarUrl, portfolio: [], projects: github.projects };
   } else if (extensionInput) {
     // Yapılandırılmış projeler (Upwork window.__NUXT__) → hem PROJE olarak (media.projects,
     // profile'a kaydedilir) hem düz görseller (portfolio, mevcut galeri uyumu). Yoksa düz görsel.
