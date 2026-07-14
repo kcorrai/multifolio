@@ -152,6 +152,6 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
    yukarıdaki **"Neyin nerede"** bölümünü güncelle.
 
 ## Detay → docs/
-`ROADMAP.md` (fazlar) · `ARCHITECTURE.md` · `OBSERVABILITY.md` · `SECURITY.md`.
+`ROADMAP.md` (fazlar) · `ARCHITECTURE.md` · `OBSERVABILITY.md` · `SECURITY.md` · `EXPANSION-PLAN.md` (platform genişletme + başvuru-taktikleri ürünleştirme araştırma/görev planı, 2026-07-14 — uygulama fazları burada).
 
 @AGENTS.md
