@@ -14,6 +14,7 @@ import { translateJobTitles } from "@/lib/ai/translate";
 import { sendFeedDigestEmail } from "@/lib/notifications/email";
 import { remotiveSource } from "@/lib/scrape/sources/remotive";
 import { remoteOkSource } from "@/lib/scrape/sources/remoteok";
+import { weWorkRemotelySource } from "@/lib/scrape/sources/weworkremotely";
 
 // Arka plan (çeviri+bildirim) adımı için tavan; Fluid Compute yanıttan sonra
 // after() işini bu süreye kadar sürdürür (AI başlık çevirisi ~50sn sürebilir).
@@ -44,8 +45,17 @@ export const POST = withErrorHandler(async (req) => {
   // Koşu başlangıcı: bildirim adımı yalnız bu andan sonra INSERT edilen
   // (created_at >= startedAt) pool satırlarını "yeni" sayar.
   const startedAt = new Date().toISOString();
-  // Arbeitnow düşürüldü (filtresiz Alman on-site "(m/w/d)" çöpü — feed alakasını bozuyordu).
-  const results = await runScrape(admin, [remotiveSource, remoteOkSource]);
+  // Kaynaklar KATEGORİ-FİLTRELİ tutulur (feed alaka koruması). Canlı doğrulamada 3
+  // aday kaynaktan 2'si REDDEDİLDİ: Himalayas (200 ilanın ~%8'i dev/design, kategori
+  // query'si yok sayılıyor) ve The Muse (categories alanı query'yi kopyalıyor → "Software
+  // Engineering" altında Corporate Counsel/Civil Engineer/sürücü reklamı, ~%50 gürültü) —
+  // ikisi de filtresiz firehose, Arbeitnow gibi feed alakasını bozar. WWR kategori feed'leri
+  // (programming + design) temiz → eklendi.
+  const results = await runScrape(admin, [
+    remotiveSource,
+    remoteOkSource,
+    weWorkRemotelySource,
+  ]);
 
   // Çeviri (AI, ~50sn) + bildirim adımları cron-job.org'un ~30sn HTTP zaman
   // aşımını aşıyordu → koşu "Failed (timeout)" görünüyordu (iş aslında bitiyordu).

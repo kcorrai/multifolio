@@ -117,15 +117,20 @@ Stratejik uyum sıralaması:
 
 ## Uygulama Fazları
 
-### Faz 1 — İlan kaynağı genişletme (`lib/scrape/`)
+### Faz 1 — İlan kaynağı genişletme (`lib/scrape/`) — ✅ TAMAMLANDI (2026-07-14, Opus)
 Desen: `sources/{id}.ts` (fetch I/O + saf `normalize` → `PoolJobUpsert`) + `sources/{id}.test.ts` + `run.ts` listesi.
-**Her endpoint önce canlı doğrulanır** (C araştırması düşük güvenli).
-1. Himalayas — attribution için pool-job-panel'de kaynak linki gösterimi kontrol edilsin.
-2. We Work Remotely RSS — bağımlılıksız basit XML parse; `htmlToText` reuse.
-3. The Muse — yeni env `THEMUSE_API_KEY` (`.env.example` + Vercel); keysiz kaynak atlanır.
-4. (Opsiyonel) HN Who-is-hiring Algolia — yorum parse maliyetli, ilk dalgaya alma.
-- Kalite bekçisi: yeni kaynak feed alakasını bozarsa kapatılır (Arbeitnow dersi);
-  `lib/feed/relevance.ts` near-duplicate tekilleştirme yeni kaynaklarla test edilsin.
+**Her endpoint canlı doğrulandı** (C araştırması düşük güvenliydi — ve haklı çıktı: 3 adaydan 2'si elendi).
+- ✅ **We Work Remotely RSS** EKLENDİ (`lib/scrape/sources/weworkremotely.ts` + test): kategori-filtreli
+  feed'ler (`remote-programming-jobs.rss` + `remote-design-jobs.rss`), bağımlılıksız regex XML parse
+  (saf `parseWwrItems` + `normalizeWeWorkRemotely`). Canlı kuru-koşu: 39 alakalı dev/design ilanı,
+  hepsi junk filtresini geçti. ÇİFT-kodlanmış description (`&lt;p&gt;`) → `htmlToText` iki geçiş.
+  Attribution: `job_pool.source="weworkremotely"` + pool-job-row `PlatformBadge` kaynağı gösterir.
+- ❌ **Himalayas REDDEDİLDİ**: kategori query'si yok sayılıyor, 200 ilanın yalnız ~%8'i dev/design
+  (101'inde parentCategory YOK) → filtrelenemez firehose, Arbeitnow gibi feed alakasını bozar.
+- ❌ **The Muse REDDEDİLDİ**: `categories` alanı sorgu parametresini kopyalıyor ("Software Engineering"
+  altında Corporate Counsel, Civil Engineer, hatta Lyft sürücü reklamı) → ~%50 gürültü, güvenilmez.
+- HN Who-is-hiring Algolia: ilk dalgaya alınmadı (yorum parse maliyeti).
+- Kalite bekçisi ilkesi uygulandı: kategori-temizliği barını geçemeyen kaynak alınmadı. `npm run check` temiz.
 
 ### Faz 2 — Platform genişletme (dalga yapısı)
 **Dalga 1 — Tier A (uyarlama+teklif):** Freelancer.com, Contra, PeoplePerHour, 99designs, Guru.
