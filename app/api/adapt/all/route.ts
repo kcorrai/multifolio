@@ -5,7 +5,7 @@
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
-import { AuthError, NotFoundError, InsufficientCreditsError, withErrorHandler } from "@/lib/errors";
+import { AuthError, NotFoundError, InsufficientCreditsError, ValidationError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { adaptProfile } from "@/lib/ai/adapt";
@@ -34,9 +34,13 @@ export const POST = withErrorHandler(async (req) => {
   if (!profileRow) throw new NotFoundError(errors("profileRequired"));
   const profile = profileRow as ProfileInput;
 
-  // Gövde opsiyonel (boş POST → tüm pazar platformları, eski davranış).
-  const parsed = bodySchema.safeParse(await req.json().catch(() => ({})));
-  const requested = parsed.success ? parsed.data.platforms : undefined;
+  // Gövde opsiyonel (boş POST → tüm pazar platformları, eski davranış). Ama gövde
+  // VARSA ve GEÇERSİZ platform içeriyorsa 400 — sessizce "hepsi"ne düşme (aksi halde
+  // istemci hatası kullanıcıya beklenmedik kredi harcatır).
+  const raw = await req.json().catch(() => ({}));
+  const parsed = bodySchema.safeParse(raw);
+  if (!parsed.success) throw new ValidationError("Invalid platform selection.");
+  const requested = parsed.data.platforms;
 
   // Aktif pazarın sunduğu platformlar; kullanıcı alt küme seçtiyse ona kesişimle daralt
   // (sıra pazar sırasında kalır). Geçersiz/pazar-dışı seçim yok sayılır; boş seçim → hepsi.

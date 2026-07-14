@@ -68,14 +68,15 @@ export function InterviewPrepModal({ jobId, jobDescription, onClose, onCreditsUp
     setBusy(false);
   }
 
-  // Açılışta bir kez otomatik üret (kullanıcı hazırlanmak için açtı).
+  // Açılışta bir kez otomatik üret (kullanıcı hazırlanmak için açtı). ranRef mükerrer
+  // tetiklemeyi önler; jobId dep'te → prop değişse bile doğru iş bağlamı kullanılır.
   useEffect(() => {
     if (!ranRef.current && jobDescription) {
       ranRef.current = true;
       void generate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jobDescription]);
+  }, [jobDescription, jobId]);
 
   const starLabels = { s: t("star.situation"), t: t("star.task"), a: t("star.action"), r: t("star.result") };
 

@@ -49,13 +49,14 @@ export function CoverLetterModal({ jobId, jobDescription, onClose, onCreditsUpda
     setBusy(false);
   }
 
+  // ranRef mükerrer tetiklemeyi önler; jobId dep'te → doğru iş bağlamı garanti.
   useEffect(() => {
     if (!ranRef.current && jobDescription) {
       ranRef.current = true;
       void generate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jobDescription]);
+  }, [jobDescription, jobId]);
 
   return (
     <div

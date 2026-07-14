@@ -64,7 +64,7 @@ export function MockInterview({ profileSaved, jobs }: { profileSaved: boolean; j
 
   async function evaluate(i: number) {
     const st = qStates[i];
-    if (!st.answer.trim()) return;
+    if (!st || !st.answer.trim()) return;
     setState(i, { evaluating: true, error: "" });
     const res = await fetch("/api/interview/mock/feedback", {
       method: "POST",
