@@ -26,9 +26,12 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
     label: "LinkedIn",
     guidance:
       "LinkedIn profili için yaz. Birinci tekil şahıs, profesyonel ama insani bir ton. " +
-      "headline: 220 karakteri aşmayan, rol + değer önerisi içeren bir başlık. " +
-      "body: 3-4 kısa paragraf 'Hakkında' (About) bölümü; başarıları somut sonuçlarla " +
-      "anlat, sektör anahtar kelimelerini doğal kullan, davet edici bir kapanışla bitir.",
+      "headline: 220 karakteri aşmayan, rol + hedef anahtar kelime + değer önerisi; EN GÜÇLÜ " +
+      "bilgi İLK 80 KARAKTERE gelsin (arama/mobil önizlemede yalnız o görünür). " +
+      "body: 'Hakkında' (About) bölümü; İLK 2 CÜMLE en kritik (kısa, ~15 kelimeyi aşmayan — " +
+      "'see more' öncesi ~200-300 karakter görünür) ve kime nasıl yardım ettiğini söylemeli. " +
+      "Ardından 3-4 kısa paragraf: başarıları somut sonuçlarla anlat, sektör anahtar kelimelerini " +
+      "doğal kullan, davet edici bir kapanışla bitir.",
   },
   upwork: {
     id: "upwork",
@@ -36,17 +39,18 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
     guidance:
       "Upwork freelancer profili için yaz. Müşteri-odaklı, sonuç vaat eden bir ton. " +
       "headline: hizmeti net tanımlayan kısa bir uzmanlık başlığı (ör. 'React & Next.js " +
-      "Frontend Developer'). body: müşterinin sorununu çözmeye odaklı bir özet; ne " +
-      "yapabileceğini, hangi sonuçları getirdiğini ve neden seçilmesi gerektiğini açıkla; " +
-      "kısa, taranabilir, harekete geçirici.",
+      "Frontend Developer'). body (overview): İLK 2 SATIR müşterinin sorununa/sonucuna odaklanmalı " +
+      "(teklif ve arama önizlemesinde yalnız ilk satırlar görünür); kendinden söz ederek AÇMA. " +
+      "Ardından ne yaptığını, hangi sonuçları getirdiğini ve neden seçilmesi gerektiğini açıkla; " +
+      "kısa, taranabilir, harekete geçirici. NOT: 'specialized profile' önerme (Upwork kaldırdı).",
   },
   fiverr: {
     id: "fiverr",
     label: "Fiverr",
     guidance:
       "Fiverr seller profili için yaz. Enerjik, güven verici, hizmet-odaklı bir ton. " +
-      "headline: 'I will...' kalıbıyla değil, net bir freelancer kimliği olarak; " +
-      "net hizmet alanı + fark yaratan bir özellik belirt. " +
+      "headline: 'I will...' kalıbıyla değil, net bir freelancer kimliği olarak; alıcının " +
+      "ARAYACAĞI birincil anahtar kelimeyi öne koy + fark yaratan bir özellik belirt. " +
       "body: kısa paragraflar; alıcı kime yardım ettiğini, nasıl çalıştığını ve neden " +
       "tercih edilmesi gerektiğini anlasın. Rakamlar ve somut örneklerle güven oluştur.",
   },

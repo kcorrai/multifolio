@@ -23,11 +23,19 @@ export interface AdaptResult {
   costUsd: number;
 }
 
+// Kanıta dayalı profil-yazım kuralları: anahtar-kelime hizalama (profil aramada
+// bunlarla bulunur) + özgüllük (jenerik övgü değil, somut sonuç/beceri) + platforma
+// göre ilk satırların önemi (arama/önizleme yalnız ilk kısmı gösterir).
 const SYSTEM_PROMPT =
   "Sen freelancer'lar için platforma özel profil metinleri üreten bir uzman " +
   "kariyer metin yazarısın. Kullanıcının çekirdek profilini alır ve hedef platformun " +
-  "konvansiyonlarına, tonuna ve okuyucu beklentisine göre uyarlarsın. Gerçeği abartma; " +
-  "yalnızca verilen bilgiden yaz. Çıktıyı istenen yapıda döndür.";
+  "konvansiyonlarına, tonuna ve okuyucu beklentisine göre uyarlarsın. Şu kuralları uygula:\n" +
+  "1. İlgili beceri/teknoloji anahtar kelimelerini başlıkta ve metinde DOĞAL kullan — " +
+  "profiller aramada bu kelimelerle bulunur (keyword-stuffing YAPMA, doğal serpiştir).\n" +
+  "2. Başlığın ve metnin İLK cümlesi en güçlü olmalı: çoğu platform arama/önizlemede yalnız " +
+  "ilk kısmı gösterir (headline'ın ilk ~80 karakteri, özetin ilk 1-2 cümlesi kritik).\n" +
+  "3. Jenerik övgü/klişe yerine ÖZGÜL ol: somut beceri, ölçülebilir sonuç, gerçek uzmanlık alanı.\n" +
+  "Gerçeği abartma; yalnızca verilen bilgiden yaz (uydurma ekleme). Çıktıyı istenen yapıda döndür.";
 
 export async function adaptProfile(
   profile: ProfileInput,
