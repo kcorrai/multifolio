@@ -369,6 +369,7 @@
       "portfolio": "Portfolio",
       "cv": "CV",
       "jobs": "Jobs",
+      "interview": "Interview",
       "feedback": "Feedback"
     },
     "shell": {
@@ -592,7 +593,9 @@
       "cv_bullets": "CV Bullet Boost",
       "cv_summary": "CV Summary",
       "interview_prep": "Interview Prep",
-      "cover_letter": "Cover Letter"
+      "cover_letter": "Cover Letter",
+      "mock_questions": "Mock Questions",
+      "mock_answer": "Mock Answer"
     },
     "creditsSub": "{count} credits",
     "dailyTitle": "Last 30 days — daily credit usage",
@@ -1668,6 +1671,36 @@
       "title": "{count, plural, one {# proposal drafted} other {# proposals drafted}}",
       "body": "Ready in Applied — review and send."
     }
+  },
+  "mockInterview": {
+    "eyebrow": "Practice",
+    "title": "Mock interview",
+    "subtitle": "Practice answering real interview questions and get instant feedback.",
+    "needProfile": "Add your profile first so questions can be tailored to you.",
+    "jobLabel": "Practice for a specific job (optional)",
+    "jobGeneral": "General — based on my profile",
+    "jobHint": "Pick a tracked job to get questions tailored to that role.",
+    "start": "Generate questions",
+    "starting": "Generating…",
+    "startError": "Could not generate questions. Please try again.",
+    "progress": "{count}/{total} answered",
+    "restart": "Start over",
+    "category": {
+      "behavioral": "Behavioral",
+      "technical": "Technical",
+      "role_fit": "Role fit",
+      "motivation": "Motivation"
+    },
+    "answerPlaceholder": "Type your answer as you would say it in the interview…",
+    "getFeedback": "Get feedback",
+    "evaluating": "Evaluating…",
+    "feedbackError": "Could not evaluate your answer. Please try again.",
+    "yourAnswer": "Your answer",
+    "score": "Score",
+    "strengths": "What worked",
+    "improvements": "How to improve",
+    "modelAnswer": "Model answer (from your background)",
+    "tryAgain": "Try this question again"
   },
   "coverLetter": {
     "title": "Cover letter",

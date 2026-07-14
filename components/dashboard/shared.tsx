@@ -65,6 +65,7 @@ export const NAV_ITEMS: { href: string; labelKey: string; icon: LucideIcon; badg
   { href: "/dashboard/portfolio", labelKey: "portfolio", icon: Globe },
   { href: "/dashboard/cv",        labelKey: "cv",        icon: FileText },
   { href: "/dashboard/jobs",      labelKey: "jobs",      icon: Briefcase, badge: "jobs" },
+  { href: "/dashboard/interview", labelKey: "interview", icon: MessageSquare },
   { href: "/dashboard/feedback",  labelKey: "feedback",  icon: MessageSquare },
 ];
 
@@ -127,6 +128,8 @@ export const KIND_ICONS: Record<string, LucideIcon> = {
   cv_summary: Sparkles,            // CV özet üretimi
   interview_prep: MessageSquare,   // mülakat hazırlığı
   cover_letter: FileText,          // ön yazı (cover letter)
+  mock_questions: MessageSquare,   // sahte mülakat soruları
+  mock_answer: MessageSquare,      // sahte mülakat cevap değerlendirmesi
 };
 
 /* ── Helpers ────────────────────────────────────────────────────────── */
