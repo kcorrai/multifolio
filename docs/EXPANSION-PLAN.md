@@ -157,7 +157,21 @@ Dalga 2'ye bırakıldı (canlı fizibilite ayrı iş). `npm run check` temiz (35
   kredi maliyeti orantılı artar → kullanıcıya platform seçimi sunulmalı.
 - Profil scrape yeni platformlarda beklenmez; içe aktarma uzantı/metin yoluyla kalır.
 
-### Faz 3 — Taktik playbook'unu ürünleştir
+### Faz 3 — DURUM (2026-07-14, Opus): kısmen tamamlandı
+- ✅ **AI prompt revizyonları**: `proposal.ts` (problem-first, jenerik açılış yasağı, ilandan somut
+  detay + kanıt referansı), `adapt.ts` (keyword hizalama + ilk-cümle önceliği + özgüllük), `platforms.ts`
+  guidance (LinkedIn ilk-80/About-ilk-2, Upwork overview-ilk-2 + specialized-profile-yok, Fiverr keyword-önde).
+- ✅ **Mülakat Prep modülü (YENİ, amiral)**: `lib/ai/interview.ts` + schema + `/api/interview/prep`
+  (kredili, kalıcı değil) + `interview-prep-modal.tsx` + job-detail-panel CTA (durum "interview").
+  STAR (`profiles.projects`'ten, Action-ağırlıklı), tell-me (Present→Past→Future), zayıflık (must-have
+  dışlar + düzeltici eylem), 4-5 soru, 24 saat teşekkür-notu hatırlatması.
+- ✅ **Rehberler**: `ats-truth-guide` (75% efsanesi çürütme + birebir unvan + parse + XYZ) +
+  `interview-prep-guide` (STAR + tell-me + sorular + teşekkür) — iki dilli, /guides otomatik.
+- ⏭️ KALAN (sonraki tur): CV birebir-unvan skoru (hedef unvan güvenilir değil → entegrasyon tricky),
+  follow-up 2. aşama kadansı, pipeline benchmark bantları, referred-by migration. ATS skoru zaten
+  quantified/filler/%60-keyword/tarih ile kanıta büyük ölçüde uyumluydu.
+
+### Faz 3 — orijinal detay
 1. **AI prompt revizyonları** (`lib/ai/`): `proposal.ts`+PROPOSAL_GUIDANCE (problem-first ilk 2 satır,
    "Hi my name is" yasak, ilandan ≥1 somut detay, portfolyo atfı, özgüllük>cila); `platforms.ts` guidance
    (LinkedIn ilk-80-karakter + About ilk 2 cümle; Upwork overview ilk 2 satır müşteri-sonucu; Fiverr

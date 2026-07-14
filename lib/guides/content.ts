@@ -513,6 +513,170 @@ export const GUIDES: Guide[] = [
       ],
     },
   },
+  {
+    slug: "ats-truth-guide",
+    readingMinutes: 5,
+    toolHref: "/ats-check",
+    en: {
+      title: "The truth about ATS: what actually gets your resume read",
+      description:
+        "The '75% of resumes are auto-rejected by ATS' claim is a myth. Here's what really decides whether a human reads your resume — and how to pass.",
+      sections: [
+        {
+          heading: "The '75% auto-rejected' stat is made up",
+          body: [
+            "That number traces back to a resume-software vendor that went out of business over a decade ago and never published any methodology. It gets repeated as 70%, 75%, or 88% depending on the blog — a sign nobody has real data. In reality, recruiters report that the large majority of applications are seen by a human, and only a small fraction of employers configure content-based auto-rejection at all.",
+            "So stop optimizing out of fear of a black box. Optimize for two real things: keyword alignment and clean parsing.",
+          ],
+        },
+        {
+          heading: "Put the exact job title on your resume",
+          body: [
+            "This is the single highest-leverage move. Large-sample analysis found resumes containing the literal job title from the posting got many times more interview invitations. If the role is 'Frontend Engineer', those exact words should appear — in your headline or a recent role — not just 'web developer'.",
+            "Then mirror the specific skills and tools named in the posting. Aim to cover roughly 60–80% of the important keywords, using the same words the employer used (not synonyms).",
+          ],
+        },
+        {
+          heading: "Don't break the parser",
+          body: [
+            "Real parsing failures come from formatting, not secret AI judgment: multi-column layouts (text reads out of order), text boxes (often invisible to the parser), contact info stuck in the header/footer (many systems skip those), non-standard section names ('My Journey' instead of 'Work Experience'), and decorative icons or exotic fonts. Use a single-column layout, standard headings, and put your contact details in the body.",
+          ],
+        },
+        {
+          heading: "Quantify your bullets",
+          body: [
+            "Use the pattern: accomplished [X], measured by [Y], by doing [Z]. Bullets with a number — 'cut build time 35%', 'led a team of 4', 'shipped 12 releases' — read as achievements; bullets without one read as duties. If a bullet has no number, ask what changed because of your work and add it.",
+          ],
+        },
+        {
+          heading: "One page or two?",
+          body: [
+            "Under ~5 years of experience: one page. Ten or more years, or many relevant roles: two pages is fine and often preferred — don't cram a senior career onto one page. Length isn't the enemy; irrelevance is.",
+          ],
+        },
+      ],
+    },
+    tr: {
+      title: "ATS hakkında gerçek: özgeçmişini gerçekte ne okutur",
+      description:
+        "'Özgeçmişlerin %75'i ATS tarafından otomatik reddedilir' iddiası bir efsane. Bir insanın özgeçmişini okumasını gerçekte ne belirler — ve nasıl geçilir.",
+      sections: [
+        {
+          heading: "'%75 otomatik red' istatistiği uydurma",
+          body: [
+            "Bu rakam, on yıldan uzun süre önce kapanan ve hiçbir yöntem yayımlamamış bir özgeçmiş-yazılımı satıcısına dayanıyor. Bloglara göre %70, %75 ya da %88 diye tekrarlanıyor — kimsenin gerçek verisi olmadığının işareti. Gerçekte işe alımcılar başvuruların büyük çoğunluğunun bir insan tarafından görüldüğünü söylüyor; içeriğe göre otomatik red kuran işveren oranı çok düşük.",
+            "O yüzden bir kara kutu korkusuyla optimize etmeyi bırak. İki gerçek şey için optimize et: anahtar kelime hizalaması ve temiz ayrıştırma (parsing).",
+          ],
+        },
+        {
+          heading: "İlandaki birebir iş unvanını özgeçmişine koy",
+          body: [
+            "Bu en yüksek kaldıraçlı tek hamle. Büyük örneklemli analizler, ilandaki iş unvanını birebir içeren özgeçmişlerin kat kat fazla mülakat daveti aldığını buldu. Pozisyon 'Frontend Engineer' ise, o birebir kelimeler — başlığında veya güncel bir rolde — geçmeli; yalnızca 'web geliştirici' değil.",
+            "Ardından ilanda adı geçen spesifik beceri ve araçları yansıt. Önemli anahtar kelimelerin kabaca %60-80'ini, işverenin kullandığı kelimelerle (eş anlamlısıyla değil) karşılamayı hedefle.",
+          ],
+        },
+        {
+          heading: "Ayrıştırıcıyı bozma",
+          body: [
+            "Gerçek ayrıştırma hataları gizli bir AI kararından değil, formattan gelir: çok sütunlu düzenler (metin sırayı bozar), metin kutuları (ayrıştırıcıya çoğu kez görünmez), üst/alt bilgiye sıkışmış iletişim bilgisi (birçok sistem bunları atlar), standart-dışı bölüm adları ('Yolculuğum' yerine 'İş Deneyimi') ve dekoratif ikon/egzotik yazı tipleri. Tek sütunlu düzen, standart başlıklar kullan ve iletişim bilgini gövdeye koy.",
+          ],
+        },
+        {
+          heading: "Maddelerini rakamla destekle",
+          body: [
+            "Şu kalıbı kullan: [X]'i başardım, [Y] ile ölçüldü, [Z] yaparak. Rakam içeren maddeler — 'derleme süresini %35 düşürdüm', '4 kişilik ekip yönettim', '12 sürüm yayınladım' — başarı gibi okunur; rakamsız maddeler görev gibi. Bir maddede rakam yoksa, senin işin sayesinde ne değiştiğini sor ve ekle.",
+          ],
+        },
+        {
+          heading: "Tek sayfa mı, iki mi?",
+          body: [
+            "~5 yıldan az deneyim: tek sayfa. On yıl ve üzeri, ya da çok sayıda ilgili rol: iki sayfa gayet iyi ve çoğu kez tercih edilir — kıdemli bir kariyeri tek sayfaya sıkıştırma. Düşman uzunluk değil, alakasızlıktır.",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: "interview-prep-guide",
+    readingMinutes: 5,
+    toolHref: "/analyze",
+    en: {
+      title: "Interview prep that works: STAR stories, your pitch, and the questions to ask",
+      description:
+        "A simple, evidence-backed framework to walk into any interview ready — build a story bank, nail 'tell me about yourself', and finish strong.",
+      sections: [
+        {
+          heading: "Build a STAR story bank",
+          body: [
+            "Most behavioral questions ('tell me about a time you…') are answered with the STAR method: Situation, Task, Action, Result. Prepare 4–6 stories from your real projects. The Action — what you personally did — should be the longest, most specific part; that's what interviewers are actually evaluating. End each with a concrete result, ideally a number.",
+            "Pull these from work you've actually done, so they hold up under follow-up questions.",
+          ],
+        },
+        {
+          heading: "Nail 'tell me about yourself'",
+          body: [
+            "Use Present → Past → Future: what you do now and a recent win, the relevant thread of how you got here, and why this role is the logical next step. Keep it to about 90 seconds (150–200 words). This is almost always the first question — a crisp answer sets the tone.",
+          ],
+        },
+        {
+          heading: "Answer the weakness question well",
+          body: [
+            "Pick a real, non-core weakness — never something the job lists as essential — and pair it with a concrete action you're taking to improve. Avoid character flaws (dishonesty, poor communication); those read as unfixable. 'I used to over-polish before shipping; now I timebox and ship a first version for feedback' works.",
+          ],
+        },
+        {
+          heading: "Always have questions to ask",
+          body: [
+            "Bring 4–5 questions across role, team, growth, and process. Not asking any reads as disengagement. Good ones: 'What does success look like in the first 90 days?', 'How does the team make decisions?', 'What are the next steps?'",
+          ],
+        },
+        {
+          heading: "Send a thank-you note within 24 hours",
+          body: [
+            "A short, specific thank-you email after the interview is a small but real edge — a meaningful share of employers view skipping it negatively, and most candidates don't send one. Reference something specific from the conversation.",
+          ],
+        },
+      ],
+    },
+    tr: {
+      title: "İşe yarayan mülakat hazırlığı: STAR hikâyeleri, kendini anlatman ve soracağın sorular",
+      description:
+        "Her mülakata hazır girmen için basit, kanıta dayalı bir çerçeve — hikâye bankası kur, 'kendinden bahset'i çöz ve güçlü bitir.",
+      sections: [
+        {
+          heading: "STAR hikâye bankası kur",
+          body: [
+            "Çoğu davranışsal soru ('bana bir zaman anlat…') STAR yöntemiyle yanıtlanır: Situation (Durum), Task (Görev), Action (Eylem), Result (Sonuç). Gerçek projelerinden 4-6 hikâye hazırla. Eylem — bizzat senin yaptığın — en uzun, en somut kısım olmalı; mülakatçının asıl değerlendirdiği budur. Her birini somut, tercihen rakamlı bir sonuçla bitir.",
+            "Bunları gerçekten yaptığın işlerden çıkar ki takip sorularında sağlam dursun.",
+          ],
+        },
+        {
+          heading: "'Kendinden bahset'i çöz",
+          body: [
+            "Present → Past → Future kullan: şimdi ne yaptığın ve son bir başarın, buraya gelişinin ilgili hikâyesi ve bu rolün neden mantıklı bir sonraki adım olduğu. Yaklaşık 90 saniyede tut (150-200 kelime). Bu neredeyse her zaman ilk sorudur — net bir yanıt havayı belirler.",
+          ],
+        },
+        {
+          heading: "Zayıflık sorusunu iyi yanıtla",
+          body: [
+            "Gerçek ama çekirdek olmayan bir zayıflık seç — asla işin olmazsa olmazı olan bir şeyi değil — ve onu geliştirmek için attığın somut bir adımla eşle. Karakter kusurlarından (dürüstlük, iletişim zayıflığı) kaçın; onlar düzeltilemez okunur. 'Eskiden yayınlamadan önce fazla cilalardım; artık süre sınırı koyup geri bildirim için ilk sürümü çıkarıyorum' işe yarar.",
+          ],
+        },
+        {
+          heading: "Her zaman soracak soruların olsun",
+          body: [
+            "Rol, ekip, büyüme ve süreç üzerine 4-5 soru getir. Hiç sormamak ilgisizlik gibi okunur. İyi olanlar: 'İlk 90 günde başarı neye benziyor?', 'Ekip kararları nasıl alıyor?', 'Sonraki adımlar neler?'",
+          ],
+        },
+        {
+          heading: "24 saat içinde teşekkür notu gönder",
+          body: [
+            "Mülakattan sonra kısa, spesifik bir teşekkür e-postası küçük ama gerçek bir avantajdır — işverenlerin azımsanmayacak bir kısmı göndermemeyi olumsuz görür ve çoğu aday göndermez. Konuşmadan spesifik bir şeye değin.",
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {
