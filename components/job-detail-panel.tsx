@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ProposalModal } from "@/components/proposal-modal";
 import { InterviewPrepModal } from "@/components/interview-prep-modal";
+import { CoverLetterModal } from "@/components/cover-letter-modal";
 import { CreditCost } from "@/components/credit-cost";
 import { CopyButton } from "@/components/dashboard/copy-button";
 import { ChipsInput } from "@/components/dashboard/chips-input";
@@ -84,6 +85,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
   const [deadlineDate, setDeadlineDate] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [showProposal, setShowProposal] = useState(false);
+  const [showCoverLetter, setShowCoverLetter] = useState(false);
   const [showInterview, setShowInterview] = useState(false);
   const [rematching, setRematching] = useState(false);
   const [followUpMsg, setFollowUpMsg] = useState("");
@@ -416,15 +418,27 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
               </div>
             )}
 
-            {/* Teklif Oluştur CTA */}
-            <Button
-              onClick={() => setShowProposal(true)}
-              className="w-full gap-2"
-              disabled={!detail?.description}
-              title={!detail?.description ? t("detail.descriptionRequired") : undefined}
-            >
-              <Sparkles className="h-3.5 w-3.5" />{t("detail.createProposal")}
-            </Button>
+            {/* Teklif Oluştur CTA + Ön Yazı (cover letter) */}
+            <div className="space-y-2">
+              <Button
+                onClick={() => setShowProposal(true)}
+                className="w-full gap-2"
+                disabled={!detail?.description}
+                title={!detail?.description ? t("detail.descriptionRequired") : undefined}
+              >
+                <Sparkles className="h-3.5 w-3.5" />{t("detail.createProposal")}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowCoverLetter(true)}
+                className="w-full gap-2"
+                disabled={!detail?.description}
+                title={!detail?.description ? t("detail.descriptionRequired") : undefined}
+              >
+                <FileText className="h-3.5 w-3.5" />{t("detail.createCoverLetter")}
+                <CreditCost kind="cover_letter" />
+              </Button>
+            </div>
 
             {/* İlan Metni */}
             {detail?.description && (
@@ -496,6 +510,15 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
           jobId={job.id}
           jobDescription={detail.description}
           onClose={() => setShowInterview(false)}
+          onCreditsUpdate={onCreditsUpdate}
+        />
+      )}
+
+      {showCoverLetter && detail?.description && (
+        <CoverLetterModal
+          jobId={job.id}
+          jobDescription={detail.description}
+          onClose={() => setShowCoverLetter(false)}
           onCreditsUpdate={onCreditsUpdate}
         />
       )}

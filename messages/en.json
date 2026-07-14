@@ -523,6 +523,7 @@
       "requirements": "Listing Requirements",
       "descriptionRequired": "Job description required",
       "createProposal": "Create Proposal",
+      "createCoverLetter": "Write cover letter",
       "jobDescription": "Job Description",
       "viewListing": "View Listing",
       "notes": "Notes",
@@ -590,7 +591,8 @@
       "cv_import": "CV Import",
       "cv_bullets": "CV Bullet Boost",
       "cv_summary": "CV Summary",
-      "interview_prep": "Interview Prep"
+      "interview_prep": "Interview Prep",
+      "cover_letter": "Cover Letter"
     },
     "creditsSub": "{count} credits",
     "dailyTitle": "Last 30 days — daily credit usage",
@@ -1666,6 +1668,16 @@
       "title": "{count, plural, one {# proposal drafted} other {# proposals drafted}}",
       "body": "Ready in Applied — review and send."
     }
+  },
+  "coverLetter": {
+    "title": "Cover letter",
+    "subtitle": "Tailored to this job, built from your profile",
+    "close": "Close",
+    "generating": "Writing your cover letter…",
+    "retry": "Try again",
+    "error": "Could not generate the cover letter. Please try again.",
+    "copy": "Copy",
+    "copied": "Copied"
   },
   "profileStrength": {
     "title": "Profile strength",

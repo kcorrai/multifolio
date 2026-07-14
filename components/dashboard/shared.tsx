@@ -126,6 +126,7 @@ export const KIND_ICONS: Record<string, LucideIcon> = {
   cv_bullets: Wand2,               // CV madde güçlendirme
   cv_summary: Sparkles,            // CV özet üretimi
   interview_prep: MessageSquare,   // mülakat hazırlığı
+  cover_letter: FileText,          // ön yazı (cover letter)
 };
 
 /* ── Helpers ────────────────────────────────────────────────────────── */
