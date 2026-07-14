@@ -545,6 +545,16 @@ function injectButton(target: InjectTarget) {
       box-shadow: 0 4px 18px rgba(0, 0, 0, .35);
     }
     .mf-note a { color: #00F0FF; cursor: pointer; text-decoration: underline; }
+    .mf-score {
+      position: fixed; right: 20px; bottom: 64px; z-index: 2147483647;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: 999px;
+      background: #0B1220; color: #E6EDF6;
+      font: 700 13px/1.2 system-ui, -apple-system, sans-serif;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, .35);
+    }
+    .mf-score small { font-weight: 500; opacity: .75; }
+    .mf-dot { width: 9px; height: 9px; border-radius: 999px; }
   `;
   root.appendChild(style);
 
@@ -566,6 +576,36 @@ function injectButton(target: InjectTarget) {
       a.textContent = ` ${msg("openLogin")}`;
       a.addEventListener("click", () => chrome.runtime.sendMessage({ type: "openLogin" }));
       note.appendChild(a);
+    }
+  }
+
+  // Canlı eşleşme skoru (yalnız iş ilanı sayfası): profil × ilan uyumunu ÜCRETSİZ göster
+  // (deterministik, kredisiz). Auth yok / profil yok / hata → sessizce gösterilmez.
+  if (isJob) {
+    const ctx = collectJobPayload(target.platform as JobPlatform);
+    if (ctx) {
+      chrome.runtime.sendMessage(
+        { type: "quick_match", title: ctx.title, text: ctx.description },
+        (res: { ok: boolean; score?: number; matched?: string[]; missing?: string[] } | undefined) => {
+          if (!res?.ok || typeof res.score !== "number") return;
+          const score = res.score;
+          const badge = document.createElement("div");
+          badge.className = "mf-score";
+          const dot = document.createElement("span");
+          dot.className = "mf-dot";
+          dot.style.background = score >= 70 ? "#22C55E" : score >= 40 ? "#F59E0B" : "#EF4444";
+          const label = document.createElement("span");
+          label.textContent = `${msg("matchScore")} ${score}%`;
+          const sub = document.createElement("small");
+          const matched = res.matched?.length ?? 0;
+          const total = matched + (res.missing?.length ?? 0);
+          if (total > 0) sub.textContent = `${matched}/${total}`;
+          badge.append(dot, label, sub);
+          // Not kutusunun üstünde konumlansın (note bottom:64 → score bottom:108).
+          badge.style.bottom = "108px";
+          root.appendChild(badge);
+        },
+      );
     }
   }
 

@@ -114,6 +114,46 @@ export function skillGap(profile: RelevanceProfile, job: PoolJobRow): SkillGap |
   return { matched, missing };
 }
 
+export interface QuickMatch {
+  score: number; // 0-100
+  matched: string[]; // ilan metninde geçen profil becerileri
+  missing: string[]; // geçmeyen profil becerileri
+}
+
+/** Uzantı canlı skoru: kullanıcının GÖRDÜĞÜ arbitrary iş ilanı metnine karşı ücretsiz,
+ *  deterministik profil eşleşmesi (job_pool GEREKMEZ — ham başlık + açıklama yeter).
+ *  jobRelevance ile AYNI formül (skill coverage/doygunluk + başlık bonusu) + hangi profil
+ *  becerisinin metinde geçtiğini/geçmediğini döner (badge tooltip'i). AI/kredi YOK. */
+export function quickJobMatch(profile: RelevanceProfile, title: string, description: string): QuickMatch {
+  const profSkills = (profile.skills ?? []).map((s) => s.trim()).filter(Boolean);
+  if (profSkills.length === 0) return { score: 0, matched: [], missing: [] };
+
+  const titleTokens = tokenize(title);
+  const descTokens = tokenize((description ?? "").slice(0, 2000));
+  const profHeadline = tokenize(profile.headline ?? "");
+
+  const matched: string[] = [];
+  const missing: string[] = [];
+  for (const skill of profSkills) {
+    let hit = false;
+    for (const tk of skillTokens([skill])) {
+      if (titleTokens.has(tk) || descTokens.has(tk)) { hit = true; break; }
+    }
+    (hit ? matched : missing).push(skill);
+  }
+
+  const coverage = matched.length / profSkills.length;
+  const saturation = Math.min(1, matched.length / SKILL_SATURATION);
+  const skillScore = Math.max(coverage, saturation);
+
+  let titleHits = 0;
+  for (const h of profHeadline) if (titleTokens.has(h)) titleHits++;
+  const titleScore = profHeadline.size > 0 ? titleHits / profHeadline.size : 0;
+
+  const score = Math.round(Math.min(1, skillScore * (1 + 0.3 * titleScore)) * 100);
+  return { score, matched, missing };
+}
+
 /** Near-duplicate başlık anahtarı: aynı ilanın farklı şehirde/cinsiyet-işaretiyle
  *  tekrarını yakalamak için başlığı normalize eder (JOBS-FLOWS P1). Cinsiyet işaretleri
  *  ((m/w/d), (f/m/x), (all genders)...) + sondaki konum kuyruğu (" in Waghäusel",

@@ -1,7 +1,7 @@
 // Background service worker: content script'ten gelen payload'ı Multifolio API'sine
 // cookie'li POST'lar (host_permissions sayesinde kullanıcının oturum cookie'leri
 // eklenir — spike ile doğrulandı). Başarıda inceleme wizard'ını yeni sekmede açar.
-import { IMPORT_ENDPOINT, JOBS_ENDPOINT, PROPOSAL_ENDPOINT, PROPOSAL_LATEST_ENDPOINT, WIZARD_URL, LOGIN_URL } from "./config";
+import { IMPORT_ENDPOINT, JOBS_ENDPOINT, PROPOSAL_ENDPOINT, PROPOSAL_LATEST_ENDPOINT, QUICK_MATCH_ENDPOINT, WIZARD_URL, LOGIN_URL } from "./config";
 
 interface ImportProject {
   title: string;
@@ -53,8 +53,36 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     void handleGenerateProposal(message as GenerateProposalMessage).then(sendResponse);
     return true;
   }
+  if (message?.type === "quick_match") {
+    void handleQuickMatch(message as QuickMatchMessage).then(sendResponse);
+    return true;
+  }
   return false;
 });
+
+// Canlı eşleşme skoru: iş ilanı sayfasının başlık+metnini ÜCRETSİZ /api/match/quick'e
+// gönderir (deterministik, kredisiz). Sessiz: hata/auth durumunda rozet gösterilmez.
+interface QuickMatchMessage {
+  type: "quick_match";
+  title: string;
+  text: string;
+}
+async function handleQuickMatch(msg: QuickMatchMessage) {
+  try {
+    const res = await fetch(QUICK_MATCH_ENDPOINT, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: msg.title, text: msg.text }),
+    });
+    if (!res.ok) return { ok: false as const };
+    const body = await res.json().catch(() => null);
+    if (!body || typeof body.score !== "number") return { ok: false as const };
+    return { ok: true as const, score: body.score as number, matched: (body.matched ?? []) as string[], missing: (body.missing ?? []) as string[] };
+  } catch {
+    return { ok: false as const };
+  }
+}
 
 // Başvuru sayfasında O İŞE ÖZEL teklif üretir: (1) /api/jobs ile işi kaydet (Applied) →
 // (2) /api/proposal ile tailored teklif üret. Uzantı içeriği cover-letter kutusuna yazar

@@ -10,6 +10,7 @@ const FALLBACK = {
   genericError: "Import failed — try again.",
   openLogin: "Open login",
   captureJob: "Save job to Multifolio",
+  matchScore: "Match",
   captureSending: "Saving…",
   captureSuccess: "Job saved — find it in Multifolio › Jobs.",
   captureEmpty: "Couldn't read the job title/description on this page.",

@@ -10,6 +10,7 @@
   "genericError": { "message": "Aktarma başarısız — tekrar dene." },
   "openLogin": { "message": "Girişi aç" },
   "captureJob": { "message": "İşi Multifolio'ya kaydet" },
+  "matchScore": { "message": "Uyum" },
   "captureSending": { "message": "Kaydediliyor…" },
   "captureSuccess": { "message": "İş kaydedildi — Multifolio › İşler'de bul." },
   "captureEmpty": { "message": "Bu sayfada iş başlığı/açıklaması okunamadı." },

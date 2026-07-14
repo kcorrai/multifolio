@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { jobRelevance, skillGap, orderDefaultFeed, orderFeedMatches, nearDuplicateKey, dedupeNearDuplicates } from "./relevance";
+import { jobRelevance, skillGap, orderDefaultFeed, orderFeedMatches, nearDuplicateKey, dedupeNearDuplicates, quickJobMatch } from "./relevance";
 import type { PoolJobRow } from "@/lib/validation/schemas/feed";
 
 function job(over: Partial<PoolJobRow> = {}): PoolJobRow {
@@ -71,6 +71,26 @@ describe("jobRelevance", () => {
     };
     const r = jobRelevance(broad, job())!; // job: React, Next.js, TypeScript (+desc)
     expect(r).toBeGreaterThanOrEqual(60);
+  });
+});
+
+describe("quickJobMatch", () => {
+  it("ham metne karşı skor + eşleşen/eksik becerileri döner", () => {
+    const r = quickJobMatch(reactProfile, "Senior React Developer", "We need React, Next.js and TypeScript for our dashboard.");
+    expect(r.score).toBeGreaterThan(60);
+    expect(r.matched).toEqual(expect.arrayContaining(["React", "Next.js", "TypeScript"]));
+    expect(r.missing).toContain("Tailwind");
+  });
+
+  it("alakasız ilanda düşük skor", () => {
+    const r = quickJobMatch(reactProfile, "Warehouse Associate", "Lifting boxes and managing inventory in a warehouse.");
+    expect(r.score).toBeLessThan(30);
+    expect(r.matched).toHaveLength(0);
+  });
+
+  it("profilde skill yoksa skor 0", () => {
+    const r = quickJobMatch({ headline: "x", skills: [] }, "React Developer", "React role");
+    expect(r).toEqual({ score: 0, matched: [], missing: [] });
   });
 });
 
