@@ -1,6 +1,6 @@
 import {
   User, Layers, Globe, Briefcase, Target, LayoutDashboard, Languages, BellRing, Wand2,
-  FileText, Download, RefreshCw, Gauge, Sparkles, MessageSquare,
+  FileText, Download, RefreshCw, Gauge, Sparkles, MessageSquare, Handshake,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
@@ -130,6 +130,7 @@ export const KIND_ICONS: Record<string, LucideIcon> = {
   cover_letter: FileText,          // ön yazı (cover letter)
   mock_questions: MessageSquare,   // sahte mülakat soruları
   mock_answer: MessageSquare,      // sahte mülakat cevap değerlendirmesi
+  negotiation: Handshake,          // maaş pazarlığı koçluğu
 };
 
 /* ── Helpers ────────────────────────────────────────────────────────── */

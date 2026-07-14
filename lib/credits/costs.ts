@@ -14,6 +14,7 @@ export const CREDIT_COSTS = {
   cover_letter: 3,
   mock_questions: 3, // sahte mülakat: 6 soru üretimi
   mock_answer: 1, // sahte mülakat: tek cevap değerlendirmesi (kullanıcı başına kontrol)
+  negotiation: 3, // maaş pazarlığı koçluğu
 } as const;
 
 export type CreditKind = keyof typeof CREDIT_COSTS;

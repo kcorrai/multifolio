@@ -551,6 +551,11 @@
       "hint": "Get STAR stories from your own projects, a 'tell me about yourself' script, and questions to ask.",
       "prepare": "Prepare for interview"
     },
+    "negotiation": {
+      "banner": "Got an offer? Don't accept it yet.",
+      "hint": "Get a fair-value read, a counter-offer range, talking points, and a ready-to-send email.",
+      "coach": "Coach me through the offer"
+    },
     "add": {
       "title": "Add Job",
       "jobTitle": "Job title",
@@ -595,7 +600,8 @@
       "interview_prep": "Interview Prep",
       "cover_letter": "Cover Letter",
       "mock_questions": "Mock Questions",
-      "mock_answer": "Mock Answer"
+      "mock_answer": "Mock Answer",
+      "negotiation": "Negotiation Coach"
     },
     "creditsSub": "{count} credits",
     "dailyTitle": "Last 30 days — daily credit usage",
@@ -1671,6 +1677,27 @@
       "title": "{count, plural, one {# proposal drafted} other {# proposals drafted}}",
       "body": "Ready in Applied — review and send."
     }
+  },
+  "negotiation": {
+    "title": "Salary negotiation coach",
+    "subtitle": "Turn an offer into a confident counter",
+    "close": "Close",
+    "offerLabel": "The offer you received",
+    "offerPlaceholder": "e.g. $75,000/year base, no signing bonus, 15 days PTO, hybrid",
+    "targetLabel": "What you're hoping for (optional)",
+    "targetPlaceholder": "e.g. $85k, or more remote days",
+    "generate": "Coach me",
+    "generating": "Preparing your negotiation plan…",
+    "error": "Could not generate negotiation coaching. Please try again.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "assessment": "The offer, assessed",
+    "counter": "Suggested counter",
+    "anchor": "Open with",
+    "strategy": "Strategy",
+    "talkingPoints": "Talking points",
+    "email": "Ready-to-send email",
+    "redo": "Start over"
   },
   "mockInterview": {
     "eyebrow": "Practice",

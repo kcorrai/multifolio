@@ -17,11 +17,12 @@ describe("CREDIT_COSTS", () => {
     expect(CREDIT_COSTS.cover_letter).toBe(3);
     expect(CREDIT_COSTS.mock_questions).toBe(3);
     expect(CREDIT_COSTS.mock_answer).toBe(1);
+    expect(CREDIT_COSTS.negotiation).toBe(3);
   });
 
   it("usage_events.kind ile birebir anahtar kullanır", () => {
     expect(Object.keys(CREDIT_COSTS).sort()).toEqual(
-      ["adaptation", "cover_letter", "cv_bullets", "cv_generation", "cv_summary", "cv_tailor", "followup", "interview_prep", "job_match", "mock_answer", "mock_questions", "portfolio_generation", "profile_suggest", "proposal"],
+      ["adaptation", "cover_letter", "cv_bullets", "cv_generation", "cv_summary", "cv_tailor", "followup", "interview_prep", "job_match", "mock_answer", "mock_questions", "negotiation", "portfolio_generation", "profile_suggest", "proposal"],
     );
   });
 });

@@ -4,13 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   X, ExternalLink, Target, CheckCircle2, AlertCircle,
-  Sparkles, FileText, ChevronDown, RefreshCw, BellRing, CalendarClock, MessageSquare,
+  Sparkles, FileText, ChevronDown, RefreshCw, BellRing, CalendarClock, MessageSquare, Handshake,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ProposalModal } from "@/components/proposal-modal";
 import { InterviewPrepModal } from "@/components/interview-prep-modal";
 import { CoverLetterModal } from "@/components/cover-letter-modal";
+import { NegotiationModal } from "@/components/negotiation-modal";
 import { CreditCost } from "@/components/credit-cost";
 import { CopyButton } from "@/components/dashboard/copy-button";
 import { ChipsInput } from "@/components/dashboard/chips-input";
@@ -87,6 +88,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
   const [showProposal, setShowProposal] = useState(false);
   const [showCoverLetter, setShowCoverLetter] = useState(false);
   const [showInterview, setShowInterview] = useState(false);
+  const [showNegotiation, setShowNegotiation] = useState(false);
   const [rematching, setRematching] = useState(false);
   const [followUpMsg, setFollowUpMsg] = useState("");
   const [followUpBusy, setFollowUpBusy] = useState(false);
@@ -330,6 +332,27 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
               </div>
             )}
 
+            {/* Maaş pazarlığı: durum "offer" → AI pazarlık koçluğu. */}
+            {status === "offer" && (
+              <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/40 bg-emerald-50 dark:bg-emerald-950/20 p-3 space-y-2">
+                <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+                  <Handshake className="h-3.5 w-3.5 shrink-0" />
+                  {t("negotiation.banner")}
+                </p>
+                <p className="text-[11px] text-emerald-600/70 dark:text-emerald-400/60">{t("negotiation.hint")}</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowNegotiation(true)}
+                  className="gap-2 w-full border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  {t("negotiation.coach")}
+                  <CreditCost kind="negotiation" />
+                </Button>
+              </div>
+            )}
+
             {/* Meta bilgiler */}
             <div className="grid grid-cols-2 gap-2 text-xs">
               {detail?.budget && (
@@ -519,6 +542,14 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
           jobId={job.id}
           jobDescription={detail.description}
           onClose={() => setShowCoverLetter(false)}
+          onCreditsUpdate={onCreditsUpdate}
+        />
+      )}
+
+      {showNegotiation && (
+        <NegotiationModal
+          jobId={job.id}
+          onClose={() => setShowNegotiation(false)}
           onCreditsUpdate={onCreditsUpdate}
         />
       )}
