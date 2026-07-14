@@ -23,7 +23,7 @@ import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 interface JobRow {
   id: string; title: string; company: string | null; platform: string | null;
   status: JobStatus; match_score: number | null; match_result: JobMatchResult | null; created_at: string;
-  reminder_date?: string | null; deadline_date?: string | null; tags?: string[] | null;
+  reminder_date?: string | null; deadline_date?: string | null; tags?: string[] | null; referred?: boolean | null;
 }
 
 interface JobDetail extends JobRow {
@@ -85,6 +85,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
   const [reminderDate, setReminderDate] = useState("");
   const [deadlineDate, setDeadlineDate] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [referred, setReferred] = useState(false);
   const [showProposal, setShowProposal] = useState(false);
   const [showCoverLetter, setShowCoverLetter] = useState(false);
   const [showInterview, setShowInterview] = useState(false);
@@ -109,6 +110,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
           setReminderDate(b.job.reminder_date ?? "");
           setDeadlineDate(b.job.deadline_date ?? "");
           setTags(Array.isArray(b.job.tags) ? b.job.tags : []);
+          setReferred(!!b.job.referred);
           setLoadedJobId(job.id);
         }
       })
@@ -142,6 +144,18 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
       onJobUpdated(body.job as JobRow);
       setDetail((prev) => (prev ? { ...prev, [field]: value || null } : prev));
     }
+  }
+
+  // Referans işaretini kaydeder (pipeline referans içgörüsüne yansır).
+  async function saveReferred(next: boolean) {
+    setReferred(next);
+    const res = await fetch(`/api/jobs/${job.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ referred: next }),
+    });
+    const body = await res.json().catch(() => null);
+    if (res.ok && body?.job) onJobUpdated(body.job as JobRow);
   }
 
   // Etiketleri kaydeder (kart rozetleri + filtre güncellensin diye listeye yansır).
@@ -487,6 +501,17 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                 {t("detail.viewListing")}
               </a>
             )}
+
+            {/* Referans işareti (geriye dönük işaretlenebilir) */}
+            <label className="flex items-center gap-2 cursor-pointer text-xs">
+              <input
+                type="checkbox"
+                checked={referred}
+                onChange={(e) => saveReferred(e.target.checked)}
+                className="h-3.5 w-3.5 rounded border-border accent-emerald-500 cursor-pointer"
+              />
+              <span className="font-medium text-muted-foreground">{t("detail.referred")}</span>
+            </label>
 
             {/* Etiketler */}
             <div className="space-y-1.5">

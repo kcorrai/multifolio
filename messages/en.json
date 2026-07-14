@@ -490,7 +490,8 @@
       "fSent": "Sent",
       "fResponded": "Responded",
       "fInterview": "Interview",
-      "fOffer": "Offer"
+      "fOffer": "Offer",
+      "referralNote": "{count, plural, one {# application came via referral} other {# applications came via referral}} — referred candidates convert far better."
     },
     "board": {
       "list": "List",
@@ -537,7 +538,8 @@
       "due_soon": "Soon",
       "tags": "Tags",
       "tagsPlaceholder": "Add a tag…",
-      "tagRemove": "Remove tag"
+      "tagRemove": "Remove tag",
+      "referred": "I was referred (internal referral)"
     },
     "followup": {
       "waiting": "{days, plural, one {No reply for # day} other {No reply for # days}}",
@@ -569,6 +571,7 @@
       "aiRequired": "Required for AI matching",
       "descriptionPlaceholder": "Paste the full listing text…",
       "url": "Listing URL",
+      "referredLabel": "I was referred to this role (internal referral)",
       "createError": "Could not add the job.",
       "matchError": "Job added, but AI matching failed. You can match it manually from the job.",
       "creating": "Creating job…",

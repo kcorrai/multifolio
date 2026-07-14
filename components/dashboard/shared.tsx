@@ -46,6 +46,8 @@ export interface JobRow {
   tags?: string[] | null;
   // Bütçe metni (nakit-akışı projeksiyonu için; kolon mevcut — migration yok).
   budget?: string | null;
+  // Referans işareti (opsiyonel; migration 0039).
+  referred?: boolean | null;
 }
 export interface AnalyticsData {
   totalCredits: number; totalCount: number;

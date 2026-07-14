@@ -8,9 +8,10 @@ import { useTranslations } from "next-intl";
 import { computePipeline } from "@/lib/jobs/pipeline";
 import type { JobStatus } from "@/lib/validation/schemas/job";
 
-export function PipelineStats({ jobs }: { jobs: { status: JobStatus }[] }) {
+export function PipelineStats({ jobs }: { jobs: { status: JobStatus; referred?: boolean | null }[] }) {
   const t = useTranslations("jobs");
   const p = useMemo(() => computePipeline(jobs), [jobs]);
+  const referredCount = useMemo(() => jobs.filter((j) => j.referred).length, [jobs]);
 
   if (p.sent === 0) return null; // henüz başvuru yoksa gösterme
 
@@ -54,6 +55,13 @@ export function PipelineStats({ jobs }: { jobs: { status: JobStatus }[] }) {
           </div>
         ))}
       </div>
+
+      {/* Referans içgörüsü: referanslılar ~2x daha iyi dönüşür (Ashby). */}
+      {referredCount > 0 && (
+        <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+          {t("pipeline.referralNote", { count: referredCount })}
+        </p>
+      )}
     </div>
   );
 }

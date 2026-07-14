@@ -13,6 +13,8 @@ export const jobCreateSchema = z.object({
   url: z.string().url().max(2000).optional(),
   budget: z.string().trim().max(100).optional(),
   source_pool_id: z.string().uuid().optional(),
+  // Referans (iç referralla mı geldi) — Ashby: referanslılar ~2x daha iyi dönüşür.
+  referred: z.boolean().optional(),
 });
 
 // Opsiyonel saf tarih (YYYY-MM-DD). "" = temizle (route null'a çevirir), null =
@@ -34,6 +36,8 @@ export const jobUpdateSchema = z.object({
   deadline_date: optionalDateField,
   // Serbest etiketler (mini-CRM sınıflandırması). Trim + boşları ele.
   tags: z.array(z.string().trim().min(1).max(30)).max(12).optional(),
+  // Referans işareti (elle işaretlenir/kaldırılır).
+  referred: z.boolean().optional(),
 });
 
 // Rubrik: sabit 4 boyut — ilanlar arası karşılaştırılabilirlik için anahtar seti kilitli.

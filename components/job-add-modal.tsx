@@ -33,6 +33,7 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
   const [budget, setBudget] = useState("");
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
+  const [referred, setReferred] = useState(false);
   const [step, setStep] = useState<"idle" | "creating" | "matching" | "done">("idle");
   const [error, setError] = useState("");
 
@@ -49,6 +50,7 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
         budget: budget.trim() || undefined,
         description: description.trim(),
         url: url.trim() || undefined,
+        referred: referred || undefined,
       }),
     });
     const createBody = await createRes.json().catch(() => null);
@@ -168,6 +170,17 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
               disabled={loading}
             />
           </div>
+
+          <label className="flex items-center gap-2 cursor-pointer text-sm">
+            <input
+              type="checkbox"
+              checked={referred}
+              onChange={(e) => setReferred(e.target.checked)}
+              disabled={loading}
+              className="h-4 w-4 rounded border-border accent-[#00F0FF] cursor-pointer"
+            />
+            <span>{t("referredLabel")}</span>
+          </label>
 
           {error && (
             <div className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">

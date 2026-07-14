@@ -17,7 +17,7 @@ export const GET = withErrorHandler(async (_req, { params }) => {
 
   const { data, error } = await supabase
     .from("job_listings")
-    .select("id, title, company, platform, status, match_score, match_result, description, url, notes, budget, created_at, updated_at, status_changed_at, reminder_date, deadline_date, tags")
+    .select("id, title, company, platform, status, match_score, match_result, description, url, notes, budget, created_at, updated_at, status_changed_at, reminder_date, deadline_date, tags, referred")
     .eq("id", id)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -62,7 +62,7 @@ export const PATCH = withErrorHandler(async (req, { params }) => {
     .update(patch)
     .eq("id", id)
     .eq("user_id", user.id)
-    .select("id, title, company, platform, status, match_score, match_result, notes, created_at, reminder_date, deadline_date, tags, budget")
+    .select("id, title, company, platform, status, match_score, match_result, notes, created_at, reminder_date, deadline_date, tags, budget, referred")
     .maybeSingle();
 
   if (error) throw error;
