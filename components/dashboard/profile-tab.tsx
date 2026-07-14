@@ -21,6 +21,7 @@ import { ProjectDetailModal } from "@/components/portfolio/project-detail-modal"
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import { ChipsInput } from "./chips-input";
+import { ProfileStrength } from "./profile-strength";
 import { ELEVATED, type InitialProfile, type ConnectedProfile } from "./shared";
 
 interface Suggestion { headline: string; summary: string; skills: string[] }
@@ -378,8 +379,11 @@ export function ProfileTab({
           </CardContent>
         </Card>
 
-        {/* Sağ: AI önerisi + bağlı profiller + tamamlanma */}
+        {/* Sağ: profil gücü + AI önerisi + bağlı profiller + tamamlanma */}
         <div className="lg:col-span-2 space-y-4">
+
+          {/* Profil gücü (SAF, kredisiz, canlı) — kalite checklist'i */}
+          <ProfileStrength headline={headline} summary={summary} skills={skills} />
 
           {/* AI önerisi (public profillerden) */}
           <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] overflow-hidden">

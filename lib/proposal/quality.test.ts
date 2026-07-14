@@ -58,4 +58,23 @@ describe("assessProposal", () => {
     const tr = "Merhaba, bu proje için benzer 5 iş teslim ettim ve süreçleri hızlandırdım; detayları görüşelim, hemen başlayabilirim.";
     expect(assessProposal(tr, "concise").issues).not.toContain("noCta");
   });
+
+  it("ilandan somut detay yoksa notSpecific işaretler", () => {
+    const jd = "We need a Senior React and TypeScript developer to build a Next.js dashboard with GraphQL.";
+    // İlanla hiçbir terim paylaşmayan jenerik teklif.
+    const generic = "I am a passionate professional who delivers high quality work and always meets deadlines with great communication skills. Let's discuss.";
+    expect(assessProposal(generic, "concise", jd).issues).toContain("notSpecific");
+  });
+
+  it("ilandan terim geçiyorsa notSpecific işaretlemez", () => {
+    const jd = "We need a Senior React and TypeScript developer to build a Next.js dashboard with GraphQL.";
+    const specific = "For your React and Next.js dashboard, I've shipped similar GraphQL apps. Let's discuss the timeline.";
+    expect(assessProposal(specific, "concise", jd).issues).not.toContain("notSpecific");
+  });
+
+  it("ilan zayıf sinyalliyse (az terim) özgüllük kontrolü atlanır", () => {
+    const weakJd = "Need help with my thing soon please.";
+    const generic = "I am a passionate professional. Let's discuss.";
+    expect(assessProposal(generic, "concise", weakJd).issues).not.toContain("notSpecific");
+  });
 });

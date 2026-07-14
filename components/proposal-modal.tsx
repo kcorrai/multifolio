@@ -255,7 +255,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
               </div>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{generated}</p>
               <div className="pt-2 border-t border-[#00F0FF]/15">
-                <ProposalQualityBadge text={generated} length={length} />
+                <ProposalQualityBadge text={generated} length={length} jobDescription={jobDescription} />
               </div>
               <HealthWarnings text={generated} platform={platform} />
               {generatedId && <TranslationBlock key={generatedId} proposalId={generatedId} platform={platform} />}

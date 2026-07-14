@@ -623,7 +623,8 @@
         "wordCountHigh": "Too long — clients skim; tighten it up.",
         "noCta": "No call-to-action — end with 'Let's discuss' or similar.",
         "generic": "Generic opening — start with the client's problem, not your expertise.",
-        "placeholder": "Unedited placeholder left in — remove {…} / […] before sending."
+        "placeholder": "Unedited placeholder left in — remove {…} / […] before sending.",
+        "notSpecific": "Too generic — mention a specific detail from the job post (a tool, skill, or requirement they named)."
       }
     },
     "tip": {
@@ -1664,6 +1665,25 @@
     "autoDraftNotif": {
       "title": "{count, plural, one {# proposal drafted} other {# proposals drafted}}",
       "body": "Ready in Applied — review and send."
+    }
+  },
+  "profileStrength": {
+    "title": "Profile strength",
+    "band": {
+      "strong": "Strong",
+      "good": "Good",
+      "fair": "Fair",
+      "weak": "Weak"
+    },
+    "check": {
+      "headlinePresent": "Add a headline",
+      "headlineLength": "Keep the headline 20–120 characters",
+      "headlineKeyword": "Put a searchable skill/role keyword in your headline",
+      "summaryLength": "Write a fuller summary (120+ characters)",
+      "summaryHook": "Open with a short, punchy first sentence",
+      "summaryQuantified": "Add a concrete number or result to your summary",
+      "skillsCount": "List at least 5 skills",
+      "noCliche": "Cut clichés (\"hard-working\", \"team player\", \"detail-oriented\")"
     }
   },
   "interview": {

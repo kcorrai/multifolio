@@ -15,9 +15,9 @@ const BAND_STYLE: Record<QualityBand, string> = {
   weak: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/25",
 };
 
-export function ProposalQualityBadge({ text, length = "standard" }: { text: string; length?: ProposalLength }) {
+export function ProposalQualityBadge({ text, length = "standard", jobDescription }: { text: string; length?: ProposalLength; jobDescription?: string }) {
   const t = useTranslations("proposal.quality");
-  const q = assessProposal(text, length);
+  const q = assessProposal(text, length, jobDescription);
 
   return (
     <div className="space-y-2">

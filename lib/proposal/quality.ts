@@ -1,16 +1,19 @@
 // Teklif kalite linter'ı (SAF, kredisiz, deterministik). Üretilen teklifi reddettiren
 // en sık nedenlere karşı denetler (araştırma: Upwork red nedenlerinin ~%60'ı): uzunluk,
-// eylem çağrısı (CTA), jenerik/klişe açılış, düzenlenmemiş placeholder. Hiçbir rakip
-// (UpHunt/Upwex/Uma) bunu sunmuyor → farklılaştırıcı. Yüksek-hassasiyet kuralları
-// (yanlış-pozitif düşük); sinyalse uyarır, engellemez.
+// eylem çağrısı (CTA), jenerik/klişe açılış, düzenlenmemiş placeholder + ÖZGÜLLÜK
+// (ilandan somut detay atfı — arXiv 2509.25054: AI cilası sinyal değerini yitirdi,
+// özgüllük tek kalıcı sinyal). Hiçbir rakip bunu sunmuyor → farklılaştırıcı.
+// Yüksek-hassasiyet kuralları (yanlış-pozitif düşük); sinyalse uyarır, engellemez.
 import type { ProposalLength } from "@/lib/proposal/style";
+import { extractKeywordsFromText } from "@/lib/cv/keywords";
 
 export type QualityIssue =
   | "wordCountLow"
   | "wordCountHigh"
   | "noCta"
   | "generic"
-  | "placeholder";
+  | "placeholder"
+  | "notSpecific";
 
 export type QualityBand = "excellent" | "good" | "fair" | "weak";
 
@@ -39,8 +42,26 @@ const GENERIC_RE =
 // Düzenlenmemiş şablon/placeholder kalıntısı.
 const PLACEHOLDER_RE = /\{[^}]*\}|\[[^\]]*\]|\bx{3,}\b|lorem ipsum|<[a-z_]+>/i;
 
-/** Üretilen teklifi deterministik olarak değerlendirir. Boş metin → weak/skor 0. */
-export function assessProposal(text: string, length: ProposalLength = "standard"): ProposalQuality {
+/**
+ * Teklif ilandan somut detay içeriyor mu? İlanın anahtar terimlerinden (beceri/araç/
+ * teknoloji) EN AZ BİRİ teklifte geçmeli. İlan yeterli sinyal taşıyorsa (≥3 terim) ve
+ * teklif HİÇBİRİNİ atmıyorsa → jenerik/özgül-değil. İlan yoksa/az sinyalliyse kontrol atlanır.
+ */
+function lacksSpecificity(proposal: string, jobDescription: string): boolean {
+  const jobKeywords = extractKeywordsFromText(jobDescription);
+  if (jobKeywords.length < 3) return false; // ilan zayıf sinyalli → adil değil
+  const lower = ` ${proposal.toLowerCase()} `;
+  const hit = jobKeywords.some((k) => lower.includes(k.toLowerCase()));
+  return !hit;
+}
+
+/** Üretilen teklifi deterministik olarak değerlendirir. Boş metin → weak/skor 0.
+ * jobDescription verilirse özgüllük (ilandan somut detay atfı) boyutu da denetlenir. */
+export function assessProposal(
+  text: string,
+  length: ProposalLength = "standard",
+  jobDescription?: string,
+): ProposalQuality {
   const clean = (text ?? "").trim();
   const wordCount = clean ? clean.split(/\s+/).length : 0;
   const issues: QualityIssue[] = [];
@@ -52,6 +73,7 @@ export function assessProposal(text: string, length: ProposalLength = "standard"
   if (!CTA_RE.test(clean)) issues.push("noCta");
   if (GENERIC_RE.test(clean)) issues.push("generic");
   if (PLACEHOLDER_RE.test(clean)) issues.push("placeholder");
+  if (clean && jobDescription && lacksSpecificity(clean, jobDescription)) issues.push("notSpecific");
 
   const score = clean ? Math.max(0, 100 - issues.length * 20) : 0;
   const band: QualityBand =
