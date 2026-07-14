@@ -22,16 +22,33 @@ export function PlatformsHubTab({
 }) {
   const t = useTranslations("platforms");
   const { platforms, adaptResults, setAdaptResult, applyCredits, triggerComingSoon } = useDashboard();
-  // Tüm platformları uyarlamanın toplam kredi maliyeti (pazar platform sayısı × adaptation).
-  const adaptAllCost = platforms.length * CREDIT_COSTS.adaptation;
+  // Kullanıcı hangi platformlara uyarlanacağını SEÇER (platform sayısı 8'e çıktı →
+  // "hepsi" 16 kredi; seçim kredi sürprizini önler). Varsayılan: tümü seçili.
+  const [selected, setSelected] = useState<Set<PlatformId>>(() => new Set(platforms));
+  // Seçili platformları uyarlamanın toplam kredi maliyeti.
+  const adaptAllCost = selected.size * CREDIT_COSTS.adaptation;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [summary, setSummary] = useState<{ count: number; stopped: boolean } | null>(null);
 
-  // Tek-tık: çekirdek profili 5 platforma birden uyarla (aktivasyon; /api/adapt/all).
+  function toggle(id: PlatformId) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  // Tek-tık: çekirdek profili SEÇİLİ platformlara uyarla (aktivasyon; /api/adapt/all).
   async function adaptAll() {
+    if (selected.size === 0) return;
     setBusy(true); setError(""); setSummary(null);
-    const res = await fetch("/api/adapt/all", { method: "POST" });
+    const res = await fetch("/api/adapt/all", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ platforms: [...selected] }),
+    });
     const body = await res.json().catch(() => null);
     if (!res.ok) {
       setError(body?.error?.message ?? t("adaptAll.error"));
@@ -72,14 +89,40 @@ export function PlatformsHubTab({
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-bold">{t("adaptAll.title")}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{t("adaptAll.desc", { count: platforms.length })}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("adaptAll.desc")}</p>
               </div>
             </div>
-            <Button onClick={adaptAll} disabled={busy} className="gap-2 shrink-0">
+            <Button onClick={adaptAll} disabled={busy || selected.size === 0} className="gap-2 shrink-0">
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               {busy ? t("adaptAll.busy") : t("adaptAll.button")}
               <span className="rounded-full bg-black/10 dark:bg-white/15 px-1.5 py-0.5 text-[10px] font-bold tabular-nums">{adaptAllCost}</span>
             </Button>
+          </div>
+
+          {/* Platform seçimi: kredi kontrolü (kullanıcı istemediği platforma harcamaz). */}
+          <div className="mt-4">
+            <p className="text-[11px] font-medium text-muted-foreground mb-2">{t("adaptAll.selectHint", { count: selected.size })}</p>
+            <div className="flex flex-wrap gap-1.5">
+              {platforms.map((id) => {
+                const on = selected.has(id);
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => toggle(id)}
+                    aria-pressed={on}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                      on
+                        ? "border-[#00F0FF]/40 bg-[#00F0FF]/10 text-foreground"
+                        : "border-border bg-transparent text-muted-foreground hover:border-foreground/20"
+                    }`}
+                  >
+                    <PlatformLogo platform={id} size={14} />
+                    {PLATFORMS[id].label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
           {error && (
             <p className="mt-3 flex items-center gap-1.5 text-xs text-destructive"><AlertCircle className="h-3.5 w-3.5" />{error}</p>

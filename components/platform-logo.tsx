@@ -27,17 +27,44 @@ export function PlatformLogo({ platform, size = 20, className = "" }: Props) {
     case "fiverr":
       // Küçük boyutta okunur letter-mark (tam wordmark "irerr" gibi bozuluyordu) —
       // Bionluk/Armut deseni: markalı yeşil kare + beyaz "fi".
-      return (
-        <svg {...s} viewBox="0 0 24 24" fill="none">
-          <rect width="24" height="24" rx="5" fill="#1DBF73" />
-          <text
-            x="12" y="17" textAnchor="middle"
-            fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="13" fill="white"
-          >
-            fi
-          </text>
-        </svg>
-      );
+      return <LetterMark {...s} fill="#1DBF73" label="fi" />;
 
+    // Yeni platformlar (Dalga 1): markalı renkli kare + beyaz letter-mark. Küçük
+    // boyutta okunurluk için letter-mark deseni (fiverr gibi); tam wordmark bozulur.
+    case "freelancer":
+      return <LetterMark {...s} fill="#0EA5E9" label="fl" />;
+    case "contra":
+      return <LetterMark {...s} fill="#8B5CF6" label="C" fontSize={14} />;
+    case "peopleperhour":
+      return <LetterMark {...s} fill="#F97316" label="P" fontSize={14} />;
+    case "99designs":
+      return <LetterMark {...s} fill="#EC4899" label="99" />;
+    case "guru":
+      return <LetterMark {...s} fill="#14B8A6" label="G" fontSize={14} />;
   }
+}
+
+// Ortak letter-mark: markalı yuvarlak kare + beyaz metin (küçük boyutta okunur).
+function LetterMark({
+  fill, label, fontSize = 13, ...s
+}: {
+  fill: string;
+  label: string;
+  fontSize?: number;
+  width: number;
+  height: number;
+  className: string;
+  "aria-hidden": true;
+}) {
+  return (
+    <svg {...s} viewBox="0 0 24 24" fill="none">
+      <rect width="24" height="24" rx="5" fill={fill} />
+      <text
+        x="12" y="17" textAnchor="middle"
+        fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize={fontSize} fill="white"
+      >
+        {label}
+      </text>
+    </svg>
+  );
 }

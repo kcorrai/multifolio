@@ -746,8 +746,9 @@
     "hubSubtitle": "Manage each platform's profile, connection, matched jobs and proposals in one place.",
     "adaptAll": {
       "title": "Optimize for every platform",
-      "desc": "Adapt your profile to all {count} platforms in one click — each in its own voice.",
-      "button": "Adapt all platforms",
+      "desc": "Adapt your profile to your chosen platforms in one click — each in its own voice.",
+      "selectHint": "Pick the platforms to adapt ({count} selected):",
+      "button": "Adapt selected",
       "busy": "Adapting…",
       "done": "Done — adapted for {count} platforms. Open any platform to see the result.",
       "partial": "Adapted {count} platforms — you ran out of credits for the rest.",

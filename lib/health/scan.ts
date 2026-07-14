@@ -28,6 +28,14 @@ const SCANNED: Record<PlatformId, boolean> = {
   linkedin: false,
   upwork: true,
   fiverr: true,
+  // Komisyon alan pazaryerleri: müşteriyi platform dışına çıkarmak ToS ihlali/ban.
+  freelancer: true,
+  peopleperhour: true,
+  "99designs": true,
+  guru: true,
+  // Contra = %0 komisyon, doğrudan müşteri ilişkisi teşvik edilir → iletişim
+  // paylaşımı ban sebebi değil; LinkedIn gibi TARANMAZ.
+  contra: false,
 };
 
 // Tür başına tek desen (ya da IBAN gibi ek desen). Sıra = UI gösterim sırası.

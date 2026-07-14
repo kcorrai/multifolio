@@ -27,6 +27,11 @@ const PLATFORM_HOSTS: Record<PlatformId, string> = {
   linkedin: "linkedin.com",
   upwork: "upwork.com",
   fiverr: "fiverr.com",
+  freelancer: "freelancer.com",
+  contra: "contra.com",
+  peopleperhour: "peopleperhour.com",
+  "99designs": "99designs.com",
+  guru: "guru.com",
 };
 
 /** URL bilinen bir platforma mı ait? (host tam eşleşme veya *.host) */

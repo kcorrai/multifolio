@@ -6,6 +6,11 @@ export const platformIdSchema = z.enum([
   "linkedin",
   "upwork",
   "fiverr",
+  "freelancer",
+  "contra",
+  "peopleperhour",
+  "99designs",
+  "guru",
 ]);
 export type PlatformId = z.infer<typeof platformIdSchema>;
 
@@ -45,6 +50,52 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
       "body: kısa paragraflar; alıcı kime yardım ettiğini, nasıl çalıştığını ve neden " +
       "tercih edilmesi gerektiğini anlasın. Rakamlar ve somut örneklerle güven oluştur.",
   },
+  freelancer: {
+    id: "freelancer",
+    label: "Freelancer.com",
+    guidance:
+      "Freelancer.com profili için yaz. Müşteri-odaklı, sonuç vaat eden, teklife-dönük bir ton " +
+      "(platform bid/proje tabanlı). headline: hizmeti net tanımlayan kısa bir uzmanlık başlığı " +
+      "(ör. 'Full-Stack Web Developer — React & Node'). body: müşterinin işini nasıl çözdüğünü, " +
+      "teslim güvenilirliğini ve somut sonuçları vurgulayan taranabilir bir özet; anahtar kelimeleri " +
+      "(beceri/teknoloji) doğal kullan — profil aramada bunlarla bulunur.",
+  },
+  contra: {
+    id: "contra",
+    label: "Contra",
+    guidance:
+      "Contra bağımsız (independent) profili için yaz. Portfolyo-öncelikli, kişisel-marka odaklı, " +
+      "sıcak ama profesyonel bir ton (platform komisyonsuz — kimlik ve iş kalitesi öne çıkar). " +
+      "headline: kim olduğunu + kime hangi sonucu getirdiğini net söyleyen bir kimlik başlığı. " +
+      "body: 2-3 kısa paragraf; uzmanlık alanı, çalışma tarzı ve fark yaratan tarafın. " +
+      "İşini kanıtlayan somut proje/sonuç dilini kullan; jenerik övgüden kaçın.",
+  },
+  peopleperhour: {
+    id: "peopleperhour",
+    label: "PeoplePerHour",
+    guidance:
+      "PeoplePerHour profili için yaz. Müşteri-odaklı, teklife-dönük, güven verici bir ton " +
+      "(UK ağırlıklı; bid + sabit-fiyat 'Hourlies'). headline: net hizmet + uzmanlık başlığı. " +
+      "body: müşterinin problemini nasıl çözdüğünü, sürecini ve teslim güvenilirliğini anlatan " +
+      "kısa, taranabilir bir özet; ilgili beceri anahtar kelimelerini doğal serpiştir.",
+  },
+  "99designs": {
+    id: "99designs",
+    label: "99designs",
+    guidance:
+      "99designs tasarımcı profili için yaz. Yaratıcı ama profesyonel, portfolyo-güdümlü bir ton " +
+      "(tasarım yarışması + doğrudan işe alım). headline: tasarım uzmanlık alanını net belirt " +
+      "(ör. 'Logo & Brand Identity Designer'). body: hangi tasarım problemlerini çözdüğün, stil/" +
+      "yaklaşımın ve müşteriye kattığın değer; işini konuşturan somut dil kullan, çıktı odaklı ol.",
+  },
+  guru: {
+    id: "guru",
+    label: "Guru",
+    guidance:
+      "Guru.com profili için yaz. Profesyonel, güven verici, teklife-dönük bir ton (bid/quote tabanlı, " +
+      "çok kategorili). headline: net hizmet + uzmanlık başlığı. body: uzmanlığını, çalışma sürecini " +
+      "ve somut sonuçlarını vurgulayan taranabilir bir özet; ilgili beceri anahtar kelimelerini doğal kullan.",
+  },
 };
 
 export const PLATFORM_IDS = Object.keys(PLATFORMS) as PlatformId[];
@@ -55,6 +106,11 @@ export const PLATFORM_LANGUAGE: Record<PlatformId, "en"> = {
   linkedin: "en",
   upwork: "en",
   fiverr: "en",
+  freelancer: "en",
+  contra: "en",
+  peopleperhour: "en",
+  "99designs": "en",
+  guru: "en",
 };
 
 // Her platform için iş teklifi (proposal) yönergesi.
@@ -68,4 +124,19 @@ export const PROPOSAL_GUIDANCE: Record<PlatformId, string> = {
   fiverr: "Fiverr Buyer Request yanıtı olarak yaz. Enerjik, doğrudan ve güven verici. " +
     "Ne teslim edeceğini ve sürecinin nasıl işlediğini net anlat. " +
     "150 kelimeyi geçme. Kısa paragraflar kullan.",
+  freelancer: "Freelancer.com iş teklifi (bid) olarak yaz. İlk 2 cümlede ilanın özünü anladığını " +
+    "göster ve müşterinin sonucuna odaklan. Maksimum 200 kelime. İlgili deneyimi somut sonuçlarla " +
+    "destekle, teslim süresi/yaklaşım konusunda net ol, eylem çağrısıyla bitir.",
+  contra: "Contra proje teklifi / tanışma mesajı olarak yaz. Sıcak ama profesyonel; portfolyo-odaklı. " +
+    "İlk cümlede müşterinin ihtiyacını anladığını göster, ilgili işini kanıt olarak bağla, net bir " +
+    "sonraki adım öner. 180 kelimeyi geçme.",
+  peopleperhour: "PeoplePerHour teklifi (proposal) olarak yaz. İlk 2 cümlede müşterinin problemini " +
+    "hedefle. Maksimum 200 kelime. Müşteri odaklı; becerini onun sorununu çözme kapasitesi üzerinden " +
+    "anlat, teslim güvenilirliğini vurgula, net eylem çağrısıyla bitir.",
+  "99designs": "99designs brief yanıtı / tasarımcı teklifi olarak yaz. Müşterinin tasarım hedefini " +
+    "anladığını göster, yaklaşımını (stil/süreç) kısaca açıkla ve ilgili işinden bir örneğe atıf yap. " +
+    "Yaratıcı ama net; 180 kelimeyi geçme.",
+  guru: "Guru.com teklifi (quote) olarak yaz. İlk 2 cümlede işin kapsamını anladığını göster. " +
+    "Maksimum 200 kelime. Uzmanlığını somut sonuçlarla destekle, süreç ve teslim konusunda net ol, " +
+    "eylem çağrısıyla bitir.",
 };

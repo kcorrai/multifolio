@@ -4,6 +4,7 @@
 // Kredi biterse o ana kadar üretilenler KORUNUR (stoppedForCredits ile bildirilir).
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
+import { z } from "zod";
 import { AuthError, NotFoundError, InsufficientCreditsError, withErrorHandler } from "@/lib/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -11,9 +12,14 @@ import { adaptProfile } from "@/lib/ai/adapt";
 import { spendCredits } from "@/lib/credits/spend";
 import { getUserMarketId } from "@/lib/markets/server";
 import { marketPlatforms } from "@/lib/markets/config";
+import { platformIdSchema } from "@/lib/ai/platforms";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
-export const POST = withErrorHandler(async () => {
+// Opsiyonel gövde: kullanıcı yalnız SEÇTİĞİ platformlara uyarlayabilir (kredi kontrolü —
+// platform sayısı 8'e çıktı, "hepsi" 16 kredi; kullanıcı alt küme seçebilmeli).
+const bodySchema = z.object({ platforms: z.array(platformIdSchema).optional() });
+
+export const POST = withErrorHandler(async (req) => {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new AuthError();
@@ -28,8 +34,17 @@ export const POST = withErrorHandler(async () => {
   if (!profileRow) throw new NotFoundError(errors("profileRequired"));
   const profile = profileRow as ProfileInput;
 
-  // Yalnız aktif pazarın sunduğu platformlara uyarla (global: 3, TR: 5).
-  const platforms = marketPlatforms(await getUserMarketId());
+  // Gövde opsiyonel (boş POST → tüm pazar platformları, eski davranış).
+  const parsed = bodySchema.safeParse(await req.json().catch(() => ({})));
+  const requested = parsed.success ? parsed.data.platforms : undefined;
+
+  // Aktif pazarın sunduğu platformlar; kullanıcı alt küme seçtiyse ona kesişimle daralt
+  // (sıra pazar sırasında kalır). Geçersiz/pazar-dışı seçim yok sayılır; boş seçim → hepsi.
+  const marketList = marketPlatforms(await getUserMarketId());
+  const platforms =
+    requested && requested.length > 0
+      ? marketList.filter((p) => requested.includes(p))
+      : marketList;
 
   const admin = createSupabaseAdminClient();
   const results: { platform: string; output: { headline: string; body: string } }[] = [];
