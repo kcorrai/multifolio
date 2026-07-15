@@ -14,6 +14,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const LINKS = [
   { key: "nav.analyze",     href: "/analyze" },
   { key: "nav.rate",        href: "/rate" },
+  { key: "nav.roi",         href: "/roi" },
   { key: "nav.proposalChecker", href: "/proposal-checker" },
   { key: "nav.headlineOptimizer", href: "/headline-optimizer" },
   { key: "nav.pricing",     href: "/pricing" },

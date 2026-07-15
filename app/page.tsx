@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import {
   Layers, Globe, Briefcase, ArrowRight, ArrowUpRight,
   CheckCircle2, Target, Sparkles, ShieldCheck,
-  FileText, Download, Compass, Gauge, Puzzle, Gift, Tag, ClipboardCheck, Wand2,
+  FileText, Download, Compass, Gauge, Puzzle, Gift, Tag, ClipboardCheck, Wand2, TrendingUp,
 } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { CountUp } from "@/components/count-up";
@@ -165,6 +165,7 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const tools = [
     { href: "/analyze",  icon: Gauge,      key: "analyze",  accent: "#00F0FF" },
     { href: "/rate",     icon: Tag,           key: "rate",             accent: "#00F0FF" },
+    { href: "/roi",      icon: TrendingUp,    key: "roi",              accent: "#a78bfa" },
     { href: "/proposal-checker", icon: ClipboardCheck, key: "proposalChecker", accent: "#a78bfa" },
     { href: "/headline-optimizer", icon: Wand2, key: "headlineOptimizer", accent: "#00F0FF" },
   ];

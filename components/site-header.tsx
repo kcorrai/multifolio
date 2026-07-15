@@ -27,6 +27,7 @@ export async function SiteHeader({ isLoggedIn = false }: { isLoggedIn?: boolean 
             items={[
               { label: t("nav.analyze"),  href: "/analyze" },
               { label: t("nav.rate"),     href: "/rate" },
+              { label: t("nav.roi"),      href: "/roi" },
               { label: t("nav.proposalChecker"), href: "/proposal-checker" },
               { label: t("nav.headlineOptimizer"), href: "/headline-optimizer" },
             ]}

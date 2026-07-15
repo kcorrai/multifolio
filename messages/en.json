@@ -23,6 +23,7 @@
       "analyze": "Free profile check",
       "earnings": "Earnings calculator",
       "rate": "Rate calculator",
+      "roi": "Connects ROI calculator",
       "proposalChecker": "Proposal checker",
       "headlineOptimizer": "Headline optimizer",
       "atsCheck": "ATS resume check",
@@ -167,6 +168,10 @@
       "rate": {
         "title": "Rate calculator",
         "desc": "Find the hourly rate you need to hit your income goal."
+      },
+      "roi": {
+        "title": "Connects ROI calculator",
+        "desc": "See if the Connects you spend on proposals actually earn their money back."
       },
       "proposalChecker": {
         "title": "Proposal checker",
@@ -1674,6 +1679,42 @@
     "disclaimer": "All values are editable estimates and can change over time; this is not tax or financial advice. Check current platform and tax rates before deciding.",
     "ctaTitle": "Charge what you're worth",
     "ctaBody": "Multifolio helps you win better-paying work across platforms — optimized profiles, matched jobs and proposals. Start free with 100 credits.",
+    "ctaButton": "Start free"
+  },
+  "roi": {
+    "metaTitle": "Upwork Connects ROI Calculator — Are Your Bids Paying Off? | Multifolio",
+    "metaDescription": "See whether the Connects (or credits) you spend on proposals actually earn their money back. Free, instant, no sign-up.",
+    "heroEyebrow": "Free tool",
+    "heroTitle": "Are your Connects paying off?",
+    "heroSubtitle": "Enter how many proposals you send, your win rate and average project size — we'll show your return on every Connect you spend, and the win rate you need just to break even.",
+    "proposalsSent": "Proposals sent",
+    "connectsPerProposal": "Connects per proposal",
+    "connectsHint": "How many Connects (or credits) each bid costs. Upwork bids are typically 4–16.",
+    "costPerConnect": "Cost per Connect",
+    "costHint": "Roughly $0.15 each on Upwork — edit if you buy in different bundles.",
+    "winRate": "Win rate (%)",
+    "winRateHint": "Share of proposals that turn into paid work. New freelancers often see 2–8%.",
+    "avgProjectValue": "Average project value",
+    "currency": "Currency",
+    "resultTitle": "Return on your Connects",
+    "roiMultipleLabel": "return on spend",
+    "rows": {
+      "connectsSpent": "Connects spent",
+      "connectCost": "Connect cost",
+      "wins": "Projects won",
+      "revenue": "Revenue",
+      "netGain": "Net gain",
+      "costPerWin": "Connect cost / win",
+      "connectsPerWin": "Connects / win",
+      "revenuePerConnect": "Revenue / Connect"
+    },
+    "breakEven": "You only need a {rate}% win rate to break even on Connects.",
+    "profit": "Every $1 of Connects returns about ${multiple} in project revenue.",
+    "loss": "At this win rate your Connects cost more than they earn — raise your win rate or project value, or spend fewer Connects per bid.",
+    "infeasible": "Enter proposals, Connects per proposal and an average project value to see your ROI.",
+    "disclaimer": "All values are editable estimates; Connect prices and win rates vary. This is guidance, not a guarantee.",
+    "ctaTitle": "Win more with fewer bids",
+    "ctaBody": "Multifolio scores jobs against your profile so you only spend Connects where you can actually win — plus proposals that convert. Start free with 100 credits.",
     "ctaButton": "Start free"
   },
   "notifications": {

@@ -10,6 +10,7 @@ import { ShareButtons } from "@/components/share-buttons";
 const TOOLS = [
   { key: "analyze", href: "/analyze" },
   { key: "rate", href: "/rate" },
+  { key: "roi", href: "/roi" },
   { key: "proposalChecker", href: "/proposal-checker" },
   { key: "headlineOptimizer", href: "/headline-optimizer" },
 ] as const;
