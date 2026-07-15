@@ -544,7 +544,9 @@
     "followup": {
       "waiting": "{days, plural, one {No reply for # day} other {No reply for # days}}",
       "hint": "A short, polite follow-up can bring your application back to the top.",
+      "hintSecond": "It's been a while — one last, respectful nudge is worth a shot before you move on.",
       "generate": "Generate AI follow-up",
+      "generateSecond": "Generate final follow-up",
       "generating": "Writing…",
       "error": "Could not generate the follow-up message. Try again."
     },

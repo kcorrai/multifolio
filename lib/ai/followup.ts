@@ -6,6 +6,7 @@ import { computeCostUsd } from "./pricing";
 import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
 import { PROPOSAL_GUIDANCE, PLATFORM_IDS, PLATFORM_LANGUAGE, type PlatformId } from "@/lib/ai/platforms";
+import { FOLLOWUP_SECOND_DAYS } from "@/lib/followup";
 import type { Locale } from "@/i18n/detect";
 
 // Takip mesajı üretimi (Dalga 3): başvurudan X gün sonra platform içi
@@ -60,6 +61,11 @@ export async function generateFollowUp(opts: GenerateFollowUpOptions): Promise<F
     opts.jobDescription ? ["", "İlan Açıklaması:", opts.jobDescription].join("\n") : "",
     opts.lastProposal ? ["", "Gönderilen Teklif (tekrarlama, yalnız bağlam):", opts.lastProposal].join("\n") : "",
     platformGuidance ? ["", "Platform Yönergesi (ton için):", platformGuidance].join("\n") : "",
+    // İkinci kadans: bu SON takip; kararlı ama saygılı bir kapanış (bundan sonra
+    // ısrar edilmeyecek), hafif bir aciliyet/kapanış cümlesi eklenebilir.
+    opts.daysSince >= FOLLOWUP_SECOND_DAYS
+      ? "Not: Bu, ilk hatırlatma yanıtsız kaldıktan sonraki SON takip mesajıdır — kararlı ama saygılı, nazik bir kapanış tonu kullan; bir daha yazılmayacağını ima eden yumuşak bir son cümle uygundur."
+      : "",
     languageDirective(messageLocale),
   ].filter(Boolean).join("\n");
 

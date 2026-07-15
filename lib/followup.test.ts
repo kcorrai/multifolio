@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { followUpDays, FOLLOWUP_AFTER_DAYS } from "./followup";
+import { followUpDays, followUpStage, FOLLOWUP_AFTER_DAYS, FOLLOWUP_SECOND_DAYS } from "./followup";
 
 const NOW = new Date("2026-07-10T12:00:00Z");
 
@@ -38,5 +38,27 @@ describe("followUpDays", () => {
   it("iki referans da yoksa veya tarih bozuksa null döner", () => {
     expect(followUpDays("applied", null, null, NOW)).toBeNull();
     expect(followUpDays("applied", "not-a-date", null, NOW)).toBeNull();
+  });
+});
+
+describe("followUpStage", () => {
+  it("eşik altında null döner", () => {
+    expect(followUpStage("applied", daysAgo(FOLLOWUP_AFTER_DAYS - 1), null, NOW)).toBeNull();
+    expect(followUpStage("applied", daysAgo(0), null, NOW)).toBeNull();
+  });
+
+  it("5–11 gün arası 'first' aşamasıdır", () => {
+    expect(followUpStage("applied", daysAgo(FOLLOWUP_AFTER_DAYS), null, NOW)).toEqual({ days: 5, stage: "first" });
+    expect(followUpStage("awaiting_reply", daysAgo(FOLLOWUP_SECOND_DAYS - 1), null, NOW)).toEqual({ days: 11, stage: "first" });
+  });
+
+  it("≥12 gün 'second' aşamasıdır", () => {
+    expect(followUpStage("applied", daysAgo(FOLLOWUP_SECOND_DAYS), null, NOW)).toEqual({ days: 12, stage: "second" });
+    expect(followUpStage("applied", daysAgo(20), null, NOW)).toEqual({ days: 20, stage: "second" });
+  });
+
+  it("yalnız applied/awaiting_reply durumlarında çalışır", () => {
+    expect(followUpStage("saved", daysAgo(30), null, NOW)).toBeNull();
+    expect(followUpStage("interview", daysAgo(30), null, NOW)).toBeNull();
   });
 });

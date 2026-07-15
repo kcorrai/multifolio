@@ -16,7 +16,7 @@ import { CreditCost } from "@/components/credit-cost";
 import { CopyButton } from "@/components/dashboard/copy-button";
 import { ChipsInput } from "@/components/dashboard/chips-input";
 import { MatchRubric, VerdictBadge, RiskBadges, MatchImprovements } from "@/components/dashboard/match-rubric";
-import { followUpDays } from "@/lib/followup";
+import { followUpStage } from "@/lib/followup";
 import { reminderUrgency, type ReminderUrgency } from "@/lib/jobs/reminder";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
 
@@ -218,9 +218,10 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
 
   const matchResult = detail?.match_result ?? job.match_result;
   const matchScore = detail?.match_score ?? job.match_score;
-  const staleDays = detail
-    ? followUpDays(status, detail.status_changed_at, detail.updated_at ?? detail.created_at, new Date())
+  const followUp = detail
+    ? followUpStage(status, detail.status_changed_at, detail.updated_at ?? detail.created_at, new Date())
     : null;
+  const isFinalNudge = followUp?.stage === "second";
 
   return (
     <>
@@ -289,12 +290,16 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
               })}
             </div>
 
-            {/* Follow-up hatırlatıcı: X gündür durum değişmedi → AI takip mesajı */}
-            {staleDays !== null && (
-              <div className="rounded-xl border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 p-3 space-y-2">
-                <p className="text-xs font-semibold text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
+            {/* Follow-up hatırlatıcı: X gündür durum değişmedi → AI takip mesajı.
+                İki kadans: 5–11 gün nazik (amber), ≥12 gün son dürtme (rose). */}
+            {followUp !== null && (
+              <div className={`rounded-xl border p-3 space-y-2 ${isFinalNudge
+                ? "border-rose-200 dark:border-rose-800/40 bg-rose-50 dark:bg-rose-950/20"
+                : "border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20"}`}>
+                <p className={`text-xs font-semibold flex items-center gap-1.5 ${isFinalNudge
+                  ? "text-rose-700 dark:text-rose-300" : "text-amber-700 dark:text-amber-300"}`}>
                   <BellRing className="h-3.5 w-3.5 shrink-0" />
-                  {t("followup.waiting", { days: staleDays })}
+                  {t("followup.waiting", { days: followUp.days })}
                 </p>
                 {followUpMsg ? (
                   <div className="rounded-lg bg-background border border-border p-2.5 space-y-1.5">
@@ -305,16 +310,21 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                   </div>
                 ) : (
                   <>
-                    <p className="text-[11px] text-amber-600/70 dark:text-amber-400/60">{t("followup.hint")}</p>
+                    <p className={`text-[11px] ${isFinalNudge
+                      ? "text-rose-600/70 dark:text-rose-400/60" : "text-amber-600/70 dark:text-amber-400/60"}`}>
+                      {t(isFinalNudge ? "followup.hintSecond" : "followup.hint")}
+                    </p>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={generateFollowUpMsg}
                       disabled={followUpBusy}
-                      className="gap-2 w-full border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                      className={`gap-2 w-full ${isFinalNudge
+                        ? "border-rose-300 dark:border-rose-700 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/30"
+                        : "border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30"}`}
                     >
                       <Sparkles className="h-3.5 w-3.5" />
-                      {followUpBusy ? t("followup.generating") : t("followup.generate")}
+                      {followUpBusy ? t("followup.generating") : t(isFinalNudge ? "followup.generateSecond" : "followup.generate")}
                       <CreditCost kind="followup" />
                     </Button>
                     {followUpError && <p className="text-[11px] text-red-600 dark:text-red-400">{followUpError}</p>}
