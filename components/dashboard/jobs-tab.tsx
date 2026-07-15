@@ -255,8 +255,8 @@ export function JobsTab({
   // Sidebar okunmamış rozeti / sayaç.
   const countBadge = (unread: number, totalCount: number) =>
     unread > 0
-      ? <span className="rounded-full bg-[#00F0FF]/20 px-1.5 text-[11px] font-bold tabular-nums text-[#00F0FF]">{unread}</span>
-      : <span className="text-[11px] tabular-nums text-muted-foreground">{totalCount}</span>;
+      ? <span className="rounded-full bg-[#00F0FF]/20 px-1.5 text-xs font-bold tabular-nums text-[#00F0FF]">{unread}</span>
+      : <span className="text-xs tabular-nums text-muted-foreground">{totalCount}</span>;
 
   return (
     <div className="lg:flex lg:h-full lg:min-h-0">
@@ -284,7 +284,7 @@ export function JobsTab({
             <Plus className="h-4 w-4" />{t("createFeed")}
           </Button>
 
-          <p className="px-2.5 pt-1 pb-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">{t("savedFeeds")}</p>
+          <p className="px-2.5 pt-1 pb-0.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{t("savedFeeds")}</p>
           <button onClick={() => selectFeed(null)} className={`${sideItem} ${view === "feed" && !activeFeed ? sideActive : sideIdle}`}>
             <span className="inline-flex items-center gap-2 min-w-0"><Layers className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{t("allJobs")}</span></span>
             {countBadge(allUnread, total)}
@@ -381,18 +381,18 @@ export function JobsTab({
                 {activeFeed && activeFeed.min_score != null && activeFeed.min_score > 0 && (
                   <label className="flex items-center gap-1.5 cursor-pointer shrink-0">
                     <input type="checkbox" checked={showLowScores} onChange={(e) => setShowLowScores(e.target.checked)} className="h-3.5 w-3.5 accent-[#00F0FF] cursor-pointer" />
-                    <span className="text-[11px] text-muted-foreground">{t("showLowScores")}</span>
+                    <span className="text-xs text-muted-foreground">{t("showLowScores")}</span>
                   </label>
                 )}
               </div>
               {/* Tümünü okundu + sayaç */}
               <div className="flex items-center justify-between gap-2 px-4 py-1.5 border-b border-border shrink-0">
                 {allUnread > 0 ? (
-                  <button onClick={() => markRead(visibleJobs.map((j) => j.id))} className="inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                  <button onClick={() => markRead(visibleJobs.map((j) => j.id))} className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                     <CheckCheck className="h-3.5 w-3.5" />{t("markAllRead")}
                   </button>
                 ) : <span />}
-                <span className="text-[11px] tabular-nums text-muted-foreground/70">{visibleJobs.length}</span>
+                <span className="text-xs tabular-nums text-muted-foreground/70">{visibleJobs.length}</span>
               </div>
               {/* Satırlar (kaydırma) */}
               <div className="lg:flex-1 lg:overflow-y-auto p-2 space-y-1.5">
@@ -413,7 +413,7 @@ export function JobsTab({
                 )}
               </div>
               {/* Alt bilgi: X/Y gösteriliyor */}
-              <div className="px-4 h-9 flex items-center border-t border-border shrink-0 text-[11px] text-muted-foreground">
+              <div className="px-4 h-9 flex items-center border-t border-border shrink-0 text-xs text-muted-foreground">
                 {t("showingOf", { shown: visibleJobs.length, total })}
               </div>
             </section>

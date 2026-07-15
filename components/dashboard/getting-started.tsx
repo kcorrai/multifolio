@@ -58,7 +58,7 @@ function ProgressRing({ pct, done, total }: { pct: number; done: number; total: 
           <CountUp value={pct} duration={1100} className="text-3xl font-extrabold tabular-nums" />
           <span className="text-lg font-bold text-muted-foreground">%</span>
         </div>
-        <span className="text-[11px] font-semibold text-muted-foreground tabular-nums">{t("progress", { done, total })}</span>
+        <span className="text-xs font-semibold text-muted-foreground tabular-nums">{t("progress", { done, total })}</span>
       </div>
     </div>
   );
@@ -87,7 +87,7 @@ export function GettingStarted({
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[#00F0FF]/10 blur-[70px]" />
         <div className="relative flex flex-col-reverse items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-2">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t("title")}</h1>
             <p className="text-sm text-muted-foreground max-w-md">{t("subtitle")}</p>
             <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-500 dark:text-violet-300">
@@ -173,10 +173,10 @@ export function GettingStarted({
                         {t(`steps.${step.key}.title`)}
                       </p>
                       {isNext && (
-                        <span className="rounded-full bg-[#00F0FF]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#00F0FF]">{t("statusNext")}</span>
+                        <span className="rounded-full bg-[#00F0FF]/15 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#00F0FF]">{t("statusNext")}</span>
                       )}
                       {isDone && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-emerald-500 dark:text-emerald-400"><Check className="h-3 w-3" />{t("statusDone")}</span>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide text-emerald-500 dark:text-emerald-400"><Check className="h-3 w-3" />{t("statusDone")}</span>
                       )}
                     </div>
                     <p className="mt-0.5 text-xs text-muted-foreground/80">{t(`steps.${step.key}.desc`)}</p>

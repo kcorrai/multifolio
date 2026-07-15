@@ -41,7 +41,7 @@
       "badge": "Beta — first 100 users free",
       "title": "Manage your freelance career <hl>from one platform</hl>.",
       "subtitle": "Enter your profile once. AI adapts it for {platforms}, builds your CV and portfolio, and finds jobs that fit — all in one place.",
-      "platformsSupported": "5 platforms supported",
+      "platformsSupported": "8 platforms supported",
       "ctaPrimary": "Get started now",
       "ctaSecondary": "See features",
       "trust1": "No credit card required",
@@ -362,7 +362,7 @@
       "headlinePost": ".",
       "supportedPlatforms": "Supported platforms",
       "mobileTaglinePre": "One profile.",
-      "mobileTaglineHighlight": "5 platforms.",
+      "mobileTaglineHighlight": "8 platforms.",
       "mobileTaglineSub": "Manage your freelance career from one place."
     }
   },
@@ -394,7 +394,7 @@
       "step1Label": "Fill in profile",
       "step1Desc": "Enter your headline, summary and skills.",
       "step2Label": "Adapt platforms",
-      "step2Desc": "Optimize for 5 platforms with AI.",
+      "step2Desc": "Optimize for 8 platforms with AI.",
       "eyebrow": "Panel",
       "title": "Overview",
       "credits": "Credits",
@@ -851,15 +851,30 @@
         "Highlight fast delivery and a clear scope of what's included.",
         "Use benefit-driven language buyers can grasp in seconds."
       ],
-      "bionluk": [
-        "A personalized proposal beats a generic gig — address the specific need.",
-        "Write in fluent Turkish with a friendly, trustworthy tone.",
-        "Show local references and quick communication."
+      "freelancer": [
+        "Win bids by showing you understood the project in the first two lines.",
+        "Highlight delivery reliability and concrete outcomes over generic claims.",
+        "Load your profile with the exact skill keywords clients search for."
       ],
-      "armut": [
-        "Respond fast and be specific about how you'll do the work.",
-        "State pricing and scope clearly to build trust up front.",
-        "Emphasize reliability and past customer satisfaction."
+      "contra": [
+        "Lead with your personal brand — who you are and the results you deliver.",
+        "Let your portfolio do the talking; link real work as proof.",
+        "Keep the tone warm and independent — commission-free, quality-first."
+      ],
+      "peopleperhour": [
+        "Target the client's problem directly in your opening lines.",
+        "Offer clear fixed-price 'Hourlies' for repeatable, well-scoped work.",
+        "Emphasize reliable delivery and sprinkle relevant skill keywords."
+      ],
+      "99designs": [
+        "State your design specialty precisely (e.g. 'Logo & Brand Identity Designer').",
+        "Let visuals carry the pitch — reference a relevant piece from your portfolio.",
+        "Be creative but outcome-focused about the problem you solve."
+      ],
+      "guru": [
+        "Show you grasp the project scope in the first two sentences of your quote.",
+        "Back your expertise with concrete, measurable results.",
+        "Be clear about process and delivery to build trust across categories."
       ]
     }
   },
@@ -1778,7 +1793,54 @@
     "strengths": "What worked",
     "improvements": "How to improve",
     "modelAnswer": "Model answer (from your background)",
-    "tryAgain": "Try this question again"
+    "tryAgain": "Try this question again",
+    "difficultyLabel": "Difficulty",
+    "difficulty": {
+      "junior": "Junior",
+      "juniorDesc": "0–2 yrs · fundamentals",
+      "mid": "Mid",
+      "midDesc": "2–5 yrs · practical depth",
+      "senior": "Senior",
+      "seniorDesc": "5+ yrs · architecture & judgment"
+    },
+    "countLabel": "Questions",
+    "categoryLabel": "Focus areas",
+    "categoryHint": "Leave all off to cover every category.",
+    "timerLabel": "Show a timer while I answer",
+    "elapsed": "{time} elapsed",
+    "followUpTitle": "Follow-up question",
+    "followUpHint": "A real interviewer would probe further. Answer this too:",
+    "answerFollowUp": "Answer follow-up",
+    "questionOf": "Question {current} of {total}",
+    "next": "Next question",
+    "finish": "Finish & see report",
+    "finishing": "Building report…",
+    "report": {
+      "title": "Session report",
+      "overall": "Overall score",
+      "answered": "{count} of {total} answered",
+      "noAnswers": "Answer at least one question to get a score.",
+      "strengthsTitle": "Recurring strengths",
+      "improvementsTitle": "Focus on next time",
+      "breakdown": "Question breakdown",
+      "unanswered": "Not answered",
+      "newSession": "New session",
+      "close": "Close"
+    },
+    "history": {
+      "title": "Past sessions",
+      "empty": "No sessions yet. Finish one to track your progress.",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "resume": "Resume",
+      "viewReport": "View report",
+      "questions": "{count} questions"
+    },
+    "voice": {
+      "start": "Dictate answer",
+      "stop": "Stop dictation",
+      "listening": "Listening…"
+    }
   },
   "coverLetter": {
     "title": "Cover letter",

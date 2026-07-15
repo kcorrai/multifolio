@@ -43,7 +43,7 @@ export function RiskBadges({ risks }: { risks: string[] }) {
       </p>
       <ul className="space-y-1">
         {risks.map((risk, i) => (
-          <li key={i} className="rounded-md bg-amber-50 px-2 py-1 text-[11px] leading-snug text-amber-700 ring-1 ring-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:ring-amber-800">
+          <li key={i} className="rounded-md bg-amber-50 px-2 py-1 text-xs leading-snug text-amber-700 ring-1 ring-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:ring-amber-800">
             {risk}
           </li>
         ))}
@@ -63,7 +63,7 @@ export function MatchImprovements({ improvements }: { improvements: string[] }) 
       </p>
       <ul className="space-y-1">
         {improvements.map((item, i) => (
-          <li key={i} className="flex items-start gap-1.5 text-[11px] leading-snug text-muted-foreground">
+          <li key={i} className="flex items-start gap-1.5 text-xs leading-snug text-muted-foreground">
             <span className="mt-1 h-1 w-1 rounded-full bg-[#00F0FF] shrink-0" />
             <span>{item}</span>
           </li>
@@ -82,7 +82,7 @@ export function MatchRubric({ rubric }: { rubric: JobMatchRubric }) {
         const dim = rubric[key];
         return (
           <div key={key} className="space-y-0.5">
-            <div className="flex items-center justify-between gap-2 text-[11px]">
+            <div className="flex items-center justify-between gap-2 text-xs">
               <span className="font-medium">
                 {t(`dimensions.${key}`)}{" "}
                 <span className="text-muted-foreground/60">{t("weight", { percent: Math.round(RUBRIC_WEIGHTS[key] * 100) })}</span>
@@ -92,7 +92,7 @@ export function MatchRubric({ rubric }: { rubric: JobMatchRubric }) {
             <div className="h-1 rounded-full bg-muted overflow-hidden">
               <div className={`h-full rounded-full ${scoreBarColor(dim.score)}`} style={{ width: `${dim.score}%` }} />
             </div>
-            <p className="text-[11px] text-muted-foreground leading-snug">{dim.reason}</p>
+            <p className="text-xs text-muted-foreground leading-snug">{dim.reason}</p>
           </div>
         );
       })}

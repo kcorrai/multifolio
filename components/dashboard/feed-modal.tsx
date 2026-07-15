@@ -125,19 +125,19 @@ export function FeedModal({
           <div className="space-y-1.5">
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.keywordsLabel")}</span>
             <ChipsInput values={keywords} onChange={setKeywords} placeholder={t("modal.addKeyword")} removeTitle={t("modal.removeKeyword")} max={10} />
-            <p className="text-[11px] text-muted-foreground/70">{t("modal.keywordsHint")}</p>
+            <p className="text-xs text-muted-foreground/70">{t("modal.keywordsHint")}</p>
           </div>
 
           <div className="space-y-1.5">
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.excludeKeywordsLabel")}</span>
             <ChipsInput values={excludeKeywords} onChange={setExcludeKeywords} placeholder={t("modal.addExcludeKeyword")} removeTitle={t("modal.removeKeyword")} max={20} />
-            <p className="text-[11px] text-muted-foreground/70">{t("modal.excludeKeywordsHint")}</p>
+            <p className="text-xs text-muted-foreground/70">{t("modal.excludeKeywordsHint")}</p>
           </div>
 
           <div className="space-y-1.5">
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.excludeCountriesLabel")}</span>
             <ChipsInput values={excludeCountries} onChange={setExcludeCountries} placeholder={t("modal.addCountry")} removeTitle={t("modal.removeKeyword")} max={20} />
-            <p className="text-[11px] text-muted-foreground/70">{t("modal.excludeCountriesHint")}</p>
+            <p className="text-xs text-muted-foreground/70">{t("modal.excludeCountriesHint")}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -154,7 +154,7 @@ export function FeedModal({
           <label className="block space-y-1">
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.minClientSpentLabel")}</span>
             <input value={minClientSpent} onChange={(e) => setMinClientSpent(e.target.value)} inputMode="numeric" placeholder="1000" className={numericInput} />
-            <p className="text-[11px] text-muted-foreground/70">{t("modal.minClientSpentHint")}</p>
+            <p className="text-xs text-muted-foreground/70">{t("modal.minClientSpentHint")}</p>
           </label>
 
           <div className="space-y-1.5">
@@ -167,7 +167,7 @@ export function FeedModal({
               onChange={(e) => setMinScore(Number(e.target.value))}
               className="w-full accent-[#00F0FF] cursor-pointer"
             />
-            <p className="text-[11px] text-muted-foreground/70">{t("modal.minScoreHint")}</p>
+            <p className="text-xs text-muted-foreground/70">{t("modal.minScoreHint")}</p>
           </div>
 
           <label className="flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 p-3 cursor-pointer">
@@ -181,7 +181,7 @@ export function FeedModal({
               <span className="flex items-center gap-1.5 text-xs font-semibold">
                 <Bell className="h-3.5 w-3.5 text-[#00F0FF]" />{t("modal.notifyLabel")}
               </span>
-              <span className="block text-[11px] text-muted-foreground/70 mt-0.5">{t("modal.notifyHint")}</span>
+              <span className="block text-xs text-muted-foreground/70 mt-0.5">{t("modal.notifyHint")}</span>
             </span>
           </label>
 

@@ -86,14 +86,14 @@ export function RoiCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean }) 
             ))}
             <Input id="roi-connects" inputMode="decimal" value={connectsPer} onChange={(e) => setConnectsPer(e.target.value)} className={`${inputCls} w-20`} />
           </div>
-          <p className="text-[11px] text-muted-foreground/70">{t("connectsHint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("connectsHint")}</p>
         </div>
 
         {/* Connect maliyeti */}
         <div className="space-y-1.5">
           <label className={labelCls} htmlFor="roi-cost">{t("costPerConnect")}</label>
           <Input id="roi-cost" inputMode="decimal" value={costPer} onChange={(e) => setCostPer(e.target.value)} className={`${inputCls} w-28`} />
-          <p className="text-[11px] text-muted-foreground/70">{t("costHint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("costHint")}</p>
         </div>
 
         {/* Kazanma oranı */}
@@ -105,7 +105,7 @@ export function RoiCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean }) 
             ))}
             <Input id="roi-win" inputMode="decimal" value={winRate} onChange={(e) => setWinRate(e.target.value)} className={`${inputCls} w-20`} />
           </div>
-          <p className="text-[11px] text-muted-foreground/70">{t("winRateHint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("winRateHint")}</p>
         </div>
 
         {/* Ortalama proje değeri */}
@@ -149,12 +149,12 @@ export function RoiCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean }) 
                 ))}
               </div>
 
-              <p className={`text-[11px] pt-1 leading-relaxed ${profitable ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`}>
+              <p className={`text-xs pt-1 leading-relaxed ${profitable ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`}>
                 {profitable
                   ? t("profit", { multiple: numFmt.format(result.roiMultiple) })
                   : t("loss")}
               </p>
-              <p className="text-[11px] text-muted-foreground pt-0.5">
+              <p className="text-xs text-muted-foreground pt-0.5">
                 {t("breakEven", { rate: numFmt.format(result.breakEvenWinRatePct) })}
               </p>
             </>
@@ -166,7 +166,7 @@ export function RoiCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean }) 
           )}
         </div>
 
-        <p className="flex items-start gap-2 text-[11px] text-muted-foreground/70 leading-relaxed">
+        <p className="flex items-start gap-2 text-xs text-muted-foreground/70 leading-relaxed">
           <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
           {t("disclaimer")}
         </p>

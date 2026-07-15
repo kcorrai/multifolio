@@ -1,11 +1,13 @@
 // POST /api/interview/mock/feedback → adayın bir soruya verdiği cevabı değerlendirir.
 // Kredili (mock_answer=1; kullanıcı hangi cevabı göndereceğini seçer → kredi kontrolü).
+// session_id + question_index verilirse cevap+feedback oturuma KALICI yazılır (birincil cevap);
+// takip sorusu cevapları session_id'siz gelir → değerlendirilir ama oturuma yazılmaz.
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
-import { mockFeedbackRequestSchema } from "@/lib/validation/schemas/mock-interview";
+import { mockFeedbackRequestSchema, type InterviewQuestionRecord } from "@/lib/validation/schemas/mock-interview";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { evaluateMockAnswer } from "@/lib/ai/mock-interview";
@@ -55,6 +57,36 @@ export const POST = withErrorHandler(async (req) => {
     credits_spent: spent,
   });
   if (usageError) throw usageError;
+
+  // Birincil cevap → oturumdaki ilgili soruya kalıcı yaz (RLS sahip; oturum kullanıcının).
+  if (input.session_id && input.question_index !== undefined) {
+    const { data: session } = await supabase
+      .from("interview_sessions")
+      .select("questions, status")
+      .eq("id", input.session_id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (session && session.status === "active") {
+      const questions = (session.questions as InterviewQuestionRecord[]) ?? [];
+      const idx = input.question_index;
+      if (idx >= 0 && idx < questions.length) {
+        questions[idx] = {
+          ...questions[idx],
+          answer: input.answer,
+          score: result.result.score,
+          strengths: result.result.strengths,
+          improvements: result.result.improvements,
+          modelAnswer: result.result.modelAnswer,
+        };
+        const { error: updateError } = await supabase
+          .from("interview_sessions")
+          .update({ questions })
+          .eq("id", input.session_id)
+          .eq("user_id", user.id);
+        if (updateError) throw updateError;
+      }
+    }
+  }
 
   return NextResponse.json({ feedback: result.result, credits: { balance, spent } });
 });

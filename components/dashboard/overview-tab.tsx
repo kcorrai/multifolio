@@ -101,7 +101,7 @@ export function OverviewTab({
 
       {/* Section title */}
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
         <h2 className="text-2xl font-bold tracking-tight mt-1">{t("title")}</h2>
         <p className="text-sm text-muted-foreground mt-0.5 capitalize">
           {new Date().toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
@@ -111,7 +111,7 @@ export function OverviewTab({
       {/* Stat cards */}
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
         <StatCard icon={Wallet} tint={TINT_VIOLET} label={t("credits")} value={credits}>
-          <button onClick={triggerComingSoon} className="flex items-center gap-1 text-[11px] text-violet-400 hover:text-violet-300 font-medium transition-colors cursor-pointer">
+          <button onClick={triggerComingSoon} className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 font-medium transition-colors cursor-pointer">
             <ShoppingCart className="h-3 w-3" />{t("buyCredits")}
           </button>
         </StatCard>
@@ -145,7 +145,7 @@ export function OverviewTab({
                     <span className="text-xs font-medium text-muted-foreground">{c.label}</span>
                   </div>
                   <p className="text-2xl font-bold tabular-nums">{c.value}</p>
-                  {c.sub && <p className="text-[11px] text-muted-foreground/70 mt-0.5">{c.sub}</p>}
+                  {c.sub && <p className="text-xs text-muted-foreground/70 mt-0.5">{c.sub}</p>}
                 </div>
               ))}
             </div>
@@ -188,7 +188,7 @@ export function OverviewTab({
                     <div key={date} className="group relative flex-1 min-w-0" title={`${date}: ${dayCredits}`}>
                       <div className="w-full rounded-t-sm bg-[#00F0FF]/40 hover:bg-[#00F0FF] transition-colors"
                         style={{ height: `${Math.max((dayCredits / max) * 100, 4)}%` }} />
-                      <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 hidden group-hover:block text-[10px] bg-foreground text-background rounded px-1.5 py-0.5 whitespace-nowrap z-10">
+                      <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 hidden group-hover:block text-[11px] bg-foreground text-background rounded px-1.5 py-0.5 whitespace-nowrap z-10">
                         {dayCredits}
                       </span>
                     </div>
@@ -196,7 +196,7 @@ export function OverviewTab({
                 </div>
               );
             })()}
-            <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
+            <div className="flex justify-between mt-2 text-[11px] text-muted-foreground">
               <span>{analytics.dailySeries[0]?.date?.slice(5)}</span>
               <span>{analytics.dailySeries.at(-1)?.date?.slice(5)}</span>
             </div>
@@ -232,7 +232,7 @@ export function OverviewTab({
                   <Briefcase className="h-5 w-5 text-muted-foreground/40" />
                 </div>
                 <p className="text-xs text-muted-foreground">{t("noJobs")}</p>
-                <p className="text-[11px] text-muted-foreground/60 max-w-[180px]">{t("noJobsHint")}</p>
+                <p className="text-xs text-muted-foreground/60 max-w-[180px]">{t("noJobsHint")}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -241,19 +241,19 @@ export function OverviewTab({
                     <div className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${STATUS_DOT[job.status]}`} />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{job.title}</p>
-                      <p className="text-[11px] text-muted-foreground truncate">
+                      <p className="text-xs text-muted-foreground truncate">
                         {[job.company, ts(`status.${job.status}`)].filter(Boolean).join(" · ")}
                       </p>
                     </div>
                     {job.match_score !== null && (
-                      <span className={`text-[10px] font-bold rounded-md px-1.5 py-0.5 tabular-nums shrink-0 ${scoreColor(job.match_score)}`}>
+                      <span className={`text-[11px] font-bold rounded-md px-1.5 py-0.5 tabular-nums shrink-0 ${scoreColor(job.match_score)}`}>
                         {job.match_score}
                       </span>
                     )}
                   </div>
                 ))}
                 {jobs.length > 4 && (
-                  <Link href="/dashboard/jobs" className="block text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                  <Link href="/dashboard/jobs" className="block text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                     {t("moreJobs", { count: jobs.length - 4 })}
                   </Link>
                 )}
@@ -319,7 +319,7 @@ export function OverviewTab({
                     <span className="text-xs font-bold tabular-nums w-16 text-right">
                       {r.winRate != null ? `${r.winRate}%` : ta("winRatePending")}
                     </span>
-                    <span className="text-[10px] text-muted-foreground/70 w-20 text-right shrink-0">
+                    <span className="text-[11px] text-muted-foreground/70 w-20 text-right shrink-0">
                       {ta("winRateApplied", { count: r.applied })}
                     </span>
                   </div>

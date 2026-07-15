@@ -57,7 +57,7 @@ export function LeadsManager() {
         <Inbox className="h-4 w-4 text-[#00F0FF]" />
         <h3 className="text-sm font-bold">{t("title")}</h3>
         {newCount > 0 && (
-          <span className="ml-auto rounded-full bg-[#00F0FF] px-2 py-0.5 text-[10px] font-bold text-[#090A0F] tabular-nums">
+          <span className="ml-auto rounded-full bg-[#00F0FF] px-2 py-0.5 text-[11px] font-bold text-[#090A0F] tabular-nums">
             {t("newBadge", { count: newCount })}
           </span>
         )}
@@ -74,12 +74,12 @@ export function LeadsManager() {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="flex items-center gap-1.5 text-sm font-semibold">
-                    <span className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-bold ${TIER_STYLE[score.tier]}`}>
+                    <span className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[11px] font-bold ${TIER_STYLE[score.tier]}`}>
                       {t(`tier.${score.tier}`)}
                     </span>
                     <span className="truncate">{l.name}</span>
                   </p>
-                  <a href={`mailto:${l.email}`} className="inline-flex items-center gap-1 text-[11px] text-[#00c2cc] dark:text-[#00F0FF] hover:underline">
+                  <a href={`mailto:${l.email}`} className="inline-flex items-center gap-1 text-xs text-[#00c2cc] dark:text-[#00F0FF] hover:underline">
                     <Mail className="h-3 w-3" />{l.email}
                   </a>
                 </div>
@@ -87,7 +87,7 @@ export function LeadsManager() {
                   aria-label={t("statusLabel")}
                   value={l.status}
                   onChange={(e) => setStatus(l.id, e.target.value as LeadStatus)}
-                  className={`shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-semibold cursor-pointer ${STATUS_STYLE[l.status]}`}
+                  className={`shrink-0 rounded-md border px-1.5 py-0.5 text-[11px] font-semibold cursor-pointer ${STATUS_STYLE[l.status]}`}
                 >
                   {STATUS_ORDER.map((s) => (
                     <option key={s} value={s}>{t(`status.${s}`)}</option>
@@ -98,7 +98,7 @@ export function LeadsManager() {
               {(l.project_type || l.budget || l.timeline) && (
                 <div className="flex flex-wrap gap-1.5">
                   {[l.project_type, l.budget, l.timeline].filter(Boolean).map((x, i) => (
-                    <span key={i} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{x}</span>
+                    <span key={i} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{x}</span>
                   ))}
                 </div>
               )}

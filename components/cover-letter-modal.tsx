@@ -76,7 +76,7 @@ export function CoverLetterModal({ jobId, jobDescription, onClose, onCreditsUpda
             </div>
             <div>
               <h3 className="text-sm font-bold">{t("title")}</h3>
-              <p className="text-[11px] text-muted-foreground">{t("subtitle")}</p>
+              <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
             </div>
           </div>
           <button onClick={onClose} title={t("close")} aria-label={t("close")} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
@@ -104,7 +104,7 @@ export function CoverLetterModal({ jobId, jobDescription, onClose, onCreditsUpda
               <div className="flex justify-end">
                 <button
                   onClick={() => { navigator.clipboard.writeText(content); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-                  className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
                 >
                   {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
                   {copied ? t("copied") : t("copy")}

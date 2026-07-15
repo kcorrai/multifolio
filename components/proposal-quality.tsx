@@ -23,19 +23,19 @@ export function ProposalQualityBadge({ text, length = "standard", jobDescription
     <div className="space-y-2">
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-semibold text-muted-foreground">{t("label")}</span>
-        <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold tabular-nums ${BAND_STYLE[q.band]}`}>
+        <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-bold tabular-nums ${BAND_STYLE[q.band]}`}>
           {q.score} · {t(`band.${q.band}`)}
         </span>
-        <span className="text-[11px] text-muted-foreground/70">{t("wordCount", { count: q.wordCount })}</span>
+        <span className="text-xs text-muted-foreground/70">{t("wordCount", { count: q.wordCount })}</span>
       </div>
       {q.issues.length === 0 ? (
-        <p className="flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400">
+        <p className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400">
           <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />{t("allGood")}
         </p>
       ) : (
         <ul className="space-y-1">
           {q.issues.map((iss) => (
-            <li key={iss} className="flex items-start gap-1.5 text-[11px] text-muted-foreground">
+            <li key={iss} className="flex items-start gap-1.5 text-xs text-muted-foreground">
               <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-px text-amber-500" />{t(`issue.${iss}`)}
             </li>
           ))}

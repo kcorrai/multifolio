@@ -38,7 +38,7 @@ export async function FeedShowcase() {
     { title: "Landing page revamp", platform: "upwork", score: 88, budget: "$1.2k", skills: ["Tailwind", "SEO"], unread: false },
   ];
 
-  const navItem = "flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-slate-500 dark:text-white/50";
+  const navItem = "flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-500 dark:text-white/50";
 
   return (
     // Dekoratif vitrin: bölüm başlığı/açıklaması anlamı taşır; ekran okuyucu sahte
@@ -46,20 +46,20 @@ export async function FeedShowcase() {
     <div className="flex text-left" aria-hidden="true">
       {/* Sol: feed sidebar */}
       <aside className="hidden sm:flex w-44 shrink-0 flex-col gap-1 border-r border-slate-200 p-3 dark:border-white/8">
-        <div className="mb-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#00F0FF] py-1.5 text-[11px] font-bold text-[#04121a]">
+        <div className="mb-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#00F0FF] py-1.5 text-xs font-bold text-[#04121a]">
           <Plus className="h-3.5 w-3.5" />{tf("createFeed")}
         </div>
         <p className="px-2 pt-1 text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/30">{tf("savedFeeds")}</p>
-        <div className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-slate-500 dark:text-white/50">
+        <div className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-500 dark:text-white/50">
           <span className="inline-flex items-center gap-2"><Layers className="h-3.5 w-3.5" />{tf("allJobs")}</span>
-          <span className="text-[10px] tabular-nums text-slate-400 dark:text-white/30">40</span>
+          <span className="text-[11px] tabular-nums text-slate-400 dark:text-white/30">40</span>
         </div>
         {feeds.map((f, i) => (
-          <div key={f.name} className={`flex items-center justify-between rounded-lg border px-2.5 py-1.5 text-[11px] font-medium ${i === 0 ? "border-[#00F0FF]/30 bg-[#00F0FF]/10 text-slate-800 dark:text-white" : "border-transparent text-slate-500 dark:text-white/50"}`}>
+          <div key={f.name} className={`flex items-center justify-between rounded-lg border px-2.5 py-1.5 text-xs font-medium ${i === 0 ? "border-[#00F0FF]/30 bg-[#00F0FF]/10 text-slate-800 dark:text-white" : "border-transparent text-slate-500 dark:text-white/50"}`}>
             <span className="inline-flex items-center gap-2 min-w-0"><Rss className="h-3.5 w-3.5 shrink-0 text-[#00F0FF]/70" /><span className="truncate">{f.name}</span></span>
             {f.unread > 0
-              ? <span className="rounded-full bg-[#00F0FF]/20 px-1.5 text-[10px] font-bold tabular-nums text-[#00F0FF]">{f.unread}</span>
-              : <span className="text-[10px] tabular-nums text-slate-400 dark:text-white/30">{f.count}</span>}
+              ? <span className="rounded-full bg-[#00F0FF]/20 px-1.5 text-[11px] font-bold tabular-nums text-[#00F0FF]">{f.unread}</span>
+              : <span className="text-[11px] tabular-nums text-slate-400 dark:text-white/30">{f.count}</span>}
           </div>
         ))}
         <div className="my-1.5 border-t border-slate-200 dark:border-white/8" />
@@ -72,7 +72,7 @@ export async function FeedShowcase() {
       <div className="flex-1 min-w-0 border-r border-slate-200 dark:border-white/8">
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-2.5 dark:border-white/8">
           <span className="text-xs font-bold text-slate-800 dark:text-white">{tf("railTitle")}</span>
-          <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-slate-400 dark:text-white/40"><CheckCheck className="h-3 w-3" />{tf("markAllRead")}</span>
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-400 dark:text-white/40"><CheckCheck className="h-3 w-3" />{tf("markAllRead")}</span>
         </div>
         <div className="divide-y divide-slate-100 dark:divide-white/5">
           {jobs.map((j) => (
@@ -87,7 +87,7 @@ export async function FeedShowcase() {
                   )}
                   <span className={`truncate text-[12px] ${j.unread ? "font-bold text-slate-900 dark:text-white" : "font-medium text-slate-500 dark:text-white/60"}`}>{j.title}</span>
                 </div>
-                <div className="mt-1 flex items-center gap-2 text-[10px] text-slate-400 dark:text-white/35">
+                <div className="mt-1 flex items-center gap-2 text-[11px] text-slate-400 dark:text-white/35">
                   <span>{j.budget}</span><span>·</span><span>{td("remote")}</span>
                 </div>
                 <div className="mt-1.5 flex flex-wrap gap-1">
@@ -96,7 +96,7 @@ export async function FeedShowcase() {
                   ))}
                 </div>
               </div>
-              <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-extrabold tabular-nums ${scoreTone(j.score)}`}>{j.score}</span>
+              <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-xs font-extrabold tabular-nums ${scoreTone(j.score)}`}>{j.score}</span>
             </div>
           ))}
         </div>
@@ -106,7 +106,7 @@ export async function FeedShowcase() {
       <aside className="hidden lg:block w-56 shrink-0 space-y-3 p-4">
         <p className="text-sm font-bold text-slate-800 dark:text-white">{feeds[0].name}</p>
         <div className="rounded-xl border border-slate-200 p-3 dark:border-white/8">
-          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-slate-700 dark:text-white/80"><SlidersHorizontal className="h-3.5 w-3.5 text-[#00F0FF]" />{tf("settingsPrefilter")}</div>
+          <div className="mb-2 flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-white/80"><SlidersHorizontal className="h-3.5 w-3.5 text-[#00F0FF]" />{tf("settingsPrefilter")}</div>
           <div className="flex flex-wrap gap-1">
             {["react", "next.js", "remote", "senior"].map((k) => (
               <span key={k} className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-medium text-slate-500 dark:bg-white/8 dark:text-white/50">{k}</span>
@@ -114,16 +114,16 @@ export async function FeedShowcase() {
           </div>
         </div>
         <div className="rounded-xl border border-slate-200 p-3 dark:border-white/8">
-          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-slate-700 dark:text-white/80"><Sparkles className="h-3.5 w-3.5 text-[#00F0FF]" />{tf("settingsScoring")}</div>
-          <div className="flex items-center justify-between text-[10px] text-slate-400 dark:text-white/40"><span>{tf("showLowScores")}</span><span className="font-bold text-[#00F0FF]">7</span></div>
+          <div className="mb-2 flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-white/80"><Sparkles className="h-3.5 w-3.5 text-[#00F0FF]" />{tf("settingsScoring")}</div>
+          <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-white/40"><span>{tf("showLowScores")}</span><span className="font-bold text-[#00F0FF]">7</span></div>
           <div className="mt-1.5 h-1.5 rounded-full bg-slate-100 dark:bg-white/8"><div className="h-full w-[70%] rounded-full bg-[#00F0FF]" /></div>
         </div>
         <div className="rounded-xl border border-[#00F0FF]/30 bg-[#00F0FF]/[0.06] p-3">
           <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-700 dark:text-white/80"><Zap className="h-3.5 w-3.5 text-[#00F0FF]" />{tf("autoPilot.title")}</span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-white/80"><Zap className="h-3.5 w-3.5 text-[#00F0FF]" />{tf("autoPilot.title")}</span>
             <span className="inline-flex items-center gap-1 rounded-full bg-[#00F0FF] px-1.5 py-0.5 text-[8px] font-bold uppercase text-[#04121a]"><span className="h-1 w-1 rounded-full bg-[#04121a]" />{tf("autoPilot.on")}</span>
           </div>
-          <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-500 dark:text-white/50">
+          <div className="mt-1.5 flex items-center justify-between text-[11px] text-slate-500 dark:text-white/50">
             <span>{tf("autoPilot.dailyDrafts")}</span>
             <span className="font-semibold text-[#00F0FF]">{tf("autoPilot.noSubmit")}</span>
           </div>
@@ -149,7 +149,7 @@ export async function AutoPilotShowcase() {
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00F0FF]/12 text-[#00F0FF]">
               <s.icon className="h-4 w-4" />
             </span>
-            <span className="text-[11px] font-bold tabular-nums text-slate-300 dark:text-white/25">0{i + 1}</span>
+            <span className="text-xs font-bold tabular-nums text-slate-300 dark:text-white/25">0{i + 1}</span>
           </div>
           <p className="text-sm font-bold text-slate-900 dark:text-white">{s.title}</p>
           <p className="mt-1 text-[12px] leading-relaxed text-slate-500 dark:text-white/50">{s.desc}</p>
@@ -184,7 +184,7 @@ export async function PortfolioShowcase() {
           </div>
           <div className="flex flex-wrap justify-center gap-1.5">
             {["React", "Next.js", "UI/UX", "Figma"].map((s) => (
-              <span key={s} className="rounded-full border border-slate-200 bg-white/60 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-white/60">{s}</span>
+              <span key={s} className="rounded-full border border-slate-200 bg-white/60 px-2.5 py-0.5 text-xs font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-white/60">{s}</span>
             ))}
           </div>
           <span className="mt-1 inline-flex items-center gap-1.5 rounded-lg bg-[#00F0FF] px-4 py-1.5 text-[12px] font-bold text-[#04121a]">
@@ -231,7 +231,7 @@ export async function CvShowcase() {
       <div className="rounded-lg bg-white p-3 shadow-sm ring-1 ring-slate-200 dark:bg-[#0f1119] dark:ring-white/10">
         <div className="mb-2 flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-extrabold text-slate-900 dark:text-white">Ahmet Yılmaz</p>
+            <p className="text-xs font-extrabold text-slate-900 dark:text-white">Ahmet Yılmaz</p>
             <p className="text-[8px] font-medium text-slate-400 dark:text-white/40">Product Designer</p>
           </div>
           <span className="text-[8px] font-bold uppercase tracking-wide text-[#0891b2]">{t("tplClean")}</span>
@@ -261,7 +261,7 @@ export async function CvShowcase() {
           <p className="pt-1 text-[7px] font-bold uppercase text-[#0f766e]">{t("tplSidebar")}</p>
         </div>
         <div className="flex-1 space-y-1.5 p-2.5">
-          <p className="text-[10px] font-extrabold text-slate-900 dark:text-white">Ahmet Yılmaz</p>
+          <p className="text-[11px] font-extrabold text-slate-900 dark:text-white">Ahmet Yılmaz</p>
           {body("#0f766e")}
         </div>
       </div>

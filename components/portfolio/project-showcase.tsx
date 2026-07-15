@@ -46,7 +46,7 @@ export function ProjectShowcase({
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                   />
                   {p.images.length > 1 && (
-                    <span className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">
+                    <span className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2 py-0.5 text-xs font-semibold text-white backdrop-blur-sm">
                       {p.images.length}
                     </span>
                   )}
@@ -64,10 +64,10 @@ export function ProjectShowcase({
                 {(p.skills?.length ?? 0) > 0 && (
                   <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
                     {p.skills!.slice(0, 3).map((s) => (
-                      <span key={s} className="rounded-full border border-[var(--pf-border)] px-2 py-0.5 text-[10px] font-medium text-[var(--pf-muted)]">{s}</span>
+                      <span key={s} className="rounded-full border border-[var(--pf-border)] px-2 py-0.5 text-[11px] font-medium text-[var(--pf-muted)]">{s}</span>
                     ))}
                     {p.skills!.length > 3 && (
-                      <span className="rounded-full px-2 py-0.5 text-[10px] font-medium text-[var(--pf-muted)]">+{p.skills!.length - 3}</span>
+                      <span className="rounded-full px-2 py-0.5 text-[11px] font-medium text-[var(--pf-muted)]">+{p.skills!.length - 3}</span>
                     )}
                   </div>
                 )}

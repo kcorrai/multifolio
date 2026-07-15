@@ -73,7 +73,7 @@ export default async function PricingPage() {
 
           <ScrollReveal delay={80}>
             <div className="rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] overflow-hidden">
-              <div className="flex items-center justify-between px-6 py-3 border-b border-slate-100 dark:border-white/6 text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-white/30">
+              <div className="flex items-center justify-between px-6 py-3 border-b border-slate-100 dark:border-white/6 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-white/30">
                 <span>{t("colAction")}</span>
                 <span>{t("colCost")}</span>
               </div>

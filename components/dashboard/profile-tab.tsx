@@ -264,7 +264,7 @@ export function ProfileTab({
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">
               {t("identityEyebrow")}
             </p>
             <h2 className="mt-1 text-xl sm:text-2xl font-bold tracking-tight truncate">
@@ -305,7 +305,7 @@ export function ProfileTab({
           <CardContent className="space-y-5">
             {/* Çeviri: alanları kendi diline çevir (Kaydet'te kalıcı; orijinal geri alınabilir). */}
             <div className="flex items-center justify-between gap-2 rounded-lg bg-muted/40 px-3 py-2">
-              <p className="text-[11px] text-muted-foreground">{isTranslated ? t("translatedNote") : t("translateHint")}</p>
+              <p className="text-xs text-muted-foreground">{isTranslated ? t("translatedNote") : t("translateHint")}</p>
               {isTranslated ? (
                 <button onClick={showOriginalCore} className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[#00F0FF] hover:underline cursor-pointer">
                   <Languages className="h-3.5 w-3.5" />{t("showOriginal")}
@@ -414,7 +414,7 @@ export function ProfileTab({
                     {suggesting ? t("aiGenerating") : suggestion ? t("aiRegenerate") : t("aiGenerate")}
                   </Button>
                   {suggestError && (
-                    <p className="text-[11px] text-red-600 dark:text-red-400 flex items-start gap-1.5">
+                    <p className="text-xs text-red-600 dark:text-red-400 flex items-start gap-1.5">
                       <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-px" />{suggestError}
                     </p>
                   )}
@@ -430,10 +430,10 @@ export function ProfileTab({
                   ]).map(({ field, label, value }) => (
                     <div key={field} className="rounded-xl border border-border bg-background p-2.5">
                       <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</span>
                         <button
                           onClick={() => applyField(field)}
-                          className={`shrink-0 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold transition-colors cursor-pointer ${
+                          className={`shrink-0 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-semibold transition-colors cursor-pointer ${
                             applied[field]
                               ? "text-green-600 dark:text-green-400"
                               : "text-[#00F0FF] hover:bg-[#00F0FF]/10"
@@ -458,7 +458,7 @@ export function ProfileTab({
             <CardContent className="pt-4 space-y-3">
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t("connectedTitle")}</p>
-                <p className="text-[11px] text-muted-foreground/70 mt-0.5">{t("connectedDesc")}</p>
+                <p className="text-xs text-muted-foreground/70 mt-0.5">{t("connectedDesc")}</p>
               </div>
               {hasConnected ? (
                 <div className="space-y-2">
@@ -478,8 +478,8 @@ export function ProfileTab({
                             </a>
                           )}
                         </div>
-                        {c.headline && <p className="text-[11px] text-muted-foreground truncate">{c.headline}</p>}
-                        <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                        {c.headline && <p className="text-xs text-muted-foreground truncate">{c.headline}</p>}
+                        <p className="text-[11px] text-muted-foreground/60 mt-0.5">
                           {[
                             c.skills.length > 0 ? t("connectedSkills", { count: c.skills.length }) : null,
                             t("connectedUpdated", { date: new Date(c.fetchedAt).toLocaleDateString(locale) }),
@@ -541,7 +541,7 @@ export function ProfileTab({
                       className="flex aspect-square w-full flex-col items-center justify-center gap-0.5 rounded-lg border border-dashed border-border text-muted-foreground hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-colors cursor-pointer"
                     >
                       <span className="text-xl font-bold leading-none">…</span>
-                      <span className="text-[10px] font-semibold">+{portfolioImages.length - 6}</span>
+                      <span className="text-[11px] font-semibold">+{portfolioImages.length - 6}</span>
                     </button>
                   )}
                   {/* "+" galerisi: bağlı profillerdeki diğer fotoğraflardan ekle. */}
@@ -554,7 +554,7 @@ export function ProfileTab({
                       className="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-colors cursor-pointer"
                     >
                       <Plus className="h-5 w-5" />
-                      <span className="text-[10px] font-semibold">{t("addPhotosShort", { count: extraPhotos.length })}</span>
+                      <span className="text-[11px] font-semibold">{t("addPhotosShort", { count: extraPhotos.length })}</span>
                     </button>
                   )}
                 </div>
@@ -568,7 +568,7 @@ export function ProfileTab({
       {projects.length > 0 && (
         <div className="space-y-4">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("projectsEyebrow")}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("projectsEyebrow")}</p>
             <h2 className="mt-1 text-lg font-bold tracking-tight">{t("projectsTitle", { count: projects.length })}</h2>
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
@@ -599,7 +599,7 @@ export function ProfileTab({
                     {p.skills.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {p.skills.map((s) => (
-                          <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{s}</span>
+                          <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{s}</span>
                         ))}
                       </div>
                     )}
@@ -665,7 +665,7 @@ export function ProfileTab({
             <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
               <div className="min-w-0">
                 <h2 className="text-sm font-bold">{t("addPhotos")}</h2>
-                <p className="text-[11px] text-muted-foreground">{t("addPhotosDesc")}</p>
+                <p className="text-xs text-muted-foreground">{t("addPhotosDesc")}</p>
               </div>
               <button onClick={closePicker} title={t("lightboxClose")} aria-label={t("lightboxClose")} className="shrink-0 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                 <X className="h-4 w-4" />

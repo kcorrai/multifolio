@@ -51,7 +51,7 @@ export function ChipsInput({
       </div>
       {/* Limit sayacı: dolmaya yaklaşınca (son 3) amber → "+" neden pasif belli olur. */}
       {values.length > 0 && (
-        <p className={`text-right text-[10px] tabular-nums ${values.length >= max - 3 ? "text-amber-500" : "text-muted-foreground/50"}`}>
+        <p className={`text-right text-[11px] tabular-nums ${values.length >= max - 3 ? "text-amber-500" : "text-muted-foreground/50"}`}>
           {values.length}/{max}
         </p>
       )}

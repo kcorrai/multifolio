@@ -103,7 +103,7 @@ export function RecommendForm({ slug, accentHex = "#2563EB" }: { slug: string; a
       >
         <Send className="h-4 w-4" />{status === "sending" ? t("sending") : t("submit")}
       </button>
-      <p className="text-center text-[11px]" style={{ color: "var(--pf-muted)" }}>{t("moderationNote")}</p>
+      <p className="text-center text-xs" style={{ color: "var(--pf-muted)" }}>{t("moderationNote")}</p>
     </form>
   );
 }

@@ -146,7 +146,7 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
           <div className="space-y-1.5">
             <Label htmlFor="job-description">
               {t("description")} *
-              {hasProfile && <span className="ml-2 text-[11px] text-[#00F0FF] font-normal">{t("aiRequired")}</span>}
+              {hasProfile && <span className="ml-2 text-xs text-[#00F0FF] font-normal">{t("aiRequired")}</span>}
             </Label>
             <Textarea
               id="job-description"

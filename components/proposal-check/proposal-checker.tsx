@@ -32,7 +32,7 @@ export function ProposalChecker({ isLoggedIn = false }: { isLoggedIn?: boolean }
           placeholder={t("placeholder")}
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm leading-relaxed resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40"
         />
-        <p className="text-[11px] text-muted-foreground/70">{t("wordCount", { count: report.wordCount })}</p>
+        <p className="text-xs text-muted-foreground/70">{t("wordCount", { count: report.wordCount })}</p>
       </div>
 
       {/* Sonuç */}
@@ -75,10 +75,10 @@ export function ProposalChecker({ isLoggedIn = false }: { isLoggedIn?: boolean }
           {/* Klişe uyarıları */}
           {report.fillerFound.length > 0 && (
             <div className="pt-2 border-t border-[#00F0FF]/15 space-y-1.5">
-              <p className="text-[11px] font-semibold text-amber-600 dark:text-amber-400">{t("fillerLabel")}</p>
+              <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">{t("fillerLabel")}</p>
               <div className="flex flex-wrap gap-1.5">
                 {report.fillerFound.map((f) => (
-                  <span key={f} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300">
+                  <span key={f} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300">
                     {f}
                   </span>
                 ))}
@@ -87,7 +87,7 @@ export function ProposalChecker({ isLoggedIn = false }: { isLoggedIn?: boolean }
           )}
         </div>
 
-        <p className="flex items-start gap-2 text-[11px] text-muted-foreground/70 leading-relaxed">
+        <p className="flex items-start gap-2 text-xs text-muted-foreground/70 leading-relaxed">
           <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
           {t("disclaimer")}
         </p>

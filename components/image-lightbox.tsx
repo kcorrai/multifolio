@@ -110,8 +110,8 @@ export function ImageLightbox({
         >
           {title && <p className="text-sm font-bold leading-snug">{title}</p>}
           {description && <p className="mt-0.5 max-w-[72vw] text-xs leading-relaxed text-white/70 line-clamp-2">{description}</p>}
-          {cur.alt && cur.alt !== title && <p className="mt-0.5 text-[11px] text-white/60">{cur.alt}</p>}
-          {hasNav && <p className="mt-1 text-[11px] font-semibold tabular-nums text-white/70">{i + 1} / {count}</p>}
+          {cur.alt && cur.alt !== title && <p className="mt-0.5 text-xs text-white/60">{cur.alt}</p>}
+          {hasNav && <p className="mt-1 text-xs font-semibold tabular-nums text-white/70">{i + 1} / {count}</p>}
         </div>
       )}
     </div>,

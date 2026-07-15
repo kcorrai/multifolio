@@ -14,7 +14,7 @@ export function JobScamBadge({ text }: { text: string }) {
   if (findings.length === 0) return null;
   return (
     <span
-      className="inline-flex items-center gap-1 rounded-md bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-950/50 dark:text-red-300"
+      className="inline-flex items-center gap-1 rounded-md bg-red-100 px-1.5 py-0.5 text-[11px] font-semibold text-red-700 dark:bg-red-950/50 dark:text-red-300"
       title={t("badge")}
     >
       <ShieldAlert className="h-3 w-3" />
@@ -36,12 +36,12 @@ export function JobScamWarning({ text }: { text: string }) {
       </p>
       <ul className="space-y-1.5">
         {findings.map((f) => (
-          <li key={f.type} className="flex items-start gap-2 text-[11px] text-red-700/90 dark:text-red-200/90">
+          <li key={f.type} className="flex items-start gap-2 text-xs text-red-700/90 dark:text-red-200/90">
             <span className="mt-1 h-1.5 w-1.5 rounded-full shrink-0 bg-red-500" />
             <span className="leading-relaxed">
               {t(`items.${f.type}`)}
               {f.match && (
-                <code className="ml-1 rounded bg-red-100 dark:bg-red-900/40 px-1 py-0.5 font-mono text-[10px] break-all">
+                <code className="ml-1 rounded bg-red-100 dark:bg-red-900/40 px-1 py-0.5 font-mono text-[11px] break-all">
                   {f.match}
                 </code>
               )}
@@ -49,7 +49,7 @@ export function JobScamWarning({ text }: { text: string }) {
           </li>
         ))}
       </ul>
-      <p className="text-[10px] text-red-600/70 dark:text-red-300/60">{t("footnote")}</p>
+      <p className="text-[11px] text-red-600/70 dark:text-red-300/60">{t("footnote")}</p>
     </div>
   );
 }

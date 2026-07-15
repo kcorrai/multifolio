@@ -1,11 +1,12 @@
-// POST /api/interview/mock/start → sahte mülakat için rol-özel 6 soru üretir.
-// Kredili (mock_questions). Kalıcı DEĞİL (oturum istemcide tutulur).
+// POST /api/interview/mock/start → sahte mülakat için rol-özel sorular üretir + 'active'
+// bir oturum satırı açar (interview_sessions). Kredili (mock_questions). Oturum DB'de tutulur
+// → sayfa yenilense de sürer, bitince rapor + geçmişe düşer.
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { getUserLocale } from "@/i18n/locale";
 import { AuthError, NotFoundError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
-import { mockStartSchema } from "@/lib/validation/schemas/mock-interview";
+import { mockStartSchema, type InterviewQuestionRecord } from "@/lib/validation/schemas/mock-interview";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { generateMockQuestions } from "@/lib/ai/mock-interview";
@@ -41,7 +42,12 @@ export const POST = withErrorHandler(async (req) => {
 
   const locale = await getUserLocale();
   const { result, balance, spent } = await spendCredits(user.id, "mock_questions", async () => {
-    return generateMockQuestions(profile as ProfileInput, jobDescription, { locale });
+    return generateMockQuestions(profile as ProfileInput, jobDescription, {
+      locale,
+      difficulty: input.difficulty,
+      count: input.count,
+      categories: input.categories,
+    });
   });
 
   const admin = createSupabaseAdminClient();
@@ -56,5 +62,36 @@ export const POST = withErrorHandler(async (req) => {
   });
   if (usageError) throw usageError;
 
-  return NextResponse.json({ questions: result.result.questions, credits: { balance, spent } });
+  // Oturum satırını aç: sorular cevapsız kayıtlar olarak yazılır (cevaplandıkça dolar).
+  const questionRecords: InterviewQuestionRecord[] = result.result.questions.map((q) => ({
+    category: q.category,
+    question: q.question,
+    strongAnswerHint: q.strongAnswerHint,
+    answer: null,
+    score: null,
+    strengths: [],
+    improvements: [],
+    modelAnswer: null,
+  }));
+
+  const { data: session, error: sessionError } = await supabase
+    .from("interview_sessions")
+    .insert({
+      user_id: user.id,
+      job_id: input.job_id ?? null,
+      difficulty: input.difficulty,
+      categories: input.categories ?? [],
+      question_count: questionRecords.length,
+      status: "active",
+      questions: questionRecords,
+    })
+    .select("id")
+    .single();
+  if (sessionError) throw sessionError;
+
+  return NextResponse.json({
+    sessionId: session.id as string,
+    questions: result.result.questions,
+    credits: { balance, spent },
+  });
 });

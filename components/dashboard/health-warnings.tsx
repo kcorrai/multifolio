@@ -21,7 +21,7 @@ export function HealthWarnings({ text, platform }: { text: string; platform: Pla
       </p>
       <ul className="space-y-1.5">
         {findings.map((f) => (
-          <li key={f.type} className="flex items-start gap-2 text-[11px] text-amber-700/90 dark:text-amber-200/90">
+          <li key={f.type} className="flex items-start gap-2 text-xs text-amber-700/90 dark:text-amber-200/90">
             <span
               className={`mt-1 h-1.5 w-1.5 rounded-full shrink-0 ${
                 f.severity === "high" ? "bg-amber-500" : "bg-amber-400/60"
@@ -30,7 +30,7 @@ export function HealthWarnings({ text, platform }: { text: string; platform: Pla
             <span className="leading-relaxed">
               {t(`items.${f.type}`)}
               {f.match && (
-                <code className="ml-1 rounded bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 font-mono text-[10px] break-all">
+                <code className="ml-1 rounded bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 font-mono text-[11px] break-all">
                   {f.match}
                 </code>
               )}
@@ -38,7 +38,7 @@ export function HealthWarnings({ text, platform }: { text: string; platform: Pla
           </li>
         ))}
       </ul>
-      <p className="text-[10px] text-amber-600/70 dark:text-amber-300/60">{t("footnote")}</p>
+      <p className="text-[11px] text-amber-600/70 dark:text-amber-300/60">{t("footnote")}</p>
     </div>
   );
 }

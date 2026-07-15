@@ -127,23 +127,23 @@ export function FeedSettingsPanel({
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
             <p className="text-lg font-bold tabular-nums">{strength.matchedCount}</p>
-            <p className="text-[11px] text-muted-foreground">{t("strength.matched")}</p>
+            <p className="text-xs text-muted-foreground">{t("strength.matched")}</p>
           </div>
           <div>
             <p className="text-lg font-bold tabular-nums">{strength.precisionPct === null ? "—" : `${strength.precisionPct}%`}</p>
-            <p className="text-[11px] text-muted-foreground">{t("strength.precision")}</p>
+            <p className="text-xs text-muted-foreground">{t("strength.precision")}</p>
           </div>
           <div>
             <p className="text-lg font-bold tabular-nums">{strength.avgRelevance ?? "—"}</p>
-            <p className="text-[11px] text-muted-foreground">{t("strength.avgRelevance")}</p>
+            <p className="text-xs text-muted-foreground">{t("strength.avgRelevance")}</p>
           </div>
         </div>
         {strength.precisionPct === null && (
-          <p className="text-[11px] text-muted-foreground/70">{t("strength.noSignal")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("strength.noSignal")}</p>
         )}
         {strength.suggestAdd.length > 0 && (
           <div className="space-y-1.5">
-            <p className="text-[11px] font-semibold text-muted-foreground">{t("strength.suggestAdd")}</p>
+            <p className="text-xs font-semibold text-muted-foreground">{t("strength.suggestAdd")}</p>
             <div className="flex flex-wrap gap-1.5">
               {strength.suggestAdd.map((s) => (
                 <button
@@ -151,7 +151,7 @@ export function FeedSettingsPanel({
                   type="button"
                   onClick={() => addKeyword(s)}
                   disabled={keywords.length >= 10}
-                  className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2 py-0.5 text-[11px] font-medium hover:border-[#00F0FF] hover:text-[#00F0FF] transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2 py-0.5 text-xs font-medium hover:border-[#00F0FF] hover:text-[#00F0FF] transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <Plus className="h-3 w-3" />{s}
                 </button>
@@ -167,11 +167,11 @@ export function FeedSettingsPanel({
           <h4 className="text-sm font-bold flex items-center gap-2">
             <Zap className="h-4 w-4 text-[#00F0FF]" />{t("autoPilot.title")}
           </h4>
-          <span className="rounded-full bg-[#00F0FF]/12 px-2 py-0.5 text-[10px] font-semibold text-[#00F0FF]">
+          <span className="rounded-full bg-[#00F0FF]/12 px-2 py-0.5 text-[11px] font-semibold text-[#00F0FF]">
             {t("autoPilot.cost", { count: CREDIT_COSTS.proposal })}
           </span>
         </div>
-        <p className="text-[11px] leading-relaxed text-muted-foreground">{t("autoPilot.tagline")}</p>
+        <p className="text-xs leading-relaxed text-muted-foreground">{t("autoPilot.tagline")}</p>
 
         {/* ① Arka-plan otomatik taslak: opt-in, feed başına günlük tavan (kredi harcar). */}
         <div className="space-y-2">
@@ -192,16 +192,16 @@ export function FeedSettingsPanel({
               <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
             </div>
           </label>
-          <p className="text-[11px] text-muted-foreground/70">{t("autoDraft.hint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("autoDraft.hint")}</p>
           {autoDraftDaily > 0 && (
-            <p className="flex items-start gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-2 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+            <p className="flex items-start gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-2 text-xs font-medium text-amber-600 dark:text-amber-400">
               <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-px" />{t("autoDraft.warning", { count: autoDraftDaily })}
             </p>
           )}
         </div>
 
         {/* ② Asistanlı başvuru — gönderimi hep kullanıcı yapar. */}
-        <p className="pt-2 border-t border-[#00F0FF]/15 text-[11px] leading-relaxed text-muted-foreground">
+        <p className="pt-2 border-t border-[#00F0FF]/15 text-xs leading-relaxed text-muted-foreground">
           {t("assistedApply.desc")}
         </p>
       </div>
@@ -235,13 +235,13 @@ export function FeedSettingsPanel({
         <div className="space-y-1.5">
           <span className="text-xs font-semibold text-muted-foreground">{t("modal.keywordsLabel")}</span>
           <ChipsInput values={keywords} onChange={setKeywords} placeholder={t("modal.addKeyword")} removeTitle={t("modal.removeKeyword")} max={10} />
-          <p className="text-[11px] text-muted-foreground/70">{t("modal.keywordsHint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("modal.keywordsHint")}</p>
         </div>
 
         <div className="space-y-1.5">
           <span className="text-xs font-semibold text-muted-foreground">{t("modal.excludeKeywordsLabel")}</span>
           <ChipsInput values={excludeKeywords} onChange={setExcludeKeywords} placeholder={t("modal.addExcludeKeyword")} removeTitle={t("modal.removeKeyword")} max={20} />
-          <p className="text-[11px] text-muted-foreground/70">{t("modal.excludeKeywordsHint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("modal.excludeKeywordsHint")}</p>
         </div>
 
         <div className="space-y-1.5">
@@ -253,7 +253,7 @@ export function FeedSettingsPanel({
           <label className="block space-y-1">
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.minClientSpentLabel")}</span>
             <input value={minClientSpent} onChange={(e) => setMinClientSpent(e.target.value)} inputMode="numeric" placeholder="1000" className={input} />
-            <span className="block text-[11px] text-muted-foreground/70">{t("modal.minClientSpentHint")}</span>
+            <span className="block text-xs text-muted-foreground/70">{t("modal.minClientSpentHint")}</span>
           </label>
           <label className="block space-y-1">
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.minHourlyLabel")}</span>
@@ -294,9 +294,9 @@ export function FeedSettingsPanel({
             onChange={(e) => setMinScore(Number(e.target.value))}
             className="w-full accent-[#00F0FF] cursor-pointer"
           />
-          <p className="text-[11px] text-muted-foreground/70">{t("modal.minScoreHint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("modal.minScoreHint")}</p>
         </div>
-        <p className="text-[11px] text-muted-foreground/70">{t("modal.notifyHint")}</p>
+        <p className="text-xs text-muted-foreground/70">{t("modal.notifyHint")}</p>
       </div>
 
       </div>
@@ -311,7 +311,7 @@ export function FeedSettingsPanel({
             <button
               type="button"
               onClick={() => setProposalPrompt(defaultPrompt)}
-              className="text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("settingsProposalPromptReset")}
             </button>
@@ -325,7 +325,7 @@ export function FeedSettingsPanel({
           placeholder={t("settingsProposalPromptPlaceholder")}
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono leading-relaxed resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40"
         />
-        <p className="text-[11px] text-muted-foreground/70">{t("settingsProposalPromptHint")}</p>
+        <p className="text-xs text-muted-foreground/70">{t("settingsProposalPromptHint")}</p>
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}

@@ -190,7 +190,7 @@ export function PoolJobPanel({
               </div>
             )}
             {gate.warned && lowRelevance && (
-              <p className="text-[11px] text-amber-600 dark:text-amber-400 flex items-start gap-1.5">
+              <p className="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1.5">
                 <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-px" />{t("lowRelevanceWarn")}
               </p>
             )}
@@ -207,18 +207,18 @@ export function PoolJobPanel({
             <p className="text-xs font-semibold text-muted-foreground">{t("skillGapTitle")}</p>
             <div className="flex flex-wrap gap-1.5">
               {job.skillGap.matched.map((s) => (
-                <span key={`m-${s}`} className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                <span key={`m-${s}`} className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                   <Check className="h-3 w-3" />{s}
                 </span>
               ))}
               {job.skillGap.missing.map((s) => (
-                <span key={`x-${s}`} className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                <span key={`x-${s}`} className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                   {s}
                 </span>
               ))}
             </div>
             {job.skillGap.missing.length > 0 && (
-              <p className="text-[11px] text-muted-foreground">{t("skillGapMissingHint", { count: job.skillGap.missing.length })}</p>
+              <p className="text-xs text-muted-foreground">{t("skillGapMissingHint", { count: job.skillGap.missing.length })}</p>
             )}
           </div>
         )}
@@ -227,14 +227,14 @@ export function PoolJobPanel({
           <div className="flex items-center justify-between gap-2 mb-1">
             <p className="text-xs font-semibold text-muted-foreground">{t("description")}</p>
             {translating && (
-              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                 <Languages className="h-3 w-3" />{t("translating")}
               </span>
             )}
             {tr.text && (
               <button
                 onClick={() => setTr((s) => ({ ...s, showOriginal: !s.showOriginal }))}
-                className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <Languages className="h-3 w-3" />
                 {tr.showOriginal ? t("showTranslation") : t("showOriginal")}

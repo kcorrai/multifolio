@@ -552,12 +552,12 @@ function AtsPanel({ ats, history }: { ats: ReturnType<typeof scoreCv>; history: 
         <div className="flex shrink-0 flex-col items-center gap-2">
           <div className={`flex h-24 w-24 flex-col items-center justify-center rounded-2xl bg-muted/50 ring-4 ${ring}`}>
             <span className={`text-3xl font-extrabold tabular-nums ${color}`}>{ats.score}</span>
-            <span className="text-[11px] font-medium text-muted-foreground">{t(`verdict.${verdict}`)}</span>
+            <span className="text-xs font-medium text-muted-foreground">{t(`verdict.${verdict}`)}</span>
           </div>
           {trend && (
             <div className="flex flex-col items-center gap-0.5">
               <div className={color}><ScoreSparkline points={history.map((h) => h.score)} /></div>
-              <span className="text-[11px] font-medium text-muted-foreground">
+              <span className="text-xs font-medium text-muted-foreground">
                 {trend.delta >= 0 ? `+${trend.delta}` : trend.delta} · {t("trend30d")}
               </span>
             </div>

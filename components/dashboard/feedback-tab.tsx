@@ -88,7 +88,7 @@ export function FeedbackTab({ initialFeedback }: { initialFeedback: FeedbackRow[
               placeholder={t("messagePlaceholder")}
               className="resize-none"
             />
-            <p className="text-right text-[11px] text-muted-foreground/70">{message.length}/2000</p>
+            <p className="text-right text-xs text-muted-foreground/70">{message.length}/2000</p>
           </div>
 
           {error && (
@@ -124,7 +124,7 @@ export function FeedbackTab({ initialFeedback }: { initialFeedback: FeedbackRow[
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-semibold text-muted-foreground">{t(`category.${f.category}`)}</span>
-                      <span className="text-[11px] text-muted-foreground/70">
+                      <span className="text-xs text-muted-foreground/70">
                         {new Date(f.created_at).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-US")}
                       </span>
                     </div>

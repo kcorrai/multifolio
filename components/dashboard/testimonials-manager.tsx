@@ -66,17 +66,17 @@ export function TestimonialsManager({ slug, published }: { slug: string; publish
             <>
               {pending.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-400">{t("pending", { count: pending.length })}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-400">{t("pending", { count: pending.length })}</p>
                   {pending.map((tm) => (
                     <div key={tm.id} className="rounded-xl border border-amber-200 dark:border-amber-800/40 bg-amber-50/60 dark:bg-amber-950/20 p-3 space-y-2">
                       <p className="text-sm leading-relaxed">“{tm.quote}”</p>
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-[11px] text-muted-foreground">{tm.author_name}{tm.author_role ? ` · ${tm.author_role}` : ""}</span>
+                        <span className="text-xs text-muted-foreground">{tm.author_name}{tm.author_role ? ` · ${tm.author_role}` : ""}</span>
                         <div className="flex gap-1.5">
-                          <button onClick={() => setStatus(tm.id, "approved")} className="inline-flex items-center gap-1 rounded-md bg-emerald-500 px-2 py-1 text-[11px] font-semibold text-white hover:bg-emerald-600 transition-colors cursor-pointer">
+                          <button onClick={() => setStatus(tm.id, "approved")} className="inline-flex items-center gap-1 rounded-md bg-emerald-500 px-2 py-1 text-xs font-semibold text-white hover:bg-emerald-600 transition-colors cursor-pointer">
                             <Check className="h-3 w-3" />{t("approve")}
                           </button>
-                          <button onClick={() => setStatus(tm.id, "rejected")} className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] font-medium text-muted-foreground hover:bg-muted transition-colors cursor-pointer">
+                          <button onClick={() => setStatus(tm.id, "rejected")} className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs font-medium text-muted-foreground hover:bg-muted transition-colors cursor-pointer">
                             <X className="h-3 w-3" />{t("reject")}
                           </button>
                         </div>
@@ -88,12 +88,12 @@ export function TestimonialsManager({ slug, published }: { slug: string; publish
 
               {approved.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400">{t("approved", { count: approved.length })}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400">{t("approved", { count: approved.length })}</p>
                   {approved.map((tm) => (
                     <div key={tm.id} className="flex items-start justify-between gap-2 rounded-xl border border-border p-3">
                       <div>
                         <p className="text-sm leading-relaxed">“{tm.quote}”</p>
-                        <span className="text-[11px] text-muted-foreground">{tm.author_name}{tm.author_role ? ` · ${tm.author_role}` : ""}</span>
+                        <span className="text-xs text-muted-foreground">{tm.author_name}{tm.author_role ? ` · ${tm.author_role}` : ""}</span>
                       </div>
                       <button onClick={() => setStatus(tm.id, "rejected")} title={t("remove")} aria-label={t("remove")} className="text-muted-foreground/50 hover:text-destructive transition-colors shrink-0 cursor-pointer">
                         <X className="h-4 w-4" />

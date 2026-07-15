@@ -52,9 +52,9 @@ export function PipelineStats({ jobs }: { jobs: { status: JobStatus; referred?: 
         {tiles.map((tile) => (
           <div key={tile.label} className="rounded-xl border border-border bg-muted/30 px-3 py-2.5">
             <p className={`text-xl font-extrabold tabular-nums leading-none ${tile.tone}`}>{tile.value}</p>
-            <p className="text-[11px] text-muted-foreground mt-1 leading-tight">{tile.label}</p>
+            <p className="text-xs text-muted-foreground mt-1 leading-tight">{tile.label}</p>
             {tile.band && (
-              <p className={`text-[10px] font-semibold mt-0.5 leading-tight ${tile.tone}`}>{t(BAND_LABEL_KEY[tile.band])}</p>
+              <p className={`text-[11px] font-semibold mt-0.5 leading-tight ${tile.tone}`}>{t(BAND_LABEL_KEY[tile.band])}</p>
             )}
           </div>
         ))}
@@ -63,21 +63,21 @@ export function PipelineStats({ jobs }: { jobs: { status: JobStatus; referred?: 
       <div className="space-y-1.5">
         {funnel.map((f) => (
           <div key={f.label} className="flex items-center gap-2.5">
-            <span className="w-16 shrink-0 text-[11px] font-medium text-muted-foreground text-right">{f.label}</span>
+            <span className="w-16 shrink-0 text-xs font-medium text-muted-foreground text-right">{f.label}</span>
             <div className="flex-1 h-4 rounded-md bg-muted overflow-hidden">
               <div
                 className={`h-full rounded-md ${f.color} transition-all`}
                 style={{ width: `${p.sent > 0 ? Math.max(f.value > 0 ? 6 : 0, (f.value / p.sent) * 100) : 0}%` }}
               />
             </div>
-            <span className="w-7 shrink-0 text-[11px] font-bold tabular-nums text-right">{f.value}</span>
+            <span className="w-7 shrink-0 text-xs font-bold tabular-nums text-right">{f.value}</span>
           </div>
         ))}
       </div>
 
       {/* Referans içgörüsü: referanslılar ~2x daha iyi dönüşür (Ashby). */}
       {referredCount > 0 && (
-        <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
           {t("pipeline.referralNote", { count: referredCount })}
         </p>
       )}

@@ -94,7 +94,7 @@ export function RateCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean })
         <div className="space-y-1.5">
           <label className={labelCls} htmlFor="rate-exp">{t("expenses")}</label>
           <Input id="rate-exp" inputMode="decimal" value={expenses} onChange={(e) => setExpenses(e.target.value)} className={inputCls} />
-          <p className="text-[11px] text-muted-foreground/70">{t("expensesHint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("expensesHint")}</p>
         </div>
 
         {/* Faturalanabilir saat/hafta */}
@@ -106,7 +106,7 @@ export function RateCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean })
             ))}
             <Input id="rate-hours" inputMode="decimal" value={hours} onChange={(e) => setHours(e.target.value)} className={`${inputCls} w-20`} />
           </div>
-          <p className="text-[11px] text-muted-foreground/70">{t("billableHint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("billableHint")}</p>
         </div>
 
         {/* İzin haftası */}
@@ -140,7 +140,7 @@ export function RateCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean })
             ))}
             <Input id="rate-tax" inputMode="decimal" value={taxPct} onChange={(e) => setTaxPct(e.target.value)} className={`${inputCls} w-20`} />
           </div>
-          <p className="text-[11px] text-muted-foreground/70">{t("taxHint")}</p>
+          <p className="text-xs text-muted-foreground/70">{t("taxHint")}</p>
         </div>
       </div>
 
@@ -183,7 +183,7 @@ export function RateCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean })
                 </div>
               </div>
 
-              <p className="text-[11px] text-muted-foreground pt-1">
+              <p className="text-xs text-muted-foreground pt-1">
                 {t("hoursNote", { monthly: Math.round(result.monthlyBillableHours), weeks: result.workingWeeks })}
               </p>
             </>
@@ -195,7 +195,7 @@ export function RateCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean })
           )}
         </div>
 
-        <p className="flex items-start gap-2 text-[11px] text-muted-foreground/70 leading-relaxed">
+        <p className="flex items-start gap-2 text-xs text-muted-foreground/70 leading-relaxed">
           <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
           {t("disclaimer")}
         </p>

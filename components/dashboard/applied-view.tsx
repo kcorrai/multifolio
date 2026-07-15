@@ -129,7 +129,7 @@ export function AppliedView({
       {/* Etiket filtresi (etiketli iş varsa) */}
       {allTags.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             <Tag className="h-3 w-3" />{t("tagFilter.label")}
           </span>
           {allTags.map((tag) => (
@@ -137,7 +137,7 @@ export function AppliedView({
               key={tag}
               onClick={() => toggleTag(tag)}
               aria-pressed={activeTags.includes(tag)}
-              className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-colors ${
+              className={`rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${
                 activeTags.includes(tag)
                   ? "bg-[#00F0FF]/15 text-foreground ring-1 ring-[#00F0FF]/40"
                   : "bg-muted text-muted-foreground hover:text-foreground"
@@ -147,7 +147,7 @@ export function AppliedView({
             </button>
           ))}
           {activeTags.length > 0 && (
-            <button onClick={() => setActiveTags([])} className="text-[11px] text-muted-foreground/60 hover:text-foreground underline underline-offset-2">
+            <button onClick={() => setActiveTags([])} className="text-xs text-muted-foreground/60 hover:text-foreground underline underline-offset-2">
               {t("tagFilter.clear")}
             </button>
           )}
@@ -209,11 +209,11 @@ export function AppliedView({
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold leading-snug truncate">{job.title}</p>
                     {(job.company || job.platform) && (
-                      <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">
                         {[job.company, job.platform].filter(Boolean).join(" · ")}
                       </p>
                     )}
-                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">{t(`status.${job.status}`)}</p>
+                    <p className="text-[11px] text-muted-foreground/60 mt-0.5">{t(`status.${job.status}`)}</p>
                     {(job.tags?.length ?? 0) > 0 && (
                       <div className="mt-1 flex flex-wrap gap-1">
                         {job.tags!.map((tag) => (
@@ -224,7 +224,7 @@ export function AppliedView({
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     {job.match_score !== null && (
-                      <span className={`text-[10px] font-bold rounded-md px-1.5 py-0.5 tabular-nums ${scoreColor(job.match_score)}`}>
+                      <span className={`text-[11px] font-bold rounded-md px-1.5 py-0.5 tabular-nums ${scoreColor(job.match_score)}`}>
                         {job.match_score}
                       </span>
                     )}

@@ -169,7 +169,8 @@ export function PlatformDetailTab({
 
   // ── Teklifler → iş başlığı eşlemesi ──────────────────────────────────
   const jobTitleById = new Map(jobs.map((j) => [j.id, j.title]));
-  const tips = t.raw(`tips.${platform}`) as string[];
+  // Savunmacı: bir platform eklenip tips girişi unutulsa bile sayfa çökmesin (undefined.map).
+  const tips = (t.raw(`tips.${platform}`) as string[] | undefined) ?? [];
 
   return (
     <div className="space-y-5">
@@ -188,9 +189,9 @@ export function PlatformDetailTab({
               </div>
               <h2 className="text-lg font-bold tracking-tight">{PLATFORMS[platform].label}</h2>
               {saved ? (
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${style.badge}`}>{tc("connected")}</span>
+                <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${style.badge}`}>{tc("connected")}</span>
               ) : (
-                <span className="text-[10px] text-muted-foreground/60">{tc("notConnected")}</span>
+                <span className="text-[11px] text-muted-foreground/60">{tc("notConnected")}</span>
               )}
             </div>
             {platformProfile && (
@@ -206,7 +207,7 @@ export function PlatformDetailTab({
                     {syncing ? t("detail.syncing") : t("detail.syncRefresh")}
                   </Button>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/70">
+                  <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground/70">
                     <Puzzle className="h-3.5 w-3.5" />{t("detail.syncExtensionUpdated")}
                   </span>
                 )}
@@ -267,7 +268,7 @@ export function PlatformDetailTab({
                       </button>
                     ) : null;
                   })()}
-                  <p className="text-[11px] text-muted-foreground/70">
+                  <p className="text-xs text-muted-foreground/70">
                     {t("detail.syncedAt", { date: new Date(platformProfile.fetched_at).toLocaleString(locale) })}
                   </p>
                 </div>
@@ -394,20 +395,20 @@ export function PlatformDetailTab({
               </div>
               {/* Yeniden üretme veri kaybı uyarısı: mevcut uyarlanmış metin üzerine yazılır. */}
               {adaptResult && (
-                <p className="text-[11px] text-amber-600 dark:text-amber-400 flex items-start gap-1.5">
+                <p className="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1.5">
                   <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-px" />{t("detail.regenerateWarn")}
                 </p>
               )}
               {/* Kaynak seçici: uyarlama neyden üretilsin (çekirdek / platform / ikisi). */}
               {sourceOptions.length > 1 ? (
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[11px] text-muted-foreground shrink-0">{t("detail.sourceLabel")}</span>
+                  <span className="text-xs text-muted-foreground shrink-0">{t("detail.sourceLabel")}</span>
                   <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5">
                     {sourceOptions.map((opt) => (
                       <button
                         key={opt}
                         onClick={() => setSource(opt)}
-                        className={`rounded-md px-2 py-0.5 text-[11px] font-medium transition-colors cursor-pointer ${
+                        className={`rounded-md px-2 py-0.5 text-xs font-medium transition-colors cursor-pointer ${
                           effectiveSource === opt
                             ? "bg-background text-foreground shadow-sm"
                             : "text-muted-foreground hover:text-foreground"
@@ -420,7 +421,7 @@ export function PlatformDetailTab({
                 </div>
               ) : effectiveSource ? (
                 // Tek kaynak: seçici gizli ama hangi verinin kullanıldığı şeffaf kalsın.
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {t("detail.sourceLabel")}{" "}
                   <span className="font-medium text-foreground">
                     {t(`detail.source_${effectiveSource}`, { platform: PLATFORMS[platform].label })}
@@ -497,10 +498,10 @@ export function PlatformDetailTab({
                 {profile.skills.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {profile.skills.slice(0, 12).map((s) => (
-                      <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{s}</span>
+                      <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-xs font-medium text-muted-foreground">{s}</span>
                     ))}
                     {profile.skills.length > 12 && (
-                      <span className="text-[11px] text-muted-foreground/60 self-center">+{profile.skills.length - 12}</span>
+                      <span className="text-xs text-muted-foreground/60 self-center">+{profile.skills.length - 12}</span>
                     )}
                   </div>
                 )}
@@ -521,7 +522,7 @@ export function PlatformDetailTab({
                     </div>
                   );
                 })()}
-                <p className="text-[11px] text-muted-foreground/70 border-t border-border pt-2.5">{t("detail.sourceProfileHint")}</p>
+                <p className="text-xs text-muted-foreground/70 border-t border-border pt-2.5">{t("detail.sourceProfileHint")}</p>
               </CardContent>
             </Card>
           </section>
@@ -552,7 +553,7 @@ export function PlatformDetailTab({
                     {p.skills.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {p.skills.map((s) => (
-                          <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{s}</span>
+                          <span key={s} className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{s}</span>
                         ))}
                       </div>
                     )}
@@ -589,9 +590,9 @@ export function PlatformDetailTab({
           <CardContent className="space-y-3 pt-6">
             <div className="flex items-center gap-2">
               {saved ? (
-                <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${style.badge}`}>{tc("connected")}</span>
+                <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded-full ${style.badge}`}>{tc("connected")}</span>
               ) : (
-                <span className="text-[10px] text-muted-foreground/60">{tc("notConnected")}</span>
+                <span className="text-[11px] text-muted-foreground/60">{tc("notConnected")}</span>
               )}
             </div>
             <input
@@ -678,12 +679,12 @@ export function PlatformDetailTab({
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold leading-snug truncate">{job.title}</p>
                       {job.company && (
-                        <p className="text-[11px] text-muted-foreground truncate mt-0.5">{job.company}</p>
+                        <p className="text-xs text-muted-foreground truncate mt-0.5">{job.company}</p>
                       )}
-                      <p className="text-[10px] text-muted-foreground/60 mt-0.5">{tj(`status.${job.status}`)}</p>
+                      <p className="text-[11px] text-muted-foreground/60 mt-0.5">{tj(`status.${job.status}`)}</p>
                     </div>
                     {job.match_score !== null && (
-                      <span className={`text-[10px] font-bold rounded-md px-1.5 py-0.5 tabular-nums shrink-0 ${scoreColor(job.match_score)}`}>
+                      <span className={`text-[11px] font-bold rounded-md px-1.5 py-0.5 tabular-nums shrink-0 ${scoreColor(job.match_score)}`}>
                         {job.match_score}
                       </span>
                     )}
@@ -740,20 +741,22 @@ export function PlatformDetailTab({
           </div>
         )}
 
-        {/* Platforma özel ipuçları */}
-        <div className="rounded-2xl border border-violet-500/15 dark:border-violet-500/20 bg-violet-500/[0.04] p-4 space-y-2">
-          <p className="text-xs font-semibold flex items-center gap-2 text-violet-500 dark:text-violet-300">
-            <Lightbulb className="h-3.5 w-3.5" />{t("detail.tipsTitle")}
-          </p>
-          <ul className="space-y-1.5">
-            {tips.map((tip, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                <span className="mt-1 h-1 w-1 rounded-full bg-violet-400 shrink-0" />
-                <span>{tip}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* Platforma özel ipuçları (giriş yoksa gizle) */}
+        {tips.length > 0 && (
+          <div className="rounded-2xl border border-violet-500/15 dark:border-violet-500/20 bg-violet-500/[0.04] p-4 space-y-2">
+            <p className="text-xs font-semibold flex items-center gap-2 text-violet-500 dark:text-violet-300">
+              <Lightbulb className="h-3.5 w-3.5" />{t("detail.tipsTitle")}
+            </p>
+            <ul className="space-y-1.5">
+              {tips.map((tip, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <span className="mt-1 h-1 w-1 rounded-full bg-violet-400 shrink-0" />
+                  <span>{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </section>
 
       {/* Foto lightbox (avatar + portfolyo görselleri; ileri/geri gezinme). */}

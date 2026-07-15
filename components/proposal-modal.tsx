@@ -71,16 +71,16 @@ function TranslationBlock({ proposalId, platform }: { proposalId: string; platfo
       <button
         onClick={toggle}
         disabled={busy}
-        className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer disabled:opacity-60"
+        className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer disabled:opacity-60"
       >
         <Languages className="h-3 w-3" />
         {busy ? t("modal.translating") : show ? t("modal.hideTranslation") : t("modal.showTranslation")}
       </button>
-      {error && <p className="text-[11px] text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
       {show && text && (
         <div className="rounded-lg border border-border bg-muted/40 p-2.5 space-y-1">
           <p className="text-xs leading-relaxed whitespace-pre-wrap">{text}</p>
-          <p className="text-[10px] text-muted-foreground/70">{t("modal.translationNote")}</p>
+          <p className="text-[11px] text-muted-foreground/70">{t("modal.translationNote")}</p>
         </div>
       )}
     </div>
@@ -209,7 +209,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
           {/* Yazım stili: ton + uzunluk (AI slop'u azaltır) */}
           <div className="grid grid-cols-2 gap-3">
             <label className="space-y-1">
-              <span className="text-[11px] font-semibold text-muted-foreground">{t("modal.tone")}</span>
+              <span className="text-xs font-semibold text-muted-foreground">{t("modal.tone")}</span>
               <div className="relative">
                 <select value={tone} onChange={(e) => setTone(e.target.value as ProposalTone)}
                   className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F0FF]/30 cursor-pointer">
@@ -219,7 +219,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
               </div>
             </label>
             <label className="space-y-1">
-              <span className="text-[11px] font-semibold text-muted-foreground">{t("modal.length")}</span>
+              <span className="text-xs font-semibold text-muted-foreground">{t("modal.length")}</span>
               <div className="relative">
                 <select value={length} onChange={(e) => setLength(e.target.value as ProposalLength)}
                   className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F0FF]/30 cursor-pointer">
@@ -234,7 +234,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
           {!generated && (
             <div className="rounded-xl border border-border bg-muted/30 p-3 space-y-1.5">
               <p className="text-xs font-semibold flex items-center gap-1.5"><Lightbulb className="h-3.5 w-3.5 text-[#00F0FF]" />{t("tip.title")}</p>
-              <ul className="space-y-1 text-[11px] text-muted-foreground">
+              <ul className="space-y-1 text-xs text-muted-foreground">
                 {(["hook", "proof", "cta"] as const).map((k) => (
                   <li key={k} className="flex gap-1.5"><span className="text-[#00F0FF] shrink-0">→</span>{t(`tip.${k}`)}</li>
                 ))}
@@ -266,7 +266,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                   </p>
                   <ul className="space-y-1.5">
                     {coverage.map((c, i) => (
-                      <li key={i} className="flex items-start gap-2 text-[11px]">
+                      <li key={i} className="flex items-start gap-2 text-xs">
                         <span
                           className={
                             c.status === "met"
@@ -317,7 +317,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
                         {PLATFORMS[p.platform as PlatformId]?.label ?? p.platform} ·{" "}
                         {new Date(p.created_at).toLocaleDateString(locale)}
                         {p.coverage && p.coverage.length > 0 && (
-                          <span className="ml-1.5 text-[10px] text-muted-foreground/70">
+                          <span className="ml-1.5 text-[11px] text-muted-foreground/70">
                             · {t("modal.coverageShort", { met: coverageSummary(p.coverage).met, total: coverageSummary(p.coverage).total })}
                           </span>
                         )}

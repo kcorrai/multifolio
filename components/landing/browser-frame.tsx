@@ -26,7 +26,7 @@ export function BrowserFrame({
           <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70 dark:bg-amber-500/50" />
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70 dark:bg-emerald-500/50" />
         </span>
-        <span className="ml-2 flex-1 truncate rounded-md bg-white px-3 py-1 text-[11px] font-medium text-slate-400 dark:bg-white/[0.05] dark:text-white/40">
+        <span className="ml-2 flex-1 truncate rounded-md bg-white px-3 py-1 text-xs font-medium text-slate-400 dark:bg-white/[0.05] dark:text-white/40">
           {url}
         </span>
         {toolbar}

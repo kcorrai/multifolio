@@ -4,27 +4,49 @@ import { AI_MODEL, getOpenAIClient } from "./openai-client";
 import { computeCostUsd } from "./pricing";
 import { languageDirective } from "./language";
 import { InternalError } from "@/lib/errors";
-import { mockQuestionsSchema, mockFeedbackSchema, type MockQuestions, type MockFeedback } from "@/lib/validation/schemas/mock-interview";
+import { mockQuestionsSchema, mockFeedbackSchema, type MockQuestions, type MockFeedback, type MockDifficulty, type MockCategory } from "@/lib/validation/schemas/mock-interview";
 import type { Locale } from "@/i18n/detect";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 
 interface Usage { model: string; inputTokens: number; outputTokens: number; costUsd: number }
 
+// Zorluk seviyesinin soru derinliğine yansıması (prompt direktifi).
+const DIFFICULTY_DIRECTIVE: Record<MockDifficulty, string> = {
+  junior: "Zorluk: JUNIOR (0-2 yıl) — temel kavramlar, öğrenme isteği, basit senaryolar; aşırı derin sistem tasarımı sorma.",
+  mid: "Zorluk: MID (2-5 yıl) — pratik problem çözme, gerçek proje kararları, ölçülebilir sonuçlar; dengeli derinlik.",
+  senior: "Zorluk: SENIOR (5+ yıl) — mimari kararlar, trade-off'lar, liderlik/mentorluk, belirsizlik altında yargı; zorlayıcı takip senaryoları.",
+};
+
+const CATEGORY_LABEL: Record<MockCategory, string> = {
+  behavioral: "behavioral (STAR gerektiren)",
+  technical: "technical (rolün becerilerine dair)",
+  role_fit: "role_fit (deneyim/uygunluk)",
+  motivation: "motivation (neden bu rol/şirket)",
+};
+
 // ── Soru üretimi ────────────────────────────────────────────────────────
-const QUESTIONS_SYSTEM =
-  "Sen deneyimli bir teknik/işe-alım mülakatçısısın. Adayın profiline ve (varsa) hedef ilana " +
-  "göre GERÇEKÇİ mülakat soruları üretirsin. 6 soru üret; kategorilere yay: behavioral (STAR " +
-  "gerektiren), technical (rolün becerilerine dair), role_fit (deneyim/uygunluk), motivation " +
-  "(neden bu rol/şirket). Sorular adayın seviyesine ve alanına özgü olsun (jenerik değil). " +
-  "Her soru için strongAnswerHint: güçlü bir cevabın neyi kapsaması gerektiği (kısa). " +
-  "Çıktı dili aşağıdaki dil direktifine uymalı.";
+function questionsSystem(count: number, categories: MockCategory[], difficulty: MockDifficulty): string {
+  const cats = categories.length > 0 ? categories : (["behavioral", "technical", "role_fit", "motivation"] as MockCategory[]);
+  const catText = cats.map((c) => CATEGORY_LABEL[c]).join(", ");
+  return (
+    "Sen deneyimli bir teknik/işe-alım mülakatçısısın. Adayın profiline ve (varsa) hedef ilana " +
+    `göre GERÇEKÇİ mülakat soruları üretirsin. TAM ${count} soru üret; SADECE şu kategorilere yay: ${catText}. ` +
+    `${DIFFICULTY_DIRECTIVE[difficulty]} ` +
+    "Sorular adayın seviyesine ve alanına özgü olsun (jenerik değil). " +
+    "Her soru için strongAnswerHint: güçlü bir cevabın neyi kapsaması gerektiği (kısa). " +
+    "Çıktı dili aşağıdaki dil direktifine uymalı."
+  );
+}
 
 export async function generateMockQuestions(
   profile: ProfileInput,
   jobDescription: string | null,
-  opts: { locale?: Locale } = {},
+  opts: { locale?: Locale; difficulty?: MockDifficulty; count?: number; categories?: MockCategory[] } = {},
 ): Promise<{ result: MockQuestions } & Usage> {
   const client = getOpenAIClient();
+  const count = opts.count ?? 6;
+  const categories = opts.categories ?? [];
+  const difficulty = opts.difficulty ?? "mid";
   const userContent = [
     "Aday Profili:",
     `Başlık: ${profile.headline}`,
@@ -39,11 +61,11 @@ export async function generateMockQuestions(
   const completion = await client.chat.completions.parse({
     model: AI_MODEL,
     messages: [
-      { role: "system", content: QUESTIONS_SYSTEM },
+      { role: "system", content: questionsSystem(count, categories, difficulty) },
       { role: "user", content: userContent },
     ],
     response_format: zodResponseFormat(mockQuestionsSchema, "mock_questions"),
-    max_tokens: 1600,
+    max_tokens: 2200,
   });
   const parsed = completion.choices[0].message.parsed;
   if (!parsed) throw new InternalError("Mülakat soruları üretilemedi.", { context: { finish_reason: completion.choices[0].finish_reason } });
@@ -58,7 +80,10 @@ const FEEDBACK_SYSTEM =
   "sorularda Situation/Task/Action/Result ve ölçülebilir sonuç var mı), yapı ve netlik. " +
   "score: 0-100 gerçekçi puan. strengths: cevabın iyi yanları. improvements: SOMUT gelişim önerileri. " +
   "modelAnswer: adayın profilinden kurulmuş, aynı soruya güçlü bir ÖRNEK cevap (uydurma abartı yok, " +
-  "profildeki gerçek bilgiyi kullan). Çıktı dili aşağıdaki dil direktifine uymalı.";
+  "profildeki gerçek bilgiyi kullan). " +
+  "followUp: cevap zayıf/eksik/yüzeysel ise gerçek bir mülakatçının soracağı TEK derinleştirici " +
+  "takip sorusu (adayın atladığı noktayı kurcalayan). Cevap zaten güçlü ve eksiksizse followUp'ı " +
+  "BOŞ STRING ('') yap. Çıktı dili aşağıdaki dil direktifine uymalı.";
 
 export async function evaluateMockAnswer(
   profile: ProfileInput,

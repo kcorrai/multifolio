@@ -209,7 +209,7 @@ export function StatCard({
       </div>
       <p className="relative text-xs text-muted-foreground font-medium">{label}</p>
       <p className="relative text-2xl font-extrabold tabular-nums mt-0.5">{value}</p>
-      {sub && <p className="relative text-[11px] text-muted-foreground mt-1.5">{sub}</p>}
+      {sub && <p className="relative text-xs text-muted-foreground mt-1.5">{sub}</p>}
       {children && <div className="relative mt-3">{children}</div>}
     </div>
   );

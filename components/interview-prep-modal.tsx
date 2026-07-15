@@ -21,7 +21,7 @@ function CopyBtn({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-      className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+      className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
     >
       {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
       {copied ? t("copied") : t("copy")}
@@ -99,7 +99,7 @@ export function InterviewPrepModal({ jobId, jobDescription, onClose, onCreditsUp
             </div>
             <div>
               <h3 className="text-sm font-bold">{t("title")}</h3>
-              <p className="text-[11px] text-muted-foreground">{t("subtitle")}</p>
+              <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
             </div>
           </div>
           <button onClick={onClose} title={t("close")} aria-label={t("close")} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
@@ -140,7 +140,7 @@ export function InterviewPrepModal({ jobId, jobDescription, onClose, onCreditsUp
               {prep.starStories.length > 0 && (
                 <section className="space-y-2">
                   <h4 className="text-xs font-bold flex items-center gap-1.5"><Layers className="h-3.5 w-3.5 text-amber-500" />{t("starTitle")}</h4>
-                  <p className="text-[11px] text-muted-foreground">{t("starHint")}</p>
+                  <p className="text-xs text-muted-foreground">{t("starHint")}</p>
                   <div className="space-y-2.5">
                     {prep.starStories.map((s, i) => (
                       <div key={i} className="rounded-xl border border-border bg-muted/30 p-3 space-y-1.5">
@@ -148,7 +148,7 @@ export function InterviewPrepModal({ jobId, jobDescription, onClose, onCreditsUp
                           <p className="text-xs font-semibold">{s.title}</p>
                           <CopyBtn text={starText(s, starLabels)} />
                         </div>
-                        <div className="space-y-1 text-[11px] leading-relaxed">
+                        <div className="space-y-1 text-xs leading-relaxed">
                           <p><span className="font-semibold text-muted-foreground">{starLabels.s}:</span> {s.situation}</p>
                           <p><span className="font-semibold text-muted-foreground">{starLabels.t}:</span> {s.task}</p>
                           <p className="rounded-md bg-amber-500/5 px-1.5 py-1"><span className="font-semibold text-amber-600 dark:text-amber-400">{starLabels.a}:</span> {s.action}</p>
@@ -166,7 +166,7 @@ export function InterviewPrepModal({ jobId, jobDescription, onClose, onCreditsUp
                   <h4 className="text-xs font-bold flex items-center gap-1.5"><ThumbsUp className="h-3.5 w-3.5 text-green-500" />{t("strengths")}</h4>
                   <ul className="space-y-1">
                     {prep.strengths.map((s, i) => (
-                      <li key={i} className="text-[11px] text-muted-foreground flex gap-1.5"><span className="text-green-500">·</span><span>{s}</span></li>
+                      <li key={i} className="text-xs text-muted-foreground flex gap-1.5"><span className="text-green-500">·</span><span>{s}</span></li>
                     ))}
                   </ul>
                 </section>
@@ -175,7 +175,7 @@ export function InterviewPrepModal({ jobId, jobDescription, onClose, onCreditsUp
               {/* Weakness */}
               <section className="space-y-2">
                 <h4 className="text-xs font-bold flex items-center gap-1.5"><AlertTriangle className="h-3.5 w-3.5 text-amber-500" />{t("weakness")}</h4>
-                <div className="rounded-xl border border-border bg-muted/30 p-3 space-y-1.5 text-[11px] leading-relaxed">
+                <div className="rounded-xl border border-border bg-muted/30 p-3 space-y-1.5 text-xs leading-relaxed">
                   <p>{prep.weakness.text}</p>
                   <p className="text-muted-foreground"><span className="font-semibold">{t("weaknessImprovement")}:</span> {prep.weakness.improvement}</p>
                 </div>
@@ -190,7 +190,7 @@ export function InterviewPrepModal({ jobId, jobDescription, onClose, onCreditsUp
                   </div>
                   <ul className="space-y-1">
                     {prep.questionsToAsk.map((q, i) => (
-                      <li key={i} className="text-[11px] text-muted-foreground flex gap-1.5"><span className="text-[#00F0FF]">·</span><span>{q}</span></li>
+                      <li key={i} className="text-xs text-muted-foreground flex gap-1.5"><span className="text-[#00F0FF]">·</span><span>{q}</span></li>
                     ))}
                   </ul>
                 </section>
@@ -198,7 +198,7 @@ export function InterviewPrepModal({ jobId, jobDescription, onClose, onCreditsUp
 
               {/* Teşekkür notu hatırlatması (CareerBuilder: göndermek fark yaratır) */}
               <div className="rounded-xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] p-3">
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   <span className="font-semibold text-foreground">{t("thankYouTitle")}</span> {t("thankYouBody")}
                 </p>
               </div>

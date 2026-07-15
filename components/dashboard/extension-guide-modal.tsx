@@ -53,7 +53,7 @@ function DemoMedia({ caption, buttonLabel, host }: { caption: string; buttonLabe
             <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
             <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
           </span>
-          <span className="ml-1 flex-1 truncate rounded-md bg-white px-2 py-1 text-[11px] text-slate-500">
+          <span className="ml-1 flex-1 truncate rounded-md bg-white px-2 py-1 text-xs text-slate-500">
             {host}
           </span>
         </div>
@@ -68,7 +68,7 @@ function DemoMedia({ caption, buttonLabel, host }: { caption: string; buttonLabe
                 <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
               </div>
               <p className="text-xs text-slate-600 truncate">Senior Product &amp; 3D Designer</p>
-              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-slate-500">
+              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500">
                 <span className="inline-flex items-center gap-0.5"><Star className="h-3 w-3 fill-amber-400 text-amber-400" />5.0 (48)</span>
                 <span aria-hidden>·</span>
                 <span className="font-semibold text-slate-700">$45/hr</span>
@@ -77,26 +77,26 @@ function DemoMedia({ caption, buttonLabel, host }: { caption: string; buttonLabe
               </div>
             </div>
           </div>
-          <p className="mt-3 text-[11px] leading-relaxed text-slate-600 line-clamp-2">
+          <p className="mt-3 text-xs leading-relaxed text-slate-600 line-clamp-2">
             I design and build polished digital products — from brand identity to interactive 3D experiences that help teams ship faster.
           </p>
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             {["UI/UX", "Figma", "Blender", "Webflow", "3D"].map((s) => (
-              <span key={s} className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-700">{s}</span>
+              <span key={s} className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700">{s}</span>
             ))}
           </div>
 
           {/* Yüzen "içe aktar" butonu — dikkat çekmek için pulse + halka + imleç */}
           <div className="absolute bottom-3 right-3">
             <span className="absolute inset-0 rounded-lg bg-[#00F0FF]/50 animate-ping motion-reduce:hidden" />
-            <span className="relative inline-flex items-center gap-1.5 rounded-lg bg-[#00F0FF] px-2.5 py-1.5 text-[11px] font-bold text-[#031014] shadow-lg">
+            <span className="relative inline-flex items-center gap-1.5 rounded-lg bg-[#00F0FF] px-2.5 py-1.5 text-xs font-bold text-[#031014] shadow-lg">
               <Puzzle className="h-3.5 w-3.5" />{buttonLabel}
             </span>
             <MousePointer2 className="absolute -bottom-2 -right-1 h-4 w-4 text-slate-900 drop-shadow motion-safe:animate-bounce" />
           </div>
         </div>
       </div>
-      <p className="text-center text-[11px] text-muted-foreground">{caption}</p>
+      <p className="text-center text-xs text-muted-foreground">{caption}</p>
     </div>
   );
 }
@@ -128,7 +128,7 @@ export function ExtensionGuideModal({ platform = "upwork", onClose }: { platform
             <Puzzle className="h-4 w-4 shrink-0 text-[#00F0FF]" />
             <div className="min-w-0">
               <h2 id="ext-guide-title" className="font-semibold text-sm truncate">{t("title")}</h2>
-              <p className="text-[11px] text-muted-foreground truncate">{t("subtitle")}</p>
+              <p className="text-xs text-muted-foreground truncate">{t("subtitle")}</p>
             </div>
           </div>
           <button onClick={onClose} title={t("close")} aria-label={t("close")} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer shrink-0">

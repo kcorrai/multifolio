@@ -272,7 +272,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                 const urgency = reminderUrgency(value, new Date());
                 return (
                   <div key={field} className="rounded-lg border border-border bg-muted/30 px-2.5 py-2 space-y-1">
-                    <label className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                    <label className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
                       <CalendarClock className={`h-3 w-3 ${urgency ? URGENCY_CLASS[urgency] : ""}`} />
                       {label}
                     </label>
@@ -283,7 +283,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                       className={`w-full bg-transparent text-xs outline-none tabular-nums cursor-pointer ${urgency ? URGENCY_CLASS[urgency] : "text-foreground"}`}
                     />
                     {urgency && urgency !== "upcoming" && (
-                      <p className={`text-[10px] font-semibold ${URGENCY_CLASS[urgency]}`}>{t(`detail.due_${urgency}`)}</p>
+                      <p className={`text-[11px] font-semibold ${URGENCY_CLASS[urgency]}`}>{t(`detail.due_${urgency}`)}</p>
                     )}
                   </div>
                 );
@@ -310,7 +310,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                   </div>
                 ) : (
                   <>
-                    <p className={`text-[11px] ${isFinalNudge
+                    <p className={`text-xs ${isFinalNudge
                       ? "text-rose-600/70 dark:text-rose-400/60" : "text-amber-600/70 dark:text-amber-400/60"}`}>
                       {t(isFinalNudge ? "followup.hintSecond" : "followup.hint")}
                     </p>
@@ -327,7 +327,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                       {followUpBusy ? t("followup.generating") : t(isFinalNudge ? "followup.generateSecond" : "followup.generate")}
                       <CreditCost kind="followup" />
                     </Button>
-                    {followUpError && <p className="text-[11px] text-red-600 dark:text-red-400">{followUpError}</p>}
+                    {followUpError && <p className="text-xs text-red-600 dark:text-red-400">{followUpError}</p>}
                   </>
                 )}
               </div>
@@ -340,7 +340,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                   <MessageSquare className="h-3.5 w-3.5 shrink-0" />
                   {t("interview.banner")}
                 </p>
-                <p className="text-[11px] text-amber-600/70 dark:text-amber-400/60">{t("interview.hint")}</p>
+                <p className="text-xs text-amber-600/70 dark:text-amber-400/60">{t("interview.hint")}</p>
                 <Button
                   variant="outline"
                   size="sm"
@@ -363,7 +363,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                   <Handshake className="h-3.5 w-3.5 shrink-0" />
                   {t("negotiation.banner")}
                 </p>
-                <p className="text-[11px] text-emerald-600/70 dark:text-emerald-400/60">{t("negotiation.hint")}</p>
+                <p className="text-xs text-emerald-600/70 dark:text-emerald-400/60">{t("negotiation.hint")}</p>
                 <Button
                   variant="outline"
                   size="sm"
@@ -409,7 +409,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                   <div className={`h-full rounded-full ${scoreBarColor(matchScore)}`} style={{ width: `${matchScore}%` }} />
                 </div>
                 {matchResult && (
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">{matchResult.summary}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{matchResult.summary}</p>
                 )}
                 {matchResult?.risks && <RiskBadges risks={matchResult.risks} />}
                 {matchResult?.rubric && <MatchRubric rubric={matchResult.rubric} />}
@@ -424,21 +424,21 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                   <div className="grid grid-cols-2 gap-2">
                     {matchResult.strengths.length > 0 && (
                       <div className="space-y-1">
-                        <p className="text-[11px] font-semibold text-green-700 dark:text-green-400 flex items-center gap-1">
+                        <p className="text-xs font-semibold text-green-700 dark:text-green-400 flex items-center gap-1">
                           <CheckCircle2 className="h-3 w-3" />{t("detail.strengths")}
                         </p>
                         {matchResult.strengths.map((s, i) => (
-                          <p key={i} className="text-[11px] text-muted-foreground">· {s}</p>
+                          <p key={i} className="text-xs text-muted-foreground">· {s}</p>
                         ))}
                       </div>
                     )}
                     {matchResult.gaps.length > 0 && (
                       <div className="space-y-1">
-                        <p className="text-[11px] font-semibold text-red-600 dark:text-red-400 flex items-center gap-1">
+                        <p className="text-xs font-semibold text-red-600 dark:text-red-400 flex items-center gap-1">
                           <AlertCircle className="h-3 w-3" />{t("detail.gaps")}
                         </p>
                         {matchResult.gaps.map((g, i) => (
-                          <p key={i} className="text-[11px] text-muted-foreground">· {g}</p>
+                          <p key={i} className="text-xs text-muted-foreground">· {g}</p>
                         ))}
                       </div>
                     )}
@@ -456,7 +456,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                 </p>
                 <ul className="space-y-1">
                   {(matchResult?.requirements ?? []).map((r, i) => (
-                    <li key={i} className="text-[11px] text-muted-foreground flex gap-1.5">
+                    <li key={i} className="text-xs text-muted-foreground flex gap-1.5">
                       <span className="text-[#00F0FF]">·</span>
                       <span>{r}</span>
                     </li>
@@ -539,7 +539,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-medium text-muted-foreground">{t("detail.notes")}</p>
-                {savingNotes && <span className="text-[10px] text-muted-foreground/60">{t("detail.saving")}</span>}
+                {savingNotes && <span className="text-[11px] text-muted-foreground/60">{t("detail.saving")}</span>}
               </div>
               <Textarea
                 value={notes}

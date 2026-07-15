@@ -68,7 +68,7 @@ export function PlatformsHubTab({
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
         <h2 className="text-2xl font-bold tracking-tight mt-1">{t("hubTitle")}</h2>
         <p className="text-sm text-muted-foreground mt-0.5">{t("hubSubtitle")}</p>
       </div>
@@ -95,13 +95,13 @@ export function PlatformsHubTab({
             <Button onClick={adaptAll} disabled={busy || selected.size === 0} className="gap-2 shrink-0">
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               {busy ? t("adaptAll.busy") : t("adaptAll.button")}
-              <span className="rounded-full bg-black/10 dark:bg-white/15 px-1.5 py-0.5 text-[10px] font-bold tabular-nums">{adaptAllCost}</span>
+              <span className="rounded-full bg-black/10 dark:bg-white/15 px-1.5 py-0.5 text-[11px] font-bold tabular-nums">{adaptAllCost}</span>
             </Button>
           </div>
 
           {/* Platform seçimi: kredi kontrolü (kullanıcı istemediği platforma harcamaz). */}
           <div className="mt-4">
-            <p className="text-[11px] font-medium text-muted-foreground mb-2">{t("adaptAll.selectHint", { count: selected.size })}</p>
+            <p className="text-xs font-medium text-muted-foreground mb-2">{t("adaptAll.selectHint", { count: selected.size })}</p>
             <div className="flex flex-wrap gap-1.5">
               {platforms.map((id) => {
                 const on = selected.has(id);
@@ -134,7 +134,7 @@ export function PlatformsHubTab({
             </p>
           )}
           {!summary && adaptedCount > 0 && (
-            <p className="mt-3 text-[11px] text-muted-foreground">{t("adaptAll.already", { count: adaptedCount, total: platforms.length })}</p>
+            <p className="mt-3 text-xs text-muted-foreground">{t("adaptAll.already", { count: adaptedCount, total: platforms.length })}</p>
           )}
         </div>
       )}
@@ -161,21 +161,21 @@ export function PlatformsHubTab({
                 <CardContent className="space-y-2">
                   <div className="flex flex-wrap gap-1.5">
                     {connected ? (
-                      <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${style.badge}`}>
+                      <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full ${style.badge}`}>
                         <CheckCircle2 className="h-3 w-3" />{t("card.connected")}
                       </span>
                     ) : (
-                      <span className="inline-flex items-center text-[10px] text-muted-foreground/60 px-1.5 py-0.5">
+                      <span className="inline-flex items-center text-[11px] text-muted-foreground/60 px-1.5 py-0.5">
                         {t("card.notConnected")}
                       </span>
                     )}
                     {adapted && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[#00F0FF]/10 text-[#00F0FF]">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-[#00F0FF]/10 text-[#00F0FF]">
                         <Sparkles className="h-3 w-3" />{t("card.adapted")}
                       </span>
                     )}
                   </div>
-                  <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Briefcase className="h-3 w-3 shrink-0" />{t("card.jobsCount", { count: jobCount })}
                   </p>
                 </CardContent>

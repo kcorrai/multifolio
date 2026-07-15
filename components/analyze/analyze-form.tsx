@@ -104,7 +104,7 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
               aria-label={t("mode.url")}
               className={input}
             />
-            <p className="text-[11px] text-slate-400 dark:text-[#94A3B8]/70">{t("urlHint")}</p>
+            <p className="text-xs text-slate-400 dark:text-[#94A3B8]/70">{t("urlHint")}</p>
           </div>
         ) : (
           <div className="space-y-1.5">
@@ -117,7 +117,7 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
               aria-label={t("mode.text")}
               className={`${input} resize-y leading-relaxed`}
             />
-            <p className="text-[11px] text-slate-400 dark:text-[#94A3B8]/70">{t("textHint")}</p>
+            <p className="text-xs text-slate-400 dark:text-[#94A3B8]/70">{t("textHint")}</p>
           </div>
         )}
 
@@ -127,7 +127,7 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
           <Sparkles className="h-4 w-4" />
           {loading ? t("analyzing") : t("analyzeCta")}
         </Button>
-        <p className="text-center text-[11px] text-slate-400 dark:text-[#94A3B8]/70">{t("freeNote")}</p>
+        <p className="text-center text-xs text-slate-400 dark:text-[#94A3B8]/70">{t("freeNote")}</p>
       </div>
 
       {/* ── Sonuç ──────────────────────────────────────────────────── */}
@@ -158,7 +158,7 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                   const dim = result.full!.dimensions[key];
                   return (
                     <div key={key} className="space-y-0.5">
-                      <div className="flex items-center justify-between gap-2 text-[11px]">
+                      <div className="flex items-center justify-between gap-2 text-xs">
                         <span className="font-medium">
                           {t(`dimensions.${key}`)}{" "}
                           <span className="text-slate-400">{t("weight", { percent: Math.round(ANALYSIS_WEIGHTS[key] * 100) })}</span>
@@ -168,7 +168,7 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
                       <div className="h-1 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden">
                         <div className={`h-full rounded-full ${scoreBar(dim.score)}`} style={{ width: `${dim.score}%` }} />
                       </div>
-                      <p className="text-[11px] text-slate-500 dark:text-[#94A3B8] leading-snug">{dim.reason}</p>
+                      <p className="text-xs text-slate-500 dark:text-[#94A3B8] leading-snug">{dim.reason}</p>
                     </div>
                   );
                 })}
@@ -225,7 +225,7 @@ export function AnalyzeForm({ isLoggedIn }: { isLoggedIn: boolean }) {
           )}
 
           {!isLoggedIn && result.full === null && (
-            <p className="text-center text-[11px] text-slate-400 dark:text-[#94A3B8]/70">{t("signupPerk")}</p>
+            <p className="text-center text-xs text-slate-400 dark:text-[#94A3B8]/70">{t("signupPerk")}</p>
           )}
         </div>
       )}

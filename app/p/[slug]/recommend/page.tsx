@@ -86,7 +86,7 @@ export default async function RecommendPage({ params }: PageProps) {
           <RecommendForm slug={slug} accentHex={accentHex} />
         </div>
 
-        <p className="mt-6 text-center text-[11px]" style={{ color: "var(--pf-muted)" }}>
+        <p className="mt-6 text-center text-xs" style={{ color: "var(--pf-muted)" }}>
           {t("poweredBy")}{" "}
           <Link href="/" className="font-semibold hover:underline" style={{ color: accentHex }}>Multifolio</Link>
         </p>

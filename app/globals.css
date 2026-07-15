@@ -131,19 +131,22 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    /* Okunabilirlik tabanı: kök yazı boyutu 17px (varsayılan 16px yerine) → tüm
+       rem-tabanlı sınıflar (text-xs, text-sm, boşluk/gap) orantılı büyür.
+       Küçük ekranlarda bile arayüz okunur kalır. */
+    font-size: 17px;
   }
 }
 
 /* ─── Ekrana göre orantılı ölçek (responsive "zoom") ──────────────
    Tailwind rem tabanlı → kök yazı boyutunu ekran genişliğine göre
    büyütmek TÜM arayüzü (yazı + boşluk + genişlik) orantılı büyütür;
-   tarayıcı zoom'unun güvenli, responsive karşılığı. Küçük/laptop
-   ekranlar 16px'te sabit kalır (taşma yok), geniş monitörlerde arayüz
-   kademeli ferahlar. Not: media-query rem'leri tarayıcı varsayılan
-   16px'ine göre ölçülür → Tailwind breakpoint'leri KAYMAZ. Kullanıcı
-   zoom'u bu ölçeğin üzerine yine çalışır. */
-@media (min-width: 1536px) {
-  html { font-size: clamp(16px, calc(4px + 0.78vw), 26px); }
+   tarayıcı zoom'unun güvenli, responsive karşılığı. Orta ekranlardan
+   itibaren kademeli ferahlar. Not: media-query rem'leri tarayıcı
+   varsayılan 16px'ine göre ölçülür → Tailwind breakpoint'leri KAYMAZ.
+   Kullanıcı zoom'u bu ölçeğin üzerine yine çalışır. */
+@media (min-width: 1280px) {
+  html { font-size: clamp(17px, calc(6px + 0.85vw), 26px); }
 }
 
 /* ─── Landing page animations ─────────────────────────────────── */

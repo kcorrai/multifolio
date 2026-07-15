@@ -66,7 +66,7 @@ export function KanbanBoard({
             <div className="flex items-center gap-2 px-1 pb-2.5">
               <span className={`h-2 w-2 rounded-full ${STATUS_DOT[status]}`} />
               <span className="text-xs font-bold">{t(`status.${status}`)}</span>
-              <span className="ml-auto text-[11px] font-semibold text-muted-foreground tabular-nums">
+              <span className="ml-auto text-xs font-semibold text-muted-foreground tabular-nums">
                 {colJobs.length}
               </span>
             </div>
@@ -92,7 +92,7 @@ export function KanbanBoard({
                   >
                     <p className="text-xs font-semibold leading-snug line-clamp-2">{job.title}</p>
                     {(job.company || job.platform) && (
-                      <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">
                         {[job.company, job.platform].filter(Boolean).join(" · ")}
                       </p>
                     )}
@@ -105,7 +105,7 @@ export function KanbanBoard({
                       const order: ReminderUrgency[] = ["overdue", "today", "soon", "upcoming"];
                       const top = cands.sort((a, b) => order.indexOf(a.u) - order.indexOf(b.u))[0];
                       return (
-                        <span className={`mt-1 inline-flex items-center gap-1 text-[10px] font-semibold ${BADGE_CLASS[top.u]}`}>
+                        <span className={`mt-1 inline-flex items-center gap-1 text-[11px] font-semibold ${BADGE_CLASS[top.u]}`}>
                           <CalendarClock className="h-2.5 w-2.5" />
                           {new Date(top.d).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                         </span>
@@ -123,7 +123,7 @@ export function KanbanBoard({
 
                   <div className="flex items-center justify-between gap-2 mt-2">
                     {job.match_score !== null ? (
-                      <span className={`text-[10px] font-bold rounded-md px-1.5 py-0.5 tabular-nums ${scoreColor(job.match_score)}`}>
+                      <span className={`text-[11px] font-bold rounded-md px-1.5 py-0.5 tabular-nums ${scoreColor(job.match_score)}`}>
                         {job.match_score}
                       </span>
                     ) : <span />}
@@ -133,7 +133,7 @@ export function KanbanBoard({
                       aria-label={t("board.moveTo")}
                       value={job.status}
                       onChange={(e) => onChangeStatus(job.id, e.target.value as JobStatus)}
-                      className="text-[10px] rounded-md border border-border bg-background px-1 py-0.5 text-muted-foreground cursor-pointer max-w-[110px]"
+                      className="text-[11px] rounded-md border border-border bg-background px-1 py-0.5 text-muted-foreground cursor-pointer max-w-[110px]"
                     >
                       {JOB_STATUSES.map((s) => (
                         <option key={s} value={s}>{t(`status.${s}`)}</option>

@@ -65,7 +65,7 @@ export async function PricingSection({ isLoggedIn = false, showHeader = true }: 
               ? "border-[#00F0FF]/40 bg-white dark:bg-[#161923] shadow-lg shadow-[#00F0FF]/10"
               : "border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923]"}`}>
               {featured && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#00F0FF] to-violet-400 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#090A0F]">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#00F0FF] to-violet-400 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#090A0F]">
                   {t("pricing.popular")}
                 </span>
               )}
@@ -73,7 +73,7 @@ export async function PricingSection({ isLoggedIn = false, showHeader = true }: 
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-4xl font-extrabold tracking-tight">{price}</span>
                 {!paymentsEnabled && (
-                  <span className="rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide">
+                  <span className="rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide">
                     {t("pricing.comingSoon")}
                   </span>
                 )}

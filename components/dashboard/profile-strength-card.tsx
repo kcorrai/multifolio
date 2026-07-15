@@ -26,7 +26,7 @@ export function ProfileStrengthCard({ strength }: { strength: ProfileStrengthRes
           {t("title")}
         </h3>
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-[#00F0FF]/10 px-2 py-0.5 text-[11px] font-bold text-[#0891b2] dark:text-[#00F0FF]">
+          <span className="rounded-full bg-[#00F0FF]/10 px-2 py-0.5 text-xs font-bold text-[#0891b2] dark:text-[#00F0FF]">
             {t(`stage.${strength.stage}`)}
           </span>
           <span className="text-lg font-extrabold tabular-nums">{t("percent", { percent: strength.percent })}</span>
@@ -56,7 +56,7 @@ export function ProfileStrengthCard({ strength }: { strength: ProfileStrengthRes
                 >
                   <span>{t(`items.${item.key}`)}</span>
                   <span className="flex items-center gap-1.5 shrink-0">
-                    <span className="text-[10px] font-bold text-[#0891b2] dark:text-[#00F0FF]">{t("step", { percent: strength.stepPercent })}</span>
+                    <span className="text-[11px] font-bold text-[#0891b2] dark:text-[#00F0FF]">{t("step", { percent: strength.stepPercent })}</span>
                     <ArrowRight className="h-3.5 w-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
                   </span>
                 </Link>
@@ -68,12 +68,12 @@ export function ProfileStrengthCard({ strength }: { strength: ProfileStrengthRes
 
       {/* Opsiyonel bonus (yüzdeye girmez; içe aktarmadan gelir) — çelişki yaratmasın diye "opsiyonel" etiketli. */}
       <div className="flex flex-wrap items-center gap-1.5 pt-1">
-        <span className="text-[11px] text-muted-foreground/70">{t("bonusLabel")}</span>
+        <span className="text-xs text-muted-foreground/70">{t("bonusLabel")}</span>
         {strength.bonus.map((b) => (
           <Link
             key={b.key}
             href={b.href}
-            className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium transition-colors ${
+            className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium transition-colors ${
               b.done
                 ? "border-green-500/30 bg-green-500/10 text-green-600 dark:text-green-400"
                 : "border-border text-muted-foreground hover:text-foreground hover:border-[#00F0FF]/30"

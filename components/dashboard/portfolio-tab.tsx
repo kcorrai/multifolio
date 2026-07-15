@@ -162,11 +162,11 @@ export function PortfolioTab({
                   ))}
                 </div>
                 {content.layout === "projects" && pendingSync && (content.media.projectGroups?.length ?? 0) > 0 ? (
-                  <p className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                  <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
                     {t("displaySyncPending", { count: content.media.projectGroups!.length })}
                   </p>
                 ) : (
-                  <p className="text-[11px] text-muted-foreground/70">
+                  <p className="text-xs text-muted-foreground/70">
                     {content.layout === "projects" && (content.media.projectGroups?.length ?? 0) === 0
                       ? t("displayNoProjects")
                       : t("displayHint")}
@@ -195,13 +195,13 @@ export function PortfolioTab({
                     onChange={(e) => patch({ contactEmail: e.target.value })} />
                   {/* Canlı doğrulama: public sayfadaki regex ile aynı → sessiz CTA kaybını önle. */}
                   {(content.contactEmail ?? "").trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((content.contactEmail ?? "").trim()) && (
-                    <p className="text-[11px] text-amber-600 dark:text-amber-400">{t("contactEmailInvalid")}</p>
+                    <p className="text-xs text-amber-600 dark:text-amber-400">{t("contactEmailInvalid")}</p>
                   )}
                   <Input type="url" inputMode="url" value={content.contactUrl ?? ""} maxLength={300}
                     placeholder={t("contactUrlLabel")} aria-label={t("contactUrlLabel")}
                     onChange={(e) => patch({ contactUrl: e.target.value })} />
                   {(content.contactUrl ?? "").trim() && !/^https?:\/\//i.test((content.contactUrl ?? "").trim()) && (
-                    <p className="text-[11px] text-amber-600 dark:text-amber-400">{t("contactUrlInvalid")}</p>
+                    <p className="text-xs text-amber-600 dark:text-amber-400">{t("contactUrlInvalid")}</p>
                   )}
                 </div>
                 {/* Canlı demo gömme (opsiyonel; yalnız YouTube/Vimeo/Loom/Figma) */}
@@ -212,7 +212,7 @@ export function PortfolioTab({
                     placeholder={t("embedPlaceholder")} aria-label={t("embedTitle")}
                     onChange={(e) => patch({ embedUrl: e.target.value })} />
                   {(content.embedUrl ?? "").trim() && !getSafeEmbed(content.embedUrl) && (
-                    <p className="text-[11px] text-amber-600 dark:text-amber-400">{t("embedInvalid")}</p>
+                    <p className="text-xs text-amber-600 dark:text-amber-400">{t("embedInvalid")}</p>
                   )}
                 </div>
               </div>
@@ -322,7 +322,7 @@ function ThemePreview({ content }: { content: PortfolioContent }) {
         {content.skills.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {content.skills.slice(0, 5).map((s) => (
-              <span key={s} className="rounded-full px-2 py-0.5 text-[11px] font-medium text-[var(--pf-accent)]" style={{ backgroundColor: tint }}>{s}</span>
+              <span key={s} className="rounded-full px-2 py-0.5 text-xs font-medium text-[var(--pf-accent)]" style={{ backgroundColor: tint }}>{s}</span>
             ))}
           </div>
         )}

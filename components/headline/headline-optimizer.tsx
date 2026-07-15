@@ -32,7 +32,7 @@ export function HeadlineOptimizer({ isLoggedIn = false }: { isLoggedIn?: boolean
           placeholder={t("placeholder")}
           className="h-11 text-base"
         />
-        <p className="text-[11px] text-muted-foreground/70">{t("charCount", { count: report.charCount })}</p>
+        <p className="text-xs text-muted-foreground/70">{t("charCount", { count: report.charCount })}</p>
 
         {/* Formül ipucu */}
         <div className="rounded-xl border border-violet-500/20 bg-violet-500/[0.04] p-3 flex items-start gap-2">
@@ -79,10 +79,10 @@ export function HeadlineOptimizer({ isLoggedIn = false }: { isLoggedIn?: boolean
 
           {report.buzzwordsFound.length > 0 && (
             <div className="pt-2 border-t border-[#00F0FF]/15 space-y-1.5">
-              <p className="text-[11px] font-semibold text-amber-600 dark:text-amber-400">{t("buzzwordLabel")}</p>
+              <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">{t("buzzwordLabel")}</p>
               <div className="flex flex-wrap gap-1.5">
                 {report.buzzwordsFound.map((b) => (
-                  <span key={b} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300">
+                  <span key={b} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300">
                     {b}
                   </span>
                 ))}
@@ -91,7 +91,7 @@ export function HeadlineOptimizer({ isLoggedIn = false }: { isLoggedIn?: boolean
           )}
         </div>
 
-        <p className="flex items-start gap-2 text-[11px] text-muted-foreground/70 leading-relaxed">
+        <p className="flex items-start gap-2 text-xs text-muted-foreground/70 leading-relaxed">
           <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
           {t("disclaimer")}
         </p>

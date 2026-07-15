@@ -21,7 +21,7 @@ function CopyBtn({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-      className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+      className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
     >
       {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
       {copied ? t("copied") : t("copy")}
@@ -75,7 +75,7 @@ export function NegotiationModal({ jobId, onClose, onCreditsUpdate }: Props) {
             </div>
             <div>
               <h3 className="text-sm font-bold">{t("title")}</h3>
-              <p className="text-[11px] text-muted-foreground">{t("subtitle")}</p>
+              <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
             </div>
           </div>
           <button onClick={onClose} title={t("close")} aria-label={t("close")} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
@@ -113,15 +113,15 @@ export function NegotiationModal({ jobId, onClose, onCreditsUpdate }: Props) {
               <section className="rounded-xl border border-emerald-500/25 bg-emerald-500/[0.05] p-3 space-y-1.5">
                 <h4 className="text-xs font-bold flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><TrendingUp className="h-3.5 w-3.5" />{t("counter")}</h4>
                 <p className="text-sm font-extrabold">{result.counterOffer.range}</p>
-                <p className="text-[11px]"><span className="font-semibold text-muted-foreground">{t("anchor")}:</span> {result.counterOffer.anchor}</p>
-                <p className="text-[11px] text-muted-foreground">{result.counterOffer.rationale}</p>
+                <p className="text-xs"><span className="font-semibold text-muted-foreground">{t("anchor")}:</span> {result.counterOffer.anchor}</p>
+                <p className="text-xs text-muted-foreground">{result.counterOffer.rationale}</p>
               </section>
 
               {/* Strateji */}
               {result.strategy.length > 0 && (
                 <section className="space-y-1.5">
                   <h4 className="text-xs font-bold flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-500" />{t("strategy")}</h4>
-                  <ul className="space-y-1">{result.strategy.map((s, i) => <li key={i} className="text-[11px] text-muted-foreground flex gap-1.5"><span className="text-amber-500">·</span><span>{s}</span></li>)}</ul>
+                  <ul className="space-y-1">{result.strategy.map((s, i) => <li key={i} className="text-xs text-muted-foreground flex gap-1.5"><span className="text-amber-500">·</span><span>{s}</span></li>)}</ul>
                 </section>
               )}
 
@@ -129,7 +129,7 @@ export function NegotiationModal({ jobId, onClose, onCreditsUpdate }: Props) {
               {result.talkingPoints.length > 0 && (
                 <section className="space-y-1.5">
                   <h4 className="text-xs font-bold flex items-center gap-1.5"><MessageSquare className="h-3.5 w-3.5 text-[#00F0FF]" />{t("talkingPoints")}</h4>
-                  <ul className="space-y-1">{result.talkingPoints.map((s, i) => <li key={i} className="text-[11px] text-muted-foreground flex gap-1.5"><span className="text-[#00F0FF]">·</span><span>{s}</span></li>)}</ul>
+                  <ul className="space-y-1">{result.talkingPoints.map((s, i) => <li key={i} className="text-xs text-muted-foreground flex gap-1.5"><span className="text-[#00F0FF]">·</span><span>{s}</span></li>)}</ul>
                 </section>
               )}
 
@@ -142,7 +142,7 @@ export function NegotiationModal({ jobId, onClose, onCreditsUpdate }: Props) {
                 <p className="text-xs leading-relaxed whitespace-pre-wrap rounded-xl bg-muted/40 border border-border p-3">{result.email}</p>
               </section>
 
-              <button onClick={() => setResult(null)} className="text-[11px] text-muted-foreground hover:text-foreground underline">{t("redo")}</button>
+              <button onClick={() => setResult(null)} className="text-xs text-muted-foreground hover:text-foreground underline">{t("redo")}</button>
             </>
           )}
         </div>

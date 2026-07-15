@@ -270,7 +270,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
 
           {/* ③ Platform logoları — ortalı */}
           <div className="flex-none text-center space-y-4 anim-fade-up anim-d5 pb-1">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em]
+            <p className="text-xs font-bold uppercase tracking-[0.18em]
                           text-slate-400 dark:text-white/25">
               {t("layout.supportedPlatforms")}
             </p>

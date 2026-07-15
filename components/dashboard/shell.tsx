@@ -104,7 +104,7 @@ export function DashboardShell({
                   <Icon className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110" />
                   <span className="flex-1">{t(`nav.${labelKey}`)}</span>
                   {count !== undefined && count > 0 && (
-                    <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${
+                    <span className={`rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none ${
                       active ? "bg-[#00F0FF]/20 text-[#00F0FF]" : "bg-muted-foreground/20 text-muted-foreground"
                     }`}>{count}</span>
                   )}
@@ -133,19 +133,19 @@ export function DashboardShell({
             <div className="rounded-xl bg-violet-500/8 dark:bg-violet-500/10 border border-violet-500/15 dark:border-violet-500/20 px-3 py-2.5 flex items-center gap-2.5 transition-colors hover:border-violet-500/35">
               <Wallet className="h-4 w-4 text-violet-400 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] text-muted-foreground font-medium leading-none mb-0.5">{t("shell.credits")}</p>
+                <p className="text-[11px] text-muted-foreground font-medium leading-none mb-0.5">{t("shell.credits")}</p>
                 <p className="text-sm font-bold tabular-nums leading-none">{credits}</p>
               </div>
               <button
                 onClick={triggerComingSoon}
-                className="text-[11px] font-semibold text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
+                className="text-xs font-semibold text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
               >
                 {t("shell.buyCredits")}
               </button>
             </div>
             <div className="flex items-center gap-2.5 px-1">
               <div className="h-7 w-7 rounded-full bg-[#00F0FF]/15 border border-[#00F0FF]/20 flex items-center justify-center shrink-0">
-                <span className="text-[10px] font-bold text-[#00F0FF]">{userInitial}</span>
+                <span className="text-[11px] font-bold text-[#00F0FF]">{userInitial}</span>
               </div>
               <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">{userEmail}</span>
               <form action="/auth/signout" method="post">

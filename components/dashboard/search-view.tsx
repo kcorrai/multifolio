@@ -209,7 +209,7 @@ export function SearchView() {
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
           {t("filters")}
-          {activeCount > 0 && <span className="rounded-full bg-[#00F0FF]/20 px-1.5 text-[10px] font-bold tabular-nums">{activeCount}</span>}
+          {activeCount > 0 && <span className="rounded-full bg-[#00F0FF]/20 px-1.5 text-[11px] font-bold tabular-nums">{activeCount}</span>}
           <ChevronDown className={`h-3.5 w-3.5 transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
         </button>
         {anyFilter && (
@@ -223,7 +223,7 @@ export function SearchView() {
       </div>
       {/* Dürüstlük: zaman filtresi feed'e taşınmaz (job_feeds şemasında yaş yok). */}
       {time !== "all" && (
-        <p className="text-[11px] text-muted-foreground/70">{t("timeNotSaved")}</p>
+        <p className="text-xs text-muted-foreground/70">{t("timeNotSaved")}</p>
       )}
 
       {filtersOpen && (
@@ -250,17 +250,17 @@ export function SearchView() {
             <label className={`block space-y-1 ${hasSpendData ? "" : "opacity-50"}`}>
               <span className="text-xs font-semibold text-muted-foreground">{t("modal.minClientSpentLabel")}</span>
               <input value={minSpent} onChange={(e) => setMinSpent(e.target.value)} disabled={!hasSpendData} inputMode="numeric" placeholder="1000" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm disabled:cursor-not-allowed" />
-              <span className="block text-[11px] text-muted-foreground/70">{hasSpendData ? t("modal.minClientSpentHint") : t("filterInactive")}</span>
+              <span className="block text-xs text-muted-foreground/70">{hasSpendData ? t("modal.minClientSpentHint") : t("filterInactive")}</span>
             </label>
             <label className={`block space-y-1 ${hasBudgetData ? "" : "opacity-50"}`}>
               <span className="text-xs font-semibold text-muted-foreground">{t("modal.minHourlyLabel")}</span>
               <input value={minHourly} onChange={(e) => setMinHourly(e.target.value)} disabled={!hasBudgetData} inputMode="numeric" placeholder="25" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm disabled:cursor-not-allowed" />
-              {!hasBudgetData && <span className="block text-[11px] text-muted-foreground/70">{t("filterInactive")}</span>}
+              {!hasBudgetData && <span className="block text-xs text-muted-foreground/70">{t("filterInactive")}</span>}
             </label>
             <label className={`block space-y-1 ${hasBudgetData ? "" : "opacity-50"}`}>
               <span className="text-xs font-semibold text-muted-foreground">{t("modal.minFixedLabel")}</span>
               <input value={minFixed} onChange={(e) => setMinFixed(e.target.value)} disabled={!hasBudgetData} inputMode="numeric" placeholder="500" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm disabled:cursor-not-allowed" />
-              {!hasBudgetData && <span className="block text-[11px] text-muted-foreground/70">{t("filterInactive")}</span>}
+              {!hasBudgetData && <span className="block text-xs text-muted-foreground/70">{t("filterInactive")}</span>}
             </label>
           </div>
         </div>

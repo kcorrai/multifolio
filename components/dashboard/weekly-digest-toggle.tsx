@@ -39,7 +39,7 @@ export function WeeklyDigestToggle() {
       <Mail className="h-4 w-4 text-[#00F0FF] shrink-0" />
       <div className="flex-1 min-w-0">
         <p className="text-xs font-semibold">{t("label")}</p>
-        <p className="text-[11px] text-muted-foreground mt-0.5">{t("hint")}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{t("hint")}</p>
       </div>
       {enabled === null ? (
         <div className="h-4 w-4 rounded bg-muted/70 animate-pulse shrink-0" />

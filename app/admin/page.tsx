@@ -69,7 +69,7 @@ export default async function AdminPage({ searchParams }: PageProps) {
       }`}
     >
       {label}
-      <span className="rounded-full bg-muted-foreground/20 px-1.5 py-0.5 text-[10px] leading-none tabular-nums">{count}</span>
+      <span className="rounded-full bg-muted-foreground/20 px-1.5 py-0.5 text-[11px] leading-none tabular-nums">{count}</span>
     </Link>
   );
 
@@ -114,7 +114,7 @@ export default async function AdminPage({ searchParams }: PageProps) {
                       <span className="text-xs font-semibold">{tf(`category.${f.category}`)}</span>
                       <span className="truncate text-xs text-muted-foreground">· {emailById.get(f.user_id)}</span>
                     </div>
-                    <span className="shrink-0 text-[11px] text-muted-foreground/70">
+                    <span className="shrink-0 text-xs text-muted-foreground/70">
                       {new Date(f.created_at).toLocaleString(locale === "tr" ? "tr-TR" : "en-US")}
                     </span>
                   </div>

@@ -138,8 +138,8 @@ export function NotificationBell() {
                       {!n.read && <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#00F0FF] shrink-0" />}
                       <div className={`flex-1 min-w-0 ${n.read ? "pl-3.5" : ""}`}>
                         <p className="text-xs font-semibold leading-snug">{title}</p>
-                        {body && <p className="text-[11px] text-muted-foreground leading-snug mt-0.5 line-clamp-2">{body}</p>}
-                        <p className="text-[10px] text-muted-foreground/60 mt-1">{rel(n.created_at)}</p>
+                        {body && <p className="text-xs text-muted-foreground leading-snug mt-0.5 line-clamp-2">{body}</p>}
+                        <p className="text-[11px] text-muted-foreground/60 mt-1">{rel(n.created_at)}</p>
                       </div>
                     </div>
                   </button>
