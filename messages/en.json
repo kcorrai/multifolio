@@ -491,7 +491,10 @@
       "fResponded": "Responded",
       "fInterview": "Interview",
       "fOffer": "Offer",
-      "referralNote": "{count, plural, one {# application came via referral} other {# applications came via referral}} — referred candidates convert far better."
+      "referralNote": "{count, plural, one {# application came via referral} other {# applications came via referral}} — referred candidates convert far better.",
+      "benchmarkLow": "below average",
+      "benchmarkOk": "on par",
+      "benchmarkGood": "above average"
     },
     "board": {
       "list": "List",

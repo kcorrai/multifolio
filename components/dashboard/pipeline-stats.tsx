@@ -5,8 +5,21 @@
 // "başvurularının %X'i yanıt/mülakat/teklife dönüştü" içgörüsü verir.
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { computePipeline } from "@/lib/jobs/pipeline";
+import { computePipeline, benchmarkBand, type BenchmarkBand } from "@/lib/jobs/pipeline";
 import type { JobStatus } from "@/lib/validation/schemas/job";
+
+// Sektör kıyas bandı → değer rengi + kısa etiket. Kullanıcıya oranın "iyi mi
+// kötü mü" olduğunu tek bakışta gösterir (yeşil=üstünde, amber=normal, kırmızı=altında).
+const BAND_TONE: Record<BenchmarkBand, string> = {
+  good: "text-emerald-500 dark:text-emerald-400",
+  ok: "text-amber-500 dark:text-amber-400",
+  low: "text-red-500 dark:text-red-400",
+};
+const BAND_LABEL_KEY: Record<BenchmarkBand, string> = {
+  good: "pipeline.benchmarkGood",
+  ok: "pipeline.benchmarkOk",
+  low: "pipeline.benchmarkLow",
+};
 
 export function PipelineStats({ jobs }: { jobs: { status: JobStatus; referred?: boolean | null }[] }) {
   const t = useTranslations("jobs");
@@ -15,11 +28,14 @@ export function PipelineStats({ jobs }: { jobs: { status: JobStatus; referred?: 
 
   if (p.sent === 0) return null; // henüz başvuru yoksa gösterme
 
+  const responseBand = benchmarkBand(p.responseRate, "response");
+  const interviewBand = benchmarkBand(p.interviewRate, "interview");
+
   const tiles = [
-    { label: t("pipeline.applications"), value: String(p.sent), tone: "text-foreground" },
-    { label: t("pipeline.responseRate"), value: `${p.responseRate}%`, tone: "text-[#00F0FF]" },
-    { label: t("pipeline.interviewRate"), value: `${p.interviewRate}%`, tone: "text-amber-500 dark:text-amber-400" },
-    { label: t("pipeline.offers"), value: String(p.offers), tone: "text-emerald-500 dark:text-emerald-400" },
+    { label: t("pipeline.applications"), value: String(p.sent), tone: "text-foreground", band: null as BenchmarkBand | null },
+    { label: t("pipeline.responseRate"), value: `${p.responseRate}%`, tone: BAND_TONE[responseBand], band: responseBand },
+    { label: t("pipeline.interviewRate"), value: `${p.interviewRate}%`, tone: BAND_TONE[interviewBand], band: interviewBand },
+    { label: t("pipeline.offers"), value: String(p.offers), tone: "text-emerald-500 dark:text-emerald-400", band: null as BenchmarkBand | null },
   ];
 
   // Huni: gönderilen tam genişlik, sonrakiler orana göre daralır.
@@ -37,6 +53,9 @@ export function PipelineStats({ jobs }: { jobs: { status: JobStatus; referred?: 
           <div key={tile.label} className="rounded-xl border border-border bg-muted/30 px-3 py-2.5">
             <p className={`text-xl font-extrabold tabular-nums leading-none ${tile.tone}`}>{tile.value}</p>
             <p className="text-[11px] text-muted-foreground mt-1 leading-tight">{tile.label}</p>
+            {tile.band && (
+              <p className={`text-[10px] font-semibold mt-0.5 leading-tight ${tile.tone}`}>{t(BAND_LABEL_KEY[tile.band])}</p>
+            )}
           </div>
         ))}
       </div>

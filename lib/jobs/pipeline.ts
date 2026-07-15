@@ -28,6 +28,27 @@ export interface PipelineStats {
 
 const pct = (n: number, d: number) => (d > 0 ? Math.round((n / d) * 100) : 0);
 
+/** Sektör kıyas bandı: kullanıcının oranı "düşük / normal / iyi" mi?
+ *  Bantlar freelance başvuru dönüşümü için kaba referans (kaynak yok — yalnızca
+ *  bağlam; kullanıcıya "iyi mi kötü mü" hissi verir). AI/DB yok, saf. */
+export type BenchmarkBand = "low" | "ok" | "good";
+export type BenchmarkKind = "response" | "interview";
+
+/** [ok-eşiği, good-eşiği] (yüzde). Altı "low", arası "ok", üstü "good". */
+export const BENCHMARK_THRESHOLDS: Record<BenchmarkKind, readonly [number, number]> = {
+  // Yanıt oranı (yanıt gelen / gönderilen): tipik freelance başvuruda ~%5–20.
+  response: [8, 20],
+  // Mülakat oranı (mülakat+teklif / gönderilen): ~%3–10.
+  interview: [4, 10],
+};
+
+export function benchmarkBand(rate: number, kind: BenchmarkKind): BenchmarkBand {
+  const [ok, good] = BENCHMARK_THRESHOLDS[kind];
+  if (rate >= good) return "good";
+  if (rate >= ok) return "ok";
+  return "low";
+}
+
 export function computePipeline(jobs: { status: JobStatus }[]): PipelineStats {
   let saved = 0, applied = 0, awaitingReply = 0, interview = 0, offer = 0, rejected = 0;
   for (const j of jobs) {

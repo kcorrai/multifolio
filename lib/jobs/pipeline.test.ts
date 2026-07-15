@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computePipeline } from "./pipeline";
+import { computePipeline, benchmarkBand } from "./pipeline";
 import type { JobStatus } from "@/lib/validation/schemas/job";
 
 const mk = (statuses: JobStatus[]) => statuses.map((status) => ({ status }));
@@ -40,5 +40,22 @@ describe("computePipeline", () => {
     const r = computePipeline([]);
     expect(r.sent).toBe(0);
     expect(r.saved).toBe(0);
+  });
+});
+
+describe("benchmarkBand", () => {
+  it("yanıt oranı bantları (eşikler 8 / 20)", () => {
+    expect(benchmarkBand(0, "response")).toBe("low");
+    expect(benchmarkBand(7, "response")).toBe("low");
+    expect(benchmarkBand(8, "response")).toBe("ok");
+    expect(benchmarkBand(19, "response")).toBe("ok");
+    expect(benchmarkBand(20, "response")).toBe("good");
+    expect(benchmarkBand(40, "response")).toBe("good");
+  });
+
+  it("mülakat oranı bantları (eşikler 4 / 10)", () => {
+    expect(benchmarkBand(3, "interview")).toBe("low");
+    expect(benchmarkBand(4, "interview")).toBe("ok");
+    expect(benchmarkBand(10, "interview")).toBe("good");
   });
 });
