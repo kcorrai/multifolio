@@ -13,6 +13,9 @@ export interface PoolJobUpsert {
   client_country: string | null;
   client_spent: number | null;
   posted_at: string | null;
+  // İstihdam türü (full_time/contract/freelance/part_time/internship); kaynak
+  // vermezse/çıkarılamazsa null (filtre lenient — null olan ilan elenmez).
+  job_type: string | null;
 }
 
 /** Bir ilan kaynağı: fetch() I/O yapar, normalize() saf dönüşümdür (test edilebilir). */

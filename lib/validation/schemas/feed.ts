@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { JOB_TYPES } from "@/lib/scrape/job-type";
 import type { JobMatchResult } from "./job";
 
 // Kayıtlı feed oluşturma/güncelleme
@@ -13,6 +14,7 @@ export const feedCreateSchema = z.object({
   minFixedPrice: z.number().min(0).max(1_000_000).optional(),
   minClientSpent: z.number().min(0).max(100_000_000).optional(),
   minScore: z.number().int().min(0).max(100).optional(),
+  jobTypes: z.array(z.enum(JOB_TYPES)).max(5).default([]),
   notify: z.boolean().default(false),
   proposalPrompt: z.string().trim().max(2000).optional(),
   autoDraftDaily: z.number().int().min(0).max(10).optional(),
@@ -30,6 +32,7 @@ export const feedUpdateSchema = z.object({
   minFixedPrice: z.number().min(0).max(1_000_000).nullable().optional(),
   minClientSpent: z.number().min(0).max(100_000_000).nullable().optional(),
   minScore: z.number().int().min(0).max(100).nullable().optional(),
+  jobTypes: z.array(z.enum(JOB_TYPES)).max(5).optional(),
   notify: z.boolean().optional(),
   proposalPrompt: z.string().trim().max(2000).nullable().optional(),
   autoDraftDaily: z.number().int().min(0).max(10).optional(),
@@ -81,6 +84,9 @@ export interface PoolJobRow {
   lang: string | null;
   title_en: string | null;
   title_tr: string | null;
+  // İstihdam türü (full_time/contract/freelance/part_time/internship); kaynak
+  // vermezse null (filtre lenient — null olan ilan elenmez).
+  job_type: string | null;
 }
 
 // job_feeds satırı
@@ -96,6 +102,8 @@ export interface JobFeedRow {
   min_fixed_price: number | null;
   min_client_spent: number | null;
   min_score: number | null;
+  // Kayıtlı feed'in istihdam-türü filtresi (boş = tüm türler). matchesFeed lenient uygular.
+  job_types: string[];
   notify: boolean;
   proposal_prompt: string | null;
   // Opt-in arka-plan otomatik taslak: 0=kapalı, 1-10=açık (günlük tavan). Opsiyonel →

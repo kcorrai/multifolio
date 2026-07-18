@@ -48,6 +48,7 @@ describe("normalizeWeWorkRemotely", () => {
       client_country: "Anywhere in the World",
       client_spent: null,
       posted_at: "2026-06-30T20:31:08.000Z",
+      job_type: null,
     });
   });
 

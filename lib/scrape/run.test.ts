@@ -21,7 +21,7 @@ const okSource: ScrapeSource = {
   fetch: async () => [{ id: 1, title: "A" }, { bad: true }, { id: 2, title: "B" }],
   normalize: (raw) => {
     const r = raw as { id?: number; title?: string };
-    return r.title ? { source: "ok", external_id: String(r.id), title: r.title, description: "", url: null, budget: null, skills: [], client_country: null, client_spent: null, posted_at: null } : null;
+    return r.title ? { source: "ok", external_id: String(r.id), title: r.title, description: "", url: null, budget: null, skills: [], client_country: null, client_spent: null, posted_at: null, job_type: null } : null;
   },
 };
 

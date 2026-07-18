@@ -99,8 +99,8 @@ export interface WeeklyDigestResult {
   ms: number;
 }
 
-const FEED_COLS = "id, user_id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, created_at";
-const POOL_COLS = "id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr";
+const FEED_COLS = "id, user_id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, job_types, notify, proposal_prompt, created_at";
+const POOL_COLS = "id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr, job_type";
 
 export async function runWeeklyDigest(
   admin: SupabaseClient,

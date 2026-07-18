@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { JobFeedRow } from "@/lib/validation/schemas/feed";
 import { ChipsInput } from "./chips-input";
+import { JobTypeSelect } from "./job-type-select";
 import { useDashboard } from "./dashboard-context";
 
 // Sayısal opsiyonel alan: boş string → undefined, aksi halde Number.
@@ -24,6 +25,7 @@ export interface FeedPrefill {
   keywords?: string[];
   excludeKeywords?: string[];
   excludeCountries?: string[];
+  jobTypes?: string[];
   minHourlyRate?: number;
   minFixedPrice?: number;
   minClientSpent?: number;
@@ -46,6 +48,7 @@ export function FeedModal({
   const [keywords, setKeywords] = useState<string[]>(feed?.keywords ?? initial?.keywords ?? []);
   const [excludeKeywords, setExcludeKeywords] = useState<string[]>(feed?.exclude_keywords ?? initial?.excludeKeywords ?? []);
   const [excludeCountries, setExcludeCountries] = useState<string[]>(feed?.exclude_countries ?? initial?.excludeCountries ?? []);
+  const [jobTypes, setJobTypes] = useState<string[]>(feed?.job_types ?? initial?.jobTypes ?? []);
   const [minHourly, setMinHourly] = useState(feed?.min_hourly_rate?.toString() ?? initial?.minHourlyRate?.toString() ?? "");
   const [minFixed, setMinFixed] = useState(feed?.min_fixed_price?.toString() ?? initial?.minFixedPrice?.toString() ?? "");
   const [minClientSpent, setMinClientSpent] = useState(feed?.min_client_spent?.toString() ?? initial?.minClientSpent?.toString() ?? "");
@@ -64,6 +67,7 @@ export function FeedModal({
           excludeKeywords,
           platform: platform || null,
           excludeCountries,
+          jobTypes,
           minHourlyRate: numOrUndef(minHourly) ?? null,
           minFixedPrice: numOrUndef(minFixed) ?? null,
           minClientSpent: numOrUndef(minClientSpent) ?? null,
@@ -76,6 +80,7 @@ export function FeedModal({
           excludeKeywords,
           platform: platform || undefined,
           excludeCountries,
+          jobTypes,
           minHourlyRate: numOrUndef(minHourly),
           minFixedPrice: numOrUndef(minFixed),
           minClientSpent: numOrUndef(minClientSpent),
@@ -138,6 +143,11 @@ export function FeedModal({
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.excludeCountriesLabel")}</span>
             <ChipsInput values={excludeCountries} onChange={setExcludeCountries} placeholder={t("modal.addCountry")} removeTitle={t("modal.removeKeyword")} max={20} />
             <p className="text-xs text-muted-foreground/70">{t("modal.excludeCountriesHint")}</p>
+          </div>
+
+          <div className="space-y-1.5">
+            <span className="text-xs font-semibold text-muted-foreground">{t("jobTypeLabel")}</span>
+            <JobTypeSelect values={jobTypes} onChange={setJobTypes} />
           </div>
 
           <div className="grid grid-cols-2 gap-3">

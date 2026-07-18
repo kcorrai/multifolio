@@ -6,7 +6,7 @@ function job(id: string, title: string, over: Partial<PoolJobRow> = {}): PoolJob
   return {
     id, source: "remotive", external_id: id, title, description: title,
     url: null, budget: null, skills: [], client_country: null, client_spent: null,
-    posted_at: null, created_at: "2026-07-01T00:00:00Z", lang: "en", title_en: null, title_tr: null,
+    posted_at: null, created_at: "2026-07-01T00:00:00Z", lang: "en", title_en: null, title_tr: null, job_type: null,
     ...over,
   };
 }
@@ -15,7 +15,7 @@ function feed(keywords: string[], over: Partial<JobFeedRow> = {}): JobFeedRow {
   return {
     id: "f1", name: "f", keywords, exclude_keywords: [], min_budget: null, platform: null,
     exclude_countries: [], min_hourly_rate: null, min_fixed_price: null, min_client_spent: null,
-    min_score: null, notify: false, proposal_prompt: null, created_at: "2026-07-01T00:00:00Z",
+    min_score: null, job_types: [], notify: false, proposal_prompt: null, created_at: "2026-07-01T00:00:00Z",
     ...over,
   };
 }

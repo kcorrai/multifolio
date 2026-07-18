@@ -7,6 +7,7 @@ import { poolJobTitle } from "@/lib/feed/filter";
 import type { PlatformId } from "@/lib/ai/platforms";
 import { PlatformLogo } from "@/components/platform-logo";
 import { JobScamBadge } from "./job-risk";
+import { JobTypeBadge } from "./job-type-select";
 import { RELEVANCE_WARN_BELOW } from "@/lib/feed/relevance";
 import { scoreColor, formatRelativeTime, PLATFORM_STYLES } from "./shared";
 
@@ -66,6 +67,7 @@ export function PoolJobRow({
             <h3 className={`text-sm leading-snug truncate ${job.isRead ? "font-medium text-muted-foreground" : "font-semibold"}`}>{poolJobTitle(job, locale)}</h3>
           </div>
           <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+            <JobTypeBadge jobType={job.job_type} />
             {job.budget && <span>{job.budget}</span>}
             {job.budget && rel && <span>·</span>}
             {rel && <span>{t(`${UNIT_KEY[rel.unit]}Short` as string, { count: rel.value })}</span>}

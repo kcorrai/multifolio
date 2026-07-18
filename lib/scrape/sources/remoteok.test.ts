@@ -29,7 +29,13 @@ describe("normalizeRemoteOK", () => {
       client_country: "Freeport Ridge Estate",
       client_spent: null,
       posted_at: "2026-07-03T01:37:48+00:00",
+      job_type: null,
     });
+  });
+
+  it("tags'te istihdam-türü ipucu varsa job_type çıkarır", () => {
+    expect(normalizeRemoteOK({ id: 9, position: "Z", tags: ["react", "contract"] })?.job_type).toBe("contract");
+    expect(normalizeRemoteOK({ id: 10, position: "Z", tags: ["react", "node"] })?.job_type).toBeNull();
   });
 
   it("salary 0/eksik alanlarda null/[] verir (RemoteOK bilinmeyeni 0 gönderir)", () => {

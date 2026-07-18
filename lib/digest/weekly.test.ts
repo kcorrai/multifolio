@@ -26,6 +26,7 @@ function makePoolJob(over: Partial<PoolJobRow> = {}): PoolJobRow {
     lang: "en",
     title_en: null,
     title_tr: null,
+    job_type: null,
     ...over,
   };
 }
@@ -44,6 +45,7 @@ function makeFeed(over: Partial<NotifyFeedRow> = {}): NotifyFeedRow {
     min_fixed_price: null,
     min_client_spent: null,
     min_score: null,
+    job_types: [],
     notify: false, // haftalık özet notify bayrağına BAKMAZ — tüm feed'ler dahil
     proposal_prompt: null,
     created_at: "2026-07-01T00:00:00Z",

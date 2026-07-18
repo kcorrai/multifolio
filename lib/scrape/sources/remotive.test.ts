@@ -12,6 +12,7 @@ const sample = {
   candidate_required_location: "Worldwide",
   publication_date: "2026-06-30T10:00:00",
   description: "<p>Build <b>great</b> UIs</p>",
+  job_type: "contract",
 };
 
 describe("normalizeRemotive", () => {
@@ -27,12 +28,13 @@ describe("normalizeRemotive", () => {
       client_country: "Worldwide",
       client_spent: null,
       posted_at: "2026-06-30T10:00:00",
+      job_type: "contract",
     });
   });
 
-  it("eksik salary/tags/location'da null/[] verir", () => {
+  it("eksik salary/tags/location'da null/[] verir + job_type yoksa null", () => {
     const r = normalizeRemotive({ id: 7, title: "X", description: "" });
-    expect(r).toMatchObject({ external_id: "7", budget: null, skills: [], client_country: null, posted_at: null, url: null });
+    expect(r).toMatchObject({ external_id: "7", budget: null, skills: [], client_country: null, posted_at: null, url: null, job_type: null });
   });
 
   it("zorunlu alan (title) eksikse null döner (atlanır)", () => {

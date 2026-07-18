@@ -14,8 +14,8 @@ import { InsufficientCreditsError } from "@/lib/errors";
 import { PLATFORM_IDS, type PlatformId } from "@/lib/ai/platforms";
 import type { RelevanceProfile } from "@/lib/feed/relevance";
 
-const POOL_COLS = "id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr";
-const FEED_COLS = "id, user_id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, notify, proposal_prompt, auto_draft_daily, auto_draft_used, auto_draft_used_date, created_at";
+const POOL_COLS = "id, source, external_id, title, description, url, budget, skills, client_country, client_spent, posted_at, created_at, lang, title_en, title_tr, job_type";
+const FEED_COLS = "id, user_id, name, keywords, exclude_keywords, min_budget, platform, exclude_countries, min_hourly_rate, min_fixed_price, min_client_spent, min_score, job_types, notify, proposal_prompt, auto_draft_daily, auto_draft_used, auto_draft_used_date, created_at";
 
 type AutoFeed = JobFeedRow & { user_id: string; auto_draft_used?: number; auto_draft_used_date?: string | null };
 

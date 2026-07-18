@@ -5,6 +5,7 @@
 // fetch() ağ yapar; normalizeRemoteOK() saf (test edilebilir).
 import { z } from "zod";
 import { htmlToText } from "@/lib/import/text";
+import { inferJobTypeFromTags } from "@/lib/scrape/job-type";
 import type { PoolJobUpsert, ScrapeSource } from "@/lib/scrape/types";
 
 const REMOTEOK_URL = "https://remoteok.com/api";
@@ -50,6 +51,8 @@ export function normalizeRemoteOK(raw: unknown): PoolJobUpsert | null {
     client_country: location || null,
     client_spent: null,
     posted_at: j.date ?? null,
+    // RemoteOK ayrı job_type alanı vermez → tags'te ipucu (contract/freelance) varsa çıkar.
+    job_type: inferJobTypeFromTags(j.tags),
   };
 }
 

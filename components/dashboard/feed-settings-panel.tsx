@@ -14,6 +14,7 @@ import { CREDIT_COSTS } from "@/lib/credits/costs";
 import type { JobFeedRow, PoolJob } from "@/lib/validation/schemas/feed";
 import { feedStrength } from "@/lib/feed/strength";
 import { ChipsInput } from "./chips-input";
+import { JobTypeSelect } from "./job-type-select";
 import { useDashboard } from "./dashboard-context";
 
 // Sayısal opsiyonel alan: boş/geçersiz → null.
@@ -40,6 +41,7 @@ export function FeedSettingsPanel({
   const [keywords, setKeywords] = useState<string[]>(feed.keywords);
   const [excludeKeywords, setExcludeKeywords] = useState<string[]>(feed.exclude_keywords);
   const [excludeCountries, setExcludeCountries] = useState<string[]>(feed.exclude_countries);
+  const [jobTypes, setJobTypes] = useState<string[]>(feed.job_types);
   const [minHourly, setMinHourly] = useState(feed.min_hourly_rate?.toString() ?? "");
   const [minFixed, setMinFixed] = useState(feed.min_fixed_price?.toString() ?? "");
   const [minClientSpent, setMinClientSpent] = useState(feed.min_client_spent?.toString() ?? "");
@@ -65,6 +67,7 @@ export function FeedSettingsPanel({
     JSON.stringify(keywords) !== JSON.stringify(feed.keywords) ||
     JSON.stringify(excludeKeywords) !== JSON.stringify(feed.exclude_keywords) ||
     JSON.stringify(excludeCountries) !== JSON.stringify(feed.exclude_countries) ||
+    JSON.stringify(jobTypes) !== JSON.stringify(feed.job_types) ||
     numOrNull(minHourly) !== feed.min_hourly_rate ||
     numOrNull(minFixed) !== feed.min_fixed_price ||
     numOrNull(minClientSpent) !== feed.min_client_spent ||
@@ -80,6 +83,7 @@ export function FeedSettingsPanel({
     setKeywords(feed.keywords);
     setExcludeKeywords(feed.exclude_keywords);
     setExcludeCountries(feed.exclude_countries);
+    setJobTypes(feed.job_types);
     setMinHourly(feed.min_hourly_rate?.toString() ?? "");
     setMinFixed(feed.min_fixed_price?.toString() ?? "");
     setMinClientSpent(feed.min_client_spent?.toString() ?? "");
@@ -98,6 +102,7 @@ export function FeedSettingsPanel({
       excludeKeywords,
       platform: platform || null,
       excludeCountries,
+      jobTypes,
       minHourlyRate: numOrNull(minHourly),
       minFixedPrice: numOrNull(minFixed),
       minClientSpent: numOrNull(minClientSpent),
@@ -247,6 +252,11 @@ export function FeedSettingsPanel({
         <div className="space-y-1.5">
           <span className="text-xs font-semibold text-muted-foreground">{t("modal.excludeCountriesLabel")}</span>
           <ChipsInput values={excludeCountries} onChange={setExcludeCountries} placeholder={t("modal.addCountry")} removeTitle={t("modal.removeKeyword")} max={20} />
+        </div>
+
+        <div className="space-y-1.5">
+          <span className="text-xs font-semibold text-muted-foreground">{t("jobTypeLabel")}</span>
+          <JobTypeSelect values={jobTypes} onChange={setJobTypes} />
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3">

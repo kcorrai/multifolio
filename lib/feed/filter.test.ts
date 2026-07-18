@@ -8,7 +8,7 @@ function pool(partial: Partial<PoolJobRow>): PoolJobRow {
     description: "Build a dashboard", url: null, budget: "$1,500-3,000",
     skills: ["React", "TypeScript"], client_country: "US", client_spent: null,
     posted_at: null, created_at: "2026-07-01T00:00:00Z",
-    lang: null, title_en: null, title_tr: null, ...partial,
+    lang: null, title_en: null, title_tr: null, job_type: null, ...partial,
   };
 }
 
@@ -82,6 +82,13 @@ describe("matchesFeed", () => {
     expect(matchesFeed(pool({ client_spent: 100 }), crit({ min_client_spent: 500 }))).toBe(false);
     expect(matchesFeed(pool({ client_spent: 900 }), crit({ min_client_spent: 500 }))).toBe(true);
     expect(matchesFeed(pool({ client_spent: null }), crit({ min_client_spent: 500 }))).toBe(true); // veri yoksa elenmez
+  });
+
+  it("job_types seçiliyken yalnız eşleşen türü geçirir; null job_type lenient (elenmez)", () => {
+    expect(matchesFeed(pool({ job_type: "contract" }), crit({ job_types: ["contract", "freelance"] }))).toBe(true);
+    expect(matchesFeed(pool({ job_type: "full_time" }), crit({ job_types: ["contract", "freelance"] }))).toBe(false);
+    expect(matchesFeed(pool({ job_type: null }), crit({ job_types: ["contract"] }))).toBe(true); // veri yoksa elenmez
+    expect(matchesFeed(pool({ job_type: "full_time" }), crit({ job_types: [] }))).toBe(true); // seçim yoksa hepsi geçer
   });
 
   it("keyword çevrilmiş başlıkta da arar (Almanca ilan + İngilizce keyword)", () => {

@@ -7,7 +7,7 @@ function pj(over: Partial<PoolJob> = {}): PoolJob {
     id: "1", source: "remotive", external_id: "e", title: "React dev",
     description: "d", url: null, budget: null, skills: [], client_country: null,
     client_spent: null, posted_at: null, created_at: "2026-07-01T00:00:00Z",
-    lang: "en", title_en: null, title_tr: null,
+    lang: "en", title_en: null, title_tr: null, job_type: null,
     isStarred: false, isRead: false, score: null, scoreResult: null,
     relevance: null, skillGap: null, ...over,
   };

@@ -19,6 +19,7 @@ function job(over: Partial<PoolJobRow> = {}): PoolJobRow {
     lang: "en",
     title_en: null,
     title_tr: null,
+    job_type: null,
     ...over,
   };
 }

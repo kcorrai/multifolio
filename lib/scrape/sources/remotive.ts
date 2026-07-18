@@ -2,6 +2,7 @@
 // fetch() ağ yapar; normalizeRemotive() saf (test edilebilir).
 import { z } from "zod";
 import { htmlToText } from "@/lib/import/text";
+import { normalizeJobType } from "@/lib/scrape/job-type";
 import type { PoolJobUpsert, ScrapeSource } from "@/lib/scrape/types";
 
 // Kitleye (freelance yazılım + tasarım) uygun kategoriler — filtresiz firehose
@@ -20,6 +21,7 @@ const remotiveJobSchema = z.object({
   candidate_required_location: z.string().optional(),
   publication_date: z.string().optional(),
   description: z.string().optional(),
+  job_type: z.string().optional(),
 });
 
 export function normalizeRemotive(raw: unknown): PoolJobUpsert | null {
@@ -38,6 +40,7 @@ export function normalizeRemotive(raw: unknown): PoolJobUpsert | null {
       ? j.candidate_required_location : null,
     client_spent: null,
     posted_at: j.publication_date ?? null,
+    job_type: normalizeJobType(j.job_type),
   };
 }
 

@@ -13,6 +13,7 @@ import { PoolJobPanel } from "./pool-job-panel";
 import { JobSlideOver } from "./job-slide-over";
 import { FeedModal } from "./feed-modal";
 import { ChipsInput } from "./chips-input";
+import { JobTypeSelect } from "./job-type-select";
 import { useDashboard } from "./dashboard-context";
 
 // Yayınlanma zamanı pencereleri (ms). posted_at yoksa ilan ELENMEZ (lenient).
@@ -50,7 +51,7 @@ export function SearchView() {
   const [time, setTime] = useState<TimeKey>("all");
   const [platform, setPlatform] = useState("");
   const [excludeCountries, setExcludeCountries] = useState<string[]>([]);
-  const [minSpent, setMinSpent] = useState("");
+  const [jobTypes, setJobTypes] = useState<string[]>([]);
   const [minHourly, setMinHourly] = useState("");
   const [minFixed, setMinFixed] = useState("");
   const [saveModal, setSaveModal] = useState(false);
@@ -137,7 +138,7 @@ export function SearchView() {
 
   function clearFilters() {
     setTime("all"); setPlatform(""); setExcludeCountries([]);
-    setMinSpent(""); setMinHourly(""); setMinFixed("");
+    setJobTypes([]); setMinHourly(""); setMinFixed("");
   }
 
   // İstemci tarafı filtre: ülke/harcama/ücret + zaman penceresi.
@@ -149,20 +150,19 @@ export function SearchView() {
         min_budget: null,
         platform: null,
         exclude_countries: excludeCountries,
+        job_types: jobTypes,
         min_hourly_rate: numOrNull(minHourly),
         min_fixed_price: numOrNull(minFixed),
-        min_client_spent: numOrNull(minSpent),
       });
     });
-  }, [jobs, loadedAt, time, excludeCountries, minHourly, minFixed, minSpent]);
+  }, [jobs, loadedAt, time, excludeCountries, jobTypes, minHourly, minFixed]);
 
   // Atıl filtre tespiti: yüklenen havuzda ilgili veri hiç yoksa filtre pasif işaretlenir
-  // (DEEP P1 — havuz Upwork-kalite müşteri harcaması/bütçe vermiyor). Veri gelince otomatik aktif.
-  const hasSpendData = useMemo(() => jobs.some((j) => j.client_spent != null), [jobs]);
+  // (DEEP P1 — havuz Upwork-kalite bütçe vermiyor). Veri gelince otomatik aktif.
   const hasBudgetData = useMemo(() => jobs.some((j) => (j.budget ?? "").trim() !== ""), [jobs]);
 
   const selected = selectedId ? visible.find((j) => j.id === selectedId) ?? null : null;
-  const activeCount = [platform, excludeCountries.length > 0, minSpent.trim(), minHourly.trim(), minFixed.trim()].filter(Boolean).length;
+  const activeCount = [platform, excludeCountries.length > 0, jobTypes.length > 0, minHourly.trim(), minFixed.trim()].filter(Boolean).length;
   const anyFilter = activeCount > 0 || time !== "all";
 
   return (
@@ -247,11 +247,10 @@ export function SearchView() {
                 <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               </div>
             </label>
-            <label className={`block space-y-1 ${hasSpendData ? "" : "opacity-50"}`}>
-              <span className="text-xs font-semibold text-muted-foreground">{t("modal.minClientSpentLabel")}</span>
-              <input value={minSpent} onChange={(e) => setMinSpent(e.target.value)} disabled={!hasSpendData} inputMode="numeric" placeholder="1000" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm disabled:cursor-not-allowed" />
-              <span className="block text-xs text-muted-foreground/70">{hasSpendData ? t("modal.minClientSpentHint") : t("filterInactive")}</span>
-            </label>
+            <div className="space-y-1 sm:col-span-2">
+              <span className="text-xs font-semibold text-muted-foreground">{t("jobTypeLabel")}</span>
+              <JobTypeSelect values={jobTypes} onChange={setJobTypes} />
+            </div>
             <label className={`block space-y-1 ${hasBudgetData ? "" : "opacity-50"}`}>
               <span className="text-xs font-semibold text-muted-foreground">{t("modal.minHourlyLabel")}</span>
               <input value={minHourly} onChange={(e) => setMinHourly(e.target.value)} disabled={!hasBudgetData} inputMode="numeric" placeholder="25" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm disabled:cursor-not-allowed" />
@@ -306,9 +305,9 @@ export function SearchView() {
             keywords: q.trim() ? [q.trim()] : [],
             platform: platform || undefined,
             excludeCountries,
+            jobTypes,
             minHourlyRate: numOrNull(minHourly) ?? undefined,
             minFixedPrice: numOrNull(minFixed) ?? undefined,
-            minClientSpent: numOrNull(minSpent) ?? undefined,
           }}
         />
       )}

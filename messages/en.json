@@ -1382,6 +1382,14 @@
     "analyze": "Analyze match",
     "analyzing": "Analyzing…",
     "relevanceLabel": "Profile match",
+    "jobTypeLabel": "Employment type",
+    "jobType": {
+      "full_time": "Full-time",
+      "part_time": "Part-time",
+      "contract": "Contract",
+      "freelance": "Freelance",
+      "internship": "Internship"
+    },
     "lowRelevanceWarn": "This job doesn't look like a strong match for your profile. Analyze it anyway?",
     "analyzeAnyway": "Analyze anyway",
     "skillGapTitle": "Skill match",

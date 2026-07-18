@@ -88,6 +88,8 @@ export function normalizeWeWorkRemotely(raw: unknown): PoolJobUpsert | null {
     client_country: region || null,
     client_spent: null,
     posted_at: toIso(typeof j.pubDate === "string" ? j.pubDate : null),
+    // WWR RSS güvenilir istihdam-türü sinyali vermez → null (yanlış etiketlemektense boş).
+    job_type: null,
   };
 }
 

@@ -14,6 +14,7 @@ export interface FeedCriteria {
   min_fixed_price?: number | null;
   min_client_spent?: number | null;
   min_score?: number | null;
+  job_types?: string[];
 }
 
 /** DB feed satırını matchesFeed kriterine çevirir. */
@@ -28,6 +29,7 @@ export function feedCriteria(f: JobFeedRow): FeedCriteria {
     min_fixed_price: f.min_fixed_price,
     min_client_spent: f.min_client_spent,
     min_score: f.min_score,
+    job_types: f.job_types ?? [],
   };
 }
 
@@ -73,6 +75,10 @@ export function matchesFeed(pool: PoolJobRow, c: FeedCriteria, score: number | n
   if (c.min_fixed_price != null && !hourly && floor != null && floor < c.min_fixed_price) return false;
 
   if (c.min_client_spent != null && pool.client_spent != null && pool.client_spent < c.min_client_spent) return false;
+
+  // İstihdam türü: seçim varsa yalnız eşleşenler geçer. Lenient — ilanın job_type'ı
+  // null ise (kaynak vermedi) ELENMEZ (client_spent deseniyle aynı).
+  if (c.job_types && c.job_types.length > 0 && pool.job_type && !c.job_types.includes(pool.job_type)) return false;
 
   if (c.min_score != null && c.min_score > 0 && score != null && score < c.min_score) return false;
 
