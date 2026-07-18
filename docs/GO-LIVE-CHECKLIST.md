@@ -99,6 +99,7 @@ Prod'da tanımlı olmalı (`.env.example` referans; **güncellendi**):
 | `SUPABASE_SERVICE_ROLE_KEY` | **evet** | asla istemciye |
 | `OPENAI_API_KEY` | **evet** | uyarlama motoru (gpt-4o-mini) |
 | `SCRAPER_CRON_SECRET` | **evet** | scrape + weekly-digest cron'u korur |
+| `FREELANCER_OAUTH_TOKEN` | **evet** | OPSİYONEL — Freelancer.com gig feed kaynağı. Boşsa kaynak devre dışı (kod güvenli). Token: developers.freelancer.com → developer app → OAuth token; eklenince cron gerçek freelance gig'leri çeker (`job_type="freelance"`) |
 | `RESEND_SMTP_PASS` | **evet** | Resend API key (app bildirimleri) |
 | `RESEND_FROM_EMAIL` | hayır | doğrulanmış domain adresi |
 | `ANALYZE_IP_SALT` | **evet** | boşsa service-role'den türer; ayrı değer öner |

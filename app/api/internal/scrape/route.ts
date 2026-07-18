@@ -15,6 +15,7 @@ import { sendFeedDigestEmail } from "@/lib/notifications/email";
 import { remotiveSource } from "@/lib/scrape/sources/remotive";
 import { remoteOkSource } from "@/lib/scrape/sources/remoteok";
 import { weWorkRemotelySource } from "@/lib/scrape/sources/weworkremotely";
+import { freelancerSource, isFreelancerConfigured } from "@/lib/scrape/sources/freelancer";
 
 // Arka plan (çeviri+bildirim) adımı için tavan; Fluid Compute yanıttan sonra
 // after() işini bu süreye kadar sürdürür (AI başlık çevirisi ~50sn sürebilir).
@@ -51,11 +52,11 @@ export const POST = withErrorHandler(async (req) => {
   // Engineering" altında Corporate Counsel/Civil Engineer/sürücü reklamı, ~%50 gürültü) —
   // ikisi de filtresiz firehose, Arbeitnow gibi feed alakasını bozar. WWR kategori feed'leri
   // (programming + design) temiz → eklendi.
-  const results = await runScrape(admin, [
-    remotiveSource,
-    remoteOkSource,
-    weWorkRemotelySource,
-  ]);
+  // Freelancer.com resmî API (gerçek freelance gig feed'i) yalnız ENV-GATED: OAuth token
+  // yoksa kaynak koşuya HİÇ eklenmez → her koşuda garanti hata satırı oluşmaz (temiz scrape_runs).
+  const sources = [remotiveSource, remoteOkSource, weWorkRemotelySource];
+  if (isFreelancerConfigured()) sources.push(freelancerSource);
+  const results = await runScrape(admin, sources);
 
   // Çeviri (AI, ~50sn) + bildirim adımları cron-job.org'un ~30sn HTTP zaman
   // aşımını aşıyordu → koşu "Failed (timeout)" görünüyordu (iş aslında bitiyordu).
