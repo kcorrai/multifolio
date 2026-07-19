@@ -1200,6 +1200,70 @@
     "error": "Couldn't send your recommendation. Please try again.",
     "poweredBy": "Powered by"
   },
+  "tour": {
+    "replay": "Take the tour",
+    "skipTour": "Skip tour",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "skipStep": "Skip this step",
+    "clickHint": "Click the highlighted area to continue",
+    "progress": "{current} / {total}",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Multifolio 👋",
+        "body": "Let's take a 2-minute tour of the platform. We'll connect an account, build your profile with AI, browse jobs, and create your CV and portfolio. You can skip anytime."
+      },
+      "connectNav": {
+        "title": "Connect a platform",
+        "body": "Start by opening Platforms. If you already freelance on LinkedIn, Upwork or Fiverr, you can import your public profile in one click."
+      },
+      "connectCard": {
+        "title": "Pick a platform",
+        "body": "Open any platform to link your profile and pull in your headline, skills and portfolio. No account there yet? Skip this step."
+      },
+      "adapt": {
+        "title": "Adapt with AI",
+        "body": "One click rewrites your core profile into an optimized version for every platform. This is where Multifolio saves you hours."
+      },
+      "profileNav": {
+        "title": "Your profile",
+        "body": "Now let's head to your Profile — the single source of truth every platform, CV and portfolio is generated from."
+      },
+      "profileAi": {
+        "title": "AI profile suggestions",
+        "body": "Multifolio reads your connected public profiles and suggests a sharper headline, summary and skills. Apply them field by field — it's free."
+      },
+      "jobsNav": {
+        "title": "Find work",
+        "body": "Open Jobs to browse a live feed of remote roles matched to your skills."
+      },
+      "jobsFeed": {
+        "title": "Save a feed",
+        "body": "Create a feed to get matching jobs delivered continuously, with an AI fit score and one-click proposal drafts for each."
+      },
+      "cvNav": {
+        "title": "Build your CV",
+        "body": "Next up: your CV. Open the CV tab to generate an ATS-ready resume from your profile."
+      },
+      "cvGenerate": {
+        "title": "Generate your CV",
+        "body": "Generate an ATS-friendly CV from your profile, then pick a template and tailor it to any job. You can also import an existing one."
+      },
+      "portfolioNav": {
+        "title": "Your portfolio site",
+        "body": "Last stop: your portfolio. Open the Portfolio tab to spin up a public site."
+      },
+      "portfolioGenerate": {
+        "title": "Generate your portfolio",
+        "body": "Turn your profile into a shareable portfolio site — pick a theme, curate your gallery, and publish it at your own /p/ link."
+      },
+      "finish": {
+        "title": "You're all set! 🎉",
+        "body": "That's the whole platform. Complete the setup checklist to unlock bonus credits — and you can replay this tour anytime from Getting Started."
+      }
+    }
+  },
   "gettingStarted": {
     "eyebrow": "Getting started",
     "title": "Welcome to Multifolio",

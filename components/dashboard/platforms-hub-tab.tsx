@@ -92,7 +92,7 @@ export function PlatformsHubTab({
                 <p className="text-xs text-muted-foreground mt-0.5">{t("adaptAll.desc")}</p>
               </div>
             </div>
-            <Button onClick={adaptAll} disabled={busy || selected.size === 0} className="gap-2 shrink-0">
+            <Button data-tour="adapt-all" onClick={adaptAll} disabled={busy || selected.size === 0} className="gap-2 shrink-0">
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               {busy ? t("adaptAll.busy") : t("adaptAll.button")}
               <span className="rounded-full bg-black/10 dark:bg-white/15 px-1.5 py-0.5 text-[11px] font-bold tabular-nums">{adaptAllCost}</span>
@@ -147,7 +147,7 @@ export function PlatformsHubTab({
           const adapted = !!adaptResults[id] || initialAdaptedPlatforms.includes(id);
           const jobCount = jobsByPlatform[id] ?? 0;
           return (
-            <Link key={id} href={`/dashboard/platforms/${id}`} className="group block">
+            <Link key={id} href={`/dashboard/platforms/${id}`} data-tour={id === platforms[0] ? "platform-card" : undefined} className="group block">
               <Card className={`h-full shadow-sm overflow-hidden ${ELEVATED} hover:-translate-y-0.5 ${style.accent}`}>
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2.5">

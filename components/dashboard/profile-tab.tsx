@@ -386,7 +386,7 @@ export function ProfileTab({
           <ProfileStrength headline={headline} summary={summary} skills={skills} />
 
           {/* AI önerisi (public profillerden) */}
-          <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] overflow-hidden">
+          <div data-tour="profile-ai" className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] overflow-hidden">
             <div className="p-4 space-y-3">
               <div className="flex items-start justify-between gap-2">
                 <div>

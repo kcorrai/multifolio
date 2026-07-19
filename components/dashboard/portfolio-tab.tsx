@@ -94,7 +94,7 @@ export function PortfolioTab({
             </div>
           )}
 
-          <Button onClick={generatePortfolio} disabled={generating || (!profileSaved && !content)} className="gap-2">
+          <Button data-tour="portfolio-generate" onClick={generatePortfolio} disabled={generating || (!profileSaved && !content)} className="gap-2">
             <Sparkles className="h-4 w-4" />
             {generating ? t("generating") : content ? t("regenerate") : t("generate")}
             <CreditCost kind="portfolio_generation" />

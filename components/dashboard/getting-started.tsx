@@ -14,6 +14,7 @@ import {
 import { CountUp } from "@/components/count-up";
 import { ELEVATED } from "./shared";
 import { EXTENSION_STORE_URL } from "@/lib/extension";
+import { StartTourButton } from "./tour/start-tour-button";
 
 export type StepKey = "verifyEmail" | "profile" | "connect" | "adapt" | "feed" | "portfolio";
 
@@ -90,9 +91,13 @@ export function GettingStarted({
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t("title")}</h1>
             <p className="text-sm text-muted-foreground max-w-md">{t("subtitle")}</p>
-            <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-500 dark:text-violet-300">
-              <Gift className="h-3.5 w-3.5" />
-              {allDone && bonusEarned ? t("rewardDone") : t("rewardPill", { count: bonusCredits })}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-500 dark:text-violet-300">
+                <Gift className="h-3.5 w-3.5" />
+                {allDone && bonusEarned ? t("rewardDone") : t("rewardPill", { count: bonusCredits })}
+              </div>
+              {/* Clash Royale tarzı spotlight turunu yeniden başlat */}
+              <StartTourButton />
             </div>
           </div>
           <ProgressRing pct={pct} done={completedCount} total={STEPS.length} />
