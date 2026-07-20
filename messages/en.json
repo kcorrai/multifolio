@@ -72,7 +72,14 @@
           "cv": "Export an ATS-ready CV"
         },
         "profileHeadline": "Senior React Developer",
-        "skills": ["React", "Next.js", "TypeScript", "Node", "UI/UX", "Tailwind"],
+        "skills": [
+          "React",
+          "Next.js",
+          "TypeScript",
+          "Node",
+          "UI/UX",
+          "Tailwind"
+        ],
         "scoreLabel": "fit",
         "autoPilot": "Auto-Pilot",
         "on": "ON",
@@ -80,10 +87,18 @@
         "portfolioName": "Ahmet Yilmaz",
         "portfolioRole": "Product Designer",
         "hire": "Hire me",
-        "projects": ["Fintech app", "Design system", "SaaS dashboard"],
+        "projects": [
+          "Fintech app",
+          "Design system",
+          "SaaS dashboard"
+        ],
         "atsLabel": "ATS score",
         "download": "Download PDF",
-        "templates": ["Clean", "Modern", "Sidebar"]
+        "templates": [
+          "Clean",
+          "Modern",
+          "Sidebar"
+        ]
       }
     },
     "toolCta": {
@@ -907,23 +922,23 @@
     "displayNoProjects": "No projects to show by project yet. Import an Upwork/Fiverr profile, then save to sync them here — no regeneration needed.",
     "displaySyncPending": "{count} imported projects ready. Click Save settings to publish them to your page.",
     "leads": {
-        "title": "Incoming requests",
-        "empty": "No requests yet. Share your portfolio to start receiving them.",
-        "loading": "Loading…",
-        "newBadge": "{count} new",
-        "statusLabel": "Status",
-        "status": {
-          "new": "New",
-          "contacted": "Contacted",
-          "converted": "Won",
-          "archived": "Archived"
-        },
-        "tier": {
-          "hot": "Hot",
-          "good": "Good fit",
-          "cold": "Cold"
-        }
+      "title": "Incoming requests",
+      "empty": "No requests yet. Share your portfolio to start receiving them.",
+      "loading": "Loading…",
+      "newBadge": "{count} new",
+      "statusLabel": "Status",
+      "status": {
+        "new": "New",
+        "contacted": "Contacted",
+        "converted": "Won",
+        "archived": "Archived"
       },
+      "tier": {
+        "hot": "Hot",
+        "good": "Good fit",
+        "cold": "Cold"
+      }
+    },
     "preset": {
       "studio": "Studio",
       "atelier": "Atelier",
@@ -1285,18 +1300,54 @@
     "statusNext": "Start here",
     "journeyHint": "About 5 minutes, one step at a time.",
     "steps": {
-      "verifyEmail": { "title": "Verify your email", "desc": "Confirm your address to secure your account.", "cta": "Verify" },
-      "profile": { "title": "Build your profile", "desc": "Import or write your headline, summary and skills once.", "cta": "Start" },
-      "connect": { "title": "Connect a platform", "desc": "Link LinkedIn, Upwork or Fiverr.", "cta": "Connect" },
-      "adapt": { "title": "Generate a platform version", "desc": "Turn your profile into optimized text for a platform.", "cta": "Generate" },
-      "feed": { "title": "Set up a job feed", "desc": "Create a filtered feed of matching freelance jobs.", "cta": "Create" },
-      "portfolio": { "title": "Publish your portfolio", "desc": "Spin up a shareable portfolio site in one click.", "cta": "Publish" }
+      "verifyEmail": {
+        "title": "Verify your email",
+        "desc": "Confirm your address to secure your account.",
+        "cta": "Verify"
+      },
+      "profile": {
+        "title": "Build your profile",
+        "desc": "Import or write your headline, summary and skills once.",
+        "cta": "Start"
+      },
+      "connect": {
+        "title": "Connect a platform",
+        "desc": "Link LinkedIn, Upwork or Fiverr.",
+        "cta": "Connect"
+      },
+      "adapt": {
+        "title": "Generate a platform version",
+        "desc": "Turn your profile into optimized text for a platform.",
+        "cta": "Generate"
+      },
+      "feed": {
+        "title": "Set up a job feed",
+        "desc": "Create a filtered feed of matching freelance jobs.",
+        "cta": "Create"
+      },
+      "portfolio": {
+        "title": "Publish your portfolio",
+        "desc": "Spin up a shareable portfolio site in one click.",
+        "cta": "Publish"
+      }
     },
     "explore": {
-      "analyze": { "title": "Profile analysis", "desc": "Free AI score for your profile." },
-      "earnings": { "title": "Net earnings", "desc": "See what you really take home." },
-      "compare": { "title": "Compare platforms", "desc": "Find which platform pays you most." },
-      "extension": { "title": "Browser extension", "desc": "Import Upwork & Fiverr profiles." }
+      "analyze": {
+        "title": "Profile analysis",
+        "desc": "Free AI score for your profile."
+      },
+      "earnings": {
+        "title": "Net earnings",
+        "desc": "See what you really take home."
+      },
+      "compare": {
+        "title": "Compare platforms",
+        "desc": "Find which platform pays you most."
+      },
+      "extension": {
+        "title": "Browser extension",
+        "desc": "Import Upwork & Fiverr profiles."
+      }
     }
   },
   "extensionGuide": {
@@ -1307,10 +1358,22 @@
     "importButton": "Import to Multifolio",
     "install": "Install the extension",
     "privacyLink": "About the extension & privacy",
-    "step1": { "title": "Install the extension", "desc": "Add the Multifolio extension from the Chrome Web Store." },
-    "step2": { "title": "Sign in to Multifolio", "desc": "Make sure you're logged into your account in the same browser." },
-    "step3": { "title": "Open your profile & import", "desc": "Open your Upwork/Fiverr profile page and click the “Import to Multifolio” button at the bottom-right." },
-    "step4": { "title": "Review & save the draft", "desc": "A wizard opens with your headline, summary and skills — review and save." }
+    "step1": {
+      "title": "Install the extension",
+      "desc": "Add the Multifolio extension from the Chrome Web Store."
+    },
+    "step2": {
+      "title": "Sign in to Multifolio",
+      "desc": "Make sure you're logged into your account in the same browser."
+    },
+    "step3": {
+      "title": "Open your profile & import",
+      "desc": "Open your Upwork/Fiverr profile page and click the “Import to Multifolio” button at the bottom-right."
+    },
+    "step4": {
+      "title": "Review & save the draft",
+      "desc": "A wizard opens with your headline, summary and skills — review and save."
+    }
   },
   "publicAnalysis": {
     "metaTitle": "Free Freelancer Profile Check — Multifolio",
@@ -1620,7 +1683,7 @@
     "faqQ1": "Is Multifolio free?",
     "faqA1": "Yes — start with 100 free credits, no card required. Pay only if you need more.",
     "faqQ2": "Does it work for {platform}?",
-    "faqA2": "Multifolio adapts your profile and proposals specifically for {platform}, plus LinkedIn, Upwork, Fiverr, Bionluk and Armut.",
+    "faqA2": "Multifolio adapts your profile and proposals specifically for {platform}, and for every other platform it supports — LinkedIn, Upwork, Fiverr, Freelancer.com, Contra, PeoplePerHour, 99designs and Guru.",
     "faqQ3": "Do you apply to jobs for me?",
     "faqA3": "No auto-submit. Multifolio drafts a tailored proposal and fills it in — you always review and send it yourself.",
     "finalTitle": "Ready to win more {role} work on {platform}?",
@@ -1693,48 +1756,6 @@
     "retentionBody": "Imported drafts are stored in your account until you review them (drafts older than one hour are ignored and overwritten by the next import). Saved profile data lives in your Multifolio account and can be edited or deleted by you at any time. Deleting your account removes all of it.",
     "contactTitle": "Contact",
     "contactBody": "Questions about this policy: yanlizcakaan@gmail.com"
-  },
-  "earnings": {
-    "metaTitle": "Freelance Net Earnings Calculator — Multifolio",
-    "metaDescription": "How much do you actually take home? Calculate your net freelance income after platform fees, transfer costs and taxes — Upwork, Fiverr, Bionluk.",
-    "heroEyebrow": "Free tool",
-    "heroTitle": "How much do you actually take home?",
-    "heroSubtitle": "Enter a gross amount and see what's left after platform commission, transfer fees and tax — instantly, no sign-up.",
-    "platform": "Platform",
-    "platformCustom": "Custom",
-    "gross": "Gross amount",
-    "currency": "Currency",
-    "platformFee": "Platform commission (%)",
-    "transferMethod": "Payout method",
-    "method": {
-      "payoneer": "Payoneer",
-      "wise": "Wise",
-      "bank": "Bank transfer",
-      "none": "None / other"
-    },
-    "transferPct": "Transfer fee (%)",
-    "transferFixed": "Fixed fee",
-    "tax": "Tax rate (%)",
-    "taxHint": "Simplified estimate on the remaining amount — pick 0 if you handle tax separately (e.g. young entrepreneur exemption).",
-    "fxRate": "USD → TRY rate (optional)",
-    "fxPlaceholder": "e.g. 40.5",
-    "fxAuto": "Live rate filled in automatically — you can edit it.",
-    "resultTitle": "Your net take-home",
-    "netPct": "{pct}% of gross stays with you",
-    "compareTitle": "Which platform pays more?",
-    "compareFee": "{pct}% fee",
-    "compareHint": "Same gross, transfer and tax — only platform commission differs.",
-    "rows": {
-      "gross": "Gross",
-      "platformFee": "Platform commission",
-      "transferFee": "Transfer fees",
-      "tax": "Tax",
-      "net": "Net"
-    },
-    "disclaimer": "All rates are editable estimates and can change over time; this is not tax or financial advice. Check current platform and bank fees before deciding.",
-    "ctaTitle": "Keep more of what you earn",
-    "ctaBody": "Multifolio helps you win better-paying work across platforms — optimized profiles, matched jobs and proposals. Start free with 100 credits.",
-    "ctaButton": "Start free"
   },
   "rate": {
     "metaTitle": "Freelance Rate Calculator — What Should I Charge? | Multifolio",
@@ -2099,91 +2120,6 @@
     "error": "Something went wrong. Please try again.",
     "privacyNote": "Your details are sent only to the owner of this page."
   },
-  "compare": {
-    "metaTitle": "Freelance Platform Net Income Comparison — Multifolio",
-    "metaDescription": "One project, five platforms: see how much you take home on Upwork, Fiverr, Bionluk and direct clients after fees, transfer costs and tax.",
-    "heroEyebrow": "Free tool",
-    "heroTitle": "Same project — which platform pays you most?",
-    "heroSubtitle": "Enter one amount and compare your net take-home across platforms side by side, after commission, transfer fees and tax.",
-    "gross": "Project amount",
-    "currency": "Currency",
-    "transferMethod": "Payout method",
-    "method": {
-      "payoneer": "Payoneer",
-      "wise": "Wise",
-      "bank": "Bank transfer",
-      "none": "None / other"
-    },
-    "transferPct": "Transfer fee (%)",
-    "transferFixed": "Fixed fee",
-    "tax": "Tax rate (%)",
-    "platform": {
-      "direct": "Direct client"
-    },
-    "feeChip": "{pct}% fee",
-    "netPct": "{pct}% of gross",
-    "armutNote": "Armut isn't a percentage cut — it charges a per-lead fee (you pay for every quote you send, win or lose), so it can't be compared as a flat %. Factor in your win rate before bidding.",
-    "armutRoi": {
-      "title": "Armut: is this lead worth bidding on?",
-      "subtitle": "Armut charges per quote whether you win or not. See the expected value and the win rate you need to break even.",
-      "leadFee": "Quote fee (₺)",
-      "projectValue": "Project value if you win (₺)",
-      "winProb": "Your win chance (%)",
-      "expectedValue": "Expected value per quote",
-      "breakEven": "Break-even win rate",
-      "breakEvenValue": "above {pct}%",
-      "verdictWorth": "Worth bidding",
-      "verdictSkip": "Probably skip",
-      "disclaimer": "Rough estimate, not advice. Use your realistic win rate and net project value (after Armut's win commission)."
-    },
-    "disclaimer": "Rates are editable estimates and change over time; this is not tax or financial advice. Transfer and tax are applied equally to every platform, so the ranking reflects platform commission.",
-    "ctaTitle": "Win better-paying work everywhere",
-    "ctaBody": "Multifolio turns one profile into optimized profiles and proposals for every platform — so you keep more per project. Start free with 100 credits.",
-    "ctaButton": "Start free"
-  },
-  "trTax": {
-    "metaTitle": "Turkey Freelancer Tax Advantages — Multifolio",
-    "metaDescription": "Serving foreign clients from Turkey? Check if you qualify for the service-export income deduction (GVK 89/1-13) and the young entrepreneur exemption — and roughly how much tax base you can shield.",
-    "heroEyebrow": "Free tool · Turkey",
-    "heroTitle": "Are you leaving Turkish tax breaks on the table?",
-    "heroSubtitle": "Freelancers serving foreign clients from Turkey can deduct most of that income. Answer a few questions to see which exemptions likely apply.",
-    "yearLabel": "Tax year",
-    "q": {
-      "foreignClients": "Do you serve clients based outside Turkey?",
-      "professionInScope": "Is your work software, design, engineering, architecture, data processing or similar?",
-      "invoicesFromTurkey": "Do you invoice from Turkey and bring the earnings into Turkey by the filing deadline?",
-      "youngFirstTime": "Are you under 29 and registering as an income-tax payer for the first time?"
-    },
-    "yes": "Yes",
-    "no": "No",
-    "incomeLabel": "Annual foreign-service income (₺, optional)",
-    "incomePlaceholder": "e.g. 1.000.000",
-    "incomeHint": "Used only for a rough illustration of the deductible base — not the tax you owe.",
-    "hizmetIhraci": {
-      "title": "Service-export deduction (GVK 89/1-13)",
-      "likely": "Likely eligible — for {year} you may deduct {pct}% of this income from your tax base.",
-      "no": "Not eligible from your answers — all three conditions (foreign client, in-scope service, invoiced from Turkey) must hold."
-    },
-    "gencGirisimci": {
-      "title": "Young entrepreneur exemption (GVK mük. 20)",
-      "likely": "Likely eligible — for {year} up to {cap} of profit is exempt, for 3 years.",
-      "no": "Not eligible from your answers (requires under 29 + first-time taxpayer)."
-    },
-    "est": {
-      "title": "Rough deductible base",
-      "gencExempt": "Young entrepreneur exemption",
-      "hizmetDeduction": "Service-export deduction",
-      "remaining": "Remaining taxable base",
-      "shielded": "≈ {pct}% of your income shielded before income-tax brackets apply."
-    },
-    "kdvNote": "Bonus: services exported to clients abroad are VAT-exempt (0%, KDV code 302) — you charge no VAT and can reclaim input VAT.",
-    "bagkurNote": "Note for 2026: the young-entrepreneur Bağ-Kur premium subsidy was removed — you now pay your own Bağ-Kur premium.",
-    "disclaimer": "Informational only, not tax advice. Rates and caps change yearly and conditions are strict; the 2026 figures are recent — confirm with the official source and your accountant (mali müşavir) before relying on them.",
-    "sourceLink": "Official source: gib.gov.tr",
-    "ctaTitle": "Keep more of every project",
-    "ctaBody": "Multifolio helps you win better-paying foreign clients across platforms — one profile, optimized everywhere. Start free with 100 credits.",
-    "ctaButton": "Start free"
-  },
   "legalPrivacy": {
     "metaTitle": "Privacy Policy — Multifolio",
     "metaDescription": "How Multifolio collects, uses and protects your data.",
@@ -2193,7 +2129,7 @@
     "intro": "This policy explains what data Multifolio collects, why, and how we protect it. It applies to the Multifolio website and app.",
     "draftNotice": "This is a template for informational purposes and is not legal advice. Please have it reviewed by a legal professional before you start taking payments.",
     "collectedTitle": "Data we collect",
-    "collectedBody": "• Account data: your email address and password (stored encrypted by our authentication provider).\n• Profile data you enter: headline, summary, skills, and any profile text or files you import.\n• CV data: if you upload a CV, the file is parsed in memory to extract its text and is not stored; we keep only the structured CV you choose to save, which stays private to your account.\n• Data pulled from platforms you connect (e.g. LinkedIn, Bionluk): public profile information from the URL you provide.\n• Usage data: the AI actions you run and the credits they consume.\nWe do not store payment card details.",
+    "collectedBody": "• Account data: your email address and password (stored encrypted by our authentication provider).\n• Profile data you enter: headline, summary, skills, and any profile text or files you import.\n• CV data: if you upload a CV, the file is parsed in memory to extract its text and is not stored; we keep only the structured CV you choose to save, which stays private to your account.\n• Data pulled from platforms you connect (e.g. LinkedIn, Contra, Guru): public profile information from the URL you provide.\n• Usage data: the AI actions you run and the credits they consume.\nWe do not store payment card details.",
     "useTitle": "How we use your data",
     "useBody": "We use your data to provide the service: generating platform-adapted profiles, proposals, job matches, portfolio pages and CVs, and to operate your account. AI generation is performed by our model provider solely to produce the output you request. Uploaded CV text is sent to our AI provider only to extract its content, then discarded.",
     "sharingTitle": "Sharing",
@@ -2233,31 +2169,6 @@
     "changesBody": "We may update these terms as the product evolves. Continued use after changes means you accept the updated terms.",
     "contactTitle": "Contact",
     "contactBody": "Questions about these terms? Contact yanlizcakaan@gmail.com."
-  },
-  "legalKvkk": {
-    "metaTitle": "Data Protection (KVKK) Notice — Multifolio",
-    "metaDescription": "Information notice under Turkey's Personal Data Protection Law (KVKK).",
-    "eyebrow": "Legal",
-    "title": "Data Protection (KVKK) Notice",
-    "updated": "Last updated: July 4, 2026",
-    "intro": "This notice is provided under Article 10 of Turkey's Personal Data Protection Law No. 6698 (\"KVKK\") and explains how your personal data is processed.",
-    "draftNotice": "This is a template for informational purposes and is not legal advice. Please have it reviewed by a legal professional before you start taking payments.",
-    "controllerTitle": "Data controller",
-    "controllerBody": "Multifolio is currently in beta and is not yet operated by a legal entity. As such, the data controller is the natural person operating the service. For requests and inquiries: yanlizcakaan@gmail.com. Once commercial operations begin, this text will be updated with the data controller's trade name, address, and tax/registration details.",
-    "dataTitle": "Personal data processed",
-    "dataBody": "• Identity and contact: email address.\n• Profile content you provide: headline, summary, skills, imported profile text or files.\n• Public profile data from platforms you connect.\n• Transaction and usage records: AI actions and credit usage.",
-    "purposeTitle": "Purposes of processing",
-    "purposeBody": "Your data is processed to create and operate your account, to deliver the requested AI outputs (profile adaptation, proposals, matching, portfolio), to provide support, and to meet our legal obligations.",
-    "basisTitle": "Legal grounds",
-    "basisBody": "Processing is based on the performance of a contract (KVKK Art. 5/2-c), our legitimate interests (Art. 5/2-f), compliance with legal obligations (Art. 5/2-ç), and, where required, your explicit consent.",
-    "transferTitle": "Data transfers",
-    "transferBody": "To operate the service, data may be processed by our providers, including hosting and database (Supabase), AI processing (OpenAI) and email (Resend), which may be located abroad. Transfers are made in line with KVKK Articles 8 and 9.",
-    "methodTitle": "Method of collection",
-    "methodBody": "Your data is collected electronically through the website, the app, the browser extension, and the connected platform URLs you provide.",
-    "rightsTitle": "Your rights (KVKK Art. 11)",
-    "rightsBody": "You have the right to learn whether your data is processed, to request information about it, to know the purpose, to request correction or deletion, to object, and to claim compensation for damages. To exercise these rights, contact the data controller above.",
-    "contactTitle": "Contact",
-    "contactBody": "To exercise your rights or for questions, contact yanlizcakaan@gmail.com."
   },
   "legalContact": {
     "metaTitle": "Contact — Multifolio",

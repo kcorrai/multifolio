@@ -345,7 +345,9 @@ export function JobsTab({
                           : bulkConfirm
                             ? t("queueDraftConfirm")
                             : t("queueDraftTop", { count: Math.min(BULK_DRAFT_N, queue.length) })}
-                        {!bulkBusy && !bulkConfirm && <CreditCost kind="proposal" />}
+                        {/* Rozet TOPLAM maliyeti gösterir: N iş × teklif başına kredi
+                            (tek teklifin fiyatını göstermek 3 kat sürprize yol açıyordu). */}
+                        {!bulkBusy && <CreditCost kind="proposal" times={Math.min(BULK_DRAFT_N, queue.length)} />}
                       </Button>
                     )}
                   </div>
