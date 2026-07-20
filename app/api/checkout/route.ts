@@ -4,7 +4,7 @@
 // Kullanıcı bu URL'de öder; iyzico callback route'una token POST'lar.
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
-import { AppError, AuthError, ValidationError, withErrorHandler } from "@/lib/errors";
+import { AppError, AuthError, RateLimitError, ValidationError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { checkoutCreateSchema } from "@/lib/validation/schemas/checkout";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -14,6 +14,9 @@ import { getUserMarketId } from "@/lib/markets/server";
 import { marketCurrency } from "@/lib/markets/config";
 import { initializeCheckoutForm, isIyzicoConfigured } from "@/lib/payments/iyzico";
 import { appBaseUrl } from "@/lib/payments/app-url";
+
+/** Saatlik ödeme başlatma tavanı — gerçek kullanıcı için fazlasıyla yeterli. */
+const HOURLY_CHECKOUT_LIMIT = 15;
 
 export const POST = withErrorHandler(async (req) => {
   if (!isIyzicoConfigured()) {
@@ -26,6 +29,19 @@ export const POST = withErrorHandler(async (req) => {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new AuthError();
+
+  // Rate-limit: her istek bir 'pending' satırı açıp iyzico'ya dış çağrı yapar.
+  // Diğer hassas uçlardaki saatlik sayaç deseni — kaçak döngü/satır şişirmeyi keser.
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count, error: countError } = await supabase
+    .from("purchases")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .gte("created_at", oneHourAgo);
+  if (countError) throw countError;
+  if ((count ?? 0) >= HOURLY_CHECKOUT_LIMIT) {
+    throw new RateLimitError("Too many checkout attempts. Please try again later.");
+  }
 
   const { packageId } = await parseJson(req, checkoutCreateSchema);
   const pkg = getPackage(packageId);

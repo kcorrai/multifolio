@@ -21,9 +21,16 @@
   bypass eder → yalnızca gerçek admin işleri, asla istemciye import edilmez (`server-only`).
 - Sorgular Supabase client ile parametreli; ham SQL string birleştirme yapılmaz.
 
-## XSS / portfolyo HTML
-- Portfolyo siteleri kullanıcı/AI üretimi HTML içerebilir. `lib/sanitize.ts` (`sanitizeHtml`)
-  ile **render öncesi** dar bir allowlist'e indirgenir; script/inline-event/tehlikeli URL şemaları kaldırılır.
+## XSS / portfolyo içeriği
+- **Mevcut durum:** portfolyo içeriği ham HTML DEĞİL, yapılandırılmış JSON (`PortfolioContent`).
+  `/p/[slug]` bunu React text-node olarak render eder → otomatik escape. Kullanıcı/AI metni
+  hiçbir yerde `dangerouslySetInnerHTML` ile basılmaz; repodaki iki kullanımı da JSON-LD
+  script'idir (`<` escape'li).
+- `lib/sanitize.ts` (`sanitizeHtml`) DURUYOR ama şu an **hiçbir yerden çağrılmıyor** — ileride
+  ham HTML kabul eden bir alan (zengin metin bio, gömülü blok) eklenirse render öncesi
+  ZORUNLU geçiş noktasıdır. Böyle bir alan eklenmeden "sanitize var" varsayımıyla hareket etme.
+- Gömülü medya ayrı korunur: `lib/portfolio/embed.ts` rastgele iframe src'ye ASLA izin vermez,
+  yalnız allowlist host (YouTube/Vimeo/Loom/Figma) → sabit embed URL'i üretir.
 
 ## Hata sızıntısı
 - 5xx hatalarında iç mesaj/stack istemciye dönmez (`withErrorHandler`, `expose:false`).

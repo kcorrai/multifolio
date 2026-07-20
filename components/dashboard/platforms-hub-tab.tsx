@@ -73,8 +73,15 @@ export function PlatformsHubTab({
         <p className="text-sm text-muted-foreground mt-0.5">{t("hubSubtitle")}</p>
       </div>
 
+      {/* Tur çapası: asıl "adapt-all" butonu yalnız profil kaydedilince var olur, ama
+          otomatik tur TAM DA profilsiz kullanıcıda başlar → o adımda spotlight hedefi
+          bulunamıyordu. İki blok karşılıklı dışlayan olduğundan aynı data-tour id'si
+          güvenle burada da durur: profil yokken bu kart parlar. */}
       {!profileSaved && (
-        <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+        <div
+          data-tour="adapt-all"
+          className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-700 dark:text-amber-300"
+        >
           <AlertCircle className="h-4 w-4 shrink-0" />{t("card.saveProfileFirst")}
         </div>
       )}
