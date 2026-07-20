@@ -16,6 +16,7 @@ import { portfolioContentSchema, type PortfolioContent } from "@/lib/validation/
 import { SITE_URL } from "@/lib/seo/site";
 import { portfolioTheme, ACCENT_HEX } from "@/lib/portfolio/theme";
 import { LeadForm } from "@/components/portfolio/lead-form";
+import { DemoThemeSwitcher } from "@/components/portfolio/demo-theme-switcher";
 import { getSafeEmbed } from "@/lib/portfolio/embed";
 import { validateContactEmail, validateContactUrl } from "@/lib/portfolio/contact";
 import { buildPersonJsonLd } from "@/lib/portfolio/json-ld";
@@ -170,6 +171,8 @@ export default async function PortfolioPage({ params }: PageProps) {
 
   return (
     <div
+      // id: demo tema değiştirici bu elemanın CSS değişkenlerini override eder.
+      id="pf-root"
       className={`${archivo.variable} ${spaceGrotesk.variable} ${fraunces.variable} min-h-dvh bg-[var(--pf-bg)] text-[var(--pf-text)] selection:bg-[var(--pf-accent)] selection:text-white`}
       style={{ ...vars, fontFamily: "var(--pf-body-font)" }}
     >
@@ -453,6 +456,10 @@ export default async function PortfolioPage({ params }: PageProps) {
 
       {/* Koyu preset'te görsel kenar yumuşatma (arka planla kaynaşmasın) */}
       {dark && <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 h-px bg-white/5" />}
+
+      {/* Tema değiştirici YALNIZ demo vitrininde — gerçek portfolyoda görünüm
+          sahibinin kararıdır, ziyaretçi değiştiremez. */}
+      {isDemo && <DemoThemeSwitcher initialPreset={theme.preset} accent={theme.accent} />}
     </div>
   );
 }
