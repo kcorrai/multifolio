@@ -12,11 +12,13 @@ import { NAV_ITEMS, isNavActive, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
 import { VerifyEmailBanner } from "./verify-email-banner";
 import { LowCreditsBanner } from "./low-credits-banner";
+import { TourProvider } from "./tour/tour-context";
+import { TourOverlay } from "./tour/tour-overlay";
 import type { PlatformId } from "@/lib/ai/platforms";
 import { marketPlatforms, type MarketId } from "@/lib/markets/config";
 
 export function DashboardShell({
-  userEmail, credits: initialCredits, initialCreditsUsed, initialJobsCount, initialConnectionsCount, emailVerified, isAdmin = false, market, children,
+  userEmail, credits: initialCredits, initialCreditsUsed, initialJobsCount, initialConnectionsCount, emailVerified, isAdmin = false, market, hasProfile = false, children,
 }: {
   userEmail: string;
   credits: number;
@@ -26,6 +28,7 @@ export function DashboardShell({
   emailVerified: boolean;
   isAdmin?: boolean;
   market: MarketId;
+  hasProfile?: boolean;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -53,6 +56,7 @@ export function DashboardShell({
   const fullBleed = pathname.startsWith("/dashboard/jobs");
 
   return (
+    <TourProvider hasProfile={hasProfile}>
     <DashboardContext.Provider
       value={{
         market,
@@ -92,6 +96,7 @@ export function DashboardShell({
                 <Link
                   key={href}
                   href={href}
+                  data-tour={`nav-${labelKey}`}
                   className={`group relative w-full flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-left ${
                     active
                       ? "bg-[#00F0FF]/10 text-[#00F0FF]"
@@ -192,6 +197,7 @@ export function DashboardShell({
                 <Link
                   key={href}
                   href={href}
+                  data-tour={`nav-${labelKey}`}
                   className={`flex items-center gap-1.5 shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
                     active
                       ? "bg-[#00F0FF]/10 text-[#00F0FF]"
@@ -249,7 +255,11 @@ export function DashboardShell({
             </div>
           </div>
         )}
+
+        {/* ── Onboarding turu spotlight overlay ──────────────────────── */}
+        <TourOverlay />
       </div>
     </DashboardContext.Provider>
+    </TourProvider>
   );
 }

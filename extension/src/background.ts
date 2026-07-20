@@ -2,6 +2,7 @@
 // cookie'li POST'lar (host_permissions sayesinde kullanıcının oturum cookie'leri
 // eklenir — spike ile doğrulandı). Başarıda inceleme wizard'ını yeni sekmede açar.
 import { IMPORT_ENDPOINT, JOBS_ENDPOINT, PROPOSAL_ENDPOINT, PROPOSAL_LATEST_ENDPOINT, QUICK_MATCH_ENDPOINT, WIZARD_URL, LOGIN_URL } from "./config";
+import type { ProfilePlatform } from "./extract";
 
 interface ImportProject {
   title: string;
@@ -12,7 +13,8 @@ interface ImportProject {
 }
 interface ImportMessage {
   type: "import";
-  platform: "upwork" | "fiverr" | "linkedin";
+  // extract.ts ProfilePlatform ile aynı küme (upwork/fiverr/linkedin/99designs).
+  platform: ProfilePlatform;
   sourceUrl: string;
   text: string;
   avatarUrl?: string;

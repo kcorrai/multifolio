@@ -24,23 +24,33 @@ export function PlatformLogo({ platform, size = 20, className = "" }: Props) {
         </svg>
       );
 
+    // Fiverr: resmî marka işareti "fiverr." WORDMARK'ı — 64px'te güzel, 20px'te
+    // (bu UI'daki asıl boyut) okunmayan bir lekeye dönüşüyor. Ölçek testiyle
+    // doğrulandı → letter-mark korunuyor. Aynı gerekçe 99designs için de geçerli.
     case "fiverr":
-      // Küçük boyutta okunur letter-mark (tam wordmark "irerr" gibi bozuluyordu) —
-      // Bionluk/Armut deseni: markalı yeşil kare + beyaz "fi".
       return <LetterMark {...s} fill="#1DBF73" label="fi" />;
 
-    // Yeni platformlar (Dalga 1): markalı renkli kare + beyaz letter-mark. Küçük
-    // boyutta okunurluk için letter-mark deseni (fiverr gibi); tam wordmark bozulur.
+    // Freelancer.com: resmî kuş/origami marka işareti — kompakt geometrik şekil
+    // olduğu için 20px'te de okunuyor (LinkedIn/Upwork gibi), bu yüzden gerçek logo.
     case "freelancer":
-      return <LetterMark {...s} fill="#0EA5E9" label="fl" />;
-    case "contra":
-      return <LetterMark {...s} fill="#8B5CF6" label="C" fontSize={14} />;
-    case "peopleperhour":
-      return <LetterMark {...s} fill="#F97316" label="P" fontSize={14} />;
+      return (
+        <svg {...s} viewBox="0 0 24 24" fill="#29B2FE">
+          <path d="M14.096 3.076l1.634 2.292L24 3.076M5.503 20.924l4.474-4.374-2.692-2.89m6.133-10.584L11.027 5.23l4.022.15M4.124 3.077l.857 1.76 4.734.294m-3.058 7.072l3.497-6.522L0 5.13m7.064 7.485l3.303 3.548 3.643-3.57 1.13-6.652-4.439-.228Z" />
+        </svg>
+      );
+
+    // Monogram grubu — RENKLER UYDURULMADI, resmî kaynaktan alındı:
+    //   99designs #FE5F50 (marka paleti), PeoplePerHour #FF7300 ve Guru #4C83C3
+    //   sitelerinin kendi `theme-color`/`mask-icon` meta'larından; Contra'nın
+    //   siyah-beyaz kimliği (yayınlanmış SVG marka işareti yok).
     case "99designs":
-      return <LetterMark {...s} fill="#EC4899" label="99" />;
+      return <LetterMark {...s} fill="#FE5F50" label="99" />;
+    case "contra":
+      return <LetterMark {...s} fill="#0A0A0A" label="C" fontSize={14} />;
+    case "peopleperhour":
+      return <LetterMark {...s} fill="#FF7300" label="P" fontSize={14} />;
     case "guru":
-      return <LetterMark {...s} fill="#14B8A6" label="G" fontSize={14} />;
+      return <LetterMark {...s} fill="#4C83C3" label="G" fontSize={14} />;
   }
 }
 

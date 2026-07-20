@@ -55,34 +55,35 @@
       "eyebrow": "See it in action",
       "title": "Your whole freelance workflow, in one place",
       "subtitle": "Discover jobs, publish a portfolio, and export an ATS-ready CV — all from one profile.",
-      "feed": {
-        "title": "A live job feed, scored to your profile",
-        "desc": "Saved feeds on the left, matched jobs in the middle, filters and AI scoring on the right. New roles stay marked unread until you open them."
-      },
-      "autoPilot": {
-        "title": "Auto-Pilot: it finds the jobs and writes the proposal",
-        "desc": "Turn on Auto-Pilot for any feed. Overnight it drafts a tailored proposal for each new matching job — ready and waiting in Applied. You review and send in one click. Never auto-submitted, so your account stays safe.",
-        "step1Title": "Drafts overnight",
-        "step1Desc": "New matching jobs get a tailored proposal automatically.",
-        "step2Title": "You review",
-        "step2Desc": "Every draft waits in Applied for your edits and approval.",
-        "step3Title": "One-click apply",
-        "step3Desc": "The browser extension pastes it into the platform's form — you hit send."
-      },
-      "portfolio": {
-        "title": "A public portfolio that wins clients",
-        "desc": "Publish a polished portfolio page in minutes. Visitors can request to hire you right from the page.",
-        "role": "Product Designer",
+      "viewLive": "See a live portfolio",
+      "video": {
+        "steps": {
+          "profile": "Profile",
+          "feed": "Jobs",
+          "proposal": "Proposal",
+          "portfolio": "Portfolio",
+          "cv": "CV"
+        },
+        "headline": {
+          "profile": "Enter your work once",
+          "feed": "Get a live job feed, scored to you",
+          "proposal": "Let AI write the proposal",
+          "portfolio": "Publish a portfolio that wins clients",
+          "cv": "Export an ATS-ready CV"
+        },
+        "profileHeadline": "Senior React Developer",
+        "skills": ["React", "Next.js", "TypeScript", "Node", "UI/UX", "Tailwind"],
+        "scoreLabel": "fit",
+        "autoPilot": "Auto-Pilot",
+        "on": "ON",
+        "noAutoSubmit": "Never auto-submitted",
+        "portfolioName": "Ahmet Yilmaz",
+        "portfolioRole": "Product Designer",
         "hire": "Hire me",
-        "viewLive": "See a live portfolio"
-      },
-      "cv": {
-        "title": "An ATS-ready CV in one click",
-        "desc": "Generate a CV from your profile, pick from 8 templates, and export a clean PDF that passes applicant tracking systems.",
+        "projects": ["Fintech app", "Design system", "SaaS dashboard"],
+        "atsLabel": "ATS score",
         "download": "Download PDF",
-        "tplClean": "Clean",
-        "tplModern": "Modern",
-        "tplSidebar": "Sidebar"
+        "templates": ["Clean", "Modern", "Sidebar"]
       }
     },
     "toolCta": {
@@ -293,7 +294,8 @@
       "fit": "fit",
       "jobA": "React dashboard build",
       "jobB": "Next.js landing page",
-      "jobC": "UI/UX for SaaS app"
+      "jobC": "UI/UX for SaaS app",
+      "jobD": "Landing page revamp"
     }
   },
   "auth": {
@@ -815,7 +817,7 @@
       "syncNoUrlHint": "Save your profile URL in the Connection section first, then fetch your data.",
       "syncExtensionHint": "{platform} blocks server access — open your profile page in the browser and import with the Multifolio extension. The data will appear here.",
       "syncExtensionUpdated": "Updated via the browser extension",
-      "noPublicData": "{platform} doesn't expose public profile data — your core profile is used instead.",
+      "notSupportedYet": "Profile import for {platform} isn't available yet — your core profile is used instead. You can still adapt your profile and generate proposals for it.",
       "noJobs": "No jobs for this platform yet. Add one from the Jobs page.",
       "noJobsCta": "Browse job feed",
       "setupProfileCta": "Import your profile",
@@ -1154,7 +1156,8 @@
     "demoRibbon": "Live demo — this is what your Multifolio portfolio looks like.",
     "demoCtaTitle": "Build your own in minutes",
     "demoCtaBody": "Import your profile once and publish a portfolio like this — free to start, no card.",
-    "demoCtaButton": "Create my portfolio"
+    "demoCtaButton": "Create my portfolio",
+    "demoThemeLabel": "Preview theme"
   },
   "admin": {
     "title": "Feedback",
@@ -1199,6 +1202,70 @@
     "moderationNote": "Recommendations are reviewed before they appear.",
     "error": "Couldn't send your recommendation. Please try again.",
     "poweredBy": "Powered by"
+  },
+  "tour": {
+    "replay": "Take the tour",
+    "skipTour": "Skip tour",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "skipStep": "Skip this step",
+    "clickHint": "Click the highlighted area to continue",
+    "progress": "{current} / {total}",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Multifolio 👋",
+        "body": "Let's take a 2-minute tour of the platform. We'll connect an account, build your profile with AI, browse jobs, and create your CV and portfolio. You can skip anytime."
+      },
+      "connectNav": {
+        "title": "Connect a platform",
+        "body": "Start by opening Platforms. If you already freelance on LinkedIn, Upwork or Fiverr, you can import your public profile in one click."
+      },
+      "connectCard": {
+        "title": "Pick a platform",
+        "body": "Open any platform to link your profile and pull in your headline, skills and portfolio. No account there yet? Skip this step."
+      },
+      "adapt": {
+        "title": "Adapt with AI",
+        "body": "One click rewrites your core profile into an optimized version for every platform. This is where Multifolio saves you hours."
+      },
+      "profileNav": {
+        "title": "Your profile",
+        "body": "Now let's head to your Profile — the single source of truth every platform, CV and portfolio is generated from."
+      },
+      "profileAi": {
+        "title": "AI profile suggestions",
+        "body": "Multifolio reads your connected public profiles and suggests a sharper headline, summary and skills. Apply them field by field — it's free."
+      },
+      "jobsNav": {
+        "title": "Find work",
+        "body": "Open Jobs to browse a live feed of remote roles matched to your skills."
+      },
+      "jobsFeed": {
+        "title": "Save a feed",
+        "body": "Create a feed to get matching jobs delivered continuously, with an AI fit score and one-click proposal drafts for each."
+      },
+      "cvNav": {
+        "title": "Build your CV",
+        "body": "Next up: your CV. Open the CV tab to generate an ATS-ready resume from your profile."
+      },
+      "cvGenerate": {
+        "title": "Generate your CV",
+        "body": "Generate an ATS-friendly CV from your profile, then pick a template and tailor it to any job. You can also import an existing one."
+      },
+      "portfolioNav": {
+        "title": "Your portfolio site",
+        "body": "Last stop: your portfolio. Open the Portfolio tab to spin up a public site."
+      },
+      "portfolioGenerate": {
+        "title": "Generate your portfolio",
+        "body": "Turn your profile into a shareable portfolio site — pick a theme, curate your gallery, and publish it at your own /p/ link."
+      },
+      "finish": {
+        "title": "You're all set! 🎉",
+        "body": "That's the whole platform. Complete the setup checklist to unlock bonus credits — and you can replay this tour anytime from Getting Started."
+      }
+    }
   },
   "gettingStarted": {
     "eyebrow": "Getting started",

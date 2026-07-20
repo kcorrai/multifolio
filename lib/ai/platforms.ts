@@ -14,15 +14,28 @@ export const platformIdSchema = z.enum([
 ]);
 export type PlatformId = z.infer<typeof platformIdSchema>;
 
+/**
+ * Multifolio'nun bu platformdan profil verisini NASIL çekebildiği.
+ * DİKKAT: bu, platformun public profil sunup sunmadığı DEĞİL — bizim neyi
+ * uyguladığımız. Beşi de ("none" olanlar dahil) public profil sayfalarına sahip;
+ * sadece henüz import yazılmadı (bkz. docs/EXPANSION-PLAN.md).
+ *   server    → sunucudan yapılandırılmış çekim var (lib/import/*)
+ *   extension → bot duvarı; tarayıcı uzantısı login'li sekmeden gönderir
+ *   none      → henüz import yok; çekirdek profil kullanılır
+ */
+export type ProfileImportSource = "server" | "extension" | "none";
+
 export interface PlatformSpec {
   id: PlatformId;
   label: string;
   guidance: string;
+  profileImport: ProfileImportSource;
 }
 
 export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   linkedin: {
     id: "linkedin",
+    profileImport: "server",
     label: "LinkedIn",
     guidance:
       "LinkedIn profili için yaz. Birinci tekil şahıs, profesyonel ama insani bir ton. " +
@@ -35,6 +48,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   upwork: {
     id: "upwork",
+    profileImport: "extension",
     label: "Upwork",
     guidance:
       "Upwork freelancer profili için yaz. Müşteri-odaklı, sonuç vaat eden bir ton. " +
@@ -46,6 +60,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   fiverr: {
     id: "fiverr",
+    profileImport: "extension",
     label: "Fiverr",
     guidance:
       "Fiverr seller profili için yaz. Enerjik, güven verici, hizmet-odaklı bir ton. " +
@@ -56,6 +71,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   freelancer: {
     id: "freelancer",
+    profileImport: "server",
     label: "Freelancer.com",
     guidance:
       "Freelancer.com profili için yaz. Müşteri-odaklı, sonuç vaat eden, teklife-dönük bir ton " +
@@ -66,6 +82,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   contra: {
     id: "contra",
+    profileImport: "server",
     label: "Contra",
     guidance:
       "Contra bağımsız (independent) profili için yaz. Portfolyo-öncelikli, kişisel-marka odaklı, " +
@@ -76,6 +93,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   peopleperhour: {
     id: "peopleperhour",
+    profileImport: "server",
     label: "PeoplePerHour",
     guidance:
       "PeoplePerHour profili için yaz. Müşteri-odaklı, teklife-dönük, güven verici bir ton " +
@@ -85,6 +103,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   "99designs": {
     id: "99designs",
+    profileImport: "extension",
     label: "99designs",
     guidance:
       "99designs tasarımcı profili için yaz. Yaratıcı ama profesyonel, portfolyo-güdümlü bir ton " +
@@ -94,6 +113,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   guru: {
     id: "guru",
+    profileImport: "server",
     label: "Guru",
     guidance:
       "Guru.com profili için yaz. Profesyonel, güven verici, teklife-dönük bir ton (bid/quote tabanlı, " +

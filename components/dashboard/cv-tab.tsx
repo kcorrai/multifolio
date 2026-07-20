@@ -208,7 +208,7 @@ export function CvTab({
 
           {/* ── Giriş: üret veya yükle ─────────────────────────────── */}
           <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={generate} disabled={generating || (!profileSaved && !content)} className="gap-2">
+            <Button data-tour="cv-generate" onClick={generate} disabled={generating || (!profileSaved && !content)} className="gap-2">
               <Sparkles className="h-4 w-4" />
               {generating ? t("generating") : content ? t("regenerate") : t("generate")}
               <CreditCost kind="cv_generation" />

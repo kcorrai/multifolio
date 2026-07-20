@@ -15,11 +15,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
   // Reklamı yapılan kayıt kredisini ilk ziyarette ver (idempotent; bakiye çekilmeden ÖNCE).
   await maybeGrantSignupCredits(user);
 
-  const [creditsRes, usage, jobsCountRes, connCountRes] = await Promise.all([
+  const [creditsRes, usage, jobsCountRes, connCountRes, profileRes] = await Promise.all([
     supabase.from("credits").select("balance").eq("user_id", user.id).maybeSingle(),
     getCreditUsage(),
     supabase.from("job_listings").select("id", { count: "exact", head: true }).eq("user_id", user.id),
     supabase.from("platform_connections").select("platform", { count: "exact", head: true }).eq("user_id", user.id),
+    supabase.from("profiles").select("user_id", { count: "exact", head: true }).eq("user_id", user.id),
   ]);
 
   const credits = creditsRes.data?.balance ?? 0;
@@ -27,6 +28,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const emailVerified = user.app_metadata?.email_verified === true;
   const isAdmin = isAdminEmail(user.email);
   const market = await getUserMarketId();
+  // Profili olmayan yeni kullanıcıda onboarding turu otomatik açılır (client karar verir).
+  const hasProfile = (profileRes.count ?? 0) > 0;
 
   return (
     <DashboardShell
@@ -38,6 +41,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       emailVerified={emailVerified}
       isAdmin={isAdmin}
       market={market}
+      hasProfile={hasProfile}
     >
       {children}
     </DashboardShell>

@@ -280,7 +280,7 @@ export function JobsTab({
       {/* ── [Sol] feed sidebar ─────────────────────────────────────────── */}
       <aside className="shrink-0 border-b border-border lg:w-56 lg:border-b-0 lg:border-r lg:overflow-y-auto max-h-60 lg:max-h-none overflow-y-auto">
         <div className="p-3 space-y-1">
-          <Button onClick={() => setCreateOpen(true)} className="w-full gap-2 mb-1">
+          <Button data-tour="jobs-feed" onClick={() => setCreateOpen(true)} className="w-full gap-2 mb-1">
             <Plus className="h-4 w-4" />{t("createFeed")}
           </Button>
 

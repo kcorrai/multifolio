@@ -19,6 +19,7 @@ const STEP_ICONS: LucideIcon[] = [Download, LogIn, MousePointerClick, FileCheck2
 const PROFILE_HOST: Record<string, string> = {
   upwork: "upwork.com/freelancers/~you",
   fiverr: "fiverr.com/you",
+  "99designs": "99designs.com/profiles/you",
 };
 
 // Gerçek video hazır olduğunda gösterilen oynatıcı; yoksa animasyonlu mock.

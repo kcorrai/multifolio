@@ -8,6 +8,13 @@ import { AuthError, ValidationError, NotFoundError, RateLimitError, withErrorHan
 import { parseJson } from "@/lib/validation";
 import { platformProfileSyncSchema, platformProfileUpdateSchema } from "@/lib/validation/schemas/platform-profile";
 import { parseLinkedinUsername, fetchLinkedinProfile } from "@/lib/import/linkedin";
+import { parseContraUsername, fetchContraProfile } from "@/lib/import/contra";
+import { parseGuruSlug, fetchGuruProfile } from "@/lib/import/guru";
+import {
+  parseFreelancerUsername, fetchFreelancerProfile,
+  parsePeopleperhourPath, fetchPeopleperhourProfile,
+} from "@/lib/import/html-profile";
+import { extractProfile } from "@/lib/ai/profile-import";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -44,11 +51,18 @@ export const POST = withErrorHandler(async (req) => {
   const url = (conn?.profile_url as string | undefined)?.trim();
   if (!url) throw new ValidationError(t("syncNoConnection"));
 
-  // Platforma göre yapılandırılmış çekim.
+  // Platforma göre çekim. İki sınıf (yetenek kaydı: PLATFORMS[].profileImport):
+  //  A) ld+json yayınlayanlar (linkedin/contra/guru) → YAPILANDIRILMIŞ, AI YOK, bedava.
+  //  B) ld+json'suz ama sunucudan okunabilenler (freelancer/peopleperhour) → sayfa
+  //     metni AI ile taslağa çevrilir. KREDİ DÜŞMEZ (import route'unun deseni);
+  //     kötüye kullanımı üstteki saatlik 10 limiti kapatır. Maliyet usage_events'e yazılır.
+  //  Kalanı (upwork/fiverr/99designs) bot duvarı → uzantı akışı doldurur.
   let row: {
     headline: string; summary: string; skills: string[];
     avatar_url: string | null; portfolio: unknown[]; model: string;
   };
+  let cost = { inputTokens: 0, outputTokens: 0, costUsd: 0 };
+
   if (platform === "linkedin") {
     const username = parseLinkedinUsername(url);
     if (!username) throw new ValidationError(t("importFetchFailed"));
@@ -60,8 +74,57 @@ export const POST = withErrorHandler(async (req) => {
     }
     if (!p) throw new ValidationError(t("importFetchFailed"));
     row = { ...p.draft, avatar_url: p.avatarUrl, portfolio: [], model: "linkedin-structured" };
+  } else if (platform === "contra") {
+    const username = parseContraUsername(url);
+    if (!username) throw new ValidationError(t("importFetchFailed"));
+    let p = null;
+    try {
+      p = await fetchContraProfile(username);
+    } catch {
+      throw new ValidationError(t("importFetchFailed"));
+    }
+    if (!p) throw new ValidationError(t("importFetchFailed"));
+    row = { ...p.draft, avatar_url: p.avatarUrl, portfolio: [], model: "contra-structured" };
+  } else if (platform === "guru") {
+    const slug = parseGuruSlug(url);
+    if (!slug) throw new ValidationError(t("importFetchFailed"));
+    let p = null;
+    try {
+      p = await fetchGuruProfile(slug);
+    } catch {
+      throw new ValidationError(t("importFetchFailed"));
+    }
+    if (!p) throw new ValidationError(t("importFetchFailed"));
+    row = { ...p.draft, avatar_url: p.avatarUrl, portfolio: [], model: "guru-structured" };
+  } else if (platform === "freelancer" || platform === "peopleperhour") {
+    const target = platform === "freelancer" ? parseFreelancerUsername(url) : parsePeopleperhourPath(url);
+    if (!target) throw new ValidationError(t("importFetchFailed"));
+    let src;
+    try {
+      src = platform === "freelancer"
+        ? await fetchFreelancerProfile(target)
+        : await fetchPeopleperhourProfile(target);
+    } catch {
+      throw new ValidationError(t("importFetchFailed"));
+    }
+    // Sayfa metni anlamsız derecede kısaysa (bot duvarı/boş profil) AI'a para harcama.
+    if (src.text.trim().length < 200) throw new ValidationError(t("importFetchFailed"));
+    const ai = await extractProfile(src.text);
+    cost = { inputTokens: ai.inputTokens, outputTokens: ai.outputTokens, costUsd: ai.costUsd };
+    row = {
+      // AI başlığı ÖNCE: metin artık PROFİL BÖLGESİNE daraltıldığı için (bkz.
+      // sliceContentRegion) model kullanıcının kendi tagline'ını okuyor ve og'un
+      // otomatik üretilmiş cümlesinden ("X is a Freelancer specialising in…") daha
+      // isabetli çıkıyor. og, AI boş dönerse yedek.
+      headline: (ai.draft.headline || src.headlineHint).slice(0, 120),
+      summary: ai.draft.summary,
+      skills: ai.draft.skills,
+      avatar_url: src.avatarUrl,
+      portfolio: [],
+      model: ai.model,
+    };
   } else {
-    // Upwork/Fiverr sunucudan çekilemez — uzantı akışı platform_profiles'a yazar.
+    // Upwork/Fiverr/99designs bot duvarı → uzantı akışı platform_profiles'a yazar.
     throw new ValidationError(t("syncUnsupported"));
   }
 
@@ -89,7 +152,10 @@ export const POST = withErrorHandler(async (req) => {
   const admin = createSupabaseAdminClient();
   const { error: usageError } = await admin.from("usage_events").insert({
     user_id: user.id, kind: "platform_sync", platform, model: row.model,
-    input_tokens: 0, output_tokens: 0, cost_usd: 0, credits_spent: 0,
+    // Yapılandırılmış platformlarda 0; AI'lı olanlarda (freelancer/pph) gerçek maliyet
+    // yazılır — kredi düşmese de harcama gözlemlenebilir kalmalı.
+    input_tokens: cost.inputTokens, output_tokens: cost.outputTokens,
+    cost_usd: cost.costUsd, credits_spent: 0,
   });
   if (usageError) throw usageError;
 

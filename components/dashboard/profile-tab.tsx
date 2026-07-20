@@ -21,6 +21,7 @@ import { ProjectDetailModal } from "@/components/portfolio/project-detail-modal"
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import { ChipsInput } from "./chips-input";
+import { DevToolsCard } from "./dev-tools-card";
 import { ProfileStrength } from "./profile-strength";
 import { ELEVATED, type InitialProfile, type ConnectedProfile } from "./shared";
 
@@ -386,7 +387,7 @@ export function ProfileTab({
           <ProfileStrength headline={headline} summary={summary} skills={skills} />
 
           {/* AI önerisi (public profillerden) */}
-          <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] overflow-hidden">
+          <div data-tour="profile-ai" className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] overflow-hidden">
             <div className="p-4 space-y-3">
               <div className="flex items-start justify-between gap-2">
                 <div>
@@ -561,6 +562,9 @@ export function ProfileTab({
               </CardContent>
             </Card>
           )}
+
+          {/* Yalnız yerel geliştirmede render edilir (prod bundle'a girmez). */}
+          <DevToolsCard />
         </div>
       </div>
 
