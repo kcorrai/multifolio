@@ -6,7 +6,9 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { TOUR_STEPS, TOUR_TOTAL, type TourStep } from "./steps";
 
-const STORAGE_KEY = "mf_tour_v1";
+/** Turun "görüldü" damgası. Dev araçları da bunu temizler → tek kaynak, string tekrarı yok. */
+export const TOUR_STORAGE_KEY = "mf_tour_v1";
+const STORAGE_KEY = TOUR_STORAGE_KEY;
 
 function persistTour(v: "done" | "skipped") {
   try { localStorage.setItem(STORAGE_KEY, v); } catch { /* SSR/private-mode: yok say */ }

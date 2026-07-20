@@ -33,11 +33,6 @@ import { HealthWarnings } from "./health-warnings";
 import { useDashboard } from "./dashboard-context";
 import { useAdapt } from "./use-adapt";
 
-// Sunucudan yapılandırılmış çekim yapılabilen platform (LinkedIn public JSON-LD);
-// kalanı (Upwork/Fiverr) bot duvarı nedeniyle yalnız tarayıcı uzantısıyla dolar.
-const SERVER_FETCHABLE: PlatformId[] = ["linkedin"];
-const EXTENSION_ONLY: PlatformId[] = ["upwork", "fiverr"];
-
 export function PlatformDetailTab({
   platform, profile, initialPlatformProfile, connectionUrl, jobs: initialJobs, proposals, initialAdaptResult,
 }: {
@@ -82,7 +77,7 @@ export function PlatformDetailTab({
     setSaved(url); setSavingConn(false);
     // Emek azaltma: sunucudan çekilebilen platformda (Bionluk/LinkedIn) URL
     // kaydedilince veriyi otomatik çek (kullanıcı ayrı "Çek" tıklamasın).
-    if (SERVER_FETCHABLE.includes(platform) && url) void syncPlatformProfile();
+    if (PLATFORMS[platform].profileImport === "server" && url) void syncPlatformProfile();
   }
 
   async function removeConnection() {
@@ -106,8 +101,11 @@ export function PlatformDetailTab({
   const [ppTranslating, setPpTranslating] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number; title?: string; description?: string } | null>(null);
-  const canFetch = SERVER_FETCHABLE.includes(platform);
-  const isExtensionOnly = EXTENSION_ONLY.includes(platform);
+  // Profil çekme yeteneği TEK KAYNAKTAN (PLATFORMS registry) gelir — yeni platform
+  // eklenince burada değişiklik gerekmez, registry'de bildirmek yeter.
+  const importSource = PLATFORMS[platform].profileImport;
+  const canFetch = importSource === "server";
+  const isExtensionOnly = importSource === "extension";
 
   // Hero'da tüm public veriyi göster/gizle (özet + tüm skills/portfolyo).
   const [heroExpanded, setHeroExpanded] = useState(false);
@@ -356,7 +354,7 @@ export function PlatformDetailTab({
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground max-w-md">
-                  {t("detail.noPublicData", { platform: PLATFORMS[platform].label })}
+                  {t("detail.notSupportedYet", { platform: PLATFORMS[platform].label })}
                 </p>
               )}
             </div>

@@ -21,6 +21,7 @@ import { ProjectDetailModal } from "@/components/portfolio/project-detail-modal"
 import { PLATFORMS } from "@/lib/ai/platforms";
 import type { PortfolioItem } from "@/lib/validation/schemas/profile";
 import { ChipsInput } from "./chips-input";
+import { DevToolsCard } from "./dev-tools-card";
 import { ProfileStrength } from "./profile-strength";
 import { ELEVATED, type InitialProfile, type ConnectedProfile } from "./shared";
 
@@ -561,6 +562,9 @@ export function ProfileTab({
               </CardContent>
             </Card>
           )}
+
+          {/* Yalnız yerel geliştirmede render edilir (prod bundle'a girmez). */}
+          <DevToolsCard />
         </div>
       </div>
 

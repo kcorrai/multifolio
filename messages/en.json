@@ -817,7 +817,7 @@
       "syncNoUrlHint": "Save your profile URL in the Connection section first, then fetch your data.",
       "syncExtensionHint": "{platform} blocks server access — open your profile page in the browser and import with the Multifolio extension. The data will appear here.",
       "syncExtensionUpdated": "Updated via the browser extension",
-      "noPublicData": "{platform} doesn't expose public profile data — your core profile is used instead.",
+      "notSupportedYet": "Profile import for {platform} isn't available yet — your core profile is used instead. You can still adapt your profile and generate proposals for it.",
       "noJobs": "No jobs for this platform yet. Add one from the Jobs page.",
       "noJobsCta": "Browse job feed",
       "setupProfileCta": "Import your profile",
