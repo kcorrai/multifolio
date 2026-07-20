@@ -10,9 +10,27 @@
  * katalogunda kalır (CLAUDE.md sert kural), kompozisyon next-intl bağlamına muhtaç olmaz.
  * Renkler `palette` prop'uyla gelir → sayfa açık/koyu temasına uyar.
  */
+import { createContext, useContext } from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { FONT, PALETTES, PLATFORM_TONES, VIDEO, type Palette } from "./theme";
 import { SCENES, activeScene, activeSceneIndex, sceneWindow, type SceneId } from "./scenes";
+
+/* ── Kompakt (mobil) mod ───────────────────────────────────────────────
+   Tuval 1280×720 SABİT (Remotion kompozisyonu ölçeklenerek sığar). 390px'lik
+   bir telefonda bu ~307px'e iner → 28px başlık ~7px görünür, okunmaz.
+   Çözüm: kompakt modda içerik DAHA KÜÇÜK bir mantıksal tuvale (1280/ZOOM)
+   çizilir ve CSS ile ZOOM katı büyütülür → aynı 1280×720'yi doldurur ama her
+   şey ZOOM kat iri görünür. Ayrıca sol adım rayı gizlenir ve tekrarlanan
+   öğeler (iş satırı/proje/şablon) kırpılır — dar alanda sıkışmasınlar. */
+const COMPACT_ZOOM = 1.45;
+
+const CompactContext = createContext(false);
+const useCompact = () => useContext(CompactContext);
+
+/** Kompakt modda listeyi kırpar (dar mantıksal tuvale sığsın). */
+function trim<T>(items: T[], compact: boolean, keep: number): T[] {
+  return compact ? items.slice(0, keep) : items;
+}
 
 /* ── Dışarıdan gelen metin sözleşmesi ──────────────────────────────── */
 
@@ -114,11 +132,12 @@ function Chip({ p, label, tone }: { p: Palette; label: string; tone?: string }) 
 /** Sahne üst başlığı — asıl satış mesajı. */
 function Headline({ p, text, delay = 0 }: { p: Palette; text: string; delay?: number }) {
   const e = useEnter(delay);
+  const compact = useCompact();
   return (
     <h2
       style={{
         margin: 0,
-        fontSize: 28,
+        fontSize: compact ? 32 : 28,
         lineHeight: 1.2,
         fontWeight: 800,
         letterSpacing: "-0.02em",
@@ -211,13 +230,14 @@ function ProgressBar({ p, delay }: { p: Palette; delay: number }) {
 
 function FeedScene({ p, copy }: { p: Palette; copy: ShowcaseCopy }) {
   const style = useSceneStyle(1);
+  const compact = useCompact();
   const base = SCENES[1]!.start;
   return (
     <div style={style}>
       <Headline p={p} text={copy.headline.feed} delay={base + 2} />
       {/* Satırlar dikeyde ortalanır — 4 satır kareyi doldurmadığı için alt boşluk oluşmasın. */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1, justifyContent: "center" }}>
-        {copy.feed.jobs.map((job, i) => (
+        {trim(copy.feed.jobs, compact, 3).map((job, i) => (
           <JobRow key={job.title} p={p} job={job} delay={base + 14 + i * 12} scoreLabel={copy.feed.scoreLabel} showUnread={i < 2} />
         ))}
       </div>
@@ -240,6 +260,7 @@ function JobRow({
 }) {
   const frame = useCurrentFrame();
   const e = useEnter(delay);
+  const compact = useCompact();
   // Skor 0'dan hedefe sayar (landing CountUp'ın video karşılığı).
   const score = Math.round(
     interpolate(frame, [delay + 8, delay + 30], [0, job.score], {
@@ -277,7 +298,8 @@ function JobRow({
       <span style={{ fontSize: 18, fontWeight: 700, color: p.text, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
         {job.title}
       </span>
-      <span style={{ fontSize: 15, fontWeight: 600, color: p.textMuted, flexShrink: 0 }}>{job.budget}</span>
+      {/* Bütçe kompakt modda gizlenir — dar satırda başlık ile skora yer açar. */}
+      {!compact && <span style={{ fontSize: 15, fontWeight: 600, color: p.textMuted, flexShrink: 0 }}>{job.budget}</span>}
       <span style={{ display: "flex", alignItems: "baseline", gap: 5, flexShrink: 0, width: 78, justifyContent: "flex-end" }}>
         <span style={{ fontSize: 24, fontWeight: 800, color: tone, fontVariantNumeric: "tabular-nums" }}>{score}</span>
         <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: p.textSubtle }}>
@@ -354,6 +376,7 @@ function ProposalScene({ p, copy }: { p: Palette; copy: ShowcaseCopy }) {
 
 function PortfolioScene({ p, copy }: { p: Palette; copy: ShowcaseCopy }) {
   const style = useSceneStyle(3);
+  const compact = useCompact();
   const frame = useCurrentFrame();
   const base = SCENES[3]!.start;
   const hero = useEnter(base + 10, 13);
@@ -385,7 +408,7 @@ function PortfolioScene({ p, copy }: { p: Palette; copy: ShowcaseCopy }) {
           </span>
         </div>
         <div style={{ display: "flex", gap: 14, flex: 1 }}>
-          {copy.portfolio.projects.map((title, i) => (
+          {trim(copy.portfolio.projects, compact, 2).map((title, i) => (
             <ProjectCard key={title} p={p} title={title} delay={base + 34 + i * 10} strong={i === 1} />
           ))}
         </div>
@@ -428,6 +451,7 @@ function ProjectCard({ p, title, delay, strong }: { p: Palette; title: string; d
 
 function CvScene({ p, copy }: { p: Palette; copy: ShowcaseCopy }) {
   const style = useSceneStyle(4);
+  const compact = useCompact();
   const frame = useCurrentFrame();
   const base = SCENES[4]!.start;
   const ats = interpolate(frame, [base + 40, base + 82], [0, 96], {
@@ -441,12 +465,12 @@ function CvScene({ p, copy }: { p: Palette; copy: ShowcaseCopy }) {
       <div style={{ display: "flex", gap: 20, flex: 1 }}>
         {/* Şablon yelpazesi */}
         <div style={{ display: "flex", gap: 14, flex: 1 }}>
-          {copy.cv.templates.map((name, i) => (
+          {trim(copy.cv.templates, compact, 2).map((name, i) => (
             <TemplateCard key={name} p={p} name={name} delay={base + 12 + i * 9} tilt={(i - 1) * 3} />
           ))}
         </div>
         {/* ATS skoru + indir */}
-        <Card p={p} style={{ width: 250, padding: 22, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
+        <Card p={p} style={{ width: compact ? 200 : 250, padding: 22, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
           <ScoreRing p={p} value={ats} />
           <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: p.textSubtle }}>
             {copy.cv.atsLabel}
@@ -543,6 +567,7 @@ function ScoreRing({ p, value }: { p: Palette; value: number }) {
 
 function Chrome({ p, copy }: { p: Palette; copy: ShowcaseCopy }) {
   const frame = useCurrentFrame();
+  const compact = useCompact();
   const scene = activeScene(frame);
   const activeIdx = activeSceneIndex(frame);
   // URL sahne değişiminde kısa bir fade ile tazelenir.
@@ -596,7 +621,8 @@ function Chrome({ p, copy }: { p: Palette; copy: ShowcaseCopy }) {
             borderRight: `1px solid ${p.border}`,
             background: p.raised,
             padding: "20px 14px",
-            display: "flex",
+            // Kompakt (mobil) modda adım rayı gizlenir — dar tuvalde sahneye yer açar.
+            display: compact ? "none" : "flex",
             flexDirection: "column",
             gap: 6,
           }}
@@ -660,35 +686,51 @@ function Chrome({ p, copy }: { p: Palette; copy: ShowcaseCopy }) {
 export type ShowcaseVideoProps = {
   palette?: Palette;
   copy: ShowcaseCopy;
+  /** Dar ekran (mobil) varyantı: içerik iri çizilir, adım rayı gizlenir. */
+  compact?: boolean;
 };
 
-export function ShowcaseVideo({ palette, copy }: ShowcaseVideoProps) {
+export function ShowcaseVideo({ palette, copy, compact = false }: ShowcaseVideoProps) {
   const p = palette ?? PALETTES.dark;
+  // Kompakt modda daha küçük mantıksal tuvale çizip büyüterek okunurluk kazanılır.
+  const zoom = compact ? COMPACT_ZOOM : 1;
   return (
-    <AbsoluteFill style={{ background: p.canvas, fontFamily: FONT }}>
-      {/* Zeminde imza cyan parıltı (dekoratif). */}
-      <AbsoluteFill
-        style={{
-          background: `radial-gradient(circle at 22% 8%, ${p.accentSoft}, transparent 55%)`,
-        }}
-      />
-      <AbsoluteFill style={{ padding: 34, display: "flex" }}>
-        <div
+    <CompactContext.Provider value={compact}>
+      <AbsoluteFill style={{ background: p.canvas, fontFamily: FONT }}>
+        {/* Zeminde imza cyan parıltı (dekoratif). */}
+        <AbsoluteFill
           style={{
-            flex: 1,
+            background: `radial-gradient(circle at 22% 8%, ${p.accentSoft}, transparent 55%)`,
+          }}
+        />
+        <AbsoluteFill
+          style={{
+            // Mantıksal boyut tuvalin 1/zoom'u; scale ile tam 1280×720'ye açılır.
+            width: VIDEO.width / zoom,
+            height: VIDEO.height / zoom,
+            transform: `scale(${zoom})`,
+            transformOrigin: "top left",
+            padding: compact ? 18 : 34,
             display: "flex",
-            flexDirection: "column",
-            borderRadius: 18,
-            overflow: "hidden",
-            background: p.surface,
-            border: `1px solid ${p.border}`,
-            boxShadow: p.shadow,
           }}
         >
-          <Chrome p={p} copy={copy} />
-        </div>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              borderRadius: 18,
+              overflow: "hidden",
+              background: p.surface,
+              border: `1px solid ${p.border}`,
+              boxShadow: p.shadow,
+            }}
+          >
+            <Chrome p={p} copy={copy} />
+          </div>
+        </AbsoluteFill>
       </AbsoluteFill>
-    </AbsoluteFill>
+    </CompactContext.Provider>
   );
 }
 

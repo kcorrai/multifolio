@@ -13,14 +13,27 @@ import { PALETTES, VIDEO } from "./theme";
  */
 export function RemotionRoot() {
   return (
-    <Composition
-      id="ShowcaseVideo"
-      component={ShowcaseVideo}
-      durationInFrames={VIDEO.durationInFrames}
-      fps={VIDEO.fps}
-      width={VIDEO.width}
-      height={VIDEO.height}
-      defaultProps={{ palette: PALETTES.dark, copy: DEFAULT_COPY }}
-    />
+    <>
+      <Composition
+        id="ShowcaseVideo"
+        component={ShowcaseVideo}
+        durationInFrames={VIDEO.durationInFrames}
+        fps={VIDEO.fps}
+        width={VIDEO.width}
+        height={VIDEO.height}
+        defaultProps={{ palette: PALETTES.dark, copy: DEFAULT_COPY }}
+      />
+      {/* Mobil (dar ekran) varyantı — landing 640px altında bunu oynatır.
+          Ayrı kompozisyon olarak kayıtlı ki Studio/still ile tek başına doğrulanabilsin. */}
+      <Composition
+        id="ShowcaseVideoCompact"
+        component={ShowcaseVideo}
+        durationInFrames={VIDEO.durationInFrames}
+        fps={VIDEO.fps}
+        width={VIDEO.width}
+        height={VIDEO.height}
+        defaultProps={{ palette: PALETTES.dark, copy: DEFAULT_COPY, compact: true }}
+      />
+    </>
   );
 }

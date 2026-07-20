@@ -14,21 +14,25 @@ export interface ProfileImportResult {
   costUsd: number;
 }
 
+/* Prompt İNGİLİZCE: ürün global-only ve AI çıktısı her zaman İngilizce (CLAUDE.md).
+   Eskiden prompt Türkçeydi + "kaynak metnin dilini koru" diyordu → İngilizce
+   kaynaktan Türkçe özet üretiyordu (PeoplePerHour senkronunda canlı görüldü). */
 const SYSTEM_PROMPT =
-  "Sen bir kariyer asistanısın. Sana bir freelancer'ın platform profili, CV'si veya " +
-  "profil sayfası metni verilir. Bu metinden kişinin profesyonel profilini çıkarırsın: " +
-  "headline (rol + değer önerisi, en çok 120 karakter), summary (3-5 cümlelik özgün özet " +
-  "— metni kopyalama, damıt), skills (somut beceri etiketleri, en çok 20 adet). " +
-  "Metinde profil bilgisi yoksa alanları boş bırak; ASLA uydurma. " +
-  // Dili KORU: çıktı kaynak metnin dilinde olsun (çeviri sonradan ayrı adımda yapılır).
-  "ÖNEMLİ: Çıktıyı KAYNAK METNİN DİLİNDE üret — başka bir dile ÇEVİRME.";
+  "You are a career assistant. You are given the text of a freelancer's platform " +
+  "profile, CV or profile page. Extract their professional profile from it: " +
+  "headline (role + value proposition, max 120 characters), summary (an original " +
+  "3-5 sentence summary — distil, do not copy the text), skills (concrete skill " +
+  "tags, max 20). If the text contains no profile information, leave the fields " +
+  "empty; NEVER invent anything. " +
+  "IMPORTANT: always write the output in ENGLISH, whatever language the source " +
+  "text is in — translate it if needed.";
 
-/** Serbest metinden profil taslağı çıkarır (kaynak dilini KORUR — çeviri ayrı adım).
+/** Serbest metinden profil taslağı çıkarır (çıktı DAİMA İngilizce — kaynak dili ne olursa olsun).
  *  Boş taslak da dönebilir — anlamlılık kararı çağırana (route) aittir. */
 export async function extractProfile(text: string): Promise<ProfileImportResult> {
   const client = getOpenAIClient();
 
-  const userContent = ["Kaynak metin:", clampImportText(text)].join("\n");
+  const userContent = ["Source text:", clampImportText(text)].join("\n");
 
   const completion = await client.chat.completions.parse({
     model: AI_MODEL,

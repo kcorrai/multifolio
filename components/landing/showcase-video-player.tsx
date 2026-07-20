@@ -17,7 +17,15 @@ import { VIDEO, type Palette } from "@/remotion/theme";
 /** Hareket azaltma tercihinde donduralacak temsili kare (feed sahnesi, dolu görünür). */
 const STILL_FRAME = 200;
 
-export default function ShowcaseVideoPlayer({ palette, copy }: { palette: Palette; copy: ShowcaseCopy }) {
+export default function ShowcaseVideoPlayer({
+  palette,
+  copy,
+  compact,
+}: {
+  palette: Palette;
+  copy: ShowcaseCopy;
+  compact: boolean;
+}) {
   const ref = useRef<PlayerRef>(null);
 
   useEffect(() => {
@@ -56,7 +64,7 @@ export default function ShowcaseVideoPlayer({ palette, copy }: { palette: Palett
     <Player
       ref={ref}
       component={ShowcaseVideo}
-      inputProps={{ palette, copy }}
+      inputProps={{ palette, copy, compact }}
       durationInFrames={VIDEO.durationInFrames}
       fps={VIDEO.fps}
       compositionWidth={VIDEO.width}

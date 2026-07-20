@@ -19,10 +19,23 @@ import type { ShowcaseCopy } from "@/remotion/ShowcaseVideo";
 
 const ShowcaseVideoPlayer = dynamic(() => import("./showcase-video-player"), { ssr: false });
 
+/** Kompakt varyantın devreye girdiği genişlik — Tailwind `sm` altı (telefon). */
+const COMPACT_QUERY = "(max-width: 639px)";
+
 export function ShowcaseVideo({ copy }: { copy: ShowcaseCopy }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
+  // Player yalnız istemcide mount olduğu için (ssr:false) hidrasyon uyuşmazlığı riski yok.
+  const [compact, setCompact] = useState(false);
   const { resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    const mq = window.matchMedia(COMPACT_QUERY);
+    const sync = () => setCompact(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     const el = hostRef.current;
@@ -50,7 +63,7 @@ export function ShowcaseVideo({ copy }: { copy: ShowcaseCopy }) {
       className="relative mx-auto aspect-video w-full max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-xl shadow-slate-900/5 dark:border-white/10 dark:bg-[#0B0D14] dark:shadow-black/40"
     >
       {near ? (
-        <ShowcaseVideoPlayer palette={palette} copy={copy} />
+        <ShowcaseVideoPlayer palette={palette} copy={copy} compact={compact} />
       ) : (
         // Yer tutucu: aynı en-boy oranı → CLS yok.
         <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-slate-200/60 to-transparent dark:from-white/5" />
