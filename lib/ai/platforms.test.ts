@@ -7,17 +7,19 @@ import { PLATFORMS, PLATFORM_IDS, platformIdSchema, type PlatformId } from "./pl
  * yanlış bilgi gösterilir — bu yüzden beklenen set teste çakılı.
  */
 describe("PLATFORMS registry — profileImport", () => {
-  // Gerçeklik: yalnız LinkedIn'in sunucu-taraflı çekimi var (lib/import/linkedin.ts);
-  // Upwork+Fiverr uzantı manifest'inde tanımlı; kalan 5'i HENÜZ yazılmadı.
+  // 2026-07-20 canlı ölçüm (gerçek public profil sayfalarına istek):
+  //   linkedin/contra/guru → ld+json Person, düz fetch 200 → yapılandırılmış
+  //   freelancer/peopleperhour → ld+json yok ama sayfa 200 + metin dolu → metin→AI
+  //   upwork/fiverr/99designs → bot duvarı (99designs düz fetch'te 202 + boş kabuk)
   const EXPECTED: Record<PlatformId, "server" | "extension" | "none"> = {
     linkedin: "server",
+    contra: "server",
+    guru: "server",
+    freelancer: "server",
+    peopleperhour: "server",
     upwork: "extension",
     fiverr: "extension",
-    freelancer: "none",
-    contra: "none",
-    peopleperhour: "none",
-    "99designs": "none",
-    guru: "none",
+    "99designs": "extension",
   };
 
   it("her platform id'si için giriş var ve id kendiyle tutarlı", () => {
@@ -35,13 +37,18 @@ describe("PLATFORMS registry — profileImport", () => {
     }
   });
 
-  it("sunucudan çekilebilen platform seti tam olarak {linkedin}", () => {
+  it("sunucudan çekilebilen set: linkedin/contra/guru/freelancer/peopleperhour", () => {
     const server = platformIdSchema.options.filter((id) => PLATFORMS[id].profileImport === "server");
-    expect(server).toEqual(["linkedin"]);
+    expect(server.sort()).toEqual(["contra", "freelancer", "guru", "linkedin", "peopleperhour"]);
   });
 
-  it("uzantı gerektiren set tam olarak {upwork, fiverr}", () => {
+  it("uzantı gerektiren set (bot duvarlı): upwork/fiverr/99designs", () => {
     const ext = platformIdSchema.options.filter((id) => PLATFORMS[id].profileImport === "extension");
-    expect(ext.sort()).toEqual(["fiverr", "upwork"]);
+    expect(ext.sort()).toEqual(["99designs", "fiverr", "upwork"]);
+  });
+
+  it("artık profil çekimi olmayan platform kalmadı", () => {
+    const none = platformIdSchema.options.filter((id) => PLATFORMS[id].profileImport === "none");
+    expect(none).toEqual([]);
   });
 });

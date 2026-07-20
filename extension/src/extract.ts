@@ -1,7 +1,10 @@
 // Saf çıkarım yardımcıları — DOM'a dokunmaz, vitest ile test edilir.
 // content.ts bunları tarayıcı bağlamında çağırır.
 
-export type ProfilePlatform = "upwork" | "fiverr" | "linkedin";
+// 99designs: public profili VAR ama sunucu fetch'i bot duvarına takılıyor
+// (2026-07-20 ölçüm: düz istek 202 + 157 karakter boş kabuk; gerçek tarayıcıda
+// normal açılıyor) → Upwork/Fiverr ile aynı sınıf: yalnız uzantıyla toplanır.
+export type ProfilePlatform = "upwork" | "fiverr" | "linkedin" | "99designs";
 export type JobPlatform = "upwork" | "linkedin";
 
 // Fiverr'da kullanıcı adları kök yolda yaşar (fiverr.com/<username>) — profil
@@ -37,6 +40,13 @@ export function detectProfilePage(host: string, pathname: string): ProfilePlatfo
     if (!m) return null;
     if (FIVERR_RESERVED.has(m[1].toLowerCase())) return null;
     return "fiverr";
+  }
+
+  // 99designs: /profiles/{slug} (slug sayısal id ya da tasarımcı adı olabilir).
+  // Alt sayfalar (/profiles/{slug}/designs/123) profil sayılmaz — tekil tasarım sayfası.
+  if (h === "99designs.com" || h.endsWith(".99designs.com")) {
+    if (/^\/profiles\/[A-Za-z0-9._-]{2,80}$/.test(path)) return "99designs";
+    return null;
   }
 
   // LinkedIn: /in/{username} profil sayfaları (yerel alt alan adları dahil).

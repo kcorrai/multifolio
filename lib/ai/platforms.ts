@@ -71,7 +71,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   freelancer: {
     id: "freelancer",
-    profileImport: "none",
+    profileImport: "server",
     label: "Freelancer.com",
     guidance:
       "Freelancer.com profili için yaz. Müşteri-odaklı, sonuç vaat eden, teklife-dönük bir ton " +
@@ -82,7 +82,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   contra: {
     id: "contra",
-    profileImport: "none",
+    profileImport: "server",
     label: "Contra",
     guidance:
       "Contra bağımsız (independent) profili için yaz. Portfolyo-öncelikli, kişisel-marka odaklı, " +
@@ -93,7 +93,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   peopleperhour: {
     id: "peopleperhour",
-    profileImport: "none",
+    profileImport: "server",
     label: "PeoplePerHour",
     guidance:
       "PeoplePerHour profili için yaz. Müşteri-odaklı, teklife-dönük, güven verici bir ton " +
@@ -103,7 +103,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   "99designs": {
     id: "99designs",
-    profileImport: "none",
+    profileImport: "extension",
     label: "99designs",
     guidance:
       "99designs tasarımcı profili için yaz. Yaratıcı ama profesyonel, portfolyo-güdümlü bir ton " +
@@ -113,7 +113,7 @@ export const PLATFORMS: Record<PlatformId, PlatformSpec> = {
   },
   guru: {
     id: "guru",
-    profileImport: "none",
+    profileImport: "server",
     label: "Guru",
     guidance:
       "Guru.com profili için yaz. Profesyonel, güven verici, teklife-dönük bir ton (bid/quote tabanlı, " +

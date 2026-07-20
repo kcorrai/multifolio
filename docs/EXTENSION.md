@@ -1,8 +1,12 @@
 # Multifolio Tarayıcı Uzantısı (MV3)
 
-Upwork ve Fiverr profil sayfaları sunucudan çekilemiyor (Cloudflare/captcha bot duvarı);
-LinkedIn'in public verisi ise skills içermiyor. Uzantı kullanıcının KENDİ login'li
-tarayıcısında çalışır (v2: Upwork + Fiverr + LinkedIn): profil sayfasının görünür
+Upwork, Fiverr ve 99designs profil sayfaları sunucudan çekilemiyor (bot duvarı —
+99designs düz isteğe 202 + boş kabuk döner, gerçek tarayıcıda normal açılır; 2026-07-20
+ölçümü); LinkedIn'in public verisi ise skills içermiyor. Diğer 5 platform (LinkedIn,
+Contra, Guru, Freelancer.com, PeoplePerHour) SUNUCUDAN çekiliyor — bkz. `lib/import/*`
+ve `PLATFORMS[].profileImport`; uzantı yalnız bot duvarlı olanlar için gerekli.
+Uzantı kullanıcının KENDİ login'li
+tarayıcısında çalışır (v0.3.0: Upwork + Fiverr + LinkedIn + 99designs): profil sayfasının görünür
 metnini + best-effort medya URL'lerini (avatar `og:image`, portfolyo görselleri) toplar
 ve mevcut oturum cookie'leriyle `/api/profile/import`'a (`mode:"extension"`) POST'lar.
 Backend mevcut ÜCRETSİZ AI çıkarım yolunu kullanır (kredi düşmez, saatte 10 limit),

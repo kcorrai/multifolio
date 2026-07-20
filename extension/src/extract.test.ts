@@ -77,6 +77,16 @@ describe("detectProfilePage", () => {
     expect(detectProfilePage("www.linkedin.com", "/jobs/view/123")).toBeNull();
     expect(detectProfilePage("www.linkedin.com", "/in/")).toBeNull();
   });
+  // 99designs public profil sunuyor ama sunucu fetch'i bot duvarına takılıyor
+  // (2026-07-20: düz istek 202 + boş kabuk) → yalnız uzantı toplayabilir.
+  it("99designs /profiles/{slug} tanır, tekil tasarım sayfasını reddeder", () => {
+    expect(detectProfilePage("99designs.com", "/profiles/Boja")).toBe("99designs");
+    expect(detectProfilePage("99designs.com", "/profiles/1812669")).toBe("99designs");
+    expect(detectProfilePage("www.99designs.com", "/profiles/jane-doe/")).toBe("99designs");
+    expect(detectProfilePage("99designs.com", "/profiles/1812669/designs/2387857")).toBeNull();
+    expect(detectProfilePage("99designs.com", "/discover")).toBeNull();
+    expect(detectProfilePage("99designs.com", "/profiles/")).toBeNull();
+  });
   it("başka hostları reddeder", () => {
     expect(detectProfilePage("www.evil.com", "/freelancers/~0abc123456")).toBeNull();
     expect(detectProfilePage("tr.fiverr.com", "/janedoe")).toBeNull();

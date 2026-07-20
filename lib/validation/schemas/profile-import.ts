@@ -1,6 +1,7 @@
 // Profil içe aktarma girdileri. `file` modu multipart geldiğinden bu union'da
 // YOKTUR; route'ta content-type'a göre ayrılır ve dosya elle doğrulanır.
 import { z } from "zod";
+import { platformIdSchema } from "@/lib/ai/platforms";
 import { httpUrl, portfolioItemSchema, profileProjectSchema } from "./profile";
 
 export const IMPORT_TEXT_MAX = 50_000; // ham girdi tavanı (AI'a gitmeden 20k'ya kırpılır)
@@ -19,7 +20,10 @@ export const importRequestSchema = z.discriminatedUnion("mode", [
   // sayfa public ld+json'da OLMAYAN skills'i de içerir → AI metinden çıkarır.
   z.object({
     mode: z.literal("extension"),
-    platform: z.enum(["upwork", "fiverr", "linkedin"]),
+    // Uzantının topladığı platformlar. Kaynak: PLATFORMS registry'sinde
+    // profileImport === "extension" olanlar (upwork/fiverr/99designs) + linkedin
+    // (sunucudan da çekilir ama login'li sayfa skills gibi EK veri taşır).
+    platform: platformIdSchema,
     sourceUrl: z.string().trim().url().max(2000).refine((u) => /^https:\/\//i.test(u), "Yalnız https"),
     text: z.string().trim().min(80).max(IMPORT_TEXT_MAX),
     avatarUrl: httpUrl(1000).optional(),

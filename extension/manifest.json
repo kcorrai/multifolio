@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.2.18",
+  "version": "0.3.0",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "icons": {
@@ -9,7 +9,9 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "background": { "service_worker": "background.js" },
+  "background": {
+    "service_worker": "background.js"
+  },
   "host_permissions": [
     "https://multifolio-ecru.vercel.app/*",
     "http://localhost:3000/*"
@@ -24,9 +26,13 @@
         "https://www.upwork.com/jobs/*",
         "https://*.linkedin.com/jobs/view/*",
         "https://www.upwork.com/nx/proposals/*",
-        "https://www.upwork.com/ab/proposals/*"
+        "https://www.upwork.com/ab/proposals/*",
+        "https://99designs.com/profiles/*",
+        "https://*.99designs.com/profiles/*"
       ],
-      "js": ["content.js"],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     },
     {
@@ -34,16 +40,24 @@
         "https://www.upwork.com/freelancers/*",
         "https://www.upwork.com/fl/*"
       ],
-      "js": ["nuxt.js"],
+      "js": [
+        "nuxt.js"
+      ],
       "run_at": "document_idle",
       "world": "MAIN"
     },
     {
-      "matches": ["https://www.fiverr.com/*"],
-      "js": ["fiverr.js"],
+      "matches": [
+        "https://www.fiverr.com/*"
+      ],
+      "js": [
+        "fiverr.js"
+      ],
       "run_at": "document_idle",
       "world": "MAIN"
     }
   ],
-  "action": { "default_title": "Multifolio" }
+  "action": {
+    "default_title": "Multifolio"
+  }
 }
