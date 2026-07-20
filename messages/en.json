@@ -55,34 +55,35 @@
       "eyebrow": "See it in action",
       "title": "Your whole freelance workflow, in one place",
       "subtitle": "Discover jobs, publish a portfolio, and export an ATS-ready CV — all from one profile.",
-      "feed": {
-        "title": "A live job feed, scored to your profile",
-        "desc": "Saved feeds on the left, matched jobs in the middle, filters and AI scoring on the right. New roles stay marked unread until you open them."
-      },
-      "autoPilot": {
-        "title": "Auto-Pilot: it finds the jobs and writes the proposal",
-        "desc": "Turn on Auto-Pilot for any feed. Overnight it drafts a tailored proposal for each new matching job — ready and waiting in Applied. You review and send in one click. Never auto-submitted, so your account stays safe.",
-        "step1Title": "Drafts overnight",
-        "step1Desc": "New matching jobs get a tailored proposal automatically.",
-        "step2Title": "You review",
-        "step2Desc": "Every draft waits in Applied for your edits and approval.",
-        "step3Title": "One-click apply",
-        "step3Desc": "The browser extension pastes it into the platform's form — you hit send."
-      },
-      "portfolio": {
-        "title": "A public portfolio that wins clients",
-        "desc": "Publish a polished portfolio page in minutes. Visitors can request to hire you right from the page.",
-        "role": "Product Designer",
+      "viewLive": "See a live portfolio",
+      "video": {
+        "steps": {
+          "profile": "Profile",
+          "feed": "Jobs",
+          "proposal": "Proposal",
+          "portfolio": "Portfolio",
+          "cv": "CV"
+        },
+        "headline": {
+          "profile": "Enter your work once",
+          "feed": "Get a live job feed, scored to you",
+          "proposal": "Let AI write the proposal",
+          "portfolio": "Publish a portfolio that wins clients",
+          "cv": "Export an ATS-ready CV"
+        },
+        "profileHeadline": "Senior React Developer",
+        "skills": ["React", "Next.js", "TypeScript", "Node", "UI/UX", "Tailwind"],
+        "scoreLabel": "fit",
+        "autoPilot": "Auto-Pilot",
+        "on": "ON",
+        "noAutoSubmit": "Never auto-submitted",
+        "portfolioName": "Ahmet Yilmaz",
+        "portfolioRole": "Product Designer",
         "hire": "Hire me",
-        "viewLive": "See a live portfolio"
-      },
-      "cv": {
-        "title": "An ATS-ready CV in one click",
-        "desc": "Generate a CV from your profile, pick from 8 templates, and export a clean PDF that passes applicant tracking systems.",
+        "projects": ["Fintech app", "Design system", "SaaS dashboard"],
+        "atsLabel": "ATS score",
         "download": "Download PDF",
-        "tplClean": "Clean",
-        "tplModern": "Modern",
-        "tplSidebar": "Sidebar"
+        "templates": ["Clean", "Modern", "Sidebar"]
       }
     },
     "toolCta": {
@@ -293,7 +294,8 @@
       "fit": "fit",
       "jobA": "React dashboard build",
       "jobB": "Next.js landing page",
-      "jobC": "UI/UX for SaaS app"
+      "jobC": "UI/UX for SaaS app",
+      "jobD": "Landing page revamp"
     }
   },
   "auth": {

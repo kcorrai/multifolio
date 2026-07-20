@@ -11,8 +11,7 @@ import { PlatformLogo } from "@/components/platform-logo";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { LandingMotion } from "@/components/landing/landing-motion";
 import { Tilt } from "@/components/landing/tilt";
-import { BrowserFrame } from "@/components/landing/browser-frame";
-import { FeedShowcase, AutoPilotShowcase, PortfolioShowcase, CvShowcase } from "@/components/landing/product-showcase";
+import { ShowcaseVideo } from "@/components/landing/showcase-video";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -400,7 +399,8 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
       </section>
 
 
-      {/* Ürün vitrini — "nasıl görünüyor" (dashboard'a benzeyen gerçekçi mockup'lar) */}
+      {/* Ürün vitrini — tüm akışı anlatan Remotion videosu (görünüme girince otomatik oynar).
+          Metin burada (sunucuda) i18n'den çözülüp kompozisyona prop olarak geçer. */}
       <section id="showcase" className="mx-auto max-w-6xl px-8 pt-8 pb-16">
         <ScrollReveal>
           <div className="text-center space-y-3 mb-12">
@@ -410,57 +410,49 @@ async function LandingPage({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
           </div>
         </ScrollReveal>
 
-        {/* Feed vitrini */}
         <ScrollReveal delay={80}>
-          <div className="mx-auto max-w-2xl text-center space-y-2 mb-6">
-            <h3 className="text-2xl font-bold tracking-tight">{t("showcase.feed.title")}</h3>
-            <p className="text-slate-500 dark:text-[#94A3B8] font-medium">{t("showcase.feed.desc")}</p>
-          </div>
-          <Tilt>
-            <BrowserFrame url="multifolio.app/dashboard/jobs" className="mx-auto max-w-5xl">
-              <FeedShowcase />
-            </BrowserFrame>
-          </Tilt>
-        </ScrollReveal>
-
-        {/* Otomatik Pilot vitrini */}
-        <ScrollReveal delay={80} className="mt-20">
-          <div className="mx-auto max-w-2xl text-center space-y-2 mb-6">
-            <h3 className="text-2xl font-bold tracking-tight">{t("showcase.autoPilot.title")}</h3>
-            <p className="text-slate-500 dark:text-[#94A3B8] font-medium">{t("showcase.autoPilot.desc")}</p>
-          </div>
-          <div className="mx-auto max-w-4xl">
-            <AutoPilotShowcase />
-          </div>
-        </ScrollReveal>
-
-        {/* Portfolyo vitrini */}
-        <ScrollReveal delay={80} className="mt-20">
-          <div className="mx-auto max-w-2xl text-center space-y-2 mb-6">
-            <h3 className="text-2xl font-bold tracking-tight">{t("showcase.portfolio.title")}</h3>
-            <p className="text-slate-500 dark:text-[#94A3B8] font-medium">{t("showcase.portfolio.desc")}</p>
-          </div>
-          <Tilt>
-            <BrowserFrame url="multifolio.app/p/ahmet-yilmaz" className="mx-auto max-w-4xl">
-              <PortfolioShowcase />
-            </BrowserFrame>
-          </Tilt>
-          <p className="text-center mt-4">
+          <ShowcaseVideo
+            copy={{
+              steps: t.raw("showcase.video.steps"),
+              headline: t.raw("showcase.video.headline"),
+              profile: {
+                headline: t("showcase.video.profileHeadline"),
+                skills: t.raw("showcase.video.skills"),
+              },
+              feed: {
+                scoreLabel: t("showcase.video.scoreLabel"),
+                jobs: [
+                  { title: t("demos.jobA"), platform: "Upwork", score: 92, budget: "$45/hr" },
+                  { title: t("demos.jobB"), platform: "LinkedIn", score: 78, budget: "$3k" },
+                  { title: t("demos.jobC"), platform: "Fiverr", score: 85, budget: "$800" },
+                  { title: t("demos.jobD"), platform: "Upwork", score: 88, budget: "$1.2k" },
+                ],
+              },
+              proposal: {
+                text: t("demos.proposal"),
+                autoPilot: t("showcase.video.autoPilot"),
+                on: t("showcase.video.on"),
+                noAutoSubmit: t("showcase.video.noAutoSubmit"),
+              },
+              portfolio: {
+                name: t("showcase.video.portfolioName"),
+                role: t("showcase.video.portfolioRole"),
+                hire: t("showcase.video.hire"),
+                projects: t.raw("showcase.video.projects"),
+              },
+              cv: {
+                role: t("demos.cvRole"),
+                download: t("showcase.video.download"),
+                atsLabel: t("showcase.video.atsLabel"),
+                templates: t.raw("showcase.video.templates"),
+              },
+            }}
+          />
+          <p className="text-center mt-6">
             <Link href="/p/demo" className="inline-flex items-center gap-1 text-sm font-bold text-[#00F0FF]">
-              {t("showcase.portfolio.viewLive")} <ArrowUpRight className="h-4 w-4" />
+              {t("showcase.viewLive")} <ArrowUpRight className="h-4 w-4" />
             </Link>
           </p>
-        </ScrollReveal>
-
-        {/* CV vitrini */}
-        <ScrollReveal delay={80} className="mt-20">
-          <div className="mx-auto max-w-2xl text-center space-y-2 mb-6">
-            <h3 className="text-2xl font-bold tracking-tight">{t("showcase.cv.title")}</h3>
-            <p className="text-slate-500 dark:text-[#94A3B8] font-medium">{t("showcase.cv.desc")}</p>
-          </div>
-          <div className="mx-auto max-w-4xl">
-            <CvShowcase />
-          </div>
         </ScrollReveal>
       </section>
 
