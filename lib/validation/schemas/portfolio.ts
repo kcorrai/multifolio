@@ -29,6 +29,10 @@ export const portfolioThemeSchema = z
 export const portfolioGalleryItemSchema = z.object({
   url: z.string().url(),
   caption: z.string().max(120).default(""),
+  // Öğe bazlı küratörlük: true → public sayfada gösterilmez ama kayıtta DURUR
+  // (geri açılabilir). Silme yerine gizleme, çünkü galeri/gruplar her üretimde
+  // profilden yeniden kurulur — silinen öğe geri gelirdi, gizlenen gelmez.
+  hidden: z.boolean().default(false),
 });
 // Proje-proje gösterim modu için: her grup = bir projenin başlığı + görselleri
 // (profiles.projects'ten üretimde/kaydetmede kopyalanır). Boşsa galeri moduna düşülür.
@@ -40,6 +44,8 @@ export const portfolioProjectGroupSchema = z.object({
   description: z.string().max(4000).default(""),
   skills: z.array(z.string().max(60)).max(30).default([]),
   images: z.array(portfolioGalleryItemSchema).max(24).default([]),
+  // Proje bazlı küratörlük (galeri öğesiyle aynı mantık): true → public sayfada gizli.
+  hidden: z.boolean().default(false),
 });
 export const portfolioMediaSchema = z
   .object({

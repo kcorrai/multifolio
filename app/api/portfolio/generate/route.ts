@@ -12,7 +12,9 @@ import { spendCredits } from "@/lib/credits/spend";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { portfolioThemeSchema, type PortfolioMedia } from "@/lib/validation/schemas/portfolio";
 import type { ProfileInput, PortfolioItem, ProfileProject } from "@/lib/validation/schemas/profile";
-import { buildGallery, buildProjectGroups } from "@/lib/portfolio/media";
+import {
+  buildGallery, buildProjectGroups, carryGalleryHidden, carryProjectGroupHidden,
+} from "@/lib/portfolio/media";
 
 // İlk üretimde okunabilir + benzersiz slug türetir. Başlıktan slugify → alınmışsa
 // kısa user-id eki → o da alınmışsa hex fallback. RLS bypass (admin) ile TÜM
@@ -80,9 +82,13 @@ export const POST = withErrorHandler(async () => {
   const slug = existing?.slug ?? (await deriveUniqueSlug(admin, profileData.headline as string | null, user.id));
   // Yeniden üretimde kullanıcının seçtiği tema + iletişim CTA hedefi KORUNUR (AI bunları üretmez).
   const existingContent = existing?.content as
-    | { theme?: unknown; layout?: unknown; contactEmail?: unknown; contactUrl?: unknown; embedUrl?: unknown }
+    | { theme?: unknown; layout?: unknown; contactEmail?: unknown; contactUrl?: unknown; embedUrl?: unknown; media?: { gallery?: unknown; projectGroups?: unknown } }
     | null;
   const theme = portfolioThemeSchema.parse(existingContent?.theme);
+  // Öğe bazlı gizleme seçimleri yeniden üretimde KORUNUR — aksi halde kullanıcının
+  // gizlediği görsel/proje her üretimde geri gelirdi (galeri profilden yeniden kurulur).
+  media.gallery = carryGalleryHidden(media.gallery, existingContent?.media?.gallery);
+  media.projectGroups = carryProjectGroupHidden(media.projectGroups, existingContent?.media?.projectGroups);
   // Gösterim modu (gallery/projects) yeniden üretimde KORUNUR (kullanıcı seçimi).
   const layout: "gallery" | "projects" = existingContent?.layout === "projects" ? "projects" : "gallery";
   // İletişim CTA: ilk üretimde hesap e-postasına VARSAYILAN (public sayfada "İşe al"

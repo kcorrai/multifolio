@@ -15,7 +15,7 @@ export function buildGallery(...sources: (PortfolioItem[] | null | undefined)[])
       const url = item?.imageUrl?.trim();
       if (!url || seen.has(url)) continue;
       seen.add(url);
-      out.push({ url, caption: (item.title ?? "").slice(0, 120) });
+      out.push({ url, caption: (item.title ?? "").slice(0, 120), hidden: false });
       if (out.length >= 24) return out;
     }
   }
@@ -32,7 +32,7 @@ export function buildProjectGroups(projects: ProfileProject[] | null | undefined
     const images = (p.images ?? [])
       .filter((im) => im?.url?.trim())
       .slice(0, 24)
-      .map((im) => ({ url: im.url, caption: (im.caption || p.title || "").slice(0, 120) }));
+      .map((im) => ({ url: im.url, caption: (im.caption || p.title || "").slice(0, 120), hidden: false }));
     if (images.length === 0) continue;
     out.push({
       title: (p.title ?? "").slice(0, 200),
@@ -40,8 +40,85 @@ export function buildProjectGroups(projects: ProfileProject[] | null | undefined
       description: (p.description ?? "").slice(0, 4000),
       skills: (p.skills ?? []).slice(0, 30),
       images,
+      hidden: false,
     });
     if (out.length >= 12) break;
   }
   return out;
+}
+
+// ── Öğe bazlı gizleme (küratörlük) ───────────────────────────────────────────
+// Galeri ve proje grupları HER üretimde (generate) ve HER kaydetmede (PUT senkron)
+// profilden yeniden kurulur. Kullanıcının "bunu gösterme" seçimi bu yeniden kurulumda
+// kaybolmasın diye eski listedeki `hidden` bayrağı anahtar eşleşmesiyle taşınır —
+// tema ve iletişim CTA'sının korunduğu desenin aynısı.
+
+type UnknownRecord = Record<string, unknown>;
+
+// Kayıtlı içerik jsonb'den gelir → şekli garanti değil; tolerant okuma.
+function asRecords(value: unknown): UnknownRecord[] {
+  return Array.isArray(value)
+    ? value.filter((v): v is UnknownRecord => typeof v === "object" && v !== null)
+    : [];
+}
+
+// Bir proje grubunun kimliği: normalize başlık; başlıksız gruplarda ilk görselin url'i
+// (görselsiz grup zaten üretilmiyor → anahtar boş kalmaz).
+function groupKey(title: string, firstImageUrl: string): string {
+  return title.trim().toLowerCase() || firstImageUrl;
+}
+
+// Eski galeri listesindeki gizleme seçimlerini yeni listeye taşır (url eşleşmesi).
+export function carryGalleryHidden(
+  next: PortfolioMedia["gallery"],
+  previous: unknown,
+): PortfolioMedia["gallery"] {
+  const wasHidden = new Set<string>();
+  for (const item of asRecords(previous)) {
+    if (item.hidden === true && typeof item.url === "string") wasHidden.add(item.url);
+  }
+  if (wasHidden.size === 0) return next;
+  return next.map((item) => (wasHidden.has(item.url) ? { ...item, hidden: true } : item));
+}
+
+// Eski proje gruplarındaki gizleme seçimlerini yeni gruplara taşır (grup: başlık,
+// grup içi görsel: url). Grup başlığı değişirse seçim düşer — kabul edilebilir:
+// yeniden görünür olur, sessizce yanlış projeyi gizlemekten iyidir.
+export function carryProjectGroupHidden(
+  next: PortfolioMedia["projectGroups"],
+  previous: unknown,
+): PortfolioMedia["projectGroups"] {
+  const hiddenGroups = new Set<string>();
+  const hiddenImages = new Set<string>();
+  for (const group of asRecords(previous)) {
+    const images = asRecords(group.images);
+    const firstUrl = typeof images[0]?.url === "string" ? (images[0].url as string) : "";
+    const key = groupKey(typeof group.title === "string" ? group.title : "", firstUrl);
+    if (group.hidden === true && key) hiddenGroups.add(key);
+    for (const image of images) {
+      if (image.hidden === true && typeof image.url === "string") hiddenImages.add(image.url);
+    }
+  }
+  if (hiddenGroups.size === 0 && hiddenImages.size === 0) return next;
+  return next.map((group) => ({
+    ...group,
+    hidden: hiddenGroups.has(groupKey(group.title, group.images[0]?.url ?? "")),
+    images: group.images.map((im) => (hiddenImages.has(im.url) ? { ...im, hidden: true } : im)),
+  }));
+}
+
+// Public render'da gösterilecek galeri (editör TÜM öğeleri görür, public gizlileri değil).
+export function visibleGallery(gallery: PortfolioMedia["gallery"]): PortfolioMedia["gallery"] {
+  return gallery.filter((item) => !item.hidden);
+}
+
+// Public render'da gösterilecek proje grupları: gizli gruplar + gizli görseller elenir,
+// tüm görselleri gizlenen grup da düşer (görselsiz proje kartı anlamsız).
+export function visibleProjectGroups(
+  groups: PortfolioMedia["projectGroups"],
+): PortfolioMedia["projectGroups"] {
+  return groups
+    .filter((group) => !group.hidden)
+    .map((group) => ({ ...group, images: group.images.filter((im) => !im.hidden) }))
+    .filter((group) => group.images.length > 0);
 }

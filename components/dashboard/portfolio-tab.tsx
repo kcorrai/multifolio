@@ -5,7 +5,8 @@ import { useTranslations } from "next-intl";
 import { TestimonialsManager } from "./testimonials-manager";
 import { LeadsManager } from "./leads-manager";
 import { getSafeEmbed } from "@/lib/portfolio/embed";
-import { Sparkles, Save, AlertCircle, ExternalLink, X, Check } from "lucide-react";
+import { Sparkles, Save, AlertCircle, ExternalLink, Eye, EyeOff, Check } from "lucide-react";
+import { visibleGallery, visibleProjectGroups } from "@/lib/portfolio/media";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -42,6 +43,12 @@ export function PortfolioTab({
   const [pendingSync, setPendingSync] = useState(projectsNeedSync);
   const [error, setError] = useState("");
   const [lightbox, setLightbox] = useState<{ images: LightboxImage[]; index: number } | null>(null);
+
+  // Küratörlük türevleri: editör TÜM öğeleri gösterir (gizliler soluk), public sayfa
+  // yalnız görünenleri render eder → sayaçlar bu ikisinin farkını anlatır.
+  const projectGroups = content?.media.projectGroups ?? [];
+  const hiddenGalleryCount = (content?.media.gallery ?? []).filter((g) => g.hidden).length;
+  const visibleProjectCount = visibleProjectGroups(projectGroups).length;
 
   // İçerik alanını değiştir + kaydedilmemiş işaretle.
   function patch(next: Partial<PortfolioContent>) {
@@ -161,14 +168,16 @@ export function PortfolioTab({
                     </button>
                   ))}
                 </div>
-                {content.layout === "projects" && pendingSync && (content.media.projectGroups?.length ?? 0) > 0 ? (
+                {content.layout === "projects" && pendingSync && projectGroups.length > 0 ? (
                   <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
-                    {t("displaySyncPending", { count: content.media.projectGroups!.length })}
+                    {t("displaySyncPending", { count: projectGroups.length })}
                   </p>
                 ) : (
                   <p className="text-xs text-muted-foreground/70">
-                    {content.layout === "projects" && (content.media.projectGroups?.length ?? 0) === 0
-                      ? t("displayNoProjects")
+                    {/* Görünür proje sayısı 0 ise "By project" modu galeriye düşer → uyar.
+                        Hiç proje YOK ile hepsi GİZLİ farklı sorunlar, farklı mesaj. */}
+                    {content.layout === "projects" && visibleProjectCount === 0
+                      ? projectGroups.length > 0 ? t("displayAllHidden") : t("displayNoProjects")
                       : t("displayHint")}
                   </p>
                 )}
@@ -217,11 +226,16 @@ export function PortfolioTab({
                 </div>
               </div>
 
-              {/* ── Galeri (bağlı profillerden; kaldırılabilir) ──────── */}
+              {/* ── Galeri (bağlı profillerden; öğe bazlı göster/gizle) ── */}
               {content.media.gallery.length > 0 && (
                 <div className="space-y-2">
                   <Label>{t("galleryTitle", { count: content.media.gallery.length })}</Label>
                   <p className="text-xs text-muted-foreground">{t("galleryHint")}</p>
+                  {hiddenGalleryCount > 0 && (
+                    <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
+                      {t("hiddenCount", { count: hiddenGalleryCount })}
+                    </p>
+                  )}
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                     {(() => {
                       const imgs: LightboxImage[] = content.media.gallery.map((g) => ({ src: g.url, alt: g.caption || "" }));
@@ -231,18 +245,80 @@ export function PortfolioTab({
                           <button type="button" onClick={() => setLightbox({ images: imgs, index: i })} title={item.caption} className="block h-full w-full cursor-zoom-in">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={item.url} alt={item.caption}
-                              className="h-full w-full rounded-lg object-cover border border-border" />
+                              className={`h-full w-full rounded-lg object-cover border transition-opacity ${
+                                item.hidden ? "border-dashed border-amber-500/60 opacity-30" : "border-border"
+                              }`} />
                           </button>
+                          {/* Silme DEĞİL gizleme: galeri her üretimde profilden yeniden kurulur,
+                              silinen görsel geri gelirdi; gizleme seçimi taşınır (carryGalleryHidden). */}
                           <button
-                            onClick={() => patch({ media: { ...content.media, gallery: content.media.gallery.filter((g) => g.url !== item.url) } })}
-                            aria-label={t("removeImage")}
-                            className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-background border border-border shadow flex items-center justify-center text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                            onClick={() => patch({
+                              media: {
+                                ...content.media,
+                                gallery: content.media.gallery.map((g) => (g.url === item.url ? { ...g, hidden: !g.hidden } : g)),
+                              },
+                            })}
+                            aria-label={item.hidden ? t("showItem") : t("hideItem")}
+                            aria-pressed={item.hidden}
+                            title={item.hidden ? t("showItem") : t("hideItem")}
+                            className={`absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-background border border-border shadow flex items-center justify-center transition-opacity cursor-pointer ${
+                              item.hidden
+                                ? "text-amber-600 dark:text-amber-400 opacity-100"
+                                : "text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                            }`}
                           >
-                            <X className="h-3 w-3" />
+                            {item.hidden ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                           </button>
                         </div>
                       ));
                     })()}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Projeler (yapılandırılmış gruplar; "By project" modunda görünür) ── */}
+              {projectGroups.length > 0 && (
+                <div className="space-y-2">
+                  <Label>{t("projectsTitle", { count: projectGroups.length })}</Label>
+                  <p className="text-xs text-muted-foreground">{t("projectsHint")}</p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {projectGroups.map((group, i) => (
+                      <div
+                        key={`${group.title}-${group.images[0]?.url ?? i}`}
+                        className={`flex items-center gap-3 rounded-lg border p-2 ${
+                          group.hidden ? "border-dashed border-amber-500/60 bg-muted/30" : "border-border"
+                        }`}
+                      >
+                        {group.images[0] && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={group.images[0].url} alt=""
+                            className={`h-10 w-10 shrink-0 rounded object-cover border border-border ${group.hidden ? "opacity-30" : ""}`} />
+                        )}
+                        <div className={`min-w-0 flex-1 ${group.hidden ? "opacity-50" : ""}`}>
+                          <p className="truncate text-sm font-medium">{group.title || t("projectUntitled")}</p>
+                          <p className="text-xs text-muted-foreground">{t("projectImages", { count: group.images.length })}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => patch({
+                            media: {
+                              ...content.media,
+                              projectGroups: projectGroups.map((g, gi) => (gi === i ? { ...g, hidden: !g.hidden } : g)),
+                            },
+                          })}
+                          aria-label={group.hidden ? t("showItem") : t("hideItem")}
+                          aria-pressed={group.hidden}
+                          title={group.hidden ? t("showItem") : t("hideItem")}
+                          className={`shrink-0 rounded-md p-1.5 transition-colors cursor-pointer ${
+                            group.hidden
+                              ? "text-amber-600 dark:text-amber-400"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {group.hidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -326,9 +402,10 @@ function ThemePreview({ content }: { content: PortfolioContent }) {
             ))}
           </div>
         )}
-        {content.media.gallery.length > 0 && (
+        {/* Önizleme public sayfayı taklit eder → gizlenen görseller BURADA da yok. */}
+        {visibleGallery(content.media.gallery).length > 0 && (
           <div className="grid grid-cols-4 gap-1.5">
-            {content.media.gallery.slice(0, 4).map((g) => (
+            {visibleGallery(content.media.gallery).slice(0, 4).map((g) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img key={g.url} src={g.url} alt="" className="aspect-square w-full rounded-md object-cover border border-[var(--pf-border)]" />
             ))}

@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { AuthError, ValidationError, withErrorHandler } from "@/lib/errors";
 import { parseJson } from "@/lib/validation";
 import { portfolioUpdateSchema } from "@/lib/validation/schemas/portfolio";
-import { buildProjectGroups } from "@/lib/portfolio/media";
+import { buildProjectGroups, carryProjectGroupHidden } from "@/lib/portfolio/media";
 import type { ProfileProject } from "@/lib/validation/schemas/profile";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -40,19 +40,21 @@ export const PUT = withErrorHandler(async (req) => {
   const input = await parseJson(req, portfolioUpdateSchema);
 
   // İçerik güncelleniyorsa: "proje-proje" gösterim gruplarını canlı profilden YENİDEN
-  // KUR (ücretsiz senkron — AI/kredi yok). projectGroups kullanıcı-küratörlü değil,
-  // tamamen yapılandırılmış profil verisinden türetilir; bu sayede kullanıcı projelerini
-  // import ettikten sonra portfolyoyu yeniden ÜRETMEK (3 kredi) zorunda kalmadan
-  // "By project" modu import edilen projeleri gösterir. Galeri kullanıcı-küratörlü
-  // (silinebilir) olduğundan DOKUNULMAZ.
+  // KUR (ücretsiz senkron — AI/kredi yok). Grubun İÇERİĞİ profil verisinden türetilir;
+  // bu sayede kullanıcı projelerini import ettikten sonra portfolyoyu yeniden ÜRETMEK
+  // (kredi) zorunda kalmadan "By project" modu import edilen projeleri gösterir.
+  // Kullanıcının TEK küratörlük kararı `hidden` bayrağı → yeniden kurulan gruplara
+  // geri taşınır (yoksa her kaydetmede gizlenen proje geri gelirdi). Galeri
+  // kullanıcı-küratörlü olduğundan burada DOKUNULMAZ.
   if (input.content) {
     const { data: profileData } = await supabase
       .from("profiles")
       .select("projects")
       .eq("user_id", user.id)
       .maybeSingle();
-    input.content.media.projectGroups = buildProjectGroups(
-      (profileData?.projects as ProfileProject[] | null) ?? null,
+    input.content.media.projectGroups = carryProjectGroupHidden(
+      buildProjectGroups((profileData?.projects as ProfileProject[] | null) ?? null),
+      input.content.media.projectGroups,
     );
   }
 

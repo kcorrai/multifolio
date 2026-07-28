@@ -20,6 +20,7 @@ import { DemoThemeSwitcher } from "@/components/portfolio/demo-theme-switcher";
 import { getSafeEmbed } from "@/lib/portfolio/embed";
 import { validateContactEmail, validateContactUrl } from "@/lib/portfolio/contact";
 import { buildPersonJsonLd } from "@/lib/portfolio/json-ld";
+import { visibleGallery, visibleProjectGroups } from "@/lib/portfolio/media";
 import { PublicGallery } from "@/components/portfolio/public-gallery";
 import { ProjectShowcase } from "@/components/portfolio/project-showcase";
 import { ZoomableImage } from "@/components/portfolio/zoomable-image";
@@ -143,7 +144,9 @@ export default async function PortfolioPage({ params }: PageProps) {
     testimonials = testimonialRows ?? [];
   }
   const { headline, bio, skills, projects, media, theme, layout } = content;
-  const projectGroups = media.projectGroups ?? [];
+  // Sahibinin gizlediği öğeler public sayfada YOK (editörde durur, geri açılabilir).
+  const projectGroups = visibleProjectGroups(media.projectGroups ?? []);
+  const gallery = visibleGallery(media.gallery);
   const showProjectGroups = layout === "projects" && projectGroups.length > 0;
   const t = await getTranslations("portfolioPublic");
   // Tarih formatı ziyaretçi/UI diline bağlanır — görsel preset'e DEĞİL (atelier ≠ TR).
@@ -271,11 +274,11 @@ export default async function PortfolioPage({ params }: PageProps) {
             <ProjectShowcase projects={projectGroups} fallbackAlt={headline} themeVars={vars} />
           </div>
         </section>
-      ) : media.gallery.length > 0 ? (
+      ) : gallery.length > 0 ? (
         <section className="mx-auto max-w-5xl px-6 py-8">
           <SectionLabel style={heading}>{t("gallery")}</SectionLabel>
           {/* Tıklanınca lightbox + foto arası ileri/geri (PublicGallery, client). */}
-          <PublicGallery images={media.gallery} fallbackAlt={headline} />
+          <PublicGallery images={gallery} fallbackAlt={headline} />
         </section>
       ) : null}
 
