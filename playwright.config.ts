@@ -38,12 +38,15 @@ export default defineConfig({
   webServer: externalTarget
     ? undefined
     : {
-        // CI'da üretim build'ine koşarız — dev sunucusunun talep-üzerine
-        // derlemesi gerçek davranış değil ve yavaş.
-        command: process.env.CI ? "npm run build && npm run start" : "npm run dev",
-        // DİKKAT: hazırlık sinyali `/` DEĞİL. Next dev `/`'i erken yanıtlar ama
-        // henüz derlenmemiş rotalara bir süre 404 döner → testler sahte düşer.
-        // `/api/health` yanıt verdiğinde router gerçekten ayaktadır.
+        // VARSAYILAN: üretim build'i. `npm run dev` BİLEREK kullanılmıyor —
+        // Next dev rotaları talep üzerine derler ve Playwright'in paralel
+        // yükü altında aynı sayfaya kimi zaman 404/500 döner. Bu, testleri
+        // ürün hatası varmış gibi düşürüyordu (2026-08-16'da doğrulandı:
+        // aynı hatalar hiçbir değişiklik yokken de çıkıyor).
+        // Dev sunucusuyla hızlı yinelemek için: E2E_DEV=1 npm run test:e2e
+        command: process.env.E2E_DEV ? "npm run dev" : "npm run build && npm run start",
+        // Hazırlık sinyali `/` DEĞİL: dev `/`'i derlenmemiş rotalardan önce
+        // yanıtlar. `/api/health` cevap verdiğinde router gerçekten ayaktadır.
         url: `${baseURL}/api/health`,
         reuseExistingServer: !process.env.CI,
         timeout: 300_000,

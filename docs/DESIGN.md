@@ -124,8 +124,9 @@ Komplar yalnız görünüm değil duruş da getirdi. Uygulanırken şunlar deği
 - `components/pricing-section.tsx` dışındaki bazı eski panellerde `rounded-2xl`
   gibi Tailwind yarıçapları kaldı; token'a bağlı olmadıkları için ritim birebir
   değil (yakın, ama komp'un 22/30px'i değil).
-- **Öksüz i18n anahtarları:** `landing.showcase` + `landing.testimonials` silindi,
-  ama `landing.{platformsStrip,how,footer,mockup,demos,grow}` de kullanılmıyor
-  gibi görünüyor. Statik grep bunu kesinleştiremiyor (`getTranslations("landing")`
-  ile kök namespace okuyan bileşenler var) — **e2e smoke testleri devreye girdikten
-  sonra** temizlenmeli; erken silme sessiz `MISSING_MESSAGE` riski taşır.
+- ~~Öksüz i18n anahtarları~~ ✅ 2026-08-16 — `landing.{showcase,testimonials,
+  platformsStrip,how,footer,mockup,demos,grow}` silindi. Statik grep bunu tek
+  başına kesinleştiremiyordu (`getTranslations("landing")` ile kök namespace
+  okuyan bileşenler var); e2e'nin `assertNoMissingMessages` ağı 60/60 yeşil
+  verdikten sonra silindi. Kalan: `nav, cta, hero, toolCta, features, tools,
+  pricing, faq, finalCta, sp`.

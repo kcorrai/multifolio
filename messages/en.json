@@ -48,9 +48,6 @@
       "trust2": "Set up in 5 minutes",
       "trust3": "Pay-as-you-go"
     },
-    "platformsStrip": {
-      "title": "Supported platforms"
-    },
     "toolCta": {
       "more": "More free tools",
       "unlockTitle": "Your whole freelance workflow, in one place",
@@ -101,22 +98,6 @@
         "badge3": "Private by default"
       }
     },
-    "how": {
-      "eyebrow": "How it works",
-      "title": "Start in 3 steps.",
-      "step1": {
-        "title": "Enter your profile once",
-        "desc": "Add your work, skills and results a single time — no per-platform copy-paste."
-      },
-      "step2": {
-        "title": "AI adapts & builds",
-        "desc": "Get optimized text for all five platforms plus a ready-to-share portfolio and an exportable CV."
-      },
-      "step3": {
-        "title": "Match, pitch & track",
-        "desc": "Score job posts, discover new ones, generate proposals that fit, and track every application in one place."
-      }
-    },
     "tools": {
       "eyebrow": "Free tools",
       "title": "Try it before you sign up",
@@ -150,20 +131,6 @@
       "compare": {
         "title": "Platform comparison",
         "desc": "Compare fees, audience and payout speed across five platforms to pick where to focus."
-      }
-    },
-    "grow": {
-      "eyebrow": "Less work, faster start",
-      "title": "Set up in minutes, not hours",
-      "import": {
-        "title": "One-click import",
-        "desc": "Bring your Upwork, Fiverr and LinkedIn profile in with our browser extension — or paste a URL, text or PDF. No copy-paste marathon.",
-        "cta": "Get the extension"
-      },
-      "referral": {
-        "title": "Invite & earn",
-        "desc": "Invite a friend and you both get +20 credits when they build their first profile. Everyone starts with 100 free.",
-        "cta": "Start free"
       }
     },
     "pricing": {
@@ -215,47 +182,6 @@
     "finalCta": {
       "title": "Take your freelance career to the next level.",
       "subtitle": "Start free with 100 credits — no card required, pay only if you need more."
-    },
-    "footer": {
-      "rights": "© 2026 Multifolio. All rights reserved.",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Service",
-      "kvkk": "KVKK Notice",
-      "contact": "Contact"
-    },
-    "mockup": {
-      "role": "Senior React Developer",
-      "scoreLabel": "Strong",
-      "overallScore": "Overall score",
-      "scoreNote": "Strong profile. Headline optimization is the biggest opportunity.",
-      "platformFit": "Platform fit",
-      "skillMatch": "Skill match",
-      "clientAppeal": "Client appeal"
-    },
-    "demos": {
-      "adapting": "AI is adapting…",
-      "ready": "All platforms ready",
-      "pipeline": "Pipeline",
-      "responseRate": "response rate",
-      "funnelSent": "Sent",
-      "funnelResponded": "Responded",
-      "match": "Match",
-      "applied": "Applied",
-      "interview": "Interview",
-      "offer": "Offer",
-      "proposal": "Hi! I read your post — I've shipped three similar React dashboards. Here's how I'd approach yours…",
-      "portfolioUrl": "multifolio.app/p/ahmet",
-      "cvRole": "Senior React Developer",
-      "pdf": "PDF",
-      "experience": "Experience",
-      "skills": "Skills",
-      "remote": "Remote",
-      "new": "New",
-      "fit": "fit",
-      "jobA": "React dashboard build",
-      "jobB": "Next.js landing page",
-      "jobC": "UI/UX for SaaS app",
-      "jobD": "Landing page revamp"
     },
     "sp": {
       "hero": {

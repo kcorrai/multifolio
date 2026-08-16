@@ -144,8 +144,11 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   rota + landing bölümleri + sitemap/robots/health), `free-tools.spec.ts` (5 hesaplayıcının
   girdi→çekirdek→ekran zinciri; `data-testid="score-value"`/`big-number-primary` üzerinden — kopya
   metnine bağlı değil), `auth.spec.ts` (auth ekranları + kimlik verilirse girişli akış). Masaüstü +
-  mobil (Pixel 7) iki projede koşar. **Tuzak:** mobilde masaüstü header CTA'sı DOM'da ama gizli →
-  `a[href="..."]` ararken `.first()` yerine `:visible` kullan.
+  mobil (Pixel 7) iki projede koşar. **Tuzak 1:** mobilde masaüstü header CTA'sı DOM'da ama gizli →
+  `a[href="..."]` ararken `.first()` yerine `:visible` kullan. **Tuzak 2: e2e `npm run dev`'e KOŞMAZ** —
+  Next dev rotaları talep üzerine derler ve paralel yük altında aynı sayfaya rastgele 404/500 döner
+  (hiçbir değişiklik yokken 17 sahte düşüş görüldü). Varsayılan `npm run build && npm run start`;
+  hızlı yineleme için `E2E_DEV=1 npm run test:e2e`.
 - `extension/` — Chrome MV3 tarayıcı uzantısı (Upwork/Fiverr/LinkedIn/**99designs** profil içe aktarma, v0.3.0; ayrıntı `docs/EXTENSION.md`): KENDİ package.json/check'i var (kök check'ten hariç — tsconfig/eslint/vitest exclude). `src/extract.ts` saf yardımcılar (test'li), `content.ts` shadow-root buton + metin/medya toplama, `background.ts` cookie'li POST → `/api/profile/import mode:"extension"`. **Ayrıca (v0.2.16): iş yakalama** (Upwork `/jobs/*` + LinkedIn `/jobs/view/*` → `detectJobPage`+`collectJobPayload` → POST `/api/jobs`, doğrudan `job_listings`) **+ sayfaya yapıştır** (Upwork `/nx|ab/proposals/*` → `detectApplyPage` → GET `/api/proposal/latest` → cover-letter kutusuna yaz, **auto-submit YOK**). UI dili `_locales/{en,tr}` + `chrome.i18n`. Build: esbuild (`npm run build` prod — manifest'ten localhost izni çıkar / `build:dev` localhost / `package` store zip'i); `dist/` = load-unpacked klasörü. Store gizlilik sayfası: `app/extension/privacy/page.tsx` (`/extension/privacy`, i18n `extensionPrivacy`).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
