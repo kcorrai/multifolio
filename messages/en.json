@@ -51,56 +51,6 @@
     "platformsStrip": {
       "title": "Supported platforms"
     },
-    "showcase": {
-      "eyebrow": "See it in action",
-      "title": "Your whole freelance workflow, in one place",
-      "subtitle": "Discover jobs, publish a portfolio, and export an ATS-ready CV — all from one profile.",
-      "viewLive": "See a live portfolio",
-      "video": {
-        "steps": {
-          "profile": "Profile",
-          "feed": "Jobs",
-          "proposal": "Proposal",
-          "portfolio": "Portfolio",
-          "cv": "CV"
-        },
-        "headline": {
-          "profile": "Enter your work once",
-          "feed": "Get a live job feed, scored to you",
-          "proposal": "Let AI write the proposal",
-          "portfolio": "Publish a portfolio that wins clients",
-          "cv": "Export an ATS-ready CV"
-        },
-        "profileHeadline": "Senior React Developer",
-        "skills": [
-          "React",
-          "Next.js",
-          "TypeScript",
-          "Node",
-          "UI/UX",
-          "Tailwind"
-        ],
-        "scoreLabel": "fit",
-        "autoPilot": "Auto-Pilot",
-        "on": "ON",
-        "noAutoSubmit": "Never auto-submitted",
-        "portfolioName": "Ahmet Yilmaz",
-        "portfolioRole": "Product Designer",
-        "hire": "Hire me",
-        "projects": [
-          "Fintech app",
-          "Design system",
-          "SaaS dashboard"
-        ],
-        "atsLabel": "ATS score",
-        "download": "Download PDF",
-        "templates": [
-          "Clean",
-          "Modern",
-          "Sidebar"
-        ]
-      }
-    },
     "toolCta": {
       "more": "More free tools",
       "unlockTitle": "Your whole freelance workflow, in one place",
@@ -265,11 +215,6 @@
     "finalCta": {
       "title": "Take your freelance career to the next level.",
       "subtitle": "Start free with 100 credits — no card required, pay only if you need more."
-    },
-    "testimonials": {
-      "eyebrow": "From early users",
-      "title": "What freelancers say",
-      "items": []
     },
     "footer": {
       "rights": "© 2026 Multifolio. All rights reserved.",

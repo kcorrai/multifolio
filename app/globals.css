@@ -346,69 +346,6 @@
 }
 .pd-chip { animation: pdChipIn 0.35s ease-out backwards; }
 
-/* ─── Landing: sakin ambient aurora (2D CSS — WebGL yok) ─── */
-/* Üst folda 3 yumuşak radyal gradyan yavaşça süzülür; alta doğru maskeyle
-   söner → hero'da atmosfer, alt bölümler tertemiz kalır. Metnin ARDINDA. */
-.landing-aurora {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 20%, transparent 60%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 20%, transparent 60%);
-}
-:where(html:not(.dark)) .landing-aurora { opacity: 0.55; } /* açık temada daha hafif */
-.landing-aurora span {
-  position: absolute;
-  display: block;
-  border-radius: 9999px;
-  filter: blur(110px);
-  will-change: transform;
-}
-.landing-aurora .a1 {
-  width: 60vw; height: 60vw; left: -8vw; top: -22vh;
-  background: radial-gradient(circle, rgba(250,83,28, 0.16), transparent 62%);
-  animation: aurora1 28s ease-in-out infinite alternate;
-}
-.landing-aurora .a2 {
-  width: 52vw; height: 52vw; right: -6vw; top: -14vh;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.18), transparent 62%);
-  animation: aurora2 34s ease-in-out infinite alternate;
-}
-.landing-aurora .a3 {
-  width: 40vw; height: 40vw; left: 32vw; top: -8vh;
-  background: radial-gradient(circle, rgba(250,83,28, 0.10), transparent 60%);
-  animation: aurora3 24s ease-in-out infinite alternate;
-}
-@keyframes aurora1 { to { transform: translate(7vw, 5vh); } }
-@keyframes aurora2 { to { transform: translate(-6vw, 4vh); } }
-@keyframes aurora3 { to { transform: translate(3vw, 6vh) scale(1.1); } }
-
-/* ─── Landing: scroll mikro-animasyon değişkeni ─── */
-/* LandingMotion (client) --sx = sayfa scroll ilerlemesi (0..1) → drift-x katmanları
-   senkron kayar. (Mouse tilt kaldırıldı.) */
-:root { --sx: 0; }
-
-/* Scroll parallax — element viewport'tan geçerken katmanlı derinlik */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .par {
-      animation: parY linear both;
-      animation-timeline: view();
-      animation-range: entry 0% exit 100%;
-      will-change: transform;
-    }
-  }
-}
-@keyframes parY {
-  from { transform: translateY(var(--par-from, 40px)); }
-  to   { transform: translateY(var(--par-to, -40px)); }
-}
-
-/* Scroll ilerlemesine bağlı yatay kayma (sx=0 → nötr; sahnenin driftini yankılar) */
-.drift-x { transform: translateX(calc(var(--sx) * var(--drift, 40px))); will-change: transform; }
-
 /* ─── Erişilebilirlik: hareket azaltma tercihi ────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

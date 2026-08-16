@@ -96,11 +96,13 @@ Komplar yalnız görünüm değil duruş da getirdi. Uygulanırken şunlar deği
 4. **Araç içi signup CTA'ları** tek panele toplandı; **TRY para birimi seçicisi**
    kaldırıldı (GLOBAL-ONLY); **mobil yapışkan sonuç çubuğu** eklendi.
 5. **Landing'in Remotion videosu** yerini 6 adımlık interaktif vitrin rayına
-   bıraktı (`components/landing/solar/showcase-rail.tsx`). `remotion/` ve
-   `components/landing/showcase-video*.tsx` dosyaları duruyor ama landing'den
-   ÇAĞRILMIYOR — yeniden kullanılmayacaksa silinebilir.
+   bıraktı (`components/landing/solar/showcase-rail.tsx`). `remotion/`,
+   `showcase-video*.tsx`, `landing-motion.tsx`, `tilt.tsx` ve `remotion` /
+   `@remotion/player` / `@remotion/cli` bağımlılıkları SİLİNDİ.
 6. **Landing'den kayan yorum şeridi (TestimonialsSection) çıkarıldı** — komp'ta
-   yok; bileşen duruyor, landing artık çağırmıyor.
+   yok; bileşen ve `landing.testimonials` kataloğu SİLİNDİ. (Portfolyo tarafındaki
+   müşteri yorumu özelliği — `testimonials` tablosu + `testimonials-manager` —
+   ayrıdır, duruyor.)
 7. **Portfolyo proje kartlarında SONUÇ öne alındı** (kanıt açıklamayı yener).
 8. **Şifre sıfırlamada sessiz yönlendirme kaldırıldı** — süresi dolmuş token artık
    kartın tamamını değiştiren, yeniden link isteten bir ekran gösterir.
@@ -115,4 +117,8 @@ Komplar yalnız görünüm değil duruş da getirdi. Uygulanırken şunlar deği
 - `components/pricing-section.tsx` dışındaki bazı eski panellerde `rounded-2xl`
   gibi Tailwind yarıçapları kaldı; token'a bağlı olmadıkları için ritim birebir
   değil (yakın, ama komp'un 22/30px'i değil).
-- `remotion/` ve `showcase-video*` ölü kod (yukarıda 5).
+- **Öksüz i18n anahtarları:** `landing.showcase` + `landing.testimonials` silindi,
+  ama `landing.{platformsStrip,how,footer,mockup,demos,grow}` de kullanılmıyor
+  gibi görünüyor. Statik grep bunu kesinleştiremiyor (`getTranslations("landing")`
+  ile kök namespace okuyan bileşenler var) — **e2e smoke testleri devreye girdikten
+  sonra** temizlenmeli; erken silme sessiz `MISSING_MESSAGE` riski taşır.

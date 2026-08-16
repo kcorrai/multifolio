@@ -39,6 +39,7 @@ Efor notasyonu: 🟩 düşük · 🟨 orta · 🟥 büyük.
 
 - [x] **T0.3a — Sahte testimonial'ları gizle** 🟨 ✅ 2026-07-05 (hukuki risk) — `messages/{en,tr}.json`
   `landing.testimonials.items` boş dizi → `TestimonialsSection` null döner. Risk kapandı.
+  **2026-08-16:** Solar Pop landing'inde bölüm hiç yok → bileşen + katalog tamamen silindi.
 - [x] **T0.3b — Gerçek testimonial toplama widget'ı** 🟨 ✅ 2026-07-05 — migration 0028 (prod'da) +
   `/api/testimonials` + `/p/[slug]/recommend` formu + public "Wall of Love" + dashboard onay UI.
   **PROD E2E DOĞRULANDI** (gönder→pending→onayla→render→temizle). Sahte testimonial'ın kalıcı çözümü.
