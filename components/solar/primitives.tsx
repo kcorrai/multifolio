@@ -132,7 +132,9 @@ export function ScoreBlock({
   return (
     <div className="grid gap-3.5 rounded-[var(--radius-sp-lg)] p-[22px]" style={{ background: bg }}>
       <div className="flex flex-wrap items-center gap-[18px]">
+        {/* data-testid: e2e skoru kopya metnine bağlı kalmadan okur (e2e/free-tools.spec.ts) */}
         <span
+          data-testid="score-value"
           className="tabular-nums"
           style={{
             font: "var(--fw-black) var(--fs-display-l)/.85 var(--font-display)",
@@ -179,7 +181,9 @@ export function BigNumber({
       style={{ background: primary ? "var(--ink-900)" : "var(--surface-card-peach)" }}
     >
       <span className="sp-label" style={{ color: primary ? "var(--peach-200)" : "var(--text-body)" }}>{label}</span>
+      {/* data-testid: e2e ana rakamı okur; `primary` olan araç sayfasının BAŞ sonucudur. */}
       <span
+        data-testid={primary ? "big-number-primary" : "big-number"}
         className="tabular-nums"
         style={{
           font: `var(--fw-black) ${primary ? "var(--fs-display-m)" : "var(--fs-stat)"}/.95 var(--font-display)`,

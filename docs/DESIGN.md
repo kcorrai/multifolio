@@ -114,6 +114,13 @@ Komplar yalnız görünüm değil duruş da getirdi. Uygulanırken şunlar deği
 - Dashboard iç sekmelerinde başarı/hata renkleri hâlâ Tailwind `emerald`/`red`
   (soğuk yeşil). Solar Pop "soğuk renk yok" diyor; anlam kaybı riski nedeniyle
   mekanik olarak değiştirilmedi.
+  **2026-08-16 tespiti:** bu mekanik olarak KAPATILAMAZ — design system'de
+  durum (ok/uyarı/hata) rengi hiç yok, yalnız flame/pink/cream/ink var. ~40
+  dosyada 200+ eşleşme var; doğru sıra (a) design projesinden durum paleti
+  çekmek ya da bilinçli bir karar olarak `--status-{ok,warn,danger}` token'ı
+  eklemek, (b) `.sp-status--*` sınıflarını kurmak, (c) yüzeyleri tek tek
+  geçirmek. Renk tek sinyal olmadığı için (kelime + glif zorunlu) mevcut
+  durum işlevsel olarak DOĞRU, sadece dil dışı.
 - `components/pricing-section.tsx` dışındaki bazı eski panellerde `rounded-2xl`
   gibi Tailwind yarıçapları kaldı; token'a bağlı olmadıkları için ritim birebir
   değil (yakın, ama komp'un 22/30px'i değil).

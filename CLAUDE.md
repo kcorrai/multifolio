@@ -137,6 +137,15 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
   `0039_job_referred.sql` — `job_listings.referred boolean` (başvuru iç referansla mı geldi; pipeline içgörüsü — referanslılar ~2x dönüşür).
   `0040_interview_sessions.sql` — `interview_sessions` (sahte-mülakat oturumu: difficulty/categories/question_count/overall_score/status + questions jsonb; RLS sahip-tümü, public select YOK). `lib/interview/report.ts` + `/api/interview/mock/*` + `/api/interview/sessions`.
   `0041_job_type.sql` — `job_pool.job_type` (istihdam türü: full_time/contract/freelance/part_time/internship; kaynak vermezse null) + `job_feeds.job_types text[]` (kayıtlı feed istihdam-türü filtresi). Saf `lib/scrape/job-type.ts` (`normalizeJobType`/`inferJobTypeFromTags`); Remotive `job_type` yakalar (RemoteOK tag'den çıkarır, WWR null); `matchesFeed` lenient (null tür elenmez). UI: `components/dashboard/job-type-select.tsx` (çip filtre + rozet) → pool-job-row rozeti + search-view/feed-modal/feed-settings-panel filtresi (atıl `client_spent` search'ten kaldırıldı).
+- `e2e/` — Playwright duman testleri (`playwright.config.ts`; vitest'ten hariç). `helpers.ts` —
+  `watchErrors` (konsol/pageerror gözcüsü) + `assertNoMissingMessages` (**next-intl eksik anahtarı
+  sessizce anahtar yolunu render eder; tsc de vitest de görmez — öksüz katalog anahtarlarını
+  temizlemeyi güvenli kılan ağ budur**) + `openAndAssertHealthy`. `public-pages.spec.ts` (17 public
+  rota + landing bölümleri + sitemap/robots/health), `free-tools.spec.ts` (5 hesaplayıcının
+  girdi→çekirdek→ekran zinciri; `data-testid="score-value"`/`big-number-primary` üzerinden — kopya
+  metnine bağlı değil), `auth.spec.ts` (auth ekranları + kimlik verilirse girişli akış). Masaüstü +
+  mobil (Pixel 7) iki projede koşar. **Tuzak:** mobilde masaüstü header CTA'sı DOM'da ama gizli →
+  `a[href="..."]` ararken `.first()` yerine `:visible` kullan.
 - `extension/` — Chrome MV3 tarayıcı uzantısı (Upwork/Fiverr/LinkedIn/**99designs** profil içe aktarma, v0.3.0; ayrıntı `docs/EXTENSION.md`): KENDİ package.json/check'i var (kök check'ten hariç — tsconfig/eslint/vitest exclude). `src/extract.ts` saf yardımcılar (test'li), `content.ts` shadow-root buton + metin/medya toplama, `background.ts` cookie'li POST → `/api/profile/import mode:"extension"`. **Ayrıca (v0.2.16): iş yakalama** (Upwork `/jobs/*` + LinkedIn `/jobs/view/*` → `detectJobPage`+`collectJobPayload` → POST `/api/jobs`, doğrudan `job_listings`) **+ sayfaya yapıştır** (Upwork `/nx|ab/proposals/*` → `detectApplyPage` → GET `/api/proposal/latest` → cover-letter kutusuna yaz, **auto-submit YOK**). UI dili `_locales/{en,tr}` + `chrome.i18n`. Build: esbuild (`npm run build` prod — manifest'ten localhost izni çıkar / `build:dev` localhost / `package` store zip'i); `dist/` = load-unpacked klasörü. Store gizlilik sayfası: `app/extension/privacy/page.tsx` (`/extension/privacy`, i18n `extensionPrivacy`).
 - Env: `RESEND_FROM_EMAIL` (opsiyonel; yoksa `onboarding@resend.dev` kullanılır).
 - `supabase/email-templates/` — Supabase Auth e-posta şablonları (magic-link HTML). Dashboard'a manuel yapıştırılır.
@@ -149,6 +158,9 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
 - `npm run build` — üretim build'i.
 - `npm run test` — vitest birim testleri.
 - `npm run check` — lint + type-check (`tsc --noEmit`) + test (vitest). PR/iş bitişinde temiz olmalı.
+- `npm run test:e2e` — Playwright duman testleri (`e2e/`; dev sunucusunu kendi kaldırır, CI'da üretim
+  build'ine koşar). `check`'e DAHİL DEĞİL — sunucu gerektirir. Girişli akış `E2E_USER_EMAIL`/
+  `E2E_USER_PASSWORD` verilmezse atlanır. Farklı hedef: `E2E_BASE_URL=https://... npm run test:e2e`.
 
 ## Kurulum / sık düşülen tuzaklar (tekrarlanmasın)
 - **Kabuk:** Bu makinede terminal **PowerShell**. Bash sözdizimi (`export`, `curl -X/-H/-d`, `&&` bazı yerlerde) çalışmaz; PowerShell'de `Invoke-RestMethod`/`Invoke-WebRequest` kullan (veya Bash tool'una geç). `curl` PowerShell'de `Invoke-WebRequest` alias'ıdır.
