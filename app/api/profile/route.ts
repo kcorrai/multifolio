@@ -14,6 +14,7 @@ import {
 import { mergeByPlatform } from "@/lib/profile/merge";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { trackEvent } from "@/lib/analytics/track";
 
 const REFERRAL_BONUS = 20;
 // Platform bazlı merge sonrası birikimli üst sınır — giriş şemasıyla AYNI kaynak
@@ -131,6 +132,9 @@ export const POST = withErrorHandler(async (req) => {
 
   // Referral bonusu ancak profil kaydı BAŞARILI olduktan sonra denenir.
   const referralBonus = await maybeGrantReferralBonus(user);
+
+  // Aktivasyon adımı — huninin ikinci basamağı (bkz. lib/analytics/funnel.ts).
+  trackEvent("profile_saved", { userId: user.id, props: { source: src ?? "manual" } });
 
   return NextResponse.json({ profile: data, referralBonus }, { status: 200 });
 });

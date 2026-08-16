@@ -15,6 +15,7 @@ import { matchesFeed, feedCriteria } from "@/lib/feed/filter";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
 import type { JobMatchResult } from "@/lib/validation/schemas/job";
 import type { PoolJobRow, JobFeedRow } from "@/lib/validation/schemas/feed";
+import { trackEvent } from "@/lib/analytics/track";
 
 const jobIdQuerySchema = z.object({ job_id: z.string().uuid() });
 
@@ -177,6 +178,9 @@ export const POST = withErrorHandler(async (req) => {
     credits_spent: spent,
   });
   if (usageError) throw usageError;
+
+  // Huni adımı 4 — kullanıcı ürünle gerçek bir başvuru üretti.
+  trackEvent("proposal_generated", { userId: user.id, props: { platform: input.platform } });
 
   return NextResponse.json({
     proposal: result.saved,

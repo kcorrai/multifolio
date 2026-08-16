@@ -16,6 +16,7 @@ import { extractProfile, type ProfileImportResult } from "@/lib/ai/profile-impor
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { PlatformId } from "@/lib/ai/platforms";
+import { trackEvent } from "@/lib/analytics/track";
 
 const HOURLY_LIMIT = 10;
 const PDF_MAX_BYTES = 5 * 1024 * 1024;
@@ -228,6 +229,9 @@ export const POST = withErrorHandler(async (req) => {
     );
     if (ppError) throw ppError;
   }
+
+  // Huni: ice aktarma calisti mi? (profile_saved bir sonraki adim)
+  trackEvent("profile_imported", { userId: user.id, props: { platform: platform ?? "none" } });
 
   return NextResponse.json({ draft: result.draft, platform, media });
 });

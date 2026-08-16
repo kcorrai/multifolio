@@ -14,6 +14,7 @@ import { getUserMarketId } from "@/lib/markets/server";
 import { marketCurrency } from "@/lib/markets/config";
 import { initializeCheckoutForm, isIyzicoConfigured } from "@/lib/payments/iyzico";
 import { appBaseUrl } from "@/lib/payments/app-url";
+import { trackEvent } from "@/lib/analytics/track";
 
 /** Saatlik ödeme başlatma tavanı — gerçek kullanıcı için fazlasıyla yeterli. */
 const HOURLY_CHECKOUT_LIMIT = 15;
@@ -136,6 +137,10 @@ export const POST = withErrorHandler(async (req) => {
 
   // Token'ı satıra yaz (callback bununla eşleştirip idempotent kredi verir).
   await admin.from("purchases").update({ token: init.token }).eq("id", purchase.id);
+
+  // Huni son adımı — ödeme sayfasına GİDİLDİ (satın alındı DEĞİL; onu
+  // `purchases.status='paid'` söyler).
+  trackEvent("checkout_started", { userId: user.id, props: { packageId: pkg.id } });
 
   return NextResponse.json({ paymentPageUrl: init.paymentPageUrl, token: init.token });
 });

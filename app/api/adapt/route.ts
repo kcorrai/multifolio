@@ -12,6 +12,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { adaptProfile } from "@/lib/ai/adapt";
 import { spendCredits } from "@/lib/credits/spend";
 import type { ProfileInput } from "@/lib/validation/schemas/profile";
+import { trackEvent } from "@/lib/analytics/track";
 
 export const POST = withErrorHandler(async (req) => {
   const supabase = await createSupabaseServerClient();
@@ -93,6 +94,9 @@ export const POST = withErrorHandler(async (req) => {
     credits_spent: spent,
   });
   if (insertError) throw insertError;
+
+  // Huni adımı 3 — kullanıcı ürünün çekirdek değerini ilk kez gördü.
+  trackEvent("adapt_generated", { userId: user.id, props: { platform: input.platform } });
 
   return NextResponse.json({
     platform: input.platform,

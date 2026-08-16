@@ -1549,12 +1549,30 @@
     "demoThemeLabel": "Preview theme"
   },
   "admin": {
-    "title": "Feedback",
+    "title": "Admin",
     "back": "Dashboard",
     "adminBadge": "Admin only",
     "feedbackDesc": "Product feedback submitted by users. Read-only; visible to admins in the ADMIN_EMAILS allowlist.",
     "all": "All",
-    "empty": "No feedback yet."
+    "empty": "No feedback yet.",
+    "feedbackTitle": "Feedback",
+    "funnel": {
+      "title": "Activation funnel",
+      "desc": "Where signed-up users stop. Measured server-side from your own database — no third-party analytics, no client script, no cookies.",
+      "window": "Last {days} days",
+      "empty": "No signups in this window yet.",
+      "ofTotal": "{pct}% of signups",
+      "ofPrevious": "{pct}% of previous step",
+      "biggestDrop": "Biggest drop-off: {lost} users reached \"{from}\" but not \"{to}\".",
+      "truncated": "Showing the first {cap} users only — pagination needed beyond this.",
+      "step": {
+        "signup": "Signed up",
+        "profile_saved": "Saved a profile",
+        "adapt_generated": "Generated a platform profile",
+        "proposal_generated": "Generated a proposal",
+        "checkout_started": "Started checkout"
+      }
+    }
   },
   "feedback": {
     "title": "Share your feedback",

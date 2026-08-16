@@ -9,6 +9,7 @@ import { portfolioUpdateSchema } from "@/lib/validation/schemas/portfolio";
 import { buildProjectGroups, carryProjectGroupHidden } from "@/lib/portfolio/media";
 import type { ProfileProject } from "@/lib/validation/schemas/profile";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { trackEvent } from "@/lib/analytics/track";
 
 export const GET = withErrorHandler(async () => {
   const supabase = await createSupabaseServerClient();
@@ -77,6 +78,9 @@ export const PUT = withErrorHandler(async (req) => {
       })();
 
   if (error) throw error;
+
+  // Yalnız YAYINLAMA olayı ilgilendiriyor; slug/içerik düzenlemesi değil.
+  if (input.published === true) trackEvent("portfolio_published", { userId: user.id });
 
   return NextResponse.json({ portfolio: data });
 });

@@ -8,6 +8,7 @@ import { ArrowLeft, Bug, Lightbulb, MessageSquare } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isAdminEmail } from "@/lib/admin";
+import { FunnelPanel } from "@/components/admin/funnel-panel";
 import { FEEDBACK_CATEGORIES, type FeedbackCategory, type FeedbackRow } from "@/lib/validation/schemas/feedback";
 
 const CATEGORY_ICON: Record<FeedbackCategory, typeof Bug> = {
@@ -89,7 +90,11 @@ export default async function AdminPage({ searchParams }: PageProps) {
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
-        <p className="text-sm text-muted-foreground">{t("feedbackDesc")}</p>
+        {/* Aktivasyon hunisi — geri bildirimden ÖNCE: "ne oluyor" sorusu "ne dediler"den önce gelir. */}
+        <FunnelPanel />
+
+        <h2 className="mt-10 text-base font-semibold">{t("feedbackTitle")}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">{t("feedbackDesc")}</p>
 
         {/* Kategori filtresi */}
         <div className="mt-5 flex flex-wrap gap-2">
