@@ -1,190 +1,220 @@
 "use client";
 
-// Teklif ROI hesaplayıcı formu: tamamen istemcide, canlı hesap (AI/API yok).
-// "Connect'lerim geri dönüyor mu?" — teklif harcaması vs kazanılan iş geliri.
-// Tüm oranlar varsayılanla dolu ve DÜZENLENEBİLİR (sorumluluk notu).
-import { useCallback, useMemo, useState } from "react";
-import Link from "next/link";
+// Teklif ROI hesaplayıcı — Solar Pop tasarımı. Tamamen istemcide (AI/API/kredi yok).
+// Hesap çekirdeği DEĞİŞMEDİ: lib/roi/calculator.ts (vitest'li).
+// Sunum kararı: üç rakam "neyi değiştirdikleri" sırasına dizilir — ROI çarpanı
+// başat, kazanç başına maliyet ikincil, başabaş oranı eşik. Altta "kazanma oranın
+// oynasaydı" tablosu, çünkü tek hareket ettirilebilir kaldıraç o.
+// Para birimi USD sabit (GLOBAL-ONLY geçişi — TRY seçici kaldırıldı).
+import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { TrendingUp, Info, ArrowRight, AlertTriangle } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import {
-  computeRoi, ROI_DEFAULTS, CONNECTS_PER_PROPOSAL_PRESETS,
-} from "@/lib/roi/calculator";
-import { parseLocaleNumber } from "@/lib/format/parse-number";
+import { AlertTriangle, Asterisk, Check } from "lucide-react";
+import { Card, CardHead, BigNumber, ShareMark, TwoCol, StickyResult } from "@/components/solar/primitives";
+import { NumField, SliderField } from "@/components/solar/fields";
+import { computeRoi, ROI_DEFAULTS } from "@/lib/roi/calculator";
 
-type Currency = "USD" | "TRY";
-const WIN_RATE_PRESETS = [2, 5, 8, 12] as const;
+/** Bu eşiğin üstünde teklif harcaması kendini rahat çıkarıyor sayılır. */
+const HEALTHY_ROI = 10;
 
-export function RoiCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+const numOf = (v: string) => {
+  const n = parseFloat(v.replace(",", "."));
+  return Number.isFinite(n) ? n : 0;
+};
+
+export function RoiCalculator() {
   const t = useTranslations("roi");
+  const ts = useTranslations("tools.shared");
   const locale = useLocale();
-  const numOr = useCallback((v: string, fallback = 0) => parseLocaleNumber(v, locale, fallback), [locale]);
 
-  const [currency, setCurrency] = useState<Currency>("USD");
   const [proposals, setProposals] = useState(String(ROI_DEFAULTS.proposalsSent));
   const [connectsPer, setConnectsPer] = useState(String(ROI_DEFAULTS.connectsPerProposal));
   const [costPer, setCostPer] = useState(String(ROI_DEFAULTS.costPerConnect));
-  const [winRate, setWinRate] = useState(String(ROI_DEFAULTS.winRatePct));
+  const [winRate, setWinRate] = useState<number>(ROI_DEFAULTS.winRatePct);
   const [projectValue, setProjectValue] = useState(String(ROI_DEFAULTS.avgProjectValue));
 
   const result = useMemo(() => computeRoi({
-    proposalsSent: numOr(proposals),
-    connectsPerProposal: numOr(connectsPer),
-    costPerConnect: numOr(costPer),
-    winRatePct: numOr(winRate),
-    avgProjectValue: numOr(projectValue),
-  }), [proposals, connectsPer, costPer, winRate, projectValue, numOr]);
+    proposalsSent: numOf(proposals),
+    connectsPerProposal: numOf(connectsPer),
+    costPerConnect: numOf(costPer),
+    winRatePct: winRate,
+    avgProjectValue: numOf(projectValue),
+  }), [proposals, connectsPer, costPer, winRate, projectValue]);
 
-  const fmt = useMemo(
-    () => new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 0 }),
-    [locale, currency],
+  const money = useMemo(
+    () => new Intl.NumberFormat(locale, { style: "currency", currency: "USD", maximumFractionDigits: 0 }),
+    [locale],
   );
-  const fmt2 = useMemo(
-    () => new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 2 }),
-    [locale, currency],
+  const money2 = useMemo(
+    () => new Intl.NumberFormat(locale, { style: "currency", currency: "USD", maximumFractionDigits: 2 }),
+    [locale],
   );
-  const numFmt = useMemo(() => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }), [locale]);
+  const dec = useMemo(() => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }), [locale]);
 
-  const inputCls = "h-9 text-sm";
-  const labelCls = "text-xs font-semibold text-muted-foreground";
-  const chipCls = (active: boolean) =>
-    `rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
-      active
-        ? "border-[#00F0FF]/50 bg-[#00F0FF]/10 text-[#00F0FF]"
-        : "border-border text-muted-foreground hover:text-foreground"
-    }`;
+  const healthy = result.feasible && result.roiMultiple >= HEALTHY_ROI;
+  // Kazanma oranındaki BİR puanın aylık değeri — hacim kısmaktan daha etkili.
+  const pointValue = numOf(proposals) * 0.01 * numOf(projectValue);
 
-  const profitable = result.feasible && result.netGain >= 0;
+  /* ── Girdiler ─────────────────────────────────────────────────────── */
+  const inputs = (
+    <Card>
+      <CardHead title={t("sp.inputsTitle")} />
+      <NumField id="roi-proposals" label={t("proposalsSent")} value={proposals} onChange={setProposals} />
+      <div className="grid min-w-0 grid-cols-2 gap-3.5">
+        <NumField
+          id="roi-connects"
+          label={t("connectsPerProposal")}
+          hint={t("connectsHint")}
+          value={connectsPer}
+          onChange={setConnectsPer}
+        />
+        <NumField
+          id="roi-cost"
+          label={t("costPerConnect")}
+          hint={t("costHint")}
+          prefix="$"
+          step={0.05}
+          value={costPer}
+          onChange={setCostPer}
+        />
+      </div>
+      <SliderField
+        id="roi-win"
+        label={t("winRate")}
+        hint={t("winRateHint")}
+        min={0}
+        max={40}
+        step={0.5}
+        value={winRate}
+        suffix="%"
+        onChange={setWinRate}
+      />
+      <NumField
+        id="roi-value"
+        label={t("avgProjectValue")}
+        prefix="$"
+        step={100}
+        value={projectValue}
+        onChange={setProjectValue}
+      />
+    </Card>
+  );
+
+  /* ── Sonuç ────────────────────────────────────────────────────────── */
+  const output = !result.feasible ? (
+    <Card>
+      <CardHead title={t("sp.resultTitle")} />
+      <p className="sp-body inline-flex items-start gap-2.5">
+        <AlertTriangle size={18} style={{ color: "var(--flame-600)", flexShrink: 0, marginTop: 2 }} />
+        {t("infeasible")}
+      </p>
+    </Card>
+  ) : (
+    <>
+      <Card>
+        <CardHead title={t("sp.resultTitle")} right={<span aria-live="polite" className="sp-label">{ts("live")}</span>} />
+
+        <div className="sp-three">
+          <BigNumber
+            primary
+            label={t("sp.roiLabel")}
+            value={`${dec.format(result.roiMultiple)}×`}
+            sub={t("sp.roiSub", { spend: money2.format(result.totalConnectCost), won: money.format(result.revenue) })}
+          />
+          <BigNumber
+            label={t("sp.costPerWin")}
+            value={result.wins > 0 ? money2.format(result.costPerWin) : "—"}
+            sub={t("sp.winsSub", { wins: dec.format(result.wins) })}
+          />
+          <BigNumber
+            label={t("sp.breakEven")}
+            value={`${dec.format(result.breakEvenWinRatePct)}%`}
+            sub={t("sp.breakEvenSub")}
+          />
+        </div>
+
+        <div
+          className="grid gap-2.5 rounded-[var(--radius-sp-lg)] p-5"
+          style={{ background: healthy ? "var(--surface-card-alt)" : "var(--amber-200)" }}
+        >
+          <span className="sp-sub inline-flex items-center gap-2.5">
+            {healthy ? <Check size={16} /> : <Asterisk size={16} />}
+            {healthy ? t("sp.verdictGood") : t("sp.verdictThin")}
+          </span>
+          <span className="sp-body">
+            {t("sp.verdictBody", {
+              position: winRate >= result.breakEvenWinRatePct
+                ? t("sp.above", { times: dec.format(winRate / Math.max(0.01, result.breakEvenWinRatePct)) })
+                : t("sp.below"),
+              point: money.format(pointValue),
+            })}
+          </span>
+        </div>
+
+        <ShareMark href="/roi" note={ts("shareMark")} />
+      </Card>
+
+      <Card tone="tint">
+        <CardHead title={t("sp.scenarioTitle")} />
+        <div className="grid gap-[9px]">
+          {[winRate / 2, winRate, winRate * 1.5, winRate * 2].map((w, i) => {
+            const revenue = numOf(proposals) * (w / 100) * numOf(projectValue);
+            const multiple = result.totalConnectCost > 0 ? revenue / result.totalConnectCost : 0;
+            const now = i === 1;
+            return (
+              <div
+                key={i}
+                className="grid items-center gap-3 rounded-[var(--radius-sp-md)] px-[15px] py-[13px]"
+                style={{
+                  gridTemplateColumns: "74px 1fr 92px",
+                  background: now ? "var(--surface-inverse)" : "var(--surface-page)",
+                }}
+              >
+                <span
+                  className="tabular-nums"
+                  style={{
+                    font: "var(--fw-black) var(--fs-body)/1 var(--font-display)",
+                    color: now ? "var(--white)" : "var(--text-strong)",
+                  }}
+                >
+                  {dec.format(w)}%
+                </span>
+                <span
+                  className="h-[9px] overflow-hidden rounded-[var(--radius-pill)]"
+                  style={{ background: now ? "rgba(255,255,255,.28)" : "var(--cream-300)" }}
+                >
+                  <span
+                    className="block h-full"
+                    style={{
+                      width: `${Math.min(100, multiple * 3)}%`,
+                      background: now ? "var(--white)" : "var(--pink-500)",
+                    }}
+                  />
+                </span>
+                <span
+                  className="text-right tabular-nums"
+                  style={{
+                    font: "var(--fw-black) var(--fs-body)/1 var(--font-display)",
+                    color: now ? "var(--white)" : "var(--text-strong)",
+                  }}
+                >
+                  {money.format(revenue)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <p className="sp-body sp-body--small">{t("sp.scenarioNote")}</p>
+        <p className="sp-body sp-body--small">{t("disclaimer")}</p>
+      </Card>
+    </>
+  );
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      {/* Girdi formu */}
-      <div className="rounded-2xl border border-border bg-card p-5 space-y-5">
-        {/* Teklif sayısı + para birimi */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <label className={labelCls} htmlFor="roi-proposals">{t("proposalsSent")}</label>
-            <Input id="roi-proposals" inputMode="decimal" value={proposals} onChange={(e) => setProposals(e.target.value)} className={inputCls} />
-          </div>
-          <div className="space-y-1.5">
-            <p className={labelCls}>{t("currency")}</p>
-            <div className="flex gap-2">
-              {(["USD", "TRY"] as Currency[]).map((c) => (
-                <button key={c} type="button" aria-pressed={currency === c} onClick={() => setCurrency(c)} className={chipCls(currency === c)}>{c}</button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Teklif başına Connect */}
-        <div className="space-y-2">
-          <label className={labelCls} htmlFor="roi-connects">{t("connectsPerProposal")}</label>
-          <div className="flex flex-wrap items-center gap-2">
-            {CONNECTS_PER_PROPOSAL_PRESETS.map((c) => (
-              <button key={c} type="button" aria-pressed={numOr(connectsPer) === c} onClick={() => setConnectsPer(String(c))} className={chipCls(numOr(connectsPer) === c)}>{c}</button>
-            ))}
-            <Input id="roi-connects" inputMode="decimal" value={connectsPer} onChange={(e) => setConnectsPer(e.target.value)} className={`${inputCls} w-20`} />
-          </div>
-          <p className="text-xs text-muted-foreground/70">{t("connectsHint")}</p>
-        </div>
-
-        {/* Connect maliyeti */}
-        <div className="space-y-1.5">
-          <label className={labelCls} htmlFor="roi-cost">{t("costPerConnect")}</label>
-          <Input id="roi-cost" inputMode="decimal" value={costPer} onChange={(e) => setCostPer(e.target.value)} className={`${inputCls} w-28`} />
-          <p className="text-xs text-muted-foreground/70">{t("costHint")}</p>
-        </div>
-
-        {/* Kazanma oranı */}
-        <div className="space-y-2">
-          <label className={labelCls} htmlFor="roi-win">{t("winRate")}</label>
-          <div className="flex flex-wrap items-center gap-2">
-            {WIN_RATE_PRESETS.map((p) => (
-              <button key={p} type="button" aria-pressed={numOr(winRate) === p} onClick={() => setWinRate(String(p))} className={chipCls(numOr(winRate) === p)}>%{p}</button>
-            ))}
-            <Input id="roi-win" inputMode="decimal" value={winRate} onChange={(e) => setWinRate(e.target.value)} className={`${inputCls} w-20`} />
-          </div>
-          <p className="text-xs text-muted-foreground/70">{t("winRateHint")}</p>
-        </div>
-
-        {/* Ortalama proje değeri */}
-        <div className="space-y-1.5">
-          <label className={labelCls} htmlFor="roi-value">{t("avgProjectValue")}</label>
-          <Input id="roi-value" inputMode="decimal" value={projectValue} onChange={(e) => setProjectValue(e.target.value)} className={`${inputCls} w-32`} />
-        </div>
-      </div>
-
-      {/* Sonuç */}
-      <div className="space-y-4">
-        <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/5 p-5 space-y-3">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#00F0FF] flex items-center gap-1.5">
-            <TrendingUp className="h-3.5 w-3.5" />{t("resultTitle")}
-          </p>
-
-          {result.feasible ? (
-            <>
-              <div>
-                <p className={`text-3xl font-extrabold tabular-nums ${profitable ? "text-[#00F0FF]" : "text-red-500 dark:text-red-400"}`}>
-                  {numFmt.format(result.roiMultiple)}×
-                </p>
-                <p className="text-sm font-semibold text-muted-foreground tabular-nums mt-0.5">
-                  {t("roiMultipleLabel")} · {t("rows.netGain")} {fmt.format(result.netGain)}
-                </p>
-              </div>
-
-              <div className="space-y-1.5 pt-2 border-t border-[#00F0FF]/15 text-xs tabular-nums">
-                {[
-                  { label: t("rows.connectsSpent"), value: numFmt.format(result.connectsSpent) },
-                  { label: t("rows.connectCost"), value: fmt2.format(result.totalConnectCost) },
-                  { label: t("rows.wins"), value: numFmt.format(result.wins) },
-                  { label: t("rows.revenue"), value: fmt.format(result.revenue) },
-                  { label: t("rows.costPerWin"), value: result.wins > 0 ? fmt2.format(result.costPerWin) : "—" },
-                  { label: t("rows.revenuePerConnect"), value: fmt2.format(result.revenuePerConnect) },
-                ].map(({ label, value }) => (
-                  <div key={label} className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{label}</span>
-                    <span className="font-semibold">{value}</span>
-                  </div>
-                ))}
-              </div>
-
-              <p className={`text-xs pt-1 leading-relaxed ${profitable ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`}>
-                {profitable
-                  ? t("profit", { multiple: numFmt.format(result.roiMultiple) })
-                  : t("loss")}
-              </p>
-              <p className="text-xs text-muted-foreground pt-0.5">
-                {t("breakEven", { rate: numFmt.format(result.breakEvenWinRatePct) })}
-              </p>
-            </>
-          ) : (
-            <p className="flex items-start gap-2 text-sm text-amber-600 dark:text-amber-400">
-              <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
-              {t("infeasible")}
-            </p>
-          )}
-        </div>
-
-        <p className="flex items-start gap-2 text-xs text-muted-foreground/70 leading-relaxed">
-          <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-          {t("disclaimer")}
-        </p>
-
-        {/* Bağlamsal signup köprüsü (rate deseni) — yalnız kayıtsıza. */}
-        {!isLoggedIn && (
-          <div className="rounded-2xl border border-violet-500/20 bg-violet-500/[0.04] p-4 space-y-2">
-            <p className="text-sm font-semibold">{t("ctaTitle")}</p>
-            <p className="text-xs text-muted-foreground leading-relaxed">{t("ctaBody")}</p>
-            <Link
-              href="/signup"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm px-4 py-2 transition-colors"
-            >
-              {t("ctaButton")}<ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
+    <>
+      <TwoCol inputs={inputs} output={output} />
+      {result.feasible ? (
+        <StickyResult label={t("sp.roiLabel")} value={`${dec.format(result.roiMultiple)}×`} cta={ts("fullResult")} />
+      ) : null}
+    </>
   );
 }

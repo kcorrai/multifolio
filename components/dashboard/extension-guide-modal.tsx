@@ -89,8 +89,8 @@ function DemoMedia({ caption, buttonLabel, host }: { caption: string; buttonLabe
 
           {/* Yüzen "içe aktar" butonu — dikkat çekmek için pulse + halka + imleç */}
           <div className="absolute bottom-3 right-3">
-            <span className="absolute inset-0 rounded-lg bg-[#00F0FF]/50 animate-ping motion-reduce:hidden" />
-            <span className="relative inline-flex items-center gap-1.5 rounded-lg bg-[#00F0FF] px-2.5 py-1.5 text-xs font-bold text-[#031014] shadow-lg">
+            <span className="absolute inset-0 rounded-lg bg-[#FA531C]/50 animate-ping motion-reduce:hidden" />
+            <span className="relative inline-flex items-center gap-1.5 rounded-lg bg-[#FA531C] px-2.5 py-1.5 text-xs font-bold text-[#031014] shadow-lg">
               <Puzzle className="h-3.5 w-3.5" />{buttonLabel}
             </span>
             <MousePointer2 className="absolute -bottom-2 -right-1 h-4 w-4 text-slate-900 drop-shadow motion-safe:animate-bounce" />
@@ -126,7 +126,7 @@ export function ExtensionGuideModal({ platform = "upwork", onClose }: { platform
         {/* Header */}
         <div className="sticky top-0 flex items-center justify-between gap-3 border-b border-border bg-background/95 backdrop-blur px-5 py-4">
           <div className="flex items-center gap-2 min-w-0">
-            <Puzzle className="h-4 w-4 shrink-0 text-[#00F0FF]" />
+            <Puzzle className="h-4 w-4 shrink-0 text-[#FA531C]" />
             <div className="min-w-0">
               <h2 id="ext-guide-title" className="font-semibold text-sm truncate">{t("title")}</h2>
               <p className="text-xs text-muted-foreground truncate">{t("subtitle")}</p>
@@ -146,7 +146,7 @@ export function ExtensionGuideModal({ platform = "upwork", onClose }: { platform
               const Icon = STEP_ICONS[i];
               return (
                 <li key={i} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00F0FF]/10 text-[#00F0FF]">
+                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FA531C]/10 text-[#FA531C]">
                     <Icon className="h-4 w-4" />
                   </span>
                   <div className="min-w-0">

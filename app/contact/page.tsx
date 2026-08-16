@@ -19,22 +19,22 @@ export default async function ContactPage() {
   const email = t("email");
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
+    <div className="sp-page">
       <SiteHeader isLoggedIn={!!user} />
 
       <section className="mx-auto max-w-3xl px-8 pt-20 pb-24 space-y-8">
         <div className="space-y-3">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("eyebrow")}</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FA531C]">{t("eyebrow")}</p>
           <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight">{t("title")}</h1>
-          <p className="text-lg text-slate-600 dark:text-[#94A3B8] leading-relaxed font-medium">{t("intro")}</p>
+          <p className="text-lg text-slate-600 dark:text-[#6B4A3C] leading-relaxed font-medium">{t("intro")}</p>
         </div>
 
         <a
           href={`mailto:${email}`}
-          className="flex items-center gap-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-5 py-4 hover:border-[#00F0FF]/40 transition-colors"
+          className="flex items-center gap-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] px-5 py-4 hover:border-[#FA531C]/40 transition-colors"
         >
-          <span className="h-11 w-11 shrink-0 rounded-xl bg-[#00F0FF]/10 flex items-center justify-center">
-            <Mail className="h-5 w-5 text-[#00F0FF]" />
+          <span className="h-11 w-11 shrink-0 rounded-xl bg-[#FA531C]/10 flex items-center justify-center">
+            <Mail className="h-5 w-5 text-[#FA531C]" />
           </span>
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-white/40">{t("emailLabel")}</p>
@@ -42,7 +42,7 @@ export default async function ContactPage() {
           </div>
         </a>
 
-        <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed">{t("note")}</p>
+        <p className="text-sm text-slate-500 dark:text-[#6B4A3C] leading-relaxed">{t("note")}</p>
       </section>
 
       <SiteFooter />

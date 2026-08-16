@@ -10,7 +10,7 @@ import { assessProfileStrength, type ProfileStrengthInput, type ProfileStrength 
 
 const BAND_STYLE: Record<PS["band"], string> = {
   strong: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25",
-  good: "bg-[#00F0FF]/10 text-[#00F0FF] border-[#00F0FF]/25",
+  good: "bg-[#FA531C]/10 text-[#FA531C] border-[#FA531C]/25",
   fair: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25",
   weak: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/25",
 };
@@ -31,7 +31,7 @@ export function ProfileStrength({ headline, summary, skills }: ProfileStrengthIn
       </div>
       <div className="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all ${r.band === "weak" ? "bg-red-500" : r.band === "fair" ? "bg-amber-500" : r.band === "good" ? "bg-[#00F0FF]" : "bg-emerald-500"}`}
+          className={`h-full rounded-full transition-all ${r.band === "weak" ? "bg-red-500" : r.band === "fair" ? "bg-amber-500" : r.band === "good" ? "bg-[#FA531C]" : "bg-emerald-500"}`}
           style={{ width: `${r.score}%` }}
         />
       </div>

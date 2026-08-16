@@ -33,7 +33,7 @@ export function JobTypeSelect({
             onClick={() => toggle(jt)}
             className={`rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors cursor-pointer ${
               on
-                ? "border-[#00F0FF]/50 bg-[#00F0FF]/15 text-foreground"
+                ? "border-[#FA531C]/50 bg-[#FA531C]/15 text-foreground"
                 : "border-border text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -54,7 +54,7 @@ export function JobTypeBadge({ jobType }: { jobType: string | null }) {
     <span
       className={`inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-semibold ${
         accent
-          ? "bg-[#00F0FF]/12 text-[#00A9B5] dark:text-[#00F0FF]"
+          ? "bg-[#FA531C]/12 text-[#00A9B5] dark:text-[#FA531C]"
           : "bg-muted text-muted-foreground"
       }`}
     >

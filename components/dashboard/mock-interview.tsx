@@ -42,8 +42,8 @@ const DIFFICULTIES: MockDifficulty[] = ["junior", "mid", "senior"];
 const COUNT_OPTIONS = [4, 6, 8];
 
 const CATEGORY_TINT: Record<MockCategory, string> = {
-  behavioral: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
-  technical: "bg-[#00F0FF]/10 text-[#00F0FF]",
+  behavioral: "bg-pink-500/10 text-pink-600 dark:text-pink-400",
+  technical: "bg-[#FA531C]/10 text-[#FA531C]",
   role_fit: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   motivation: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
 };
@@ -281,7 +281,7 @@ export function MockInterview({ profileSaved, jobs }: { profileSaved: boolean; j
   return (
     <div className="space-y-5 max-w-3xl">
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#FA531C]/80">{t("eyebrow")}</p>
         <h2 className="text-2xl font-bold tracking-tight mt-1 flex items-center gap-2">
           <MessageSquare className="h-6 w-6 text-amber-500" />{t("title")}
         </h2>
@@ -324,7 +324,7 @@ export function MockInterview({ profileSaved, jobs }: { profileSaved: boolean; j
                   return (
                     <button
                       key={d} type="button" onClick={() => setDifficulty(d)} aria-pressed={on}
-                      className={`rounded-xl border px-3 py-2 text-left transition-colors ${on ? "border-[#00F0FF]/40 bg-[#00F0FF]/10" : "border-border hover:border-foreground/20"}`}
+                      className={`rounded-xl border px-3 py-2 text-left transition-colors ${on ? "border-[#FA531C]/40 bg-[#FA531C]/10" : "border-border hover:border-foreground/20"}`}
                     >
                       <p className="text-xs font-bold">{t(`difficulty.${d}`)}</p>
                       <p className="text-[11px] text-muted-foreground mt-0.5">{t(`difficulty.${d}Desc`)}</p>
@@ -358,7 +358,7 @@ export function MockInterview({ profileSaved, jobs }: { profileSaved: boolean; j
                   return (
                     <button
                       key={c} type="button" onClick={() => toggleCategory(c)} aria-pressed={on}
-                      className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${on ? "border-[#00F0FF]/40 bg-[#00F0FF]/10 text-foreground" : "border-border text-muted-foreground hover:border-foreground/20"}`}
+                      className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${on ? "border-[#FA531C]/40 bg-[#FA531C]/10 text-foreground" : "border-border text-muted-foreground hover:border-foreground/20"}`}
                     >
                       {t(`category.${c}`)}
                     </button>
@@ -370,7 +370,7 @@ export function MockInterview({ profileSaved, jobs }: { profileSaved: boolean; j
 
             {/* Kronometre */}
             <label className="flex items-center gap-2 text-xs font-medium cursor-pointer">
-              <input type="checkbox" checked={timerEnabled} onChange={(e) => setTimerEnabled(e.target.checked)} className="h-4 w-4 rounded border-border accent-[#00F0FF]" />
+              <input type="checkbox" checked={timerEnabled} onChange={(e) => setTimerEnabled(e.target.checked)} className="h-4 w-4 rounded border-border accent-[#FA531C]" />
               {t("timerLabel")}
             </label>
 
@@ -407,7 +407,7 @@ export function MockInterview({ profileSaved, jobs }: { profileSaved: boolean; j
                 </div>
               </div>
               <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                <div className="h-full rounded-full bg-[#00F0FF] transition-all" style={{ width: `${(answeredCount / questions.length) * 100}%` }} />
+                <div className="h-full rounded-full bg-[#FA531C] transition-all" style={{ width: `${(answeredCount / questions.length) * 100}%` }} />
               </div>
             </div>
 
@@ -524,15 +524,15 @@ function FeedbackView({
           {feedback.improvements.map((s, k) => <p key={k} className="text-[11px] text-muted-foreground">· {s}</p>)}
         </div>
       )}
-      <div className="rounded-xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] p-3 space-y-1">
-        <p className="text-[11px] font-semibold text-[#00F0FF]">{t("modelAnswer")}</p>
+      <div className="rounded-xl border border-[#FA531C]/20 bg-[#FA531C]/[0.04] p-3 space-y-1">
+        <p className="text-[11px] font-semibold text-[#FA531C]">{t("modelAnswer")}</p>
         <p className="text-xs leading-relaxed whitespace-pre-wrap">{feedback.modelAnswer}</p>
       </div>
 
       {/* Derinleştirici takip sorusu (varsa) */}
       {feedback.followUp && !followFeedback && (
-        <div className="rounded-xl border border-violet-500/25 bg-violet-500/[0.05] p-3 space-y-2">
-          <p className="text-[11px] font-semibold text-violet-600 dark:text-violet-400 flex items-center gap-1"><CornerDownRight className="h-3 w-3" />{t("followUpTitle")}</p>
+        <div className="rounded-xl border border-pink-500/25 bg-pink-500/[0.05] p-3 space-y-2">
+          <p className="text-[11px] font-semibold text-pink-600 dark:text-pink-400 flex items-center gap-1"><CornerDownRight className="h-3 w-3" />{t("followUpTitle")}</p>
           <p className="text-xs">{feedback.followUp}</p>
           <p className="text-[11px] text-muted-foreground">{t("followUpHint")}</p>
           <Textarea value={followAnswer} onChange={(e) => onFollowChange(e.target.value)} placeholder={t("answerPlaceholder")} rows={3} className="resize-none text-sm" />
@@ -548,8 +548,8 @@ function FeedbackView({
         </div>
       )}
       {followFeedback && (
-        <div className="rounded-xl border border-violet-500/25 bg-violet-500/[0.05] p-3 space-y-1">
-          <p className="text-[11px] font-semibold text-violet-600 dark:text-violet-400 flex items-center gap-1"><CornerDownRight className="h-3 w-3" />{t("followUpTitle")}</p>
+        <div className="rounded-xl border border-pink-500/25 bg-pink-500/[0.05] p-3 space-y-1">
+          <p className="text-[11px] font-semibold text-pink-600 dark:text-pink-400 flex items-center gap-1"><CornerDownRight className="h-3 w-3" />{t("followUpTitle")}</p>
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-muted-foreground">{t("score")}</span>
             <span className={`text-sm font-extrabold tabular-nums ${scoreColor(followFeedback.score)}`}>{followFeedback.score}/100</span>

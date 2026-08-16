@@ -1,114 +1,122 @@
 "use client";
 
-// Başlık optimize edici formu: tamamen istemcide, canlı puan (AI/API yok).
-// Profil başlığını kriterlere göre 0-100 puanlar + kontrol listesi + klişe uyarıları
-// + formül ipucu + signup CTA (analyze/proposal-checker deseni).
+// Başlık optimize edici — Solar Pop tasarımı. Tamamen istemcide (AI/API/kredi yok).
+// Puan çekirdeği DEĞİŞMEDİ: lib/headline/scorer.ts (ağırlıklı 4 eksen).
+// Tasarım kararı: eksenler DOLU/BOŞ çubuk olarak gösterilir — motor boolean üretir,
+// ara ton uydurmak sahte hassasiyet olurdu; kaç puan değdiği etiketle söylenir.
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Check, X, Info, ArrowRight, Sparkles, Wand2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Card, CardHead, ScoreBlock, Bar, EmptyStance, ShareMark, TwoCol } from "@/components/solar/primitives";
+import { TextField } from "@/components/solar/fields";
 import { scoreHeadline, type HeadlineCheckId } from "@/lib/headline/scorer";
 
-const CHECK_ORDER: HeadlineCheckId[] = ["length", "role", "outcome", "noBuzzwords"];
+const CHECK_ORDER: HeadlineCheckId[] = ["role", "outcome", "length", "noBuzzwords"];
+const REWRITES = ["linkedin", "upwork", "fiverr"] as const;
+const REWRITE_BG: Record<(typeof REWRITES)[number], string> = {
+  linkedin: "var(--surface-card-peach)",
+  upwork: "var(--surface-card-alt)",
+  fiverr: "var(--amber-200)",
+};
 
-export function HeadlineOptimizer({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+export function HeadlineOptimizer() {
   const t = useTranslations("headlineOptimizer");
+  const ts = useTranslations("tools.shared");
   const [text, setText] = useState("");
+
   const report = useMemo(() => scoreHeadline(text), [text]);
   const has = text.trim().length > 0;
 
-  const color = report.verdict === "strong" ? "#22c55e" : report.verdict === "ok" ? "#00F0FF" : "#f59e0b";
-
-  return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      {/* Girdi */}
-      <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
-        <label htmlFor="headline" className="text-xs font-semibold text-muted-foreground">{t("inputLabel")}</label>
-        <Input
-          id="headline"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder={t("placeholder")}
-          className="h-11 text-base"
-        />
-        <p className="text-xs text-muted-foreground/70">{t("charCount", { count: report.charCount })}</p>
-
-        {/* Formül ipucu */}
-        <div className="rounded-xl border border-violet-500/20 bg-violet-500/[0.04] p-3 flex items-start gap-2">
-          <Wand2 className="h-4 w-4 text-violet-400 shrink-0 mt-0.5" />
-          <p className="text-xs text-muted-foreground leading-relaxed">{t("formula")}</p>
-        </div>
+  const inputs = (
+    <Card>
+      <TextField
+        id="headline"
+        label={t("inputLabel")}
+        hint={t("sp.inputHint")}
+        value={text}
+        onChange={setText}
+        placeholder={t("placeholder")}
+      />
+      <span className="sp-label" style={{ letterSpacing: ".06em", color: report.charCount > 90 ? "var(--pink-600)" : "var(--text-muted)" }}>
+        {t("sp.charNote", { count: report.charCount })}
+      </span>
+      <div className="grid gap-2.5 rounded-[var(--radius-sp-md)] p-4" style={{ background: "var(--surface-page)" }}>
+        <span className="sp-label" style={{ color: "var(--text-strong)" }}>{t("sp.formulaTitle")}</span>
+        <span className="sp-body sp-body--small">{t("formula")}</span>
       </div>
-
-      {/* Sonuç */}
-      <div className="space-y-4">
-        <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/5 p-5 space-y-4">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#00F0FF] flex items-center gap-1.5">
-            <Sparkles className="h-3.5 w-3.5" />{t("resultTitle")}
-          </p>
-
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-extrabold tabular-nums" style={{ color: has ? color : undefined }}>
-              {has ? report.score : "—"}
-            </span>
-            <span className="text-sm text-muted-foreground">/ 100</span>
-            {has && (
-              <span className="ml-auto text-xs font-bold uppercase tracking-wide" style={{ color }}>
-                {t(`verdict.${report.verdict}`)}
-              </span>
-            )}
-          </div>
-
-          <div className="space-y-2 pt-1 border-t border-[#00F0FF]/15">
-            {CHECK_ORDER.map((id) => {
-              const c = report.checks.find((x) => x.id === id)!;
-              const ok = has && c.passed;
-              return (
-                <div key={id} className="flex items-start gap-2 text-xs">
-                  <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${
-                    ok ? "bg-emerald-500/15 text-emerald-500 dark:text-emerald-400" : "bg-muted text-muted-foreground/50"
-                  }`}>
-                    {ok ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-                  </span>
-                  <span className={ok ? "text-foreground" : "text-muted-foreground"}>{t(`checks.${id}`)}</span>
-                </div>
-              );
-            })}
-          </div>
-
-          {report.buzzwordsFound.length > 0 && (
-            <div className="pt-2 border-t border-[#00F0FF]/15 space-y-1.5">
-              <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">{t("buzzwordLabel")}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {report.buzzwordsFound.map((b) => (
-                  <span key={b} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300">
-                    {b}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <p className="flex items-start gap-2 text-xs text-muted-foreground/70 leading-relaxed">
-          <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-          {t("disclaimer")}
-        </p>
-
-        {!isLoggedIn && (
-          <div className="rounded-2xl border border-violet-500/20 bg-violet-500/[0.04] p-4 space-y-2">
-            <p className="text-sm font-semibold">{t("ctaTitle")}</p>
-            <p className="text-xs text-muted-foreground leading-relaxed">{t("ctaBody")}</p>
-            <Link
-              href="/signup"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm px-4 py-2 transition-colors"
-            >
-              {t("ctaButton")}<ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
+    </Card>
   );
+
+  const output = has ? (
+    <>
+      <Card>
+        <ScoreBlock
+          value={report.score}
+          words={[t("sp.words.strong"), t("sp.words.average"), t("sp.words.weak")]}
+          scale={t("sp.scale")}
+          scaleNote={ts("scaleNote")}
+        />
+
+        <div className="grid gap-3.5">
+          {CHECK_ORDER.map((id) => {
+            const c = report.checks.find((x) => x.id === id);
+            const passed = !!c?.passed;
+            return (
+              <div key={id} className="grid gap-[7px]">
+                <Bar
+                  label={t(`sp.axes.${id}.label`)}
+                  pct={passed ? 100 : 0}
+                  ink={passed ? "var(--pink-500)" : "var(--flame-500)"}
+                />
+                <span className="sp-body" style={{ fontSize: "var(--fs-label)", lineHeight: 1.5 }}>
+                  {t(`sp.axes.${id}.note`)} · {t("sp.worth", { points: c?.weight ?? 0 })}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {report.buzzwordsFound.length > 0 ? (
+          <div className="grid gap-2.5 rounded-[var(--radius-sp-lg)] p-5" style={{ background: "var(--amber-200)" }}>
+            <span className="sp-sub">{t("buzzwordLabel")}</span>
+            <div className="flex flex-wrap gap-2">
+              {report.buzzwordsFound.map((b) => (
+                <span
+                  key={b}
+                  className="sp-label rounded-[var(--radius-pill)] px-3 py-1.5"
+                  style={{ background: "var(--white)", color: "var(--flame-600)" }}
+                >
+                  {b}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        <ShareMark href="/headline-optimizer" note={ts("shareMark")} />
+      </Card>
+
+      <Card tone="tint">
+        <CardHead title={t("sp.rewritesTitle")} />
+        <div className="grid gap-3">
+          {REWRITES.map((p) => (
+            <div key={p} className="grid gap-2.5 rounded-[var(--radius-sp-lg)] p-[18px]" style={{ background: REWRITE_BG[p] }}>
+              <span className="sp-label" style={{ color: "var(--ink-900)" }}>{t(`sp.rewrites.${p}.platform`)}</span>
+              <span style={{ font: "var(--fw-medium) var(--fs-body)/1.6 var(--font-body)", color: "var(--text-strong)" }}>
+                {t(`sp.rewrites.${p}.text`)}
+              </span>
+            </div>
+          ))}
+        </div>
+        {/* Dürüstlük notu: bunlar desenden gelir, kullanıcının geçmişinden değil. */}
+        <p className="sp-body sp-body--small">{t("sp.rewritesNote")}</p>
+        <p className="sp-body sp-body--small">{t("disclaimer")}</p>
+      </Card>
+    </>
+  ) : (
+    <Card>
+      <EmptyStance title={t("sp.emptyTitle")} body={t("sp.emptyBody")} />
+    </Card>
+  );
+
+  return <TwoCol inputs={inputs} output={output} />;
 }

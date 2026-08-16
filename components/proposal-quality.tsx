@@ -10,7 +10,7 @@ import type { ProposalLength } from "@/lib/proposal/style";
 
 const BAND_STYLE: Record<QualityBand, string> = {
   excellent: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25",
-  good: "bg-[#00F0FF]/10 text-[#00F0FF] border-[#00F0FF]/25",
+  good: "bg-[#FA531C]/10 text-[#FA531C] border-[#FA531C]/25",
   fair: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25",
   weak: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/25",
 };

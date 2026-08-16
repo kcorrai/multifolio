@@ -1,110 +1,115 @@
 "use client";
 
-// Teklif denetçisi formu: tamamen istemcide, canlı puan (AI/API yok). Kullanıcı
-// teklif metnini yapıştırır → kazanan-teklif kriterlerine göre 0-100 skor + kontrol
-// listesi + klişe uyarıları + signup CTA (analyze/earnings deseni).
+// Teklif denetçisi — Solar Pop tasarımı. Tamamen istemcide, canlı puan
+// (AI/API/kredi yok). Kontrol çekirdeği DEĞİŞMEDİ: lib/proposal-check/checker.ts.
+// Tasarım kararı: skor başlık, BULGULAR ürün. Ürüne köprü tek bir dürüst kutuda —
+// "bu yapıyı denetler, metni yazmaz".
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Check, X, Info, ArrowRight, ClipboardCheck } from "lucide-react";
+import {
+  Card, ScoreBlock, FindingsList, EmptyStance, ShareMark, TwoCol, type FindingItem,
+} from "@/components/solar/primitives";
+import { TextAreaField } from "@/components/solar/fields";
 import { checkProposal, type CheckId } from "@/lib/proposal-check/checker";
 
-const CHECK_ORDER: CheckId[] = ["length", "question", "numbers", "clientFocus", "noFiller"];
+const CHECK_ORDER: CheckId[] = ["clientFocus", "numbers", "question", "length", "noFiller"];
 
-export function ProposalChecker({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+/** Cevap almayı doğrudan kesenler → engelleyici; kalanı "iyileştir". */
+const BLOCKING: CheckId[] = ["numbers", "noFiller"];
+
+export function ProposalChecker() {
   const t = useTranslations("proposalChecker");
+  const ts = useTranslations("tools.shared");
   const [text, setText] = useState("");
+
   const report = useMemo(() => checkProposal(text), [text]);
   const has = text.trim().length > 0;
 
-  const ringColor = report.verdict === "strong" ? "#22c55e" : report.verdict === "ok" ? "#00F0FF" : "#f59e0b";
+  const findings: FindingItem[] = CHECK_ORDER.map((id) => {
+    const c = report.checks.find((x) => x.id === id);
+    const passed = !!c?.passed;
+    return {
+      level: passed ? "pass" : BLOCKING.includes(id) ? "fail" : "warn",
+      title: t(`sp.checks.${id}.${passed ? "pass" : "fail"}`),
+      body: t(`sp.checks.${id}.body`),
+    };
+  });
 
-  return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      {/* Girdi */}
-      <div className="rounded-2xl border border-border bg-card p-5 space-y-2">
-        <label htmlFor="proposal-text" className="text-xs font-semibold text-muted-foreground">{t("inputLabel")}</label>
-        <textarea
-          id="proposal-text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={14}
-          placeholder={t("placeholder")}
-          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm leading-relaxed resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40"
-        />
-        <p className="text-xs text-muted-foreground/70">{t("wordCount", { count: report.wordCount })}</p>
-      </div>
+  const counts = {
+    total: findings.length,
+    fails: findings.filter((f) => f.level === "fail").length,
+    warns: findings.filter((f) => f.level === "warn").length,
+  };
 
-      {/* Sonuç */}
-      <div className="space-y-4">
-        <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/5 p-5 space-y-4">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#00F0FF] flex items-center gap-1.5">
-            <ClipboardCheck className="h-3.5 w-3.5" />{t("resultTitle")}
-          </p>
-
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-extrabold tabular-nums" style={{ color: has ? ringColor : undefined }}>
-              {has ? report.score : "—"}
-            </span>
-            <span className="text-sm text-muted-foreground">/ 100</span>
-            {has && (
-              <span className="ml-auto text-xs font-bold uppercase tracking-wide" style={{ color: ringColor }}>
-                {t(`verdict.${report.verdict}`)}
-              </span>
-            )}
-          </div>
-
-          {/* Kontrol listesi */}
-          <div className="space-y-2 pt-1 border-t border-[#00F0FF]/15">
-            {CHECK_ORDER.map((id) => {
-              const c = report.checks.find((x) => x.id === id)!;
-              const ok = has && c.passed;
-              return (
-                <div key={id} className="flex items-start gap-2 text-xs">
-                  <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${
-                    ok ? "bg-emerald-500/15 text-emerald-500 dark:text-emerald-400" : "bg-muted text-muted-foreground/50"
-                  }`}>
-                    {ok ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-                  </span>
-                  <span className={ok ? "text-foreground" : "text-muted-foreground"}>{t(`checks.${id}`)}</span>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Klişe uyarıları */}
-          {report.fillerFound.length > 0 && (
-            <div className="pt-2 border-t border-[#00F0FF]/15 space-y-1.5">
-              <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">{t("fillerLabel")}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {report.fillerFound.map((f) => (
-                  <span key={f} className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300">
-                    {f}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <p className="flex items-start gap-2 text-xs text-muted-foreground/70 leading-relaxed">
-          <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-          {t("disclaimer")}
-        </p>
-
-        {!isLoggedIn && (
-          <div className="rounded-2xl border border-violet-500/20 bg-violet-500/[0.04] p-4 space-y-2">
-            <p className="text-sm font-semibold">{t("ctaTitle")}</p>
-            <p className="text-xs text-muted-foreground leading-relaxed">{t("ctaBody")}</p>
-            <Link
-              href="/signup"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm px-4 py-2 transition-colors"
-            >
-              {t("ctaButton")}<ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
+  const inputs = (
+    <Card>
+      <TextAreaField
+        id="proposal-text"
+        label={t("inputLabel")}
+        hint={t("sp.inputHint")}
+        rows={14}
+        value={text}
+        onChange={setText}
+        countLabel={has ? ts("wordCount", { count: report.wordCount }) : ts("nothingPasted")}
+        note={ts("staysInBrowser")}
+      />
+      <button type="button" className="sp-btn sp-btn--sm sp-btn--ghost w-fit" onClick={() => setText("")}>
+        {ts("clear")}
+      </button>
+    </Card>
   );
+
+  const output = has ? (
+    <Card>
+      <ScoreBlock
+        value={report.score}
+        words={[t("sp.words.strong"), t("sp.words.average"), t("sp.words.weak")]}
+        scale={t("sp.scale")}
+        scaleNote={ts("scaleNote")}
+      />
+
+      <FindingsList items={findings} title={t("sp.findingsTitle")} countLabel={ts("checksCount", counts)} />
+
+      {report.fillerFound.length > 0 ? (
+        <div className="grid gap-2.5 rounded-[var(--radius-sp-lg)] p-5" style={{ background: "var(--amber-200)" }}>
+          <span className="sp-sub">{t("sp.fillerTitle")}</span>
+          <div className="flex flex-wrap gap-2">
+            {report.fillerFound.map((f) => (
+              <span
+                key={f}
+                className="sp-label rounded-[var(--radius-pill)] px-3 py-1.5"
+                style={{ background: "var(--white)", color: "var(--flame-600)" }}
+              >
+                {f}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {/* Ürüne dürüst köprü: bu araç yapı denetler, Multifolio metni yazar. */}
+      <div className="grid gap-3 rounded-[var(--radius-sp-lg)] p-5" style={{ background: "var(--surface-card-peach)" }}>
+        <span className="sp-sub">{t("sp.upsellTitle")}</span>
+        <span className="sp-body">{t("sp.upsellBody")}</span>
+        <Link href="/signup?ref=proposal-checker" className="sp-btn sp-btn--sm w-fit">{t("ctaButton")}</Link>
+      </div>
+
+      <p className="sp-body sp-body--small">{t("disclaimer")}</p>
+      <ShareMark href="/proposal-checker" note={ts("shareMark")} />
+    </Card>
+  ) : (
+    <Card>
+      <EmptyStance
+        title={t("sp.emptyTitle")}
+        body={t("sp.emptyBody")}
+        items={[
+          t("sp.emptyList.opener"), t("sp.emptyList.number"), t("sp.emptyList.question"),
+          t("sp.emptyList.length"), t("sp.emptyList.filler"),
+        ]}
+      />
+    </Card>
+  );
+
+  return <TwoCol inputs={inputs} output={output} />;
 }

@@ -4,7 +4,7 @@
  * Bilinçli olarak globals.css'ten okunmaz (CSS değişkeni YOK): kompozisyon hem
  * tarayıcıdaki @remotion/player'da hem de ileride MP4 export'unda (sayfa CSS'i
  * olmayan ortam) birebir aynı render etmeli. Renkler landing'in literal
- * paletinden alınmıştır (app/page.tsx'teki #00F0FF / #12141C / #94A3B8 ailesi).
+ * paletinden alınmıştır (app/page.tsx'teki #FA531C / #12141C / #6B4A3C ailesi).
  */
 
 export interface Palette {
@@ -35,15 +35,15 @@ export const PALETTES: Record<"dark" | "light", Palette> = {
   dark: {
     canvas: "#0B0D14",
     surface: "#12141C",
-    raised: "#161923",
+    raised: "#FFFAF3",
     card: "#1A1E29",
     border: "rgba(255,255,255,0.09)",
     text: "#F1F5F9",
-    textMuted: "#94A3B8",
+    textMuted: "#6B4A3C",
     textSubtle: "rgba(255,255,255,0.38)",
-    accent: "#00F0FF",
-    accentText: "#00F0FF",
-    accentSoft: "rgba(0,240,255,0.12)",
+    accent: "#FA531C",
+    accentText: "#FA531C",
+    accentSoft: "rgba(250,83,28,0.12)",
     success: "#34D399",
     warning: "#FBBF24",
     shadow: "0 30px 80px rgba(0,0,0,0.55)",
@@ -56,9 +56,9 @@ export const PALETTES: Record<"dark" | "light", Palette> = {
     border: "#E2E8F0",
     text: "#0F172A",
     textMuted: "#64748B",
-    textSubtle: "#94A3B8",
+    textSubtle: "#6B4A3C",
     accent: "#00C8DB",
-    // Beyaz üstünde #00F0FF okunmaz → koyulaştırılmış cyan (WCAG AA gövde metni).
+    // Beyaz üstünde #FA531C okunmaz → koyulaştırılmış cyan (WCAG AA gövde metni).
     accentText: "#0E7C8C",
     accentSoft: "rgba(0,200,219,0.14)",
     success: "#059669",

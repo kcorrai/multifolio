@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/colors.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/typography.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/shape.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/motion.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/styles.css">
+<script src="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+html,body{margin:0;padding:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+h1,h2,h3,h4,p{margin:0}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--text-link-hover)}
+[data-d="script"]{white-space:nowrap}
+@keyframes dbIn{from{opacity:0}to{opacity:1}}
+@keyframes dbRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media (max-width:1080px){
+[data-d="two"]{grid-template-columns:1fr !important}
+[data-d="three"]{grid-template-columns:1fr !important}
+[data-d="quad"]{grid-template-columns:repeat(2,1fr) !important}
+}
+@media (max-width:900px){
+[data-d="shell"]{grid-template-columns:1fr !important}
+[data-d="side"]{position:static !important;height:auto !important}
+[data-d="sidenav"]{flex-direction:row !important;overflow-x:auto !important;gap:10px !important}
+[data-d="sidefoot"]{display:none !important}
+[data-d="pad"]{padding-left:18px !important;padding-right:18px !important}
+[data-d="h1"]{font-size:clamp(26px,7.5vw,36px) !important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+
+<div data-d="shell" style="min-height:100vh;background:var(--surface-page);display:grid;grid-template-columns:248px 1fr">
+
+  <aside data-d="side" style="position:sticky;top:0;height:100vh;padding:20px 16px;display:flex;flex-direction:column;gap:18px;background:var(--surface-card);border-right:var(--border-hairline)">
+    <a href="#" style="display:flex;align-items:center;gap:11px;padding:0 6px">
+      <span style="width:34px;height:34px;flex:0 0 auto;border-radius:var(--radius-pill);background:var(--action-primary);color:var(--white);display:inline-grid;place-items:center;font:var(--fw-black) 16px/1 var(--font-display)">m</span>
+      <span style="font:var(--fw-black) 18px/1 var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong)">multifolio</span>
+    </a>
+    {{ sideNav }}
+    {{ sideFoot }}
+  </aside>
+
+  <main style="min-width:0;display:grid;align-content:start">
+    {{ topBar }}
+    {{ screen }}
+  </main>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;screen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;jobs&quot;,&quot;pipeline&quot;,&quot;profile&quot;,&quot;platforms&quot;,&quot;portfolio&quot;,&quot;cv&quot;,&quot;interview&quot;,&quot;start&quot;,&quot;feedback&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
+const h = React.createElement;
+const DS = () => (window.SolarPopStudioDesignSystem_db4228 || {});
+const I = (n, s, c) => DS().Icon ? h(DS().Icon, { name: n, size: s || 16, color: c }) : null;
+const Btn = (l, p) => DS().Button ? h(DS().Button, p, l) : h('button', p, l);
+
+const NAV = [
+  { id: 'home', label: 'Today', icon: 'sun', group: 'Work' },
+  { id: 'jobs', label: 'Job feed', icon: 'globe', group: 'Work', badge: '12' },
+  { id: 'pipeline', label: 'Pipeline', icon: 'asterisk', group: 'Work', badge: '3' },
+  { id: 'profile', label: 'Profile', icon: 'flower', group: 'Assets' },
+  { id: 'platforms', label: 'Platforms', icon: 'monitor', group: 'Assets' },
+  { id: 'portfolio', label: 'Portfolio', icon: 'package', group: 'Assets' },
+  { id: 'cv', label: 'CV', icon: 'check', group: 'Assets' },
+  { id: 'interview', label: 'Interviews', icon: 'heart', group: 'Practice' },
+  { id: 'start', label: 'Getting started', icon: 'sparkles', group: 'Help' },
+  { id: 'feedback', label: 'Feedback', icon: 'mail', group: 'Help' },
+];
+
+const TITLES = {
+  home: ['Good Morning,', 'Amara', 'Three things move the needle today — the rest can wait.'],
+  jobs: ['Scored Job', 'feed', '12 new listings since yesterday, ranked against your actual profile.'],
+  pipeline: ['Your', 'pipeline', 'Where every application stands — and who owes you a reply.'],
+  profile: ['One Profile,', 'many uses', 'Everything downstream reads from this single record.'],
+  platforms: ['Platform', 'versions', 'The same history, rewritten in each platform’s register.'],
+  portfolio: ['Your Public', 'page', 'Themed by you — Multifolio branding never appears on it.'],
+  cv: ['CV', 'builder', 'One export per role. Parsed in memory, never stored.'],
+  interview: ['Mock', 'interviews', 'Questions from the posting you are actually applying to.'],
+  start: ['Five Steps to Your First', 'reply', 'Each step unlocks the next one — no busywork.'],
+  feedback: ['Tell Us What', 'broke', 'Goes straight to the team. No ticket numbers, no auto-reply.'],
+};
+
+const JOBS = [
+  { role: 'Design Systems Lead', co: 'Northwind · Remote EU', rate: '$95/hr', score: 92, why: 'Design systems, tokens and fintech all match', posted: '2h ago', applied: false },
+  { role: 'Senior Product Designer', co: 'Paylane · Remote US', rate: '$85–110/hr', score: 88, why: 'Strong skill match, rate above your band', posted: '5h ago', applied: false },
+  { role: 'Design Ops Manager', co: 'Kanto · Remote', rate: '$90/hr', score: 79, why: 'Ops matches, no line-management history listed', posted: '1d ago', applied: true },
+  { role: 'UX Designer, Growth', co: 'Bloomlane · Remote US', rate: '$70/hr', score: 74, why: 'Growth experimentation missing from your profile', posted: '1d ago', applied: false },
+  { role: 'Brand Designer (contract)', co: 'Studio Nine · Remote', rate: '$55/hr', score: 61, why: 'Below your rate floor and outside your domain', posted: '2d ago', applied: false },
+];
+
+const PIPE = [
+  { stage: 'Drafted', tone: 'cream', items: [['Northwind', 'Design Systems Lead', 'Draft ready'], ['Paylane', 'Senior Product Designer', 'Draft ready']] },
+  { stage: 'Sent', tone: 'peach', items: [['Kanto', 'Design Ops Manager', '3 days ago'], ['Mesa', 'Systems Designer', '5 days ago'], ['Orbit', 'Product Designer', '6 days ago']] },
+  { stage: 'Replied', tone: 'pink', items: [['Bloomlane', 'UX Designer, Growth', 'Asked for rates'], ['Verd', 'Design Lead', 'Wants a call']] },
+  { stage: 'Interviewing', tone: 'flame', items: [['Northwind', 'Design Systems Lead', 'Round 2 Thursday']] },
+];
+
+class Component extends DCLogic {
+  state = { screen: 'home', reduced: false, openJob: -1 };
+  componentDidMount() {
+    this.setState({ reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches, screen: this.props.screen || 'home' });
+  }
+
+  // ---- primitives (tiny labels use warm ink for contrast; colour is reserved for display type)
+  lab(t, color) {
+    return h('span', { key: 'l' + t, style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: color || 'var(--ink-700)' } }, t);
+  }
+  page(kids) {
+    return h('div', { 'data-d': 'pad', style: { display: 'grid', gap: 20, padding: '20px 28px 64px', minWidth: 0, animation: this.state.reduced ? 'none' : 'dbIn .2s var(--ease-out) both' } }, kids);
+  }
+  card(kids, bg) {
+    return h('div', { style: { display: 'grid', gap: 16, alignContent: 'start', padding: 24, minWidth: 0, borderRadius: 'var(--radius-xl)', background: bg || 'var(--white)', boxShadow: bg ? 'none' : 'var(--shadow-soft)' } }, kids);
+  }
+  head(title, right, sub) {
+    return h('div', { key: 'h', style: { display: 'grid', gap: 6 } }, [
+      h('div', { key: 'r', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 } }, [
+        h('h2', { key: 't', style: { marginRight: 'auto', font: 'var(--fw-black) var(--fs-title)/1.15 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, title),
+        right || null,
+      ]),
+      sub ? h('span', { key: 's', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-body)' } }, sub) : null,
+    ]);
+  }
+  pill(text, tone) {
+    const m = { pink: ['var(--pink-200)', 'var(--ink-900)'], peach: ['var(--peach-200)', 'var(--ink-900)'], amber: ['var(--amber-200)', 'var(--ink-900)'], flame: ['var(--ink-900)', 'var(--white)'], cream: ['var(--surface-page)', 'var(--ink-700)'], white: ['var(--white)', 'var(--ink-900)'] }[tone || 'pink'];
+    return h('span', { key: 'p' + text, style: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 'var(--radius-pill)', background: m[0], color: m[1], font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', whiteSpace: 'nowrap' } }, text);
+  }
+  credits(n) {
+    return h('span', { key: 'c', style: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '7px 12px', borderRadius: 'var(--radius-pill)', background: 'var(--pink-200)', color: 'var(--ink-900)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' } }, [I('sun', 12), n + (n === 1 ? ' credit' : ' credits')]);
+  }
+  bar(k, l, pct, ink, inv) {
+    return h('div', { key: k, style: { display: 'grid', gap: 7, minWidth: 0 } }, [
+      h('div', { key: 'r', style: { display: 'flex', justifyContent: 'space-between', gap: 10, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: inv ? 'var(--white)' : 'var(--ink-700)' } }, [
+        h('span', { key: 'a' }, l), h('span', { key: 'b', style: { color: inv ? 'var(--white)' : 'var(--text-strong)' } }, pct),
+      ]),
+      h('div', { key: 't', style: { height: 8, borderRadius: 'var(--radius-pill)', background: inv ? 'rgba(255,255,255,.3)' : 'var(--cream-300)', overflow: 'hidden' } },
+        h('div', { style: { width: pct + '%', height: '100%', borderRadius: 'var(--radius-pill)', background: inv ? 'var(--white)' : (ink || 'var(--flame-500)') } })),
+    ]);
+  }
+  score(v, size) {
+    const s = size || 64;
+    const ink = v >= 80 ? 'var(--pink-500)' : v >= 60 ? 'var(--amber-400)' : 'var(--flame-500)';
+    return h('span', { key: 'sc', style: { width: s, height: s, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: 'conic-gradient(' + ink + ' 0% ' + v + '%, var(--cream-300) ' + v + '% 100%)', display: 'grid', placeItems: 'center' } },
+      h('span', { style: { width: s - 14, height: s - 14, borderRadius: 'var(--radius-pill)', background: 'var(--white)', display: 'grid', placeItems: 'center', font: 'var(--fw-black) ' + Math.round(s / 3.4) + 'px/1 var(--font-display)', color: 'var(--text-strong)' } }, v));
+  }
+  row(kids, bg) {
+    return h('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, padding: '14px 16px', borderRadius: 'var(--radius-md)', background: bg || 'var(--surface-page)', minWidth: 0 } }, kids);
+  }
+  input(o) {
+    return h('label', { key: o.k, style: { display: 'grid', gap: 7, minWidth: 0 } }, [
+      this.lab(o.label, 'var(--text-strong)'),
+      o.rows
+        ? h('textarea', { rows: o.rows, defaultValue: o.value, placeholder: o.ph, style: { padding: 14, border: 'none', outline: 'none', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', font: 'var(--fw-regular) var(--fs-body)/1.7 var(--font-body)', color: 'var(--text-strong)', resize: 'vertical' } })
+        : h('input', { defaultValue: o.value, placeholder: o.ph, style: { minHeight: 48, padding: '0 14px', border: 'none', outline: 'none', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', font: 'var(--fw-medium) var(--fs-body-l)/1 var(--font-body)', color: 'var(--text-strong)' } }),
+      o.hint ? h('span', { style: { font: 'var(--fw-bold) var(--fs-label)/1.4 var(--font-display)', letterSpacing: '.06em', color: 'var(--ink-500)' } }, o.hint) : null,
+    ]);
+  }
+
+  // ---- chrome
+  sideNav() {
+    const groups = [];
+    NAV.forEach(n => { const g = groups.find(x => x.name === n.group); if (g) g.items.push(n); else groups.push({ name: n.group, items: [n] }); });
+    return h('nav', { 'data-d': 'sidenav', style: { display: 'flex', flexDirection: 'column', gap: 16, flex: 1, minHeight: 0, overflowY: 'auto' } }, groups.map(g =>
+      h('div', { key: g.name, style: { display: 'grid', gap: 5, minWidth: 0 } }, [
+        h('span', { key: 'l', style: { padding: '0 8px', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--ink-700)', whiteSpace: 'nowrap' } }, g.name),
+        ...g.items.map(n => {
+          const on = this.state.screen === n.id;
+          return h('button', {
+            key: n.id, type: 'button', onClick: () => this.setState({ screen: n.id, openJob: -1 }),
+            style: {
+              display: 'flex', alignItems: 'center', gap: 11, width: '100%', minHeight: 42, padding: '0 12px',
+              border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-pill)', whiteSpace: 'nowrap',
+              background: on ? 'var(--ink-900)' : 'transparent', color: on ? 'var(--white)' : 'var(--ink-700)',
+              font: 'var(--fw-bold) var(--fs-body-s)/1 var(--font-display)', letterSpacing: '.04em', textTransform: 'uppercase',
+              boxShadow: on ? 'var(--shadow-soft)' : 'none', transition: 'all var(--dur-base) var(--ease-pop)',
+            },
+          }, [
+            h('span', { key: 'i', style: { display: 'inline-flex', flex: '0 0 auto' } }, I(n.icon, 15, on ? 'var(--white)' : undefined)),
+            h('span', { key: 't', style: { marginRight: 'auto' } }, n.label),
+            n.badge ? h('span', { key: 'b', style: { padding: '3px 8px', borderRadius: 'var(--radius-pill)', background: on ? 'var(--white)' : 'var(--pink-200)', color: 'var(--ink-900)', font: 'var(--fw-black) 10px/1.4 var(--font-display)' } }, n.badge) : null,
+          ]);
+        }),
+      ])));
+  }
+  sideFoot() {
+    return h('div', { 'data-d': 'sidefoot', style: { display: 'grid', gap: 12, padding: 16, borderRadius: 'var(--radius-lg)', background: 'var(--surface-card-peach)' } }, [
+      h('div', { key: 'r', style: { display: 'flex', alignItems: 'baseline', gap: 8 } }, [
+        h('span', { key: 'v', style: { font: 'var(--fw-black) var(--fs-stat)/.9 var(--font-display)', letterSpacing: 'var(--tracking-display)', color: 'var(--text-heading)' } }, '112'),
+        this.lab('credits', 'var(--ink-700)'),
+      ]),
+      h('span', { key: 't', style: { font: 'var(--fw-regular) var(--fs-label)/1.5 var(--font-body)', color: 'var(--text-body)' } }, '≈ 112 proposals. Nothing renews, nothing expires.'),
+      Btn('Buy credits', { size: 'sm', variant: 'quiet', style: { justifyContent: 'center' } }),
+    ]);
+  }
+  topBar() {
+    const t = TITLES[this.state.screen] || TITLES.home;
+    return h('header', { 'data-d': 'pad', style: { padding: '26px 28px 4px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14 } }, [
+      h('div', { key: 'l', style: { display: 'grid', gap: 8, marginRight: 'auto', minWidth: 0 } }, [
+        h('h1', { key: 'h', 'data-d': 'h1', style: { font: 'var(--fw-black) var(--fs-display-m)/var(--lh-display) var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, [
+          t[0],
+          h('span', { key: 's', 'data-d': 'script', style: { display: 'inline-block', marginLeft: 12, font: '400 var(--fs-script-m)/.85 var(--font-script)', letterSpacing: 0, textTransform: 'none', color: 'var(--text-heading)' } }, t[1]),
+        ]),
+        h('p', { key: 'p', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)', maxWidth: '62ch' } }, t[2]),
+      ]),
+      h('div', { key: 'a', style: { display: 'flex', alignItems: 'center', gap: 10 } }, [
+        this.credits(112),
+        h('span', { key: 'av', style: { width: 40, height: 40, borderRadius: 'var(--radius-pill)', background: 'var(--action-primary)', color: 'var(--white)', display: 'inline-grid', placeItems: 'center', font: 'var(--fw-black) 15px/1 var(--font-display)' } }, 'AK'),
+      ]),
+    ]);
+  }
+
+  // ---- TODAY
+  home() {
+    const acts = [
+      { n: '01', t: 'Send the Northwind proposal', s: 'Draft is written and scored 92 — it has been sitting for two days.', cta: 'Review and send', cost: 1, bg: 'var(--surface-inverse)', inv: true },
+      { n: '02', t: 'Reply to Bloomlane', s: 'They asked for your rates 16 hours ago. Median reply window is 24h.', cta: 'Open thread', cost: 0, bg: 'var(--pink-100)' },
+      { n: '03', t: 'Add results to two projects', s: 'Both are missing an outcome line — your biggest single score gap.', cta: 'Fix profile', cost: 0, bg: 'var(--peach-100)' },
+    ];
+    return this.page([
+      h('div', { key: 'a', style: { display: 'grid', gap: 14 } }, acts.map(a =>
+        h('div', { key: a.n, style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 18, padding: 22, borderRadius: 'var(--radius-xl)', background: a.bg } }, [
+          h('span', { key: 'n', style: { font: 'var(--fw-black) var(--fs-display-s)/.9 var(--font-display)', letterSpacing: 'var(--tracking-display)', color: a.inv ? 'rgba(255,255,255,.55)' : 'var(--text-heading)' } }, a.n),
+          h('span', { key: 'x', style: { display: 'grid', gap: 5, flex: '1 1 300px', minWidth: 0 } }, [
+            h('span', { key: 't', style: { font: 'var(--fw-black) var(--fs-title)/1.2 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: a.inv ? 'var(--white)' : 'var(--text-strong)' } }, a.t),
+            h('span', { key: 's', style: { font: 'var(--fw-regular) var(--fs-body)/1.55 var(--font-body)', color: a.inv ? 'var(--white)' : 'var(--text-body)' } }, a.s),
+          ]),
+          h('span', { key: 'c', style: { display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' } }, [
+            a.cost ? this.pill(a.cost + ' credit', 'white') : this.pill('Free', 'white'),
+            Btn(a.cta, { size: 'md', variant: a.inv ? 'quiet' : 'primary', icon: 'arrow-right' }),
+          ]),
+        ]))),
+      h('div', { key: 's', 'data-d': 'quad', style: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 } }, [
+        ['48', 'Proposals sent', '+9 this month'], ['40%', 'Reply rate', '+11 pts since May'],
+        ['6', 'Interviewing', '1 in final round'], ['112', 'Credits left', '≈ 112 proposals'],
+      ].map((s, i) => h('div', { key: s[1], style: { display: 'grid', gap: 6, padding: 20, borderRadius: 'var(--radius-lg)', background: ['var(--white)', 'var(--pink-100)', 'var(--peach-100)', 'var(--amber-200)'][i], boxShadow: i === 0 ? 'var(--shadow-soft)' : 'none' } }, [
+        h('span', { key: 'v', style: { font: 'var(--fw-black) var(--fs-stat)/.9 var(--font-display)', letterSpacing: 'var(--tracking-display)', color: 'var(--text-strong)' } }, s[0]),
+        this.lab(s[1], 'var(--text-strong)'),
+        h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, s[2]),
+      ]))),
+      h('div', { key: 't', 'data-d': 'two', style: { display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: 20, alignItems: 'start' } }, [
+        this.card([
+          this.head('Top matches today', Btn('Open feed', { size: 'sm', variant: 'ghost', onClick: () => this.setState({ screen: 'jobs' }) })),
+          h('div', { key: 'l', style: { display: 'grid', gap: 10 } }, JOBS.slice(0, 3).map(j => this.row([
+            this.score(j.score, 48),
+            h('span', { key: 'x', style: { display: 'grid', gap: 3, flex: '1 1 190px', minWidth: 0 } }, [
+              h('span', { key: 'r', style: { font: 'var(--fw-black) var(--fs-body)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, j.role),
+              h('span', { key: 'c', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, j.co + ' · ' + j.rate),
+            ]),
+            Btn('Draft', { size: 'sm', variant: 'ghost' }),
+          ]))),
+        ]),
+        h('div', { key: 'r', style: { display: 'grid', gap: 20 } }, [
+          this.card([
+            this.head('Profile strength', this.score(78, 56)),
+            h('div', { key: 'b', style: { display: 'grid', gap: 10 } }, [
+              this.bar('a', 'Platform fit', 91, 'var(--flame-500)'),
+              this.bar('b', 'Skill match', 84, 'var(--pink-500)'),
+              this.bar('c', 'Evidence', 62, 'var(--amber-400)'),
+            ]),
+            h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-body)' } }, 'Evidence is what holds you back — two projects have no result line.'),
+          ]),
+          this.card([
+            this.head('Waiting on them'),
+            h('div', { key: 'l', style: { display: 'grid', gap: 9 } }, [['Kanto', '3 days', 'peach'], ['Mesa', '5 days', 'amber'], ['Orbit', '6 days', 'amber']].map(r =>
+              this.row([
+                h('span', { key: 'n', style: { flex: 1, minWidth: 0, font: 'var(--fw-bold) var(--fs-body-s)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, r[0]),
+                this.pill(r[1], r[2]),
+              ], 'var(--white)'))),
+            Btn('Draft 3 follow-ups', { size: 'sm', icon: 'arrow-right', style: { justifySelf: 'start' } }),
+          ], 'var(--peach-100)'),
+        ]),
+      ]),
+    ]);
+  }
+
+  // ---- JOB FEED
+  jobs() {
+    const filters = ['All 12', 'Score 80+', 'Not applied', 'Above $80/hr', 'Posted today'];
+    return this.page([
+      h('div', { key: 'f', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 9, padding: '14px 18px', borderRadius: 'var(--radius-xl)', background: 'var(--white)', boxShadow: 'var(--shadow-soft)' } }, [
+        this.lab('Filter', 'var(--ink-500)'),
+        ...filters.map((f, i) => h('button', {
+          key: f, type: 'button',
+          style: { minHeight: 34, padding: '0 14px', border: 'none', borderRadius: 'var(--radius-pill)', cursor: 'pointer', whiteSpace: 'nowrap', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', background: i === 0 ? 'var(--ink-900)' : 'var(--surface-page)', color: i === 0 ? 'var(--white)' : 'var(--ink-700)' },
+        }, f)),
+        h('span', { key: 'sp', style: { flex: 1 } }),
+        Btn('Save this search', { size: 'sm', variant: 'ghost' }),
+      ]),
+      h('div', { key: 'l', style: { display: 'grid', gap: 14 } }, JOBS.map((j, i) => {
+        const open = this.state.openJob === i;
+        return h('div', { key: j.role, style: { display: 'grid', gap: 16, padding: 22, borderRadius: 'var(--radius-xl)', background: 'var(--white)', boxShadow: open ? 'var(--shadow-lift)' : 'var(--shadow-soft)', transition: 'box-shadow var(--dur-base) var(--ease-out)' } }, [
+          h('div', { key: 't', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 18 } }, [
+            this.score(j.score),
+            h('div', { key: 'x', style: { display: 'grid', gap: 6, flex: '1 1 280px', minWidth: 0 } }, [
+              h('div', { key: 'r', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 } }, [
+                h('h3', { key: 't', style: { font: 'var(--fw-black) var(--fs-title)/1.15 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, j.role),
+                j.applied ? this.pill('Applied', 'cream') : null,
+              ]),
+              h('span', { key: 'c', style: { font: 'var(--fw-regular) var(--fs-body)/1.5 var(--font-body)', color: 'var(--ink-700)' } }, j.co + ' · ' + j.rate + ' · ' + j.posted),
+              h('span', { key: 'w', style: { display: 'inline-flex', alignItems: 'center', gap: 8, font: 'var(--fw-bold) var(--fs-body-s)/1.4 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--flame-600)' } }, [I('asterisk', 13), j.why]),
+            ]),
+            h('div', { key: 'a', style: { display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' } }, [
+              Btn(open ? 'Hide why' : 'Why this score', { size: 'sm', variant: 'ghost', onClick: () => this.setState({ openJob: open ? -1 : i }) }),
+              j.applied ? Btn('View application', { size: 'sm', variant: 'ghost' }) : Btn('Draft proposal', { size: 'md', icon: 'arrow-right' }),
+            ]),
+          ]),
+          open ? h('div', { key: 'w', style: { display: 'grid', gap: 14, padding: 20, borderRadius: 'var(--radius-lg)', background: 'var(--surface-page)', animation: this.state.reduced ? 'none' : 'dbRise .22s var(--ease-pop) both' } }, [
+            h('div', { key: 'b', 'data-d': 'three', style: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 } }, [
+              this.bar('a', 'Skill match', 94, 'var(--pink-500)'),
+              this.bar('b', 'Rate fit', 88, 'var(--flame-500)'),
+              this.bar('c', 'Seniority', 76, 'var(--amber-400)'),
+            ]),
+            h('div', { key: 'm', style: { display: 'grid', gap: 9 } }, [
+              ['pass', 'Design systems, tokens, documentation — all three named in the posting'],
+              ['pass', 'Their band ($95/hr) sits inside yours ($85–110)'],
+              ['warn', 'They ask for line-management experience you have not listed'],
+            ].map(r => h('span', { key: r[1], style: { display: 'grid', gridTemplateColumns: '26px 1fr', gap: 11, alignItems: 'center' } }, [
+              h('span', { style: { width: 26, height: 26, borderRadius: 'var(--radius-pill)', background: r[0] === 'pass' ? 'var(--pink-200)' : 'var(--amber-200)', color: 'var(--ink-900)', display: 'inline-grid', placeItems: 'center' } }, I(r[0] === 'pass' ? 'check' : 'asterisk', 13)),
+              h('span', { style: { font: 'var(--fw-regular) var(--fs-body-s)/1.6 var(--font-body)', color: 'var(--text-body)' } }, r[1]),
+            ]))),
+            this.lab('Scoring is free and unlimited — you only spend a credit when you draft', 'var(--ink-700)'),
+          ]) : null,
+        ]);
+      })),
+    ]);
+  }
+
+  // ---- PIPELINE
+  pipeline() {
+    return this.page([
+      h('div', { key: 'c', 'data-d': 'quad', style: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 } }, PIPE.map(col => {
+        const bg = { cream: 'var(--white)', peach: 'var(--peach-100)', pink: 'var(--pink-100)', flame: 'var(--surface-inverse)' }[col.tone];
+        const inv = col.tone === 'flame';
+        return h('div', { key: col.stage, style: { display: 'grid', gap: 14, alignContent: 'start', padding: 20, borderRadius: 'var(--radius-xl)', background: bg, boxShadow: col.tone === 'cream' ? 'var(--shadow-soft)' : 'none' } }, [
+          h('div', { key: 'h', style: { display: 'flex', alignItems: 'baseline', gap: 9 } }, [
+            h('span', { key: 'v', style: { font: 'var(--fw-black) var(--fs-stat)/.9 var(--font-display)', letterSpacing: 'var(--tracking-display)', color: inv ? 'var(--white)' : 'var(--text-strong)' } }, col.items.length),
+            this.lab(col.stage, inv ? 'var(--ink-900)' : 'var(--ink-700)'),
+          ]),
+          h('div', { key: 'l', style: { display: 'grid', gap: 9 } }, col.items.map(it =>
+            h('div', { key: it[0] + it[1], style: { display: 'grid', gap: 4, padding: 14, borderRadius: 'var(--radius-md)', background: 'var(--white)', cursor: 'grab' } }, [
+              h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body-s)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, it[0]),
+              h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, it[1]),
+              h('span', { key: 'c', style: { marginTop: 3, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--flame-600)' } }, it[2]),
+            ]))),
+        ]);
+      })),
+      h('div', { key: 't', 'data-d': 'two', style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, alignItems: 'start' } }, [
+        this.card([
+          this.head('What your funnel says', null, 'Reply rate is the only number worth optimising — the rest follow it.'),
+          h('div', { key: 'f', style: { display: 'grid', gap: 10 } }, [
+            ['Sent', 48, 100, 'var(--flame-500)'], ['Viewed', 31, 65, 'var(--flame-400)'],
+            ['Replied', 19, 40, 'var(--pink-500)'], ['Interviewing', 6, 13, 'var(--pink-400)'], ['Won', 2, 4, 'var(--amber-400)'],
+          ].map(r => h('div', { key: r[0], style: { display: 'flex', alignItems: 'center', gap: 12 } }, [
+            h('span', { key: 'l', style: { width: 96, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--ink-700)' } }, r[0]),
+            h('span', { key: 'b', style: { flex: 1, height: 24, borderRadius: 'var(--radius-sm)', background: 'var(--surface-page)', overflow: 'hidden' } },
+              h('span', { style: { display: 'block', width: r[2] + '%', height: '100%', borderRadius: 'var(--radius-sm)', background: r[3] } })),
+            h('span', { key: 'v', style: { width: 28, textAlign: 'right', font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)', color: 'var(--text-strong)' } }, r[1]),
+          ]))),
+          h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.6 var(--font-body)', color: 'var(--text-body)' } }, 'Tailored proposals reply at 40%; the templated ones you sent in May replied at 29%. Upwork is your weakest channel at 18%.'),
+        ]),
+        this.card([
+          this.head('Follow-ups due', this.pill('3 today', 'flame'), 'Drafted on day 4 of silence — you approve each one.'),
+          h('div', { key: 'l', style: { display: 'grid', gap: 10 } }, [['Kanto', 'Day 4 · nudge drafted'], ['Mesa', 'Day 6 · second nudge'], ['Orbit', 'Day 6 · close the loop']].map(r =>
+            this.row([
+              h('span', { key: 'x', style: { display: 'grid', gap: 3, flex: '1 1 150px', minWidth: 0 } }, [
+                h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body-s)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, r[0]),
+                h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, r[1]),
+              ]),
+              Btn('Review', { size: 'sm', variant: 'quiet' }),
+            ], 'var(--white)'))),
+        ], 'var(--pink-100)'),
+      ]),
+    ]);
+  }
+
+  // ---- PROFILE
+  profile() {
+    const sugg = (field, before, after) => h('div', { key: field, style: { display: 'grid', gap: 12, padding: 18, borderRadius: 'var(--radius-lg)', background: 'var(--surface-page)' } }, [
+      h('div', { key: 'h', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 } }, [
+        h('span', { key: 'f', style: { marginRight: 'auto', font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, field),
+        Btn('Apply', { key: 'a', size: 'sm' }), Btn('Dismiss', { key: 'b', size: 'sm', variant: 'ghost' }),
+      ]),
+      h('div', { key: 'n', style: { display: 'grid', gridTemplateColumns: '42px 1fr', gap: 11, alignItems: 'start' } }, [
+        this.lab('Now', 'var(--ink-500)'),
+        h('span', { style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--ink-500)', textDecoration: 'line-through' } }, before),
+      ]),
+      h('div', { key: 'a', style: { display: 'grid', gridTemplateColumns: '42px 1fr', gap: 11, alignItems: 'start' } }, [
+        this.lab('AI', 'var(--flame-600)'),
+        h('span', { style: { font: 'var(--fw-medium) var(--fs-body)/1.55 var(--font-body)', color: 'var(--text-strong)' } }, after),
+      ]),
+    ]);
+    return this.page([
+      h('div', { key: 'id', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 20, padding: 24, borderRadius: 'var(--radius-xl)', background: 'var(--white)', boxShadow: 'var(--shadow-soft)' } }, [
+        h('span', { key: 'av', style: { width: 64, height: 64, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: 'var(--action-primary)', color: 'var(--white)', display: 'inline-grid', placeItems: 'center', font: 'var(--fw-black) 24px/1 var(--font-display)' } }, 'A'),
+        h('span', { key: 'x', style: { display: 'grid', gap: 8, flex: '1 1 300px', minWidth: 0 } }, [
+          h('span', { key: 'h', style: { font: 'var(--fw-black) var(--fs-title)/1.2 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, 'Product designer scaling design systems for fintech teams'),
+          h('span', { key: 'b', style: { display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' } }, [
+            this.pill('LinkedIn', 'peach'), this.pill('Upwork', 'pink'), this.pill('Fiverr', 'amber'),
+            h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-label)/1 var(--font-body)', color: 'var(--ink-700)' } }, '3 of 8 connected · synced 2 days ago'),
+          ]),
+        ]),
+        h('span', { key: 's', style: { display: 'grid', gap: 6, justifyItems: 'center' } }, [this.score(78, 60), this.lab('Strength', 'var(--ink-700)')]),
+      ]),
+      h('div', { key: 't', 'data-d': 'two', style: { display: 'grid', gridTemplateColumns: '1.25fr 1fr', gap: 20, alignItems: 'start' } }, [
+        this.card([
+          this.head('Core profile', this.pill('Saved 2h ago', 'pink'), 'One record. Platforms, CV and portfolio all read from here.'),
+          this.input({ k: 'h', label: 'Headline', value: 'Product designer scaling design systems for fintech teams', hint: '58 / 120 characters' }),
+          this.input({ k: 's', label: 'Summary', rows: 5, value: 'Eight years building and running design systems for fintech products. At Paystack I owned tokens, components and adoption across three squads and cut build time 40%.' }),
+          h('div', { key: 'sk', style: { display: 'grid', gap: 9 } }, [
+            this.lab('Skills · 12 of 30', 'var(--text-strong)'),
+            h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 8 } }, ['Design systems', 'Figma', 'Tokens', 'Fintech', 'Accessibility', 'Design ops', 'Prototyping', 'Documentation'].map(s =>
+              h('span', { key: s, style: { display: 'inline-flex', alignItems: 'center', gap: 8, minHeight: 32, padding: '0 13px', borderRadius: 'var(--radius-pill)', background: 'var(--surface-page)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--ink-700)' } }, [s, I('x', 11)]))),
+          ]),
+          h('div', { key: 'a', style: { display: 'flex', flexWrap: 'wrap', gap: 10 } }, [Btn('Save changes', { key: 'a' }), Btn('Translate', { key: 'b', variant: 'ghost' })]),
+        ]),
+        h('div', { key: 'r', style: { display: 'grid', gap: 20 } }, [
+          this.card([
+            this.head('2 gaps left', this.pill('78 · strong', 'white'), 'Only what is missing — the 8 passed checks are collapsed.'),
+            h('div', { key: 'g', style: { display: 'grid', gap: 10 } }, [
+              ['Two projects have no measurable result', 'Add one sentence each — the scorer weighs outcomes most.'],
+              ['No hourly rate on Fiverr', 'Platform-specific field, 30 seconds.'],
+            ].map(g => h('a', { key: g[0], href: '#', style: { display: 'grid', gap: 4, padding: 15, borderRadius: 'var(--radius-md)', background: 'var(--white)' } }, [
+              h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body-s)/1.3 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, g[0]),
+              h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-label)/1.5 var(--font-body)', color: 'var(--ink-700)' } }, g[1]),
+            ]))),
+            h('button', { key: 'x', type: 'button', style: { justifySelf: 'start', border: 'none', background: 'transparent', cursor: 'pointer', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--flame-600)' } }, 'Show 8 passed checks'),
+          ], 'var(--peach-100)'),
+          this.card([
+            this.head('AI suggestions', this.credits(3), 'Synthesised from your 3 connected public profiles.'),
+            sugg('Headline', 'Experienced designer available for work', 'Design systems lead for fintech — 40% faster builds at Paystack'),
+            sugg('Skills', 'Web design, UI, Photoshop', 'Design tokens, design ops, accessibility (WCAG AA)'),
+            h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-label)/1.5 var(--font-body)', color: 'var(--ink-700)' } }, 'Field-level apply — nothing overwrites your text until you press Apply on that field.'),
+          ]),
+        ]),
+      ]),
+    ]);
+  }
+
+  // ---- PLATFORMS
+  platforms() {
+    const rows = [
+      { n: 'LinkedIn', c: true, a: true, when: '2 days ago', jobs: 4, tone: 'peach' },
+      { n: 'Upwork', c: true, a: true, when: '2 days ago', jobs: 6, tone: 'pink' },
+      { n: 'Fiverr', c: true, a: true, when: '11 days ago', jobs: 2, tone: 'amber' },
+      { n: 'Freelancer.com', c: false, a: true, when: '3 weeks ago', jobs: 0, tone: 'peach' },
+      { n: 'Contra', c: false, a: false, jobs: 0, tone: 'pink' },
+      { n: 'PeoplePerHour', c: false, a: false, jobs: 0, tone: 'amber' },
+      { n: '99designs', c: false, a: false, jobs: 0, tone: 'peach' },
+      { n: 'Guru', c: false, a: false, jobs: 0, tone: 'pink' },
+    ];
+    const tints = { peach: 'var(--peach-200)', pink: 'var(--pink-200)', amber: 'var(--amber-200)' };
+    const card = (p) => h('div', { key: p.n, style: { display: 'grid', gap: 14, alignContent: 'start', padding: 20, borderRadius: 'var(--radius-xl)', background: 'var(--white)', boxShadow: 'var(--shadow-soft)' } }, [
+      h('div', { key: 'h', style: { display: 'flex', alignItems: 'center', gap: 11 } }, [
+        h('span', { key: 'i', style: { width: 38, height: 38, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: tints[p.tone], color: 'var(--ink-900)', display: 'inline-grid', placeItems: 'center', font: 'var(--fw-black) 15px/1 var(--font-display)' } }, p.n[0]),
+        h('span', { key: 'n', style: { flex: 1, minWidth: 0, font: 'var(--fw-black) var(--fs-body-l)/1.15 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, p.n),
+      ]),
+      h('div', { key: 's', style: { display: 'grid', gap: 8 } }, [
+        h('span', { key: 'a', style: { display: 'flex', alignItems: 'center', gap: 9, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--ink-700)' } }, [
+          h('span', { style: { width: 8, height: 8, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: p.c ? 'var(--pink-500)' : 'var(--cream-400)' } }), p.c ? 'Connected' : 'Not connected',
+        ]),
+        h('span', { key: 'b', style: { display: 'flex', alignItems: 'center', gap: 9, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--ink-700)' } }, [
+          h('span', { style: { width: 8, height: 8, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: p.a ? 'var(--flame-500)' : 'var(--cream-400)' } }), p.a ? 'Adapted · ' + p.when : 'No adapted version yet',
+        ]),
+        p.jobs ? h('span', { key: 'j', style: { font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, p.jobs + ' matched jobs waiting') : null,
+      ]),
+      p.a ? Btn('Open', { size: 'sm', variant: 'ghost', style: { justifyContent: 'center' } }) : Btn('Adapt · 1 credit', { size: 'sm', style: { justifyContent: 'center' } }),
+    ]);
+    const inUse = rows.filter(r => r.c || r.a), rest = rows.filter(r => !r.c && !r.a);
+    return this.page([
+      this.card([
+        this.head('Adapt in one pass', Btn('Adapt 5 selected · 5 credits', { size: 'md', icon: 'arrow-right' }), '1 credit per platform. Existing text is versioned, never silently replaced.'),
+        h('div', { key: 'c', style: { display: 'flex', flexWrap: 'wrap', gap: 8 } }, rows.map((p, i) =>
+          h('button', { key: p.n, type: 'button', style: { display: 'inline-flex', alignItems: 'center', gap: 9, minHeight: 36, padding: '0 13px', border: 'none', borderRadius: 'var(--radius-pill)', cursor: 'pointer', whiteSpace: 'nowrap', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', background: i < 5 ? 'var(--pink-200)' : 'var(--surface-page)', color: 'var(--ink-900)' } }, [
+            h('span', { key: 'x', style: { width: 15, height: 15, borderRadius: 5, background: i < 5 ? 'var(--flame-500)' : 'transparent', boxShadow: i < 5 ? 'none' : 'inset 0 0 0 1.5px var(--cream-400)', color: 'var(--white)', display: 'inline-grid', placeItems: 'center' } }, i < 5 ? I('check', 10, 'var(--white)') : null),
+            p.n,
+          ]))),
+      ]),
+      h('div', { key: 'g1', style: { display: 'grid', gap: 12 } }, [
+        this.lab('In use · ' + inUse.length, 'var(--ink-700)'),
+        h('div', { key: 'g', style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,240px),1fr))', gap: 16 } }, inUse.map(card)),
+      ]),
+      h('div', { key: 'g2', style: { display: 'grid', gap: 12 } }, [
+        this.lab('Available · ' + rest.length, 'var(--ink-700)'),
+        h('div', { key: 'g', style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,240px),1fr))', gap: 16 } }, rest.map(card)),
+      ]),
+    ]);
+  }
+
+  // ---- PORTFOLIO
+  portfolio() {
+    const themes = [['studio', 'Grid, 3-up', '#F7F7F5', '#14161A'], ['atelier', 'Serif, centred', '#FBF7F0', '#231C14'], ['noir', 'Dark, wide', '#0C0D10', '#F2F3F5']];
+    const accents = ['#4B5BD7', '#0F8A85', '#B5771C', '#B2445F', '#4A7A3C', '#4A5A73'];
+    return this.page([
+      this.card([
+        this.head('Published', h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 10 } }, [Btn('View live', { key: 'a', size: 'sm', variant: 'ghost', icon: 'arrow-up-right' }), Btn('Regenerate · 3 credits', { key: 'b', size: 'sm' })]), 'multifolio.app/p/amara-kane · updated 3 days ago'),
+        h('div', { key: 'r', 'data-d': 'two', style: { display: 'grid', gridTemplateColumns: '1fr 250px', gap: 18, alignItems: 'start' } }, [
+          h('div', { key: 'p', style: { borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--surface-page)' } }, [
+            h('div', { key: 'b', style: { display: 'flex', alignItems: 'center', gap: 9, padding: '10px 13px' } }, [
+              h('span', { key: 'd', style: { display: 'flex', gap: 5 } }, [0, 1, 2].map(i => h('span', { key: i, style: { width: 9, height: 9, borderRadius: 'var(--radius-pill)', background: ['var(--flame-400)', 'var(--amber-400)', 'var(--pink-400)'][i] } }))),
+              h('span', { key: 'u', style: { padding: '5px 12px', borderRadius: 'var(--radius-pill)', background: 'var(--white)', font: 'var(--fw-medium) var(--fs-label)/1 var(--font-body)', color: 'var(--ink-700)' } }, '/p/amara-kane'),
+              h('span', { key: 'sp', style: { flex: 1 } }), this.pill('Live', 'pink'),
+            ]),
+            h('div', { key: 'i', style: { position: 'relative', width: '100%', aspectRatio: '16/10', background: 'var(--white)' } },
+              h('image-slot', { id: 'db-sp-portfolio', shape: 'rect', placeholder: 'Live preview of the public page' })),
+          ]),
+          h('div', { key: 'c', style: { display: 'grid', gap: 14 } }, [
+            this.input({ k: 'slug', label: 'Slug', value: '/p/amara-kane' }),
+            h('div', { key: 'pub', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '13px 14px', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } }, [
+              h('span', { key: 'l', style: { display: 'grid', gap: 3, minWidth: 0 } }, [
+                this.lab('Published', 'var(--text-strong)'),
+                h('span', { style: { font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, 'Unpublishing asks once — stale links 404.'),
+              ]),
+              h('span', { key: 's', style: { width: 40, height: 23, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: 'var(--flame-500)', display: 'flex', alignItems: 'center', padding: 3, justifyContent: 'flex-end' } }, h('span', { style: { width: 17, height: 17, borderRadius: 'var(--radius-pill)', background: 'var(--white)' } })),
+            ]),
+            Btn('Export PDF', { size: 'sm', variant: 'ghost', style: { justifyContent: 'center' } }),
+          ]),
+        ]),
+      ]),
+      h('div', { key: 't', 'data-d': 'two', style: { display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20, alignItems: 'start' } }, [
+        this.card([
+          this.head('Theme', null, 'The visitor’s view is themed by you — Multifolio branding never appears on it.'),
+          h('div', { key: 'th', style: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 } }, themes.map((t, i) =>
+            h('button', { key: t[0], type: 'button', style: { display: 'grid', gap: 8, padding: 11, cursor: 'pointer', border: 'none', borderRadius: 'var(--radius-lg)', background: 'var(--surface-page)', boxShadow: i === 0 ? 'inset 0 0 0 2px var(--flame-500)' : 'none' } }, [
+              h('span', { key: 'p', style: { height: 60, borderRadius: 'var(--radius-md)', background: t[2], display: 'grid', alignContent: 'center', gap: 6, padding: 10 } }, [
+                h('span', { key: 'a', style: { height: 7, width: t[0] === 'atelier' ? '72%' : '50%', justifySelf: t[0] === 'atelier' ? 'center' : 'start', borderRadius: 3, background: t[3] } }),
+                h('span', { key: 'b', style: { height: 4, width: '86%', justifySelf: t[0] === 'atelier' ? 'center' : 'start', borderRadius: 3, background: t[3], opacity: .35 } }),
+              ]),
+              h('span', { key: 'n', style: { font: 'var(--fw-black) var(--fs-body-s)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, t[0]),
+              h('span', { key: 'd', style: { font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, t[1]),
+            ]))),
+          h('div', { key: 'ac', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 } }, [
+            this.lab('Accent', 'var(--text-strong)'),
+            ...accents.map((c, i) => h('span', { key: c, style: { width: 28, height: 28, borderRadius: 'var(--radius-pill)', background: c, cursor: 'pointer', boxShadow: i === 0 ? '0 0 0 2px var(--ink-900)' : 'none' } })),
+          ]),
+          h('div', { key: 'm', style: { display: 'flex', gap: 5, padding: 5, width: 'fit-content', borderRadius: 'var(--radius-pill)', background: 'var(--surface-page)' } }, ['Projects', 'Gallery'].map((m, i) =>
+            h('span', { key: m, style: { minHeight: 32, padding: '0 15px', display: 'inline-flex', alignItems: 'center', borderRadius: 'var(--radius-pill)', cursor: 'pointer', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', background: i === 0 ? 'var(--action-primary)' : 'transparent', color: i === 0 ? 'var(--white)' : 'var(--ink-700)' } }, m))),
+        ]),
+        h('div', { key: 'r', style: { display: 'grid', gap: 20 } }, [
+          this.card([
+            this.head('Leads', this.pill('2 new', 'white'), 'From the hire-me form on your public page.'),
+            h('div', { key: 'l', style: { display: 'grid', gap: 9 } }, [['Marcus Lindqvist', 'Design system audit · 2h ago'], ['Sofia Reyes', 'Onboarding redesign · 3 days ago']].map(r =>
+              this.row([
+                h('span', { key: 'x', style: { display: 'grid', gap: 3, flex: 1, minWidth: 0 } }, [
+                  h('span', { style: { font: 'var(--fw-black) var(--fs-body-s)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, r[0]),
+                  h('span', { style: { font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, r[1]),
+                ]),
+                I('arrow-right', 14, 'var(--flame-600)'),
+              ], 'var(--white)'))),
+          ], 'var(--pink-100)'),
+          this.card([
+            this.head('Testimonials', this.pill('1 pending', 'amber'), 'Approve before it appears on your wall of love.'),
+            h('div', { key: 'p', style: { display: 'grid', gap: 11, padding: 16, borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } }, [
+              h('span', { key: 'q', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.65 var(--font-body)', color: 'var(--text-body)' } }, '“Turned an audit we were dreading into a plan.” — Marcus L., CTO'),
+              h('div', { key: 'a', style: { display: 'flex', gap: 10 } }, [Btn('Approve', { key: 'a', size: 'sm' }), Btn('Hide', { key: 'b', size: 'sm', variant: 'ghost' })]),
+            ]),
+          ]),
+        ]),
+      ]),
+    ]);
+  }
+
+  // ---- CV
+  cv() {
+    const tpl = (n, safe, sel) => h('button', { key: n, type: 'button', style: { display: 'grid', gap: 8, padding: 11, cursor: 'pointer', border: 'none', borderRadius: 'var(--radius-lg)', background: 'var(--surface-page)', boxShadow: sel ? 'inset 0 0 0 2px var(--flame-500)' : 'none' } }, [
+      h('span', { key: 'p', style: { height: 76, borderRadius: 'var(--radius-md)', background: 'var(--white)', display: 'grid', gridTemplateColumns: safe ? '1fr' : '30% 1fr', overflow: 'hidden' } }, [
+        safe ? null : h('span', { key: 's', style: { background: 'var(--flame-400)' } }),
+        h('span', { key: 'l', style: { display: 'grid', alignContent: 'start', gap: 5, padding: 9 } }, [70, 46, 88, 62, 78].map((w, i) =>
+          h('span', { key: i, style: { height: 4, width: w + '%', borderRadius: 3, background: i === 0 ? 'var(--flame-500)' : 'var(--cream-400)' } }))),
+      ]),
+      h('span', { key: 'n', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-strong)' } }, n),
+    ]);
+    return this.page([
+      this.card([
+        this.head('CV', h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 10 } }, [Btn('Import PDF / DOCX', { key: 'a', size: 'sm', variant: 'ghost' }), Btn('Regenerate · 5 credits', { key: 'b', size: 'sm' })]), 'Private. Parsed in memory, never stored. Export as PDF any time.'),
+      ]),
+      h('div', { key: 't', 'data-d': 'two', style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, alignItems: 'start' } }, [
+        h('div', { key: 'l', style: { display: 'grid', gap: 20 } }, [
+          this.card([
+            this.head('Sections', this.pill('Drag to reorder', 'pink')),
+            h('div', { key: 'l', style: { display: 'grid', gap: 9 } }, [
+              ['Contact', 'Fixed first — parsers need it there', false],
+              ['Summary', '2 sentences · AI rewrite available', true],
+              ['Experience', '3 roles · 9 bullets', true],
+              ['Skills', '12 skills', true],
+              ['Education', '1 entry', true],
+            ].map(r => h('div', { key: r[0], style: { display: 'grid', gridTemplateColumns: '20px 1fr auto', gap: 11, alignItems: 'center', padding: '13px 14px', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', cursor: r[2] ? 'grab' : 'default' } }, [
+              h('span', { key: 'g', style: { color: 'var(--ink-500)' } }, I(r[2] ? 'asterisk' : 'check', 13)),
+              h('span', { key: 'x', style: { display: 'grid', gap: 3, minWidth: 0 } }, [
+                h('span', { style: { font: 'var(--fw-black) var(--fs-body-s)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, r[0]),
+                h('span', { style: { font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, r[1]),
+              ]),
+              r[2] ? Btn('Rewrite · 1', { size: 'sm', variant: 'ghost' }) : null,
+            ]))),
+            h('div', { key: 'ta', style: { display: 'grid', gap: 11, padding: 18, borderRadius: 'var(--radius-lg)', background: 'var(--peach-100)' } }, [
+              h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body-l)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, 'Tailor the whole CV to a job post'),
+              h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.6 var(--font-body)', color: 'var(--text-body)' } }, 'Paste the posting; bullets are reordered and reworded around its keywords. Your original is kept as a version.'),
+              Btn('Paste a job description · 2 credits', { size: 'sm', style: { justifySelf: 'start' } }),
+            ]),
+          ]),
+          this.card([
+            this.head('Templates', this.pill('8 × 6 colours', 'pink'), 'Grouped by what actually differs: parser safety.'),
+            h('div', { key: 'g1', style: { display: 'grid', gap: 10 } }, [
+              h('span', { key: 'l', style: { display: 'flex', alignItems: 'center', gap: 8, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--ink-900)' } }, [I('check', 12), 'Single column · ATS-safe']),
+              h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,110px),1fr))', gap: 10 } }, ['Clean', 'Classic', 'Minimal', 'Modern', 'Compact'].map((n, i) => tpl(n, true, i === 0))),
+            ]),
+            h('div', { key: 'g2', style: { display: 'grid', gap: 10 } }, [
+              h('span', { key: 'l', style: { display: 'flex', alignItems: 'center', gap: 8, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--ink-900)' } }, [I('asterisk', 12), 'Two column · for humans, riskier for parsers']),
+              h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,110px),1fr))', gap: 10 } }, ['Sidebar', 'Banner', 'Monogram'].map(n => tpl(n, false, false))),
+            ]),
+          ]),
+        ]),
+        h('div', { key: 'r', style: { display: 'grid', gap: 20 } }, [
+          this.card([
+            this.head('ATS score', h('span', { style: { font: 'var(--fw-black) var(--fs-display-s)/1 var(--font-display)', color: 'var(--text-heading)' } }, '92'), 'Structure only — this is not a match score for a job.'),
+            h('div', { key: 'b', style: { display: 'grid', gap: 10 } }, [
+              this.bar('a', 'Parse-safe structure', 100, 'var(--pink-500)'),
+              this.bar('b', 'Keyword coverage', 86, 'var(--flame-500)'),
+              this.bar('c', 'Length vs. role norm', 78, 'var(--amber-400)'),
+            ]),
+            h('div', { key: 'f', style: { display: 'grid', gap: 9 } }, [
+              ['pass', 'Single column, no tables'], ['pass', 'Conventional section headings'],
+              ['warn', 'Two roles have no quantified outcome'], ['warn', '1,040 words — trim the 2018 role'],
+            ].map(r => h('div', { key: r[1], style: { display: 'flex', gap: 11, alignItems: 'center', padding: '12px 14px', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } }, [
+              h('span', { key: 'i', style: { width: 24, height: 24, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: r[0] === 'pass' ? 'var(--pink-200)' : 'var(--amber-200)', color: 'var(--ink-900)', display: 'inline-grid', placeItems: 'center' } }, I(r[0] === 'pass' ? 'check' : 'asterisk', 12)),
+              h('span', { key: 't', style: { font: 'var(--fw-medium) var(--fs-body-s)/1.5 var(--font-body)', color: 'var(--text-body)' } }, r[1]),
+            ]))),
+            h('span', { key: 'h', style: { font: 'var(--fw-regular) var(--fs-label)/1.5 var(--font-body)', color: 'var(--ink-700)' } }, 'History: 74 → 86 → 92 over three edits.'),
+          ]),
+          this.card([
+            this.head('Preview', this.pill('Page 1 of 2', 'cream'), 'PDF-accurate, paginated.'),
+            h('div', { key: 'd', style: { padding: 20, borderRadius: 'var(--radius-md)', background: 'var(--white)', display: 'grid', gap: 9, minHeight: 250, boxShadow: 'var(--shadow-soft)' } }, [
+              h('span', { key: 'n', style: { font: 'var(--fw-black) 16px/1 var(--font-display)', color: 'var(--ink-900)' } }, 'AMARA KANE'),
+              h('span', { key: 'r', style: { font: 'var(--fw-bold) 10px/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--flame-600)' } }, 'Senior Product Designer · Design Systems'),
+              h('span', { key: 'c', style: { font: 'var(--fw-regular) 10px/1 var(--font-body)', color: 'var(--ink-500)' } }, 'amara@kane.design · Lagos · +234 801 555 0134'),
+              ...[92, 74, 88, 60, 80, 68, 84, 56].map((w, i) => h('span', { key: i, style: { height: 5, width: w + '%', borderRadius: 3, background: 'var(--cream-400)' } })),
+            ]),
+            Btn('Download PDF', { size: 'sm', style: { justifySelf: 'start' } }),
+          ], 'var(--peach-100)'),
+        ]),
+      ]),
+    ]);
+  }
+
+  // ---- INTERVIEWS
+  interview() {
+    const pill = (l, on) => h('span', { key: l, style: { minHeight: 34, padding: '0 14px', display: 'inline-flex', alignItems: 'center', borderRadius: 'var(--radius-pill)', cursor: 'pointer', whiteSpace: 'nowrap', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', background: on ? 'var(--ink-900)' : 'var(--surface-page)', color: on ? 'var(--white)' : 'var(--ink-700)' } }, l);
+    return this.page([
+      h('div', { key: 't', 'data-d': 'two', style: { display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 20, alignItems: 'start' } }, [
+        this.card([
+          this.head('New session', null, 'Sessions survive a refresh — you can close the tab mid-answer.'),
+          h('div', { key: 'j', style: { display: 'grid', gap: 7 } }, [
+            this.lab('Practise for', 'var(--text-strong)'),
+            h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minHeight: 48, padding: '0 14px', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', font: 'var(--fw-medium) var(--fs-body)/1 var(--font-body)', color: 'var(--text-strong)' } }, ['Design Systems Lead · Northwind (tracked)', I('arrow-right', 14)]),
+            h('span', { style: { font: 'var(--fw-regular) var(--fs-label)/1.45 var(--font-body)', color: 'var(--ink-700)' } }, 'Pick a tracked job and the questions come from its posting, not a generic bank.'),
+          ]),
+          h('div', { key: 'd', style: { display: 'grid', gap: 9 } }, [
+            this.lab('Difficulty', 'var(--text-strong)'),
+            h('div', { 'data-d': 'three', style: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 } }, [
+              ['Junior', '0–2 yrs · fundamentals', false], ['Mid', '2–5 yrs · practical depth', true], ['Senior', '5+ yrs · architecture', false],
+            ].map(d => h('span', { key: d[0], style: { display: 'grid', gap: 4, padding: '13px 15px', borderRadius: 'var(--radius-lg)', cursor: 'pointer', background: d[2] ? 'var(--pink-100)' : 'var(--surface-page)', boxShadow: d[2] ? 'inset 0 0 0 2px var(--pink-500)' : 'none' } }, [
+              h('span', { style: { font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, d[0]),
+              h('span', { style: { font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' } }, d[1]),
+            ]))),
+          ]),
+          h('div', { key: 'q', style: { display: 'flex', flexWrap: 'wrap', gap: 22 } }, [
+            h('div', { key: 'a', style: { display: 'grid', gap: 9 } }, [this.lab('Questions', 'var(--text-strong)'), h('div', { style: { display: 'flex', gap: 8 } }, [pill('4', false), pill('6', true), pill('8', false)])]),
+            h('div', { key: 'b', style: { display: 'grid', gap: 9 } }, [this.lab('Focus', 'var(--text-strong)'), h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 8 } }, [pill('Behavioural', true), pill('Technical', true), pill('Role fit', false)])]),
+          ]),
+          h('div', { key: 'a', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14 } }, [
+            Btn('Start session · 3 credits', { size: 'md', icon: 'arrow-right' }),
+            h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.5 var(--font-body)', color: 'var(--ink-700)' } }, 'Covers all 6 questions, their scoring and the report.'),
+          ]),
+        ]),
+        h('div', { key: 'r', style: { display: 'grid', gap: 20 } }, [
+          this.card([
+            this.head('In progress', this.pill('Question 3 of 6', 'amber'), 'Resume where you stopped.'),
+            h('div', { key: 'p', style: { display: 'flex', gap: 5 } }, [0, 1, 2, 3, 4, 5].map(i =>
+              h('span', { key: i, style: { flex: 1, height: 6, borderRadius: 'var(--radius-pill)', background: i < 2 ? 'var(--pink-500)' : i === 2 ? 'var(--flame-500)' : 'var(--cream-400)' } }))),
+            h('div', { key: 'q', style: { display: 'grid', gap: 9, padding: 16, borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } }, [
+              this.lab('Behavioural', 'var(--ink-700)'),
+              h('span', { key: 'q', style: { font: 'var(--fw-medium) var(--fs-body)/1.6 var(--font-body)', color: 'var(--text-strong)' } }, '“Tell me about a time a design system you owned was ignored by a team. What did you do?”'),
+            ]),
+            Btn('Resume session', { size: 'sm', style: { justifySelf: 'start' } }),
+          ]),
+          this.card([
+            this.head('Last report', this.score(76, 52), 'Themes repeated across answers, not per-question noise.'),
+            h('div', { key: 't', style: { display: 'grid', gap: 9 } }, [
+              ['Strength', 'Concrete numbers in every example', 'pink'], ['Strength', 'Clear ownership language', 'pink'],
+              ['Improve', 'Answers run past 3 minutes', 'amber'], ['Improve', 'Rarely names what you would change', 'amber'],
+            ].map(r => h('div', { key: r[1], style: { display: 'grid', gridTemplateColumns: '84px 1fr', gap: 11, padding: '12px 14px', borderRadius: 'var(--radius-md)', background: 'var(--white)' } }, [
+              this.pill(r[0], r[2]),
+              h('span', { style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-body)' } }, r[1]),
+            ]))),
+          ], 'var(--pink-100)'),
+        ]),
+      ]),
+    ]);
+  }
+
+  // ---- GETTING STARTED
+  start() {
+    const steps = [
+      ['Import or type your profile', 'Everything else reads from this record.', true],
+      ['Adapt for your platforms', '1 credit each. Start with the two you actually use.', true],
+      ['Publish a portfolio', 'A link you can paste into any proposal.', false],
+      ['Save a job feed', 'Free — scored listings without spending credits.', false],
+      ['Send a tailored proposal', 'The action the whole product exists for.', false],
+    ];
+    const done = steps.filter(s => s[2]).length;
+    return this.page([
+      this.card([
+        this.head('Five steps to your first reply', this.pill(done + ' of 5', 'pink')),
+        h('div', { key: 'p', style: { height: 8, borderRadius: 'var(--radius-pill)', background: 'var(--surface-page)', overflow: 'hidden' } },
+          h('span', { style: { display: 'block', width: (done / 5 * 100) + '%', height: '100%', background: 'var(--flame-500)' } })),
+        h('div', { key: 'l', style: { display: 'grid', gap: 11 } }, steps.map((s, i) =>
+          h('div', { key: s[0], style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14, padding: 16, borderRadius: 'var(--radius-lg)', background: !s[2] && i === done ? 'var(--peach-100)' : 'var(--surface-page)' } }, [
+            h('span', { key: 'n', style: { width: 28, height: 28, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', display: 'inline-grid', placeItems: 'center', background: s[2] ? 'var(--pink-500)' : 'var(--white)', color: s[2] ? 'var(--white)' : 'var(--ink-700)', font: 'var(--fw-black) 12px/1 var(--font-display)' } }, s[2] ? I('check', 13, 'var(--white)') : i + 1),
+            h('span', { key: 'x', style: { display: 'grid', gap: 3, flex: '1 1 240px', minWidth: 0 } }, [
+              h('span', { style: { font: 'var(--fw-black) var(--fs-body-l)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)', textDecoration: s[2] ? 'line-through' : 'none', opacity: s[2] ? .55 : 1 } }, s[0]),
+              s[2] ? null : h('span', { style: { font: 'var(--fw-regular) var(--fs-body-s)/1.5 var(--font-body)', color: 'var(--text-body)' } }, s[1]),
+            ]),
+            s[2] ? null : Btn(i === done ? 'Start' : 'Open', { size: 'sm', variant: i === done ? 'primary' : 'ghost' }),
+          ]))),
+      ]),
+      h('div', { key: 't', 'data-d': 'two', style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 } }, [
+        this.card([
+          this.head('Browser extension', this.pill('Recommended', 'pink'), 'Import an existing profile instead of typing it.'),
+          h('div', { key: 'l', style: { display: 'grid', gap: 9 } }, ['Install from the Chrome or Firefox store', 'Open your LinkedIn or Upwork profile', 'Press Import — the draft lands in Multifolio'].map((x, i) =>
+            h('span', { key: x, style: { display: 'grid', gridTemplateColumns: '24px 1fr', gap: 11, font: 'var(--fw-regular) var(--fs-body-s)/1.6 var(--font-body)', color: 'var(--text-body)' } }, [
+              h('span', { style: { width: 22, height: 22, borderRadius: 'var(--radius-pill)', background: 'var(--surface-page)', display: 'inline-grid', placeItems: 'center', font: 'var(--fw-black) 11px/1 var(--font-display)', color: 'var(--ink-700)' } }, i + 1), x,
+            ]))),
+          Btn('Install guide', { size: 'sm', style: { justifySelf: 'start' } }),
+        ]),
+        this.card([
+          this.head('Credits', h('span', { style: { font: 'var(--fw-black) var(--fs-display-s)/1 var(--font-display)', color: 'var(--text-heading)' } }, '112')),
+          h('div', { key: 'l', style: { display: 'grid', gap: 8 } }, [['Proposal', 1], ['Platform adapt', 1], ['Portfolio', 3], ['CV export', 1], ['Interview session', 3]].map(r =>
+            h('div', { key: r[0], style: { display: 'flex', justifyContent: 'space-between', gap: 10, padding: '11px 13px', borderRadius: 'var(--radius-md)', background: 'var(--white)' } }, [
+              h('span', { style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--ink-700)' } }, r[0]),
+              h('span', { style: { font: 'var(--fw-black) var(--fs-body-s)/1 var(--font-display)', color: 'var(--flame-600)' } }, r[1] + (r[1] === 1 ? ' credit' : ' credits')),
+            ]))),
+          h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-label)/1.55 var(--font-body)', color: 'var(--ink-700)' } }, 'Failed generations refund automatically. Feeds, skill overlap and ATS structure never cost credits.'),
+        ], 'var(--peach-100)'),
+      ]),
+    ]);
+  }
+
+  // ---- FEEDBACK
+  feedback() {
+    return this.page([
+      h('div', { key: 't', 'data-d': 'two', style: { display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20, alignItems: 'start' } }, [
+        this.card([
+          this.head('What happened?', null, 'Goes straight to the team. No ticket numbers, no auto-reply.'),
+          h('div', { key: 'k', style: { display: 'flex', flexWrap: 'wrap', gap: 9 } }, [['Bug', true], ['Idea', false], ['Something else', false]].map(x =>
+            h('span', { key: x[0], style: { display: 'inline-flex', alignItems: 'center', gap: 8, minHeight: 36, padding: '0 15px', borderRadius: 'var(--radius-pill)', cursor: 'pointer', whiteSpace: 'nowrap', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', background: x[1] ? 'var(--ink-900)' : 'var(--surface-page)', color: x[1] ? 'var(--white)' : 'var(--ink-700)' } }, x[0]))),
+          this.input({ k: 'm', label: 'Tell us', rows: 6, ph: 'The job feed showed 0 results after I set min score to 90…', hint: '0 / 2000' }),
+          h('div', { key: 'c', style: { display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', padding: '13px 15px', borderRadius: 'var(--radius-md)', background: 'var(--peach-100)' } }, [
+            I('asterisk', 14, 'var(--flame-600)'),
+            h('span', { key: 't', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-body)' } }, 'Attached automatically: current page, browser and your last action. No screenshots, no console logs.'),
+          ]),
+          Btn('Send', { size: 'md', icon: 'arrow-right', style: { justifySelf: 'start' } }),
+        ]),
+        this.card([
+          this.head('Your submissions', this.pill('2', 'white')),
+          h('div', { key: 'l', style: { display: 'grid', gap: 11 } }, [
+            ['Idea', 'Add 99designs to the platform list', 'Shipped', 'pink', '11 Jul'],
+            ['Bug', 'Feed unread count did not clear', 'Looking into it', 'amber', '3 Aug'],
+          ].map(r => h('div', { key: r[1], style: { display: 'grid', gap: 9, padding: 16, borderRadius: 'var(--radius-md)', background: 'var(--white)' } }, [
+            h('div', { key: 'h', style: { display: 'flex', alignItems: 'center', gap: 10 } }, [
+              this.pill(r[0], 'cream'), h('span', { key: 'sp', style: { flex: 1 } }),
+              h('span', { key: 'd', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', color: 'var(--ink-500)' } }, r[4]),
+            ]),
+            h('span', { key: 't', style: { font: 'var(--fw-black) var(--fs-body)/1.3 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, r[1]),
+            this.pill(r[2], r[3]),
+          ]))),
+        ], 'var(--pink-100)'),
+      ]),
+    ]);
+  }
+
+  renderVals() {
+    const s = this.state.screen;
+    const fn = this[s];
+    return {
+      sideNav: this.sideNav(),
+      sideFoot: this.sideFoot(),
+      topBar: this.topBar(),
+      screen: typeof fn === 'function' ? fn.call(this) : this.home(),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

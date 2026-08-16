@@ -1,219 +1,264 @@
 "use client";
 
-// Ücret hesaplayıcı formu: tamamen istemcide, canlı hesap (AI/API yok).
-// "Ne ücret istemeliyim?" — istenen net gelirden geriye doğru gereken saatlik/
-// günlük ücret. Tüm oranlar varsayılanla dolu ve DÜZENLENEBİLİR (sorumluluk notu).
-import { useCallback, useMemo, useState } from "react";
-import Link from "next/link";
+// Ücret hesaplayıcı — Solar Pop tasarımı (docs/design/solar-pop/multifolio-free-tools-solar-pop.html).
+// Tamamen istemcide, canlı hesap (AI/API/kredi yok). Hesap çekirdeği DEĞİŞMEDİ:
+// lib/rate/calculator.ts (vitest'li). Buradaki değişiklik yalnız sunum + iki yeni
+// girdi: platform ön ayarı korunur, "bugün ne alıyorsun" alanı FARK panelini besler.
+// Para birimi USD sabit (GLOBAL-ONLY geçişi — TRY seçici kaldırıldı).
+import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Tag, Info, ArrowRight, AlertTriangle } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { AlertTriangle, ArrowUpRight, Check } from "lucide-react";
+import { Card, CardHead, BigNumber, ShareMark, TwoCol, StickyResult } from "@/components/solar/primitives";
+import { NumField, SliderField } from "@/components/solar/fields";
 import {
-  computeSuggestedRate, RATE_PLATFORM_DEFAULTS, RATE_DEFAULTS,
-  BILLABLE_HOURS_PRESETS, type RatePlatform,
+  computeSuggestedRate, RATE_PLATFORM_DEFAULTS, RATE_DEFAULTS, type RatePlatform,
 } from "@/lib/rate/calculator";
-import { parseLocaleNumber } from "@/lib/format/parse-number";
 
-const PLATFORM_LABELS: Record<RatePlatform, string> = {
-  upwork: "Upwork",
-  fiverr: "Fiverr",
-  direct: "", // i18n'den (platformDirect)
+const PLATFORM_LABEL: Record<RatePlatform, string> = { upwork: "Upwork", fiverr: "Fiverr", direct: "" };
+
+/** Bir iki-haftalık projenin faturalanabilir saati (design komp'undaki üçüncü rakam). */
+const PROJECT_HOURS = 80;
+
+const numOf = (v: string) => {
+  const n = parseFloat(v.replace(",", "."));
+  return Number.isFinite(n) ? n : 0;
 };
 
-const TAX_PRESETS = [0, 15, 20, 27] as const;
-type Currency = "USD" | "TRY";
-
-export function RateCalculator({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+// Dönüşüm CTA'sı artık kabuğun çapraz-link panelinde (ToolShell) — burada yok.
+export function RateCalculator() {
   const t = useTranslations("rate");
+  const ts = useTranslations("tools.shared");
   const locale = useLocale();
-  const numOr = useCallback((v: string, fallback = 0) => parseLocaleNumber(v, locale, fallback), [locale]);
 
   const [platform, setPlatform] = useState<RatePlatform>("upwork");
-  const [currency, setCurrency] = useState<Currency>("USD");
   const [targetNet, setTargetNet] = useState(String(RATE_DEFAULTS.targetNetMonthly));
   const [expenses, setExpenses] = useState(String(RATE_DEFAULTS.monthlyExpenses));
   const [hours, setHours] = useState(String(RATE_DEFAULTS.billableHoursPerWeek));
   const [weeksOff, setWeeksOff] = useState(String(RATE_DEFAULTS.weeksOffPerYear));
-  const [taxPct, setTaxPct] = useState(String(RATE_DEFAULTS.taxPct));
-  const [platformFee, setPlatformFee] = useState(String(RATE_DEFAULTS.platformFeePct));
+  const [taxPct, setTaxPct] = useState<number>(RATE_DEFAULTS.taxPct);
+  const [feePct, setFeePct] = useState<number>(RATE_DEFAULTS.platformFeePct);
+  const [current, setCurrent] = useState("");
 
   function pickPlatform(p: RatePlatform) {
     setPlatform(p);
-    setPlatformFee(String(RATE_PLATFORM_DEFAULTS[p]));
-    if (p !== "direct") setCurrency("USD");
+    setFeePct(RATE_PLATFORM_DEFAULTS[p]);
   }
 
   const result = useMemo(() => computeSuggestedRate({
-    targetNetMonthly: numOr(targetNet),
-    monthlyExpenses: numOr(expenses),
-    billableHoursPerWeek: numOr(hours),
-    weeksOffPerYear: numOr(weeksOff),
-    taxPct: numOr(taxPct),
-    platformFeePct: numOr(platformFee),
-  }), [targetNet, expenses, hours, weeksOff, taxPct, platformFee, numOr]);
+    targetNetMonthly: numOf(targetNet),
+    monthlyExpenses: numOf(expenses),
+    billableHoursPerWeek: numOf(hours),
+    weeksOffPerYear: numOf(weeksOff),
+    taxPct,
+    platformFeePct: feePct,
+  }), [targetNet, expenses, hours, weeksOff, taxPct, feePct]);
 
-  const fmt = useMemo(
-    () => new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 0 }),
-    [locale, currency],
+  const money = useMemo(
+    () => new Intl.NumberFormat(locale, { style: "currency", currency: "USD", maximumFractionDigits: 0 }),
+    [locale],
   );
-  const fmt2 = useMemo(
-    () => new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 2 }),
-    [locale, currency],
+  const money2 = useMemo(
+    () => new Intl.NumberFormat(locale, { style: "currency", currency: "USD", maximumFractionDigits: 2 }),
+    [locale],
   );
 
-  const inputCls = "h-9 text-sm";
-  const labelCls = "text-xs font-semibold text-muted-foreground";
-  const chipCls = (active: boolean) =>
-    `rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
-      active
-        ? "border-[#00F0FF]/50 bg-[#00F0FF]/10 text-[#00F0FF]"
-        : "border-border text-muted-foreground hover:text-foreground"
-    }`;
+  const currentRate = numOf(current);
+  const gap = result.requiredHourlyRate - currentRate;
+  const short = gap > 0;
+  // Bugünkü ücretle ele geçen: brüt → komisyon → vergi → gider (motorun tersi).
+  const currentTakeHome =
+    currentRate * result.monthlyBillableHours * (1 - feePct / 100) * (1 - taxPct / 100) - numOf(expenses);
+  const risePct = currentRate > 0 ? Math.round((result.requiredHourlyRate / currentRate - 1) * 100) : 0;
+
+  /* ── Girdiler ─────────────────────────────────────────────────────── */
+  const inputs = (
+    <Card>
+      <CardHead title={t("sp.inputsTitle")} />
+
+      <NumField
+        id="rate-net"
+        label={t("targetNet")}
+        hint={t("sp.netHint")}
+        prefix="$"
+        step={250}
+        value={targetNet}
+        onChange={setTargetNet}
+      />
+
+      <div className="grid min-w-0 grid-cols-2 gap-3.5">
+        <NumField
+          id="rate-hours"
+          label={t("billableHours")}
+          hint={t("sp.hoursHint")}
+          value={hours}
+          onChange={setHours}
+        />
+        <NumField
+          id="rate-off"
+          label={t("weeksOff")}
+          hint={t("sp.weeksOffHint")}
+          value={weeksOff}
+          onChange={setWeeksOff}
+        />
+      </div>
+
+      <NumField
+        id="rate-exp"
+        label={t("expenses")}
+        hint={t("expensesHint")}
+        prefix="$"
+        step={50}
+        value={expenses}
+        onChange={setExpenses}
+      />
+
+      <div className="grid gap-2.5">
+        <span className="sp-label" style={{ color: "var(--text-strong)" }}>{t("platform")}</span>
+        <div className="flex flex-wrap gap-2">
+          {(Object.keys(RATE_PLATFORM_DEFAULTS) as RatePlatform[]).map((p) => (
+            <button
+              key={p}
+              type="button"
+              aria-pressed={platform === p}
+              onClick={() => pickPlatform(p)}
+              className={`sp-chip ${platform === p ? "sp-chip--flame" : ""}`}
+            >
+              {p === "direct" ? t("platformDirect") : PLATFORM_LABEL[p]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid min-w-0 grid-cols-2 gap-3.5">
+        <SliderField id="rate-fee" label={t("sp.fee")} min={0} max={30} value={feePct} suffix="%" onChange={setFeePct} />
+        <SliderField id="rate-tax" label={t("sp.tax")} min={0} max={55} value={taxPct} suffix="%" onChange={setTaxPct} />
+      </div>
+
+      <NumField
+        id="rate-current"
+        label={t("sp.current")}
+        hint={t("sp.currentHint")}
+        prefix="$"
+        suffix="/hr"
+        value={current}
+        onChange={setCurrent}
+      />
+    </Card>
+  );
+
+  /* ── Sonuç ────────────────────────────────────────────────────────── */
+  const output = !result.feasible ? (
+    <Card>
+      <CardHead title={t("sp.resultTitle")} />
+      <p className="sp-body inline-flex items-start gap-2.5">
+        <AlertTriangle size={18} style={{ color: "var(--flame-600)", flexShrink: 0, marginTop: 2 }} />
+        {t("infeasible")}
+      </p>
+    </Card>
+  ) : (
+    <>
+      <Card>
+        <CardHead
+          title={t("sp.resultTitle")}
+          right={<span aria-live="polite" className="sp-label">{ts("live")}</span>}
+        />
+
+        <div className="sp-three">
+          <BigNumber
+            primary
+            label={t("sp.hourly")}
+            value={`${money2.format(result.requiredHourlyRate)}/hr`}
+            sub={t("sp.hourlySub", { hours: Math.round(result.monthlyBillableHours) })}
+          />
+          <BigNumber label={t("sp.dayRate")} value={money.format(result.requiredDayRate)} sub={t("sp.daySub")} />
+          <BigNumber
+            label={t("sp.project")}
+            value={money.format(result.requiredHourlyRate * PROJECT_HOURS)}
+            sub={t("sp.projectSub", { hours: PROJECT_HOURS })}
+          />
+        </div>
+
+        {currentRate > 0 ? (
+          <div
+            className="grid gap-2.5 rounded-[var(--radius-sp-lg)] p-[22px]"
+            style={{ background: short ? "var(--amber-200)" : "var(--surface-card-alt)" }}
+          >
+            <span className="sp-title inline-flex items-center gap-2.5">
+              {short ? <ArrowUpRight size={18} /> : <Check size={18} />}
+              {short
+                ? t("sp.gapShort", { amount: money2.format(gap) })
+                : t("sp.gapClear", { amount: money2.format(-gap) })}
+            </span>
+            <span className="sp-body">
+              {short
+                ? t("sp.gapShortBody", {
+                    rate: money2.format(currentRate),
+                    takeHome: money.format(Math.max(0, currentTakeHome)),
+                    rise: risePct,
+                  })
+                : t("sp.gapClearBody")}
+            </span>
+          </div>
+        ) : null}
+
+        <ShareMark href="/rate" note={ts("shareMark")} />
+      </Card>
+
+      <Card tone="tint">
+        <CardHead title={t("sp.breakdownTitle")} />
+        <div className="grid gap-1">
+          {[
+            { label: t("rows.net"), value: money.format(result.net), total: false },
+            { label: t("rows.expenses"), value: money.format(result.expenses), total: false },
+            { label: t("sp.taxRow", { pct: taxPct }), value: money.format(result.tax), total: false },
+            { label: t("sp.feeRow", { pct: feePct }), value: money.format(result.platformFee), total: false },
+            { label: t("sp.grossRow"), value: money.format(result.requiredMonthlyGross), total: true },
+          ].map((row) => (
+            <div
+              key={row.label}
+              className="flex justify-between gap-3 px-[15px] py-[13px]"
+              style={{
+                background: row.total ? "var(--ink-900)" : "transparent",
+                borderRadius: row.total ? "var(--radius-sp-md)" : 0,
+                borderBottom: row.total ? "none" : "var(--border-hairline)",
+              }}
+            >
+              <span
+                className="sp-label"
+                style={{ letterSpacing: ".04em", fontSize: "var(--fs-body-s)", color: row.total ? "var(--white)" : "var(--text-body)" }}
+              >
+                {row.label}
+              </span>
+              <span
+                className="tabular-nums"
+                style={{
+                  font: "var(--fw-black) var(--fs-body)/1 var(--font-display)",
+                  color: row.total ? "var(--white)" : "var(--text-strong)",
+                }}
+              >
+                {row.value}
+              </span>
+            </div>
+          ))}
+        </div>
+        <p className="sp-body sp-body--small">
+          {t("hoursNote", { monthly: Math.round(result.monthlyBillableHours), weeks: result.workingWeeks })}
+        </p>
+        <p className="sp-body sp-body--small">{t("disclaimer")}</p>
+      </Card>
+    </>
+  );
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      {/* Girdi formu */}
-      <div className="rounded-2xl border border-border bg-card p-5 space-y-5">
-        {/* İstenen net + para birimi */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <label className={labelCls} htmlFor="rate-net">{t("targetNet")}</label>
-            <Input id="rate-net" inputMode="decimal" value={targetNet} onChange={(e) => setTargetNet(e.target.value)} className={inputCls} />
-          </div>
-          <div className="space-y-1.5">
-            <p className={labelCls}>{t("currency")}</p>
-            <div className="flex gap-2">
-              {(["USD", "TRY"] as Currency[]).map((c) => (
-                <button key={c} type="button" aria-pressed={currency === c} onClick={() => setCurrency(c)} className={chipCls(currency === c)}>{c}</button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Gider */}
-        <div className="space-y-1.5">
-          <label className={labelCls} htmlFor="rate-exp">{t("expenses")}</label>
-          <Input id="rate-exp" inputMode="decimal" value={expenses} onChange={(e) => setExpenses(e.target.value)} className={inputCls} />
-          <p className="text-xs text-muted-foreground/70">{t("expensesHint")}</p>
-        </div>
-
-        {/* Faturalanabilir saat/hafta */}
-        <div className="space-y-2">
-          <label className={labelCls} htmlFor="rate-hours">{t("billableHours")}</label>
-          <div className="flex flex-wrap items-center gap-2">
-            {BILLABLE_HOURS_PRESETS.map((h) => (
-              <button key={h} type="button" aria-pressed={numOr(hours) === h} onClick={() => setHours(String(h))} className={chipCls(numOr(hours) === h)}>{h}</button>
-            ))}
-            <Input id="rate-hours" inputMode="decimal" value={hours} onChange={(e) => setHours(e.target.value)} className={`${inputCls} w-20`} />
-          </div>
-          <p className="text-xs text-muted-foreground/70">{t("billableHint")}</p>
-        </div>
-
-        {/* İzin haftası */}
-        <div className="space-y-1.5">
-          <label className={labelCls} htmlFor="rate-off">{t("weeksOff")}</label>
-          <Input id="rate-off" inputMode="decimal" value={weeksOff} onChange={(e) => setWeeksOff(e.target.value)} className={`${inputCls} w-24`} />
-        </div>
-
-        {/* Platform komisyonu */}
-        <div className="space-y-2">
-          <p className={labelCls}>{t("platform")}</p>
-          <div className="flex flex-wrap gap-2">
-            {(Object.keys(RATE_PLATFORM_DEFAULTS) as RatePlatform[]).map((p) => (
-              <button key={p} type="button" aria-pressed={platform === p} onClick={() => pickPlatform(p)} className={chipCls(platform === p)}>
-                {p === "direct" ? t("platformDirect") : PLATFORM_LABELS[p]}
-              </button>
-            ))}
-          </div>
-          <div className="space-y-1.5">
-            <label className={labelCls} htmlFor="rate-fee">{t("platformFee")}</label>
-            <Input id="rate-fee" inputMode="decimal" value={platformFee} onChange={(e) => setPlatformFee(e.target.value)} className={`${inputCls} w-24`} />
-          </div>
-        </div>
-
-        {/* Vergi */}
-        <div className="space-y-2">
-          <label className={labelCls} htmlFor="rate-tax">{t("tax")}</label>
-          <div className="flex flex-wrap items-center gap-2">
-            {TAX_PRESETS.map((p) => (
-              <button key={p} type="button" aria-pressed={numOr(taxPct) === p} onClick={() => setTaxPct(String(p))} className={chipCls(numOr(taxPct) === p)}>%{p}</button>
-            ))}
-            <Input id="rate-tax" inputMode="decimal" value={taxPct} onChange={(e) => setTaxPct(e.target.value)} className={`${inputCls} w-20`} />
-          </div>
-          <p className="text-xs text-muted-foreground/70">{t("taxHint")}</p>
-        </div>
-      </div>
-
-      {/* Sonuç */}
-      <div className="space-y-4">
-        <div className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/5 p-5 space-y-3">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#00F0FF] flex items-center gap-1.5">
-            <Tag className="h-3.5 w-3.5" />{t("resultTitle")}
-          </p>
-
-          {result.feasible ? (
-            <>
-              <div>
-                <p className="text-3xl font-extrabold tabular-nums">
-                  {fmt2.format(result.requiredHourlyRate)}<span className="text-sm font-semibold text-muted-foreground">/{t("perHour")}</span>
-                </p>
-                <p className="text-sm font-semibold text-muted-foreground tabular-nums mt-0.5">
-                  ≈ {fmt.format(result.requiredDayRate)}/{t("perDay")}
-                </p>
-              </div>
-
-              <div className="space-y-1.5 pt-2 border-t border-[#00F0FF]/15 text-xs tabular-nums">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">{t("rows.monthlyGross")}</span>
-                  <span className="font-semibold">{fmt.format(result.requiredMonthlyGross)}</span>
-                </div>
-                {[
-                  { label: t("rows.platformFee"), value: result.platformFee },
-                  { label: t("rows.tax"), value: result.tax },
-                  { label: t("rows.expenses"), value: result.expenses },
-                ].map(({ label, value }) => (
-                  <div key={label} className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{label}</span>
-                    <span className="text-red-600 dark:text-red-400">−{fmt.format(value)}</span>
-                  </div>
-                ))}
-                <div className="flex items-center justify-between pt-1 border-t border-[#00F0FF]/15">
-                  <span className="font-semibold">{t("rows.net")}</span>
-                  <span className="font-bold text-[#00F0FF]">{fmt.format(result.net)}</span>
-                </div>
-              </div>
-
-              <p className="text-xs text-muted-foreground pt-1">
-                {t("hoursNote", { monthly: Math.round(result.monthlyBillableHours), weeks: result.workingWeeks })}
-              </p>
-            </>
-          ) : (
-            <p className="flex items-start gap-2 text-sm text-amber-600 dark:text-amber-400">
-              <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
-              {t("infeasible")}
-            </p>
-          )}
-        </div>
-
-        <p className="flex items-start gap-2 text-xs text-muted-foreground/70 leading-relaxed">
-          <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-          {t("disclaimer")}
-        </p>
-
-        {/* Bağlamsal signup köprüsü (analyze/earnings deseni) — yalnız kayıtsıza. */}
-        {!isLoggedIn && (
-          <div className="rounded-2xl border border-violet-500/20 bg-violet-500/[0.04] p-4 space-y-2">
-            <p className="text-sm font-semibold">{t("ctaTitle")}</p>
-            <p className="text-xs text-muted-foreground leading-relaxed">{t("ctaBody")}</p>
-            <Link
-              href="/signup"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm px-4 py-2 transition-colors"
-            >
-              {t("ctaButton")}<ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
+    <>
+      <TwoCol inputs={inputs} output={output} />
+      {result.feasible ? (
+        <StickyResult
+          label={t("sp.hourly")}
+          value={`${money2.format(result.requiredHourlyRate)}/hr`}
+          cta={ts("fullResult")}
+        />
+      ) : null}
+    </>
   );
 }

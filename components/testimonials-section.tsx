@@ -29,7 +29,7 @@ export async function TestimonialsSection() {
     <section className="py-24 overflow-hidden">
       <ScrollReveal>
         <div className="text-center space-y-3 mb-12 px-8">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("eyebrow")}</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FA531C]">{t("eyebrow")}</p>
           <h2 className="text-4xl font-extrabold tracking-tight">{t("title")}</h2>
         </div>
       </ScrollReveal>
@@ -54,8 +54,8 @@ function MarqueeHalf({ quotes, ariaHidden = false }: { quotes: string[]; ariaHid
     <ul className="flex shrink-0 gap-5" aria-hidden={ariaHidden || undefined}>
       {quotes.map((quote, i) => (
         <li key={i} className="shrink-0">
-          <figure className="flex h-full w-[340px] flex-col rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 shadow-sm">
-            <Quote className="h-6 w-6 shrink-0 text-[#00F0FF]/50" aria-hidden />
+          <figure className="flex h-full w-[340px] flex-col rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#FFFAF3] p-6 shadow-sm">
+            <Quote className="h-6 w-6 shrink-0 text-[#FA531C]/50" aria-hidden />
             <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-slate-700 dark:text-[#CBD5E1]">
               “{quote}”
             </blockquote>

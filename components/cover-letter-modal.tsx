@@ -71,8 +71,8 @@ export function CoverLetterModal({ jobId, jobDescription, onClose, onCreditsUpda
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-[#00F0FF]/10 flex items-center justify-center">
-              <FileText className="h-4 w-4 text-[#00F0FF]" />
+            <div className="h-8 w-8 rounded-lg bg-[#FA531C]/10 flex items-center justify-center">
+              <FileText className="h-4 w-4 text-[#FA531C]" />
             </div>
             <div>
               <h3 className="text-sm font-bold">{t("title")}</h3>
@@ -87,7 +87,7 @@ export function CoverLetterModal({ jobId, jobDescription, onClose, onCreditsUpda
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {busy && (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
-              <div className="h-6 w-6 rounded-full border-2 border-[#00F0FF]/30 border-t-[#00F0FF] animate-spin" />
+              <div className="h-6 w-6 rounded-full border-2 border-[#FA531C]/30 border-t-[#FA531C] animate-spin" />
               <p className="text-xs text-muted-foreground">{t("generating")}</p>
             </div>
           )}

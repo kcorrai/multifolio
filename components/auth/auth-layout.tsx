@@ -1,389 +1,406 @@
 "use client";
 
-import { Star, Pencil, Sparkles, Target, LayoutDashboard } from "lucide-react";
+// Auth kabuğu — Solar Pop tasarımı ("bilet" kompozisyonu).
+// Referans komp: docs/design/solar-pop/multifolio-auth-solar-pop.html
+//
+// TASARIM KARARI (komp'tan): eski %58'lik pazarlama paneli KALDIRILDI. "Neden"
+// artık formun üstünde üç maddelik ince bir şerit; şerit ile form arasındaki
+// PERFORASYON ikisini tek bilet gibi bağlar — rakip bir panel değil. h1 forma
+// aittir; kenar sütunu küçük tutulur ve mobilde tamamen düşer.
+import type { ReactNode } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { PlatformLogo } from "@/components/platform-logo";
-import type { PlatformId } from "@/lib/ai/platforms";
+import { Sun, Globe, Package, Heart, ArrowRight, Check, X, Eye, EyeOff } from "lucide-react";
 
-/* ─── Static data ─────────────────────────────────────────────── */
-const FEATURES = [
-  { key: "layout.feature1", Icon: Pencil },
-  { key: "layout.feature2", Icon: Sparkles },
-  { key: "layout.feature3", Icon: Target },
-  { key: "layout.feature4", Icon: LayoutDashboard },
-];
+/* ─── Bilet: şerit + perforasyon + gövde ───────────────────────────── */
+export type StubKind = "benefits" | "welcome" | "referral" | "none";
 
-const PLATFORMS: PlatformId[] = ["linkedin", "upwork", "fiverr"];
+const STUB_ITEMS = [
+  { key: "credits", icon: Sun },
+  { key: "platforms", icon: Globe },
+  { key: "outputs", icon: Package },
+] as const;
 
-interface HubPlatform {
-  id: PlatformId;
-  style: { top?: string; bottom?: string; left?: string; right?: string };
-  delay: string;
+/** Perforasyon: iki yandan krem daireler + kesikli çizgi (biletin yırtma yeri). */
+function Perforation() {
+  return (
+    <div aria-hidden className="relative mx-[-28px] h-5">
+      <span
+        className="absolute top-0 h-[22px] w-[22px] rounded-[var(--radius-pill)]"
+        style={{ left: -11, background: "var(--surface-page)" }}
+      />
+      <span
+        className="absolute top-0 h-[22px] w-[22px] rounded-[var(--radius-pill)]"
+        style={{ right: -11, background: "var(--surface-page)" }}
+      />
+      <span className="absolute left-5 right-5 top-[10px]" style={{ borderTop: "2px dashed rgba(58,36,27,.2)" }} />
+    </div>
+  );
 }
 
-const HUB_PLATFORMS: HubPlatform[] = [
-  { id: "linkedin", style: { top: "10%",  left: "12%"  }, delay: "0s"   },
-  { id: "upwork",   style: { top: "10%",  right: "12%" }, delay: "0.7s" },
-  { id: "fiverr",   style: { bottom: "12%", left: "50%" }, delay: "1.4s" },
-];
+function Stub({ kind, referrer }: { kind: StubKind; referrer?: string }) {
+  const t = useTranslations("auth.sp.stub");
 
-const LINE_ENDPOINTS = [
-  { x2: "18", y2: "18" },  // linkedin
-  { x2: "82", y2: "18" },  // upwork
-  { x2: "50", y2: "84" },  // fiverr
-];
+  if (kind === "none") return null;
 
-/* ─── Platform hub mockup (full-height) ───────────────────────── */
-function PlatformHubMockup() {
+  if (kind === "referral") {
+    return (
+      <div className="grid gap-3 px-7 pb-1.5 pt-5" style={{ background: "var(--surface-pink)" }}>
+        <div className="flex flex-wrap items-center gap-3">
+          <span
+            className="inline-grid h-9 w-9 shrink-0 place-items-center rounded-[var(--radius-pill)]"
+            style={{ background: "var(--white)", color: "var(--pink-600)" }}
+          >
+            <Heart size={17} />
+          </span>
+          <span className="grid min-w-0 gap-[3px]">
+            <span
+              style={{
+                font: "var(--fw-black) var(--fs-body-l)/1.2 var(--font-display)",
+                textTransform: "uppercase", letterSpacing: ".02em", color: "var(--white)",
+              }}
+            >
+              {referrer ? t("referralTitleNamed", { name: referrer }) : t("referralTitle")}
+            </span>
+            <span style={{ font: "var(--fw-regular) var(--fs-body-s)/1.5 var(--font-body)", color: "var(--white)" }}>
+              {t("referralBody")}
+            </span>
+          </span>
+        </div>
+        <Perforation />
+      </div>
+    );
+  }
+
+  if (kind === "welcome") {
+    return (
+      <div className="grid gap-3 px-7 pb-1.5 pt-5" style={{ background: "var(--surface-card-peach)" }}>
+        <div className="flex flex-wrap items-center gap-3">
+          <span
+            className="inline-grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[var(--radius-pill)]"
+            style={{ background: "var(--white)", color: "var(--flame-600)" }}
+          >
+            <Sun size={16} />
+          </span>
+          <span style={{ font: "var(--fw-bold) var(--fs-body-s)/1.5 var(--font-body)", color: "var(--text-body)" }}>
+            {t("welcome")}
+          </span>
+        </div>
+        <Perforation />
+      </div>
+    );
+  }
+
   return (
-    <div
-      className="w-full h-full flex flex-col rounded-3xl overflow-hidden
-                 border border-slate-200/80 dark:border-white/10
-                 bg-white/80 dark:bg-white/[0.04]
-                 shadow-[0_20px_60px_-10px] shadow-slate-300/50 dark:shadow-black/70
-                 backdrop-blur-md"
-    >
-      {/* Browser chrome */}
+    <div className="grid gap-3.5 px-7 pb-1.5 pt-5" style={{ background: "var(--surface-card-peach)" }}>
+      <div className="sp-stub grid gap-4" style={{ gridTemplateColumns: "repeat(3,1fr)" }}>
+        {STUB_ITEMS.map(({ key, icon: Icon }) => (
+          <span key={key} className="grid gap-1">
+            <span
+              className="inline-grid h-[30px] w-[30px] place-items-center rounded-[var(--radius-pill)]"
+              style={{ background: "var(--white)", color: "var(--flame-600)" }}
+            >
+              <Icon size={14} />
+            </span>
+            <span
+              style={{
+                font: "var(--fw-black) var(--fs-body)/1.15 var(--font-display)",
+                textTransform: "uppercase", letterSpacing: ".02em", color: "var(--text-strong)",
+              }}
+            >
+              {t(`${key}.title`)}
+            </span>
+            <span style={{ font: "var(--fw-regular) var(--fs-label)/1.4 var(--font-body)", color: "var(--text-muted)" }}>
+              {t(`${key}.sub`)}
+            </span>
+          </span>
+        ))}
+      </div>
+      <Perforation />
+    </div>
+  );
+}
+
+/* ─── Kenar sütunu: kanıt, kasten küçük ────────────────────────────── */
+function AuthAside({ variant }: { variant: "signup" | "login" }) {
+  const t = useTranslations("auth.sp.aside");
+
+  return (
+    <aside className="sp-authaside grid content-start gap-4">
       <div
-        className="flex-none flex items-center gap-1.5 px-5 py-3
-                   border-b border-slate-100 dark:border-white/6
-                   bg-slate-50 dark:bg-white/[0.03]"
+        className="relative grid gap-3 overflow-hidden rounded-[var(--radius-sp-xl)] p-[22px]"
+        style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft)" }}
       >
-        <div className="h-3 w-3 rounded-full bg-red-400/80" />
-        <div className="h-3 w-3 rounded-full bg-amber-400/80" />
-        <div className="h-3 w-3 rounded-full bg-green-400/80" />
-        <span className="ml-3 text-xs font-medium text-slate-400 dark:text-white/25 tracking-tight">
-          multifolio.app/studio
+        <span
+          aria-hidden
+          className="sp-blob sp-blob--circle"
+          style={{ width: 120, height: 120, background: "var(--pink-200)", right: -40, top: -40 }}
+        />
+        <span className="relative" style={{ font: "400 40px/1 var(--font-script)", color: "var(--text-heading)" }}>“</span>
+        <p className="relative" style={{ font: "var(--fw-medium) var(--fs-body-s)/1.6 var(--font-body)", color: "var(--text-strong)", textWrap: "pretty" }}>
+          {t("quote")}
+        </p>
+        <span className="sp-label sp-label--muted relative" style={{ lineHeight: 1.4 }}>{t("quoteBy")}</span>
+      </div>
+
+      <div className="grid gap-2.5 rounded-[var(--radius-sp-xl)] p-5" style={{ background: "var(--surface-card-alt)" }}>
+        <span className="sp-label sp-label--pink">{t("noCardTitle")}</span>
+        <span style={{ font: "var(--fw-regular) var(--fs-body-s)/1.6 var(--font-body)", color: "var(--text-body)" }}>
+          {t(variant === "login" ? "noCardLogin" : "noCardSignup")}
         </span>
       </div>
 
-      {/* Hub area — fills remaining height */}
-      <div className="relative flex-1 min-h-[220px]">
-        {/* Ambient glow */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="h-44 w-44 rounded-full blur-[80px]
-                          bg-indigo-300/45 dark:bg-[#00F0FF]/18" />
-        </div>
-
-        {/* Connecting lines */}
-        <svg
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <linearGradient id="hubLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#6366F1" stopOpacity="0.65" />
-              <stop offset="100%" stopColor="#00F0FF" stopOpacity="0.65" />
-            </linearGradient>
-          </defs>
-          {LINE_ENDPOINTS.map(({ x2, y2 }, i) => (
-            <line
-              key={i}
-              x1="50" y1="50"
-              x2={x2} y2={y2}
-              stroke="url(#hubLineGrad)"
-              strokeWidth="0.8"
-              className="login-line"
-              style={{ animationDelay: `${i * 0.4}s` }}
-            />
-          ))}
-        </svg>
-
-        {/* Central M hub */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-          <div
-            className="h-16 w-16 rounded-2xl flex items-center justify-center hub-glow
-                       bg-gradient-to-br from-indigo-50 to-violet-100
-                       dark:from-[#00F0FF]/20 dark:to-violet-600/25
-                       border border-indigo-300/60 dark:border-[#00F0FF]/40
-                       shadow-lg shadow-indigo-300/40 dark:shadow-[#00F0FF]/25"
-          >
-            <span className="text-indigo-600 dark:text-[#00F0FF] font-extrabold text-2xl">M</span>
-          </div>
-        </div>
-
-        {/* Orbiting platform icons */}
-        {HUB_PLATFORMS.map(({ id, style, delay }) => (
-          <div
-            key={id}
-            className="absolute z-10 platform-float"
-            style={{ ...style, animationDelay: delay }}
-          >
-            <div
-              className="h-13 w-13 rounded-xl p-2
-                         border border-slate-200 dark:border-white/10
-                         bg-white dark:bg-white/8
-                         shadow-lg shadow-slate-200/60 dark:shadow-black/40
-                         backdrop-blur-sm"
-            >
-              <PlatformLogo platform={id} size={32} />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Sparkle decoration ──────────────────────────────────────── */
-function SparkleDecor({ className }: { className?: string }) {
-  return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
-      <path
-        d="M16 2 L17.8 13.2 L28 16 L17.8 18.8 L16 30 L14.2 18.8 L4 16 L14.2 13.2 Z"
-        fill="url(#sparkDecorGrad)"
-      />
-      <defs>
-        <linearGradient id="sparkDecorGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#6366F1" />
-          <stop offset="1" stopColor="#00F0FF" />
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-}
-
-/* ─── AuthLayout ──────────────────────────────────────────────── */
-export function AuthLayout({ children }: { children: React.ReactNode }) {
-  const t = useTranslations("auth");
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
-
-      {/* ══════════════════════════════════════════════════════════
-          LEFT PANEL — light/dark responsive hero
-      ══════════════════════════════════════════════════════════ */}
       <div
-        className="relative lg:w-[58%] flex flex-col overflow-hidden
-                   bg-slate-50 dark:bg-[#080A10]
-                   px-8 pt-8 pb-8 lg:px-12 lg:pt-10 lg:pb-8"
+        className="grid gap-2.5 rounded-[var(--radius-sp-xl)] p-5"
+        style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft)" }}
       >
-        {/* Light-mode gradient overlay */}
-        <div className="pointer-events-none absolute inset-0 dark:hidden
-                        bg-gradient-to-br from-indigo-50/80 via-white/30 to-violet-50/50" />
+        <span className="sp-label sp-label--flame">{t("toolsTitle")}</span>
+        <span style={{ font: "var(--fw-regular) var(--fs-body-s)/1.6 var(--font-body)", color: "var(--text-body)" }}>
+          {t("toolsBody")}
+        </span>
+        <Link href="/rate" className="sp-linkish">
+          {t("toolsCta")}
+          <ArrowRight size={13} />
+        </Link>
+      </div>
+    </aside>
+  );
+}
 
-        {/* Blobs */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="login-blob-1 absolute -top-40 -left-40 h-[560px] w-[560px] rounded-full blur-[110px]
-                          bg-indigo-200/50 dark:bg-[#00F0FF]/10" />
-          <div className="login-blob-2 absolute top-1/2 -right-24 h-[440px] w-[440px] rounded-full blur-[95px]
-                          bg-violet-200/50 dark:bg-violet-600/12" />
-          <div className="login-blob-3 absolute -bottom-24 left-1/4 h-[400px] w-[400px] rounded-full blur-[90px]
-                          bg-blue-200/40 dark:bg-indigo-600/10" />
-          {/* Dot grid */}
-          <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <defs>
-              <pattern id="left-dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-                <circle cx="1.5" cy="1.5" r="1.5"
-                  className="fill-slate-300/60 dark:fill-white/[0.035]" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#left-dots)" />
-          </svg>
-        </div>
+/* ─── Kabuk ─────────────────────────────────────────────────────────── */
+export function AuthLayout({
+  children, stub = "benefits", aside = "signup", helper, referrer, altRoute,
+}: {
+  children: ReactNode;
+  stub?: StubKind;
+  /** Kenar sütununun tonu; null → kenar sütunu yok (dar tek kolon). */
+  aside?: "signup" | "login" | null;
+  helper?: { text: string; label: string; href: string };
+  referrer?: string;
+  altRoute?: ReactNode;
+}) {
+  return (
+    <div className="sp-page grid" style={{ padding: "28px 24px 64px" }}>
+      <div aria-hidden className="sp-blobs">
+        <span className="sp-blob sp-blob--blob" style={{ width: 320, height: 320, background: "var(--peach-200)", left: -120, top: 40, opacity: 0.7 }} />
+        <span className="sp-blob sp-blob--petal" style={{ width: 240, height: 240, background: "var(--pink-300)", right: -90, bottom: 60, opacity: 0.55, transform: "rotate(20deg)" }} />
+        <span className="sp-blob sp-blob--circle" style={{ width: 130, height: 130, background: "var(--amber-200)", right: "18%", top: -50 }} />
+      </div>
 
-        {/* ── Logo ── */}
-        <div className="relative anim-fade-in anim-d0 flex items-center gap-3 flex-none">
-          <div
-            className="h-9 w-9 rounded-xl flex items-center justify-center
-                       bg-indigo-100 dark:bg-[#00F0FF]/15
-                       border border-indigo-200 dark:border-[#00F0FF]/30
-                       shadow shadow-indigo-200/60 dark:shadow-[#00F0FF]/20"
-          >
-            <span className="text-indigo-600 dark:text-[#00F0FF] text-sm font-extrabold">M</span>
-          </div>
-          <span className="font-bold text-lg text-slate-900 dark:text-white tracking-tight">
-            Multifolio
-          </span>
-        </div>
-
-        {/* ══ DESKTOP LAYOUT ══ */}
-        <div className="relative hidden lg:flex flex-col items-center flex-1 min-h-0 justify-center gap-8 pt-0 pb-10">
-
-          {/* ① Badge + Headline — tam genişlik */}
-          <div className="flex-none w-full space-y-3 anim-fade-up anim-d1 flex flex-col items-center text-center">
-            {/* Stars badge */}
-            <div
-              className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5
-                         border border-indigo-200 dark:border-[#00F0FF]/20
-                         bg-indigo-50 dark:bg-[#00F0FF]/8"
+      <div className="relative z-[2] mx-auto grid w-full max-w-[1000px] gap-5">
+        {/* Üst satır: marka + karşı rota */}
+        <div className="flex flex-wrap items-center gap-3.5">
+          <Link href="/" className="mr-auto flex items-center gap-[11px]">
+            <span
+              className="inline-grid h-[34px] w-[34px] place-items-center rounded-[var(--radius-pill)]"
+              style={{ background: "var(--action-primary)", color: "var(--white)", font: "var(--fw-black) 16px/1 var(--font-display)" }}
             >
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
-              <span className="text-xs font-semibold text-indigo-700 dark:text-white/65">
-                {t("layout.betaBadge")}
-              </span>
-            </div>
-
-            {/* Headline — 2 sütun genişliğinde. Sayfanın h1'i form başlığı ("Sign in"/
-                "Sign up") olduğu için bu pazarlama başlığı <p> (tek h1 kuralı). */}
-            <p className="anim-fade-up anim-d2 text-[3rem] font-extrabold tracking-[-0.005em] leading-[1.12]">
-              <span className="text-slate-900 dark:text-white">{t("layout.headlinePre")}</span>
-              <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-indigo-500 to-violet-500
-                                 dark:from-[#00F0FF] dark:to-violet-400
-                                 bg-clip-text text-transparent font-black">
-                  {t("layout.headlineHighlight")}
-                </span>
-                <span className="pointer-events-none absolute -bottom-1 left-0 right-0 h-[2px] rounded-full
-                                 bg-gradient-to-r from-indigo-400 to-violet-400
-                                 dark:from-[#00F0FF] dark:to-violet-400 opacity-50" />
-              </span>
-              {" "}
-              <span className="text-slate-900 dark:text-white">{t("layout.headlinePost")}</span>
-            </p>
-          </div>
-
-          {/* ② 2-sütun: Features | Büyük mockup */}
-          <div className="w-full grid grid-cols-[5fr_7fr] gap-6 items-center">
-
-            {/* Sol: 4 özellik */}
-            <div className="flex flex-col justify-center space-y-5 anim-fade-up anim-d3">
-              {FEATURES.map(({ key, Icon }, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div
-                    className="mt-0.5 shrink-0 h-6 w-6 rounded-lg flex items-center justify-center
-                               border border-indigo-200 dark:border-[#00F0FF]/25
-                               bg-indigo-50 dark:bg-[#00F0FF]/10"
-                  >
-                    <Icon className="h-3.5 w-3.5 text-indigo-500 dark:text-[#00F0FF]" />
-                  </div>
-                  <span className="text-lg font-medium leading-relaxed
-                                   text-slate-600 dark:text-white/65">
-                    {t(key)}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Sağ: animasyonlu platform hub — orta boy */}
-            <div className="anim-scale-in anim-d3 h-[300px] self-center">
-              <PlatformHubMockup />
-            </div>
-          </div>
-
-          {/* ③ Platform logoları — ortalı */}
-          <div className="flex-none text-center space-y-4 anim-fade-up anim-d5 pb-1">
-            <p className="text-xs font-bold uppercase tracking-[0.18em]
-                          text-slate-400 dark:text-white/25">
-              {t("layout.supportedPlatforms")}
-            </p>
-            <div className="flex items-center justify-center gap-3">
-              {PLATFORMS.map((id) => (
-                <div
-                  key={id}
-                  className="h-14 w-14 rounded-2xl flex items-center justify-center p-2.5
-                             border border-slate-200 dark:border-white/15
-                             bg-white dark:bg-white/8
-                             shadow-md shadow-slate-200/70 dark:shadow-black/30
-                             ring-1 ring-slate-100/80 dark:ring-white/5
-                             hover:scale-110 hover:shadow-lg hover:shadow-indigo-100/60
-                             dark:hover:shadow-[#00F0FF]/10
-                             transition-all duration-200"
-                >
-                  <PlatformLogo platform={id} size={32} />
-                </div>
-              ))}
-              <div
-                className="h-14 w-14 rounded-2xl flex items-center justify-center
-                           border border-dashed border-slate-300 dark:border-white/15
-                           bg-slate-50 dark:bg-white/4
-                           text-slate-400 dark:text-white/35 text-base font-bold"
-              >
-                +
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Mobile: compact tagline ── */}
-        <div className="relative lg:hidden mt-5 space-y-2">
-          <p className="text-2xl font-extrabold leading-tight text-slate-900 dark:text-white">
-            {t("layout.mobileTaglinePre")}{" "}
-            <span className="bg-gradient-to-r from-indigo-500 to-violet-500
-                             dark:from-[#00F0FF] dark:to-violet-400 bg-clip-text text-transparent">
-              {t("layout.mobileTaglineHighlight")}
+              m
             </span>
-          </p>
-          <p className="text-sm font-medium text-slate-500 dark:text-white/50">
-            {t("layout.mobileTaglineSub")}
-          </p>
-        </div>
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════
-          RIGHT PANEL — dot-grid + floating form card
-      ══════════════════════════════════════════════════════════ */}
-      <div
-        className="flex-1 relative flex items-center justify-center
-                   px-6 py-10 lg:py-0
-                   bg-slate-100 dark:bg-[#0D0F18]"
-      >
-        {/* Dot grid */}
-        <svg
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <pattern id="right-dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-              <circle cx="1" cy="1" r="1"
-                className="fill-slate-400/35 dark:fill-white/[0.055]" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#right-dots)" />
-        </svg>
-
-        {/* Ambient glow */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-                          h-[400px] w-[400px] rounded-full blur-[120px]
-                          bg-indigo-100/60 dark:bg-violet-600/6" />
-        </div>
-
-        {/* Language + theme toggle */}
-        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-          <ThemeToggle />
-        </div>
-
-        {/* Decorative sparkles */}
-        <div className="absolute bottom-8 right-8 z-10 anim-sparkle">
-          <SparkleDecor className="opacity-25 dark:opacity-15" />
-        </div>
-        <div className="absolute top-16 left-8 z-10 anim-sparkle" style={{ animationDelay: "1.8s" }}>
-          <SparkleDecor className="opacity-15 dark:opacity-10 scale-[0.6]" />
-        </div>
-
-        {/* ── Floating form card ── */}
-        {/* Genişlik REM tabanlı (max-w-md) — ≥1536px kök-font zoom'uyla birlikte
-            ölçeklenir; px olsaydı geniş ekranda içerik taşar/kart minik kalırdı. */}
-        <div
-          className="relative z-10 w-full max-w-md login-form-in
-                     rounded-2xl p-8
-                     border border-white/90 dark:border-white/8
-                     bg-white dark:bg-[#161B2C]
-                     shadow-2xl shadow-slate-200/70 dark:shadow-black/60"
-        >
-          {/* Mobile-only logo */}
-          <div className="lg:hidden mb-6 flex items-center justify-center gap-2.5">
-            <div
-              className="h-8 w-8 rounded-xl flex items-center justify-center
-                         bg-indigo-100 dark:bg-[#00F0FF]/15
-                         border border-indigo-200 dark:border-[#00F0FF]/30"
+            <span
+              style={{
+                font: "var(--fw-black) 19px/1 var(--font-display)",
+                letterSpacing: "var(--tracking-display)", textTransform: "uppercase", color: "var(--text-strong)",
+              }}
             >
-              <span className="text-indigo-600 dark:text-[#00F0FF] text-sm font-extrabold">M</span>
-            </div>
-            <span className="font-bold text-base text-foreground">Multifolio</span>
-          </div>
-          {children}
+              multifolio
+            </span>
+          </Link>
+          {helper ? (
+            <>
+              <span style={{ font: "var(--fw-medium) var(--fs-body-s)/1 var(--font-body)", color: "var(--text-muted)" }}>
+                {helper.text}
+              </span>
+              <Link href={helper.href} className="sp-btn sp-btn--sm sp-btn--ghost">{helper.label}</Link>
+            </>
+          ) : null}
+        </div>
+
+        <div
+          className="sp-authgrid grid items-start justify-center gap-6"
+          // Kenar sütunu yokken form tam genişliğe yayılmasın: iki alanlık bir
+          // form 1000px'te okunmuyor, ölçülü tek kolona düşer.
+          style={{ gridTemplateColumns: aside ? "minmax(0,1fr) 268px" : "minmax(0,540px)" }}
+        >
+          <main className="grid min-w-0 gap-4">
+            <section
+              className="sp-rise relative grid overflow-hidden rounded-[var(--radius-sp-xl)]"
+              style={{ background: "var(--white)", boxShadow: "var(--shadow-lift)" }}
+            >
+              <Stub kind={stub} referrer={referrer} />
+              <div className="grid gap-5 px-7 pb-7 pt-6">{children}</div>
+            </section>
+            {altRoute}
+          </main>
+          {aside ? <AuthAside variant={aside} /> : null}
         </div>
       </div>
     </div>
+  );
+}
+
+/* ─── Form parçaları ───────────────────────────────────────────────── */
+
+/** Sayfanın TEK h1'i forma aittir (pazarlama başlığı değil). */
+export function AuthHead({ title, script, sub }: { title: string; script?: string; sub?: string }) {
+  return (
+    <header className="grid gap-[9px]">
+      <h1
+        className="sp-authh1"
+        style={{
+          font: "var(--fw-black) var(--fs-display-s)/1.05 var(--font-display)",
+          letterSpacing: "var(--tracking-display)", textTransform: "uppercase", color: "var(--text-strong)",
+        }}
+      >
+        {title}
+        {script ? <span className="sp-script ml-2.5" style={{ fontSize: "var(--fs-script-m)" }}>{script}</span> : null}
+      </h1>
+      {sub ? <p className="sp-body">{sub}</p> : null}
+    </header>
+  );
+}
+
+/** Şifre görünürlüğü — buradaki en sık hata yazım hatası, yer etmesi haklı. */
+export function RevealButton({ on, onToggle, labelShow, labelHide }: {
+  on: boolean;
+  onToggle: () => void;
+  labelShow: string;
+  labelHide: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={on ? labelHide : labelShow}
+      className="inline-grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-[var(--radius-pill)] border-none"
+      style={{ background: "var(--white)", color: "var(--text-muted)", boxShadow: "var(--shadow-soft)" }}
+    >
+      {on ? <EyeOff size={14} /> : <Eye size={14} />}
+    </button>
+  );
+}
+
+/** Üç kademeli güç göstergesi — 8 karakter alt sınır, 12+ güçlü. */
+export function PasswordStrength({ length }: { length: number }) {
+  const t = useTranslations("auth.sp.strength");
+  const steps = [length >= 1, length >= 8, length >= 12];
+  const label = length >= 12 ? t("strong") : length >= 8 ? t("good") : length ? t("short") : t("min");
+
+  return (
+    <div className="flex items-center gap-2.5">
+      <span className="flex flex-1 gap-[5px]" aria-hidden>
+        {steps.map((on, i) => (
+          <span
+            key={i}
+            className="h-[5px] flex-1 rounded-[var(--radius-pill)]"
+            style={{
+              background: on ? (i === 2 ? "var(--pink-500)" : "var(--flame-500)") : "var(--cream-400)",
+              transition: "background var(--dur-base) var(--ease-out)",
+            }}
+          />
+        ))}
+      </span>
+      <span className="sp-label sp-label--muted whitespace-nowrap" style={{ letterSpacing: ".08em" }}>{label}</span>
+    </div>
+  );
+}
+
+/** Kredi vaadi — gönder butonunun HEMEN üstünde durur. */
+export function AuthPromise({ text }: { text: string }) {
+  return (
+    <div
+      className="flex flex-wrap items-center justify-center gap-2.5 rounded-[var(--radius-pill)] px-3.5 py-[11px]"
+      style={{ background: "var(--surface-card-alt)" }}
+    >
+      <span style={{ color: "var(--pink-600)", display: "inline-flex" }}><Sun size={14} /></span>
+      <span className="sp-label sp-label--pink text-center" style={{ lineHeight: 1.3 }}>{text}</span>
+    </div>
+  );
+}
+
+export function AuthSubmit({ label, busyLabel, busy }: { label: string; busyLabel: string; busy: boolean }) {
+  return (
+    <button type="submit" disabled={busy} aria-busy={busy} className="sp-btn sp-btn--lg sp-btn--block">
+      {busy ? (
+        <span
+          className="sp-spin h-[15px] w-[15px] rounded-[var(--radius-pill)]"
+          style={{ border: "2px solid rgba(255,255,255,.4)", borderTopColor: "var(--white)" }}
+        />
+      ) : null}
+      {busy ? busyLabel : label}
+    </button>
+  );
+}
+
+/** Hata/bilgi bandı — asla çıkmaz sokak: her zaman bir sonraki adımı adlandırır. */
+export function AuthBanner({
+  tone = "info", title, body, action, actionHref, onAction,
+}: {
+  tone?: "info" | "danger";
+  title: string;
+  body?: string;
+  action?: string;
+  actionHref?: string;
+  onAction?: () => void;
+}) {
+  const danger = tone === "danger";
+  return (
+    <div
+      role={danger ? "alert" : "status"}
+      className="sp-in grid gap-[13px] rounded-[var(--radius-sp-lg)] p-[18px]"
+      style={{ gridTemplateColumns: "34px 1fr", background: danger ? "var(--pink-100)" : "var(--amber-200)" }}
+    >
+      <span
+        className="inline-grid h-[34px] w-[34px] place-items-center rounded-[var(--radius-pill)]"
+        style={{ background: "var(--white)", color: danger ? "var(--pink-600)" : "var(--flame-600)" }}
+      >
+        {danger ? <X size={16} /> : <Check size={16} />}
+      </span>
+      <div className="grid gap-[7px]">
+        <span
+          style={{
+            font: "var(--fw-black) var(--fs-body)/1.3 var(--font-display)",
+            textTransform: "uppercase", letterSpacing: ".02em", color: "var(--text-strong)",
+          }}
+        >
+          {title}
+        </span>
+        {body ? <span className="sp-body sp-body--small">{body}</span> : null}
+        {action ? (
+          actionHref ? (
+            <Link href={actionHref} className="sp-linkish">{action} <ArrowRight size={13} /></Link>
+          ) : (
+            <button type="button" onClick={onAction} className="sp-linkish">{action} <ArrowRight size={13} /></button>
+          )
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Karşı rota kartı — biletin altında, ayrı kutu. */
+export function AltRoute({ children }: { children: ReactNode }) {
+  return (
+    <div
+      className="flex flex-wrap items-center justify-center gap-2.5 rounded-[var(--radius-sp-lg)] px-[18px] py-[15px]"
+      style={{ background: "var(--surface-card)" }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Büyük durum ikonu (inbox / süresi dolmuş / tamam ekranları). */
+export function AuthIcon({ icon: Icon, tone = "pink" }: { icon: typeof Sun; tone?: "pink" | "amber" }) {
+  return (
+    <span
+      className="inline-grid h-[50px] w-[50px] place-items-center rounded-[var(--radius-pill)]"
+      style={{
+        background: tone === "pink" ? "var(--surface-card-alt)" : "var(--amber-200)",
+        color: tone === "pink" ? "var(--pink-600)" : "var(--flame-600)",
+      }}
+    >
+      <Icon size={22} />
+    </span>
   );
 }

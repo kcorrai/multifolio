@@ -47,12 +47,12 @@ export function OverviewTab({
 
       {/* Onboarding banner */}
       {!onboardingDismissed && onboardingStep < 3 && (
-        <div className="relative rounded-2xl border border-[#00F0FF]/20 dark:border-[#00F0FF]/15 bg-[#00F0FF]/5 overflow-hidden">
-          <div className="h-0.5 bg-gradient-to-r from-transparent via-[#00F0FF] to-violet-500" />
+        <div className="relative rounded-[var(--radius-sp-xl)] bg-[var(--surface-card-peach)] overflow-hidden">
+          <div className="h-0.5 bg-gradient-to-r from-transparent via-[#FA531C] to-pink-500" />
           <div className="p-5">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <p className="text-sm font-bold text-[#00F0FF] flex items-center gap-1.5">
+                <p className="text-sm font-bold text-[#FA531C] flex items-center gap-1.5">
                   <Sparkles className="h-4 w-4" />
                   {t("welcome")}
                 </p>
@@ -70,7 +70,7 @@ export function OverviewTab({
             {/* Adımların tamamı yeni /dashboard/start rehberinde — buradan oraya yönlendir. */}
             <Link
               href="/dashboard/start"
-              className="group inline-flex items-center gap-1.5 rounded-xl bg-[#00F0FF]/10 hover:bg-[#00F0FF]/15 text-[#00F0FF] font-semibold text-sm px-4 py-2 transition-colors"
+              className="group inline-flex items-center gap-1.5 rounded-xl bg-[#FA531C]/10 hover:bg-[#FA531C]/15 text-[#FA531C] font-semibold text-sm px-4 py-2 transition-colors"
             >
               {t("openGuide")}<ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
@@ -84,34 +84,30 @@ export function OverviewTab({
       {profileSaved && jobs.length === 0 && (
         <Link
           href="/dashboard/jobs"
-          className="group flex items-center gap-4 rounded-2xl border border-[#00F0FF]/25 bg-[#00F0FF]/5 p-5 hover:border-[#00F0FF]/40 transition-colors"
+          className="group flex items-center gap-4 rounded-[var(--radius-sp-xl)] bg-[var(--surface-card-alt)] p-5 sp-lift"
         >
-          <div className="h-11 w-11 shrink-0 rounded-xl bg-[#00F0FF]/10 flex items-center justify-center">
-            <Briefcase className="h-5 w-5 text-[#00F0FF]" />
+          <div className="h-11 w-11 shrink-0 rounded-xl bg-[#FA531C]/10 flex items-center justify-center">
+            <Briefcase className="h-5 w-5 text-[#FA531C]" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold">{t("nextStepTitle")}</p>
             <p className="text-xs text-muted-foreground mt-0.5">{t("nextStepBody")}</p>
           </div>
-          <span className="shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold text-[#00F0FF]">
+          <span className="shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold text-[#FA531C]">
             {t("nextStepCta")}<ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
           </span>
         </Link>
       )}
 
-      {/* Section title */}
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
-        <h2 className="text-2xl font-bold tracking-tight mt-1">{t("title")}</h2>
-        <p className="text-sm text-muted-foreground mt-0.5 capitalize">
-          {new Date().toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-        </p>
-      </div>
+      {/* Tarih şeridi — sayfa başlığı artık kabuğun üst şeridinde (Solar Pop). */}
+      <p className="sp-label capitalize">
+        {new Date().toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+      </p>
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
         <StatCard icon={Wallet} tint={TINT_VIOLET} label={t("credits")} value={credits}>
-          <button onClick={triggerComingSoon} className="flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 font-medium transition-colors cursor-pointer">
+          <button onClick={triggerComingSoon} className="flex items-center gap-1 text-xs text-pink-400 hover:text-pink-300 font-medium transition-colors cursor-pointer">
             <ShoppingCart className="h-3 w-3" />{t("buyCredits")}
           </button>
         </StatCard>
@@ -128,16 +124,16 @@ export function OverviewTab({
         const ins = computeInsights(jobs);
         const platformLabelOf = (p: string) => (PLATFORMS as Record<string, { label: string }>)[p]?.label ?? p;
         const cards = [
-          { key: "rr", icon: MessageCircle, accent: "#00F0FF", label: t("insightsResponseRate"), value: ins.responseRate != null ? `${ins.responseRate}%` : "—", sub: t("insightsResponseSub") },
-          { key: "iv", icon: CalendarCheck, accent: "#a78bfa", label: t("insightsInterviews"), value: String(ins.interviewCount), sub: t("insightsInterviewsSub") },
-          { key: "tp", icon: Layers, accent: "#00F0FF", label: t("insightsTopPlatform"), value: ins.topPlatform ? platformLabelOf(ins.topPlatform.platform) : "—", sub: ins.topPlatform ? t("insightsTopPlatformSub", { count: ins.topPlatform.count }) : "" },
+          { key: "rr", icon: MessageCircle, accent: "#FA531C", label: t("insightsResponseRate"), value: ins.responseRate != null ? `${ins.responseRate}%` : "—", sub: t("insightsResponseSub") },
+          { key: "iv", icon: CalendarCheck, accent: "#FF6FA5", label: t("insightsInterviews"), value: String(ins.interviewCount), sub: t("insightsInterviewsSub") },
+          { key: "tp", icon: Layers, accent: "#FA531C", label: t("insightsTopPlatform"), value: ins.topPlatform ? platformLabelOf(ins.topPlatform.platform) : "—", sub: ins.topPlatform ? t("insightsTopPlatformSub", { count: ins.topPlatform.count }) : "" },
         ];
         return (
           <div className="space-y-3">
             <h2 className="text-sm font-bold">{t("insightsTitle")}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {cards.map((c) => (
-                <div key={c.key} className={`rounded-2xl border border-border bg-card p-4 ${ELEVATED}`}>
+                <div key={c.key} className={`rounded-[var(--radius-sp-lg)] bg-[var(--white)] p-4`}>
                   <div className="flex items-center gap-2 mb-2">
                     <div className="h-8 w-8 rounded-lg flex items-center justify-center border" style={{ backgroundColor: `${c.accent}1a`, borderColor: `${c.accent}33` }}>
                       <c.icon className="h-4 w-4" style={{ color: c.accent }} />
@@ -175,7 +171,7 @@ export function OverviewTab({
         <Card className={`shadow-sm ${ELEVATED}`}>
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-[#00F0FF]" />
+              <BarChart3 className="h-4 w-4 text-[#FA531C]" />
               <CardTitle className="text-sm">{ta("dailyTitle")}</CardTitle>
             </div>
           </CardHeader>
@@ -186,7 +182,7 @@ export function OverviewTab({
                 <div className="flex items-end gap-1 h-32">
                   {analytics.dailySeries.map(({ date, credits: dayCredits }) => (
                     <div key={date} className="group relative flex-1 min-w-0" title={`${date}: ${dayCredits}`}>
-                      <div className="w-full rounded-t-sm bg-[#00F0FF]/40 hover:bg-[#00F0FF] transition-colors"
+                      <div className="w-full rounded-t-sm bg-[#FA531C]/40 hover:bg-[#FA531C] transition-colors"
                         style={{ height: `${Math.max((dayCredits / max) * 100, 4)}%` }} />
                       <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 hidden group-hover:block text-[11px] bg-foreground text-background rounded px-1.5 py-0.5 whitespace-nowrap z-10">
                         {dayCredits}
@@ -203,7 +199,7 @@ export function OverviewTab({
           </CardContent>
         </Card>
       ) : (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
+        <div className="flex flex-col items-center justify-center rounded-[var(--radius-sp-xl)] border border-dashed py-16 text-center">
           <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
             <BarChart3 className="h-7 w-7 text-muted-foreground/40" />
           </div>
@@ -220,7 +216,7 @@ export function OverviewTab({
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm">{t("recentJobs")}</CardTitle>
-              <Link href="/dashboard/jobs" className="text-xs text-[#00F0FF] hover:underline transition-colors cursor-pointer">
+              <Link href="/dashboard/jobs" className="text-xs text-[#FA531C] hover:underline transition-colors cursor-pointer">
                 {jobs.length > 0 ? t("viewAll") : t("addJob")}
               </Link>
             </div>
@@ -271,7 +267,7 @@ export function OverviewTab({
             <Card className={`shadow-sm ${ELEVATED}`}>
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2">
-                  <Briefcase className="h-4 w-4 text-[#00F0FF]" />
+                  <Briefcase className="h-4 w-4 text-[#FA531C]" />
                   <CardTitle className="text-sm">{ta("applicationPerformance")}</CardTitle>
                 </div>
               </CardHeader>
@@ -304,7 +300,7 @@ export function OverviewTab({
             <Card className={`shadow-sm ${ELEVATED}`}>
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-[#00F0FF]" />
+                  <TrendingUp className="h-4 w-4 text-[#FA531C]" />
                   <CardTitle className="text-sm">{ta("winRateTitle")}</CardTitle>
                 </div>
               </CardHeader>
@@ -335,7 +331,7 @@ export function OverviewTab({
 
       {/* Profile incomplete alert */}
       {!profileSaved && (
-        <div className="rounded-2xl border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-950/20 p-4 flex items-center gap-4">
+        <div className="rounded-[var(--radius-sp-xl)] bg-[var(--amber-200)] p-4 flex items-center gap-4">
           <AlertCircle className="h-5 w-5 text-amber-500 shrink-0" />
           <div className="flex-1">
             <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">{t("profileIncomplete")}</p>

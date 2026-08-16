@@ -36,7 +36,7 @@ export function WeeklyDigestToggle() {
 
   return (
     <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3">
-      <Mail className="h-4 w-4 text-[#00F0FF] shrink-0" />
+      <Mail className="h-4 w-4 text-[#FA531C] shrink-0" />
       <div className="flex-1 min-w-0">
         <p className="text-xs font-semibold">{t("label")}</p>
         <p className="text-xs text-muted-foreground mt-0.5">{t("hint")}</p>
@@ -49,7 +49,7 @@ export function WeeklyDigestToggle() {
           checked={enabled}
           onChange={(e) => toggle(e.target.checked)}
           aria-label={t("label")}
-          className="h-4 w-4 accent-[#00F0FF] cursor-pointer shrink-0"
+          className="h-4 w-4 accent-[#FA531C] cursor-pointer shrink-0"
         />
       )}
     </div>

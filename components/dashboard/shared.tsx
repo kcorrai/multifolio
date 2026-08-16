@@ -1,6 +1,6 @@
 import {
   User, Layers, Globe, Briefcase, Target, LayoutDashboard, Languages, BellRing, Wand2,
-  FileText, Download, RefreshCw, Gauge, Sparkles, MessageSquare, Handshake,
+  FileText, Download, RefreshCw, Gauge, Sparkles, MessageSquare, Handshake, Mail,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { JobStatus, JobMatchResult } from "@/lib/validation/schemas/job";
@@ -59,17 +59,23 @@ export interface AnalyticsData {
 
 export type BadgeKey = "jobs" | "connections";
 
+/** Kenar çubuğu grupları (Solar Pop): işin akışı → varlıklar → pratik → yardım. */
+export type NavGroup = "work" | "assets" | "practice" | "help";
+
 // labelKey → i18n anahtarı (dashboard.nav.<labelKey>), tüketim noktasında t() ile çözülür.
-export const NAV_ITEMS: { href: string; labelKey: string; icon: LucideIcon; badge?: BadgeKey }[] = [
-  { href: "/dashboard",           labelKey: "overview",  icon: LayoutDashboard },
-  { href: "/dashboard/profile",   labelKey: "profile",   icon: User },
-  { href: "/dashboard/platforms", labelKey: "platforms", icon: Layers,     badge: "connections" },
-  { href: "/dashboard/portfolio", labelKey: "portfolio", icon: Globe },
-  { href: "/dashboard/cv",        labelKey: "cv",        icon: FileText },
-  { href: "/dashboard/jobs",      labelKey: "jobs",      icon: Briefcase, badge: "jobs" },
-  { href: "/dashboard/interview", labelKey: "interview", icon: MessageSquare },
-  { href: "/dashboard/feedback",  labelKey: "feedback",  icon: MessageSquare },
+export const NAV_ITEMS: { href: string; labelKey: string; icon: LucideIcon; badge?: BadgeKey; group: NavGroup }[] = [
+  { href: "/dashboard",           labelKey: "overview",  icon: LayoutDashboard, group: "work" },
+  { href: "/dashboard/jobs",      labelKey: "jobs",      icon: Briefcase, badge: "jobs", group: "work" },
+  { href: "/dashboard/profile",   labelKey: "profile",   icon: User, group: "assets" },
+  { href: "/dashboard/platforms", labelKey: "platforms", icon: Layers, badge: "connections", group: "assets" },
+  { href: "/dashboard/portfolio", labelKey: "portfolio", icon: Globe, group: "assets" },
+  { href: "/dashboard/cv",        labelKey: "cv",        icon: FileText, group: "assets" },
+  { href: "/dashboard/interview", labelKey: "interview", icon: MessageSquare, group: "practice" },
+  { href: "/dashboard/start",     labelKey: "start",     icon: Sparkles, group: "help" },
+  { href: "/dashboard/feedback",  labelKey: "feedback",  icon: Mail, group: "help" },
 ];
+
+export const NAV_GROUPS: NavGroup[] = ["work", "assets", "practice", "help"];
 
 /** Nav aktif durumu: /dashboard yalnız exact; diğerleri alt-route'ları da kapsar. */
 export function isNavActive(href: string, pathname: string) {
@@ -90,7 +96,7 @@ export const PLATFORM_STYLES: Record<PlatformId, { accent: string; icon: string;
   upwork:   { accent: "border-t-4 border-t-green-500",   icon: "bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400",    badge: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",  hero: "from-green-500/20 via-green-500/[0.06] to-transparent",     ring: "ring-green-500/50"   },
   fiverr:   { accent: "border-t-4 border-t-emerald-500", icon: "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400", badge: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", hero: "from-emerald-500/20 via-emerald-500/[0.06] to-transparent", ring: "ring-emerald-500/50" },
   freelancer:    { accent: "border-t-4 border-t-sky-500",    icon: "bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400",             badge: "bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300",             hero: "from-sky-500/20 via-sky-500/[0.06] to-transparent",       ring: "ring-sky-500/50"     },
-  contra:        { accent: "border-t-4 border-t-violet-500", icon: "bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400", badge: "bg-violet-50 text-violet-700 dark:bg-violet-950 dark:text-violet-300", hero: "from-violet-500/20 via-violet-500/[0.06] to-transparent", ring: "ring-violet-500/50"  },
+  contra:        { accent: "border-t-4 border-t-pink-500", icon: "bg-pink-50 dark:bg-pink-950/50 text-pink-600 dark:text-pink-400", badge: "bg-pink-50 text-pink-700 dark:bg-pink-950 dark:text-pink-300", hero: "from-pink-500/20 via-pink-500/[0.06] to-transparent", ring: "ring-pink-500/50"  },
   peopleperhour: { accent: "border-t-4 border-t-orange-500", icon: "bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400", badge: "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300", hero: "from-orange-500/20 via-orange-500/[0.06] to-transparent", ring: "ring-orange-500/50"  },
   "99designs":   { accent: "border-t-4 border-t-pink-500",   icon: "bg-pink-50 dark:bg-pink-950/50 text-pink-600 dark:text-pink-400",         badge: "bg-pink-50 text-pink-700 dark:bg-pink-950 dark:text-pink-300",         hero: "from-pink-500/20 via-pink-500/[0.06] to-transparent",     ring: "ring-pink-500/50"    },
   guru:          { accent: "border-t-4 border-t-teal-500",   icon: "bg-teal-50 dark:bg-teal-950/50 text-teal-600 dark:text-teal-400",         badge: "bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300",         hero: "from-teal-500/20 via-teal-500/[0.06] to-transparent",     ring: "ring-teal-500/50"    },
@@ -166,31 +172,31 @@ export function formatRelativeTime(
 /* ── Shared visual tokens ───────────────────────────────────────────── */
 
 /** Yükseltilmiş kart: yumuşak kenar + hover derinlik (rafine görünüm temeli). */
-export const ELEVATED =
-  "transition-all duration-200 hover:shadow-lg hover:shadow-black/[0.04] dark:hover:shadow-black/25";
+export const ELEVATED = 'transition-all duration-200';
 
 interface Tint {
-  border: string;
+  /** Kart zemini — Solar Pop'ta ayrım KENARLIKLA değil düz renkle kurulur. */
+  bg: string;
   iconBg: string;
   iconText: string;
-  glow: string;
+  shadow: boolean;
 }
 
+// Solar Pop metrik tonları: beyaz (gölgeli) ve pembe/şeftali (gölgesiz).
 export const TINT_CYAN: Tint = {
-  border: "border-[#00F0FF]/15 hover:border-[#00F0FF]/35",
-  iconBg: "bg-[#00F0FF]/10",
-  iconText: "text-[#00F0FF]",
-  glow: "bg-[#00F0FF]/20",
+  bg: 'bg-[var(--white)]', iconBg: 'bg-[var(--surface-card-peach)]', iconText: 'text-[var(--flame-600)]', shadow: true,
 };
-
 export const TINT_VIOLET: Tint = {
-  border: "border-violet-500/15 dark:border-violet-500/20 hover:border-violet-500/40",
-  iconBg: "bg-violet-500/10",
-  iconText: "text-violet-400",
-  glow: "bg-violet-500/25",
+  bg: 'bg-[var(--surface-card-alt)]', iconBg: 'bg-[var(--white)]', iconText: 'text-[var(--pink-600)]', shadow: false,
+};
+export const TINT_PEACH: Tint = {
+  bg: 'bg-[var(--surface-card-peach)]', iconBg: 'bg-[var(--white)]', iconText: 'text-[var(--flame-600)]', shadow: false,
+};
+export const TINT_AMBER: Tint = {
+  bg: 'bg-[var(--amber-200)]', iconBg: 'bg-[var(--white)]', iconText: 'text-[var(--flame-600)]', shadow: false,
 };
 
-/** Tek tip metrik kartı: ikon rozeti + tabular değer + hover glow/lift. */
+/** Tek tip metrik kartı — Solar Pop: büyük rakam, tracked-out etiket, düz zemin. */
 export function StatCard({
   icon: Icon, tint, label, value, sub, children,
 }: {
@@ -202,15 +208,24 @@ export function StatCard({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`group relative overflow-hidden rounded-2xl border bg-card p-5 ${ELEVATED} hover:-translate-y-0.5 ${tint.border}`}>
-      <div className={`pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full blur-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${tint.glow}`} />
-      <div className={`relative mb-4 h-10 w-10 rounded-xl flex items-center justify-center ${tint.iconBg}`}>
-        <Icon className={`h-[18px] w-[18px] ${tint.iconText}`} />
-      </div>
-      <p className="relative text-xs text-muted-foreground font-medium">{label}</p>
-      <p className="relative text-2xl font-extrabold tabular-nums mt-0.5">{value}</p>
-      {sub && <p className="relative text-xs text-muted-foreground mt-1.5">{sub}</p>}
-      {children && <div className="relative mt-3">{children}</div>}
+    <div
+      className={`grid min-w-0 gap-1.5 rounded-[var(--radius-sp-lg)] p-5 ${tint.bg}`}
+      style={tint.shadow ? { boxShadow: "var(--shadow-soft)" } : undefined}
+    >
+      <span className={`inline-grid h-9 w-9 place-items-center rounded-[var(--radius-pill)] ${tint.iconBg} ${tint.iconText}`}>
+        <Icon className='h-[17px] w-[17px]' />
+      </span>
+      <p
+        className='tabular-nums'
+        style={{ font: 'var(--fw-black) var(--fs-stat)/.9 var(--font-display)', letterSpacing: 'var(--tracking-display)', color: 'var(--text-strong)' }}
+      >
+        {value}
+      </p>
+      <p className='sp-label' style={{ color: 'var(--text-strong)' }}>{label}</p>
+      {sub ? <p style={{ font: 'var(--fw-regular) var(--fs-label)/1.4 var(--font-body)', color: 'var(--ink-700)' }}>{sub}</p> : null}
+      {children ? <div className='mt-1'>{children}</div> : null}
     </div>
   );
 }
+
+

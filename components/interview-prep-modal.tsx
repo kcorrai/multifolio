@@ -185,19 +185,19 @@ export function InterviewPrepModal({ jobId, jobDescription, onClose, onCreditsUp
               {prep.questionsToAsk.length > 0 && (
                 <section className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-bold flex items-center gap-1.5"><HelpCircle className="h-3.5 w-3.5 text-[#00F0FF]" />{t("questions")}</h4>
+                    <h4 className="text-xs font-bold flex items-center gap-1.5"><HelpCircle className="h-3.5 w-3.5 text-[#FA531C]" />{t("questions")}</h4>
                     <CopyBtn text={prep.questionsToAsk.map((q) => `• ${q}`).join("\n")} />
                   </div>
                   <ul className="space-y-1">
                     {prep.questionsToAsk.map((q, i) => (
-                      <li key={i} className="text-xs text-muted-foreground flex gap-1.5"><span className="text-[#00F0FF]">·</span><span>{q}</span></li>
+                      <li key={i} className="text-xs text-muted-foreground flex gap-1.5"><span className="text-[#FA531C]">·</span><span>{q}</span></li>
                     ))}
                   </ul>
                 </section>
               )}
 
               {/* Teşekkür notu hatırlatması (CareerBuilder: göndermek fark yaratır) */}
-              <div className="rounded-xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] p-3">
+              <div className="rounded-xl border border-[#FA531C]/20 bg-[#FA531C]/[0.04] p-3">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   <span className="font-semibold text-foreground">{t("thankYouTitle")}</span> {t("thankYouBody")}
                 </p>

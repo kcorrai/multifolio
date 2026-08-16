@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/colors.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/typography.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/shape.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/motion.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/styles.css">
+<script src="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;padding:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+h1,h2,h3,h4,p{margin:0}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--text-link-hover)}
+[data-t="script"]{white-space:nowrap}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:transparent}
+input[type=range]::-moz-range-track{height:6px;border-radius:999px;background:transparent}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;margin-top:-8px;border-radius:50%;background:var(--white);border:3px solid var(--flame-500);box-shadow:var(--shadow-soft);transition:transform var(--dur-base) var(--ease-pop)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--white);border:3px solid var(--flame-500);box-shadow:var(--shadow-soft)}
+input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.08)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(.96)}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:var(--ring-focus)}
+@keyframes tlIn{from{opacity:0}to{opacity:1}}
+@keyframes tlRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes tlSpin{to{transform:rotate(360deg)}}
+@keyframes tlPulse{0%,100%{opacity:.5}50%{opacity:.9}}
+@media (max-width:980px){
+[data-t="nav"]{display:none !important}
+[data-t="grid"]{grid-template-columns:1fr !important}
+[data-t="grid"] > div:first-child{position:static !important}
+[data-t="three"]{grid-template-columns:1fr !important}
+[data-t="sticky"]{display:flex !important}
+[data-t="longread"]{grid-template-columns:1fr !important}
+[data-t="toc"]{position:static !important}
+[data-t="h1"]{font-size:clamp(30px,8.5vw,42px) !important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+
+<div style="position:relative;min-height:100vh;background:var(--surface-page);overflow-x:clip;padding-bottom:80px">
+
+  <header style="position:relative;z-index:40;width:100%;max-width:1240px;margin:0 auto;padding:22px 24px;display:flex;align-items:center;gap:24px">
+    <a href="#" style="display:flex;align-items:center;gap:11px;margin-right:auto">
+      <span style="width:34px;height:34px;border-radius:var(--radius-pill);background:var(--action-primary);color:var(--white);display:inline-grid;place-items:center;font:var(--fw-black) 16px/1 var(--font-display)">m</span>
+      <span style="font:var(--fw-black) 19px/1 var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong)">multifolio</span>
+    </a>
+    {{ headerNav }}
+    {{ headerAuth }}
+  </header>
+
+  <main>
+    <section style="position:relative;padding:20px 0 40px">
+      {{ heroBlobs }}
+      <div style="position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;padding:0 24px;display:grid;gap:14px;justify-items:start">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius-pill);background:var(--surface-card-alt);color:var(--ink-700);font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;white-space:nowrap">
+            <x-import component-from-global-scope="SolarPopStudioDesignSystem_db4228.Icon" name="sun" size="{{ s13 }}" hint-size="13px,13px"></x-import>{{ toolFlag }}
+          </span>
+          <span style="font:var(--fw-medium) var(--fs-label)/1 var(--font-body);color:var(--ink-700)">multifolio.app{{ toolHref }}</span>
+        </div>
+        <h1 data-t="h1" style="font:var(--fw-black) var(--fs-display-l)/var(--lh-display) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong);max-width:22ch">{{ toolTitle }} <span data-t="script" style="display:inline-block;font:400 var(--fs-script-m)/.85 var(--font-script);letter-spacing:0;text-transform:none;color:var(--text-heading)">{{ toolScript }}</span></h1>
+        <p style="font:var(--fw-regular) var(--fs-body-l)/var(--lh-body) var(--font-body);color:var(--text-body);max-width:62ch;text-wrap:pretty">{{ toolLede }}</p>
+      </div>
+    </section>
+
+    {{ toolBody }}
+    {{ crossLink }}
+  </main>
+
+  <footer style="width:100%;max-width:1240px;margin:0 auto;padding:0 24px">
+    <div style="padding-top:36px;border-top:var(--border-hairline);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:32px">
+      <div style="display:grid;gap:12px;align-content:start">
+        <span style="display:flex;align-items:center;gap:10px">
+          <span style="width:30px;height:30px;border-radius:var(--radius-pill);background:var(--action-primary);color:var(--white);display:inline-grid;place-items:center;font:var(--fw-black) 14px/1 var(--font-display)">m</span>
+          <span style="font:var(--fw-black) 16px/1 var(--font-display);text-transform:uppercase;letter-spacing:var(--tracking-display);color:var(--text-strong)">multifolio</span>
+        </span>
+        <p style="font:var(--fw-regular) var(--fs-body-s)/var(--lh-body) var(--font-body);color:var(--text-body);max-width:28ch">The tools above stay free and account-free — that is the whole point of them.</p>
+      </div>
+      <sc-for list="{{ footerCols }}" as="c" hint-placeholder-count="4">
+        <div style="display:grid;gap:11px;align-content:start">
+          <span style="font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--ink-700)">{{ c.title }}</span>
+          <sc-for list="{{ c.links }}" as="l" hint-placeholder-count="4">
+            <a href="#" style="font:var(--fw-medium) var(--fs-body-s)/1.5 var(--font-body);color:var(--text-body)" style-hover="color:var(--text-link)">{{ l }}</a>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </footer>
+
+  {{ stickyBar }}
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;tool&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;rate&quot;,&quot;roi&quot;,&quot;ats&quot;,&quot;proposal&quot;,&quot;headline&quot;,&quot;analyze&quot;,&quot;guide&quot;],&quot;default&quot;:&quot;rate&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;loggedIn&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;States&quot;},&quot;analyzeState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;empty&quot;,&quot;computing&quot;,&quot;teaser&quot;,&quot;full&quot;,&quot;limited&quot;,&quot;invalid&quot;],&quot;default&quot;:&quot;empty&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;States&quot;}}">
+const h = React.createElement;
+const SZ = { s12: 12, s13: 13, s14: 14, s15: 15, s16: 16, s18: 18, s20: 20 };
+const DS = () => (window.SolarPopStudioDesignSystem_db4228 || {});
+const I = (name, size, color) => DS().Icon ? h(DS().Icon, { name, size: size || 16, color }) : null;
+const Btn = (label, props) => DS().Button ? h(DS().Button, props, label) : h('button', props, label);
+const Blob = (props) => DS().Blob ? h(DS().Blob, props) : null;
+
+const TOOLS = [
+  { id: 'rate', short: 'Rate', href: '/rate', flag: 'Free · no account', title: 'What Rate Do You Actually', script: 'need?', lede: 'Enter the income you want to take home. This works backwards through unbillable time, expenses, tax and platform fees to the rate that gets you there.' },
+  { id: 'roi', short: 'Proposal ROI', href: '/roi', flag: 'Free · no account', title: 'Is Your Bidding Paying For', script: 'itself?', lede: 'Connects, credits and hours spent bidding versus what you actually won — including the win rate you need just to break even.' },
+  { id: 'ats', short: 'ATS check', href: '/ats-check', flag: 'Free · no account', title: 'Will a Robot Read Your', script: 'CV?', lede: 'Paste your CV. Every finding is structural — the things that make a parser drop a line, not style opinions.' },
+  { id: 'proposal', short: 'Proposal check', href: '/proposal-checker', flag: 'Free · no account', title: 'Score Your Proposal Before You', script: 'send it', lede: 'Paste a draft. It is checked against the structure of proposals that get replies: opener, evidence, specificity and length.' },
+  { id: 'headline', short: 'Headline', href: '/headline-optimizer', flag: 'Free · no account', title: 'Fix the One Line Clients Read', script: 'first', lede: 'Your profile headline, critiqued on four axes with rewrites you can paste straight back.' },
+  { id: 'analyze', short: 'Profile analysis', href: '/analyze', flag: 'Free · 5 runs an hour', title: 'AI Analysis of Your Freelance', script: 'profile', lede: 'Paste a public profile URL or the text itself. The score is free; the full multi-dimension report needs an account.' },
+  { id: 'guide', short: 'Guides', href: '/freelance/rates-2026', flag: 'Guide · 12 min read', title: 'Freelance Rates in 2026: What the Data', script: 'says', lede: 'The long-read template every /freelance page and guide uses — same shell, different reading rhythm.' },
+];
+
+const num = (v) => Number.isFinite(v) ? v : 0;
+const money = (v) => '$' + Math.round(num(v)).toLocaleString('en-US');
+
+const CV_SAMPLE = 'AMARA KANE\nSenior Product Designer — Design Systems\namara@kane.design | +234 801 555 0134 | Lagos, Nigeria\n\nSUMMARY\nProduct designer with 8 years building and running design systems for fintech products.\n\nEXPERIENCE\nPaystack — Senior Product Designer (2021–2024)\n• Built a 40-component design system adopted by 3 squads, cutting build time 40%\n• Ran accessibility remediation across 60 screens to WCAG AA\n\nSKILLS\nDesign systems, Figma, tokens, accessibility, prototyping, design ops\n\nEDUCATION\nBSc Computer Science, University of Lagos';
+
+const PROPOSAL_SAMPLE = 'Hi Marcus, you need a design system that survives three squads shipping in parallel. I did exactly that at Paystack: 40+ components, tokens in Figma and code, adoption tracked per squad — build time dropped 40%. Two things I would check in week one: how your tokens are consumed today, and who owns the review. Happy to walk through the audit I use. Amara';
+
+class Component extends DCLogic {
+  state = {
+    tool: 'rate', loggedIn: false, reduced: false,
+    rate: { net: 60000, weeks: 46, hours: 32, unbill: 30, expenses: 6000, tax: 22, fee: 10, current: 45 },
+    roi: { costPer: 1.2, proposals: 60, win: 8, value: 3200 },
+    cvText: CV_SAMPLE, propText: PROPOSAL_SAMPLE, headlineText: 'Experienced designer available for work',
+    analyzeMode: 'url', analyzeState: 'empty', analyzeInput: '',
+  };
+
+  componentDidMount() {
+    this.setState({
+      reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      tool: this.props.tool || 'rate', loggedIn: !!this.props.loggedIn,
+      analyzeState: this.props.analyzeState || 'empty',
+    });
+  }
+  componentWillUnmount() { clearTimeout(this.tA); }
+
+  patch = (k, f, v) => this.setState(s => ({ [k]: { ...s[k], [f]: v } }));
+  runAnalyze = () => {
+    clearTimeout(this.tA);
+    this.setState({ analyzeState: 'computing' });
+    this.tA = setTimeout(() => this.setState({ analyzeState: this.state.loggedIn ? 'full' : 'teaser' }), 2200);
+  };
+
+  // ---------- primitives
+  label(t, color) {
+    return h('span', { key: 'lb', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: color || 'var(--pink-600)' } }, t);
+  }
+  wrap(kids) {
+    return h('section', { style: { padding: '0 0 56px' } },
+      h('div', { style: { width: '100%', maxWidth: 1240, margin: '0 auto', padding: '0 24px', display: 'grid', gap: 22 } }, kids));
+  }
+  card(kids, bg) {
+    return h('div', { style: { display: 'grid', gap: 18, alignContent: 'start', padding: 26, minWidth: 0, borderRadius: 'var(--radius-xl)', background: bg || 'var(--white)', boxShadow: bg ? 'none' : 'var(--shadow-soft)' } }, kids);
+  }
+  cardHead(title, right) {
+    return h('div', { key: 'ch', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 } }, [
+      h('h2', { key: 't', style: { marginRight: 'auto', font: 'var(--fw-black) var(--fs-title)/1.15 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, title),
+      right || null,
+    ]);
+  }
+  fieldLabel(t, hint) {
+    return h('span', { key: 'l', style: { display: 'grid', gap: 3 } }, [
+      h('span', { key: 'a', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, t),
+      hint ? h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-label)/1.45 var(--font-body)', color: 'var(--text-body)' } }, hint) : null,
+    ]);
+  }
+  numInput(o) {
+    return h('label', { key: o.field, style: { display: 'grid', gap: 7, minWidth: 0 } }, [
+      this.fieldLabel(o.label, o.hint),
+      h('div', { key: 'w', style: { display: 'flex', alignItems: 'center', gap: 9, minHeight: 48, padding: '0 14px', minWidth: 0, borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } }, [
+        o.prefix ? h('span', { key: 'p', style: { font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)', color: 'var(--flame-600)' } }, o.prefix) : null,
+        h('input', {
+          key: 'i', type: 'number', inputMode: 'decimal', value: o.value,
+          onChange: (e) => o.onChange(e.target.value === '' ? 0 : parseFloat(e.target.value)),
+          style: { flex: 1, width: '100%', minWidth: 0, border: 'none', outline: 'none', background: 'transparent', font: 'var(--fw-black) var(--fs-body-l)/1 var(--font-display)', color: 'var(--text-strong)' },
+        }),
+        o.suffix ? h('span', { key: 's', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-body)', whiteSpace: 'nowrap' } }, o.suffix) : null,
+        h('span', { key: 'st', style: { display: 'grid', gap: 3, flex: '0 0 auto' } }, [1, -1].map(d => h('button', {
+          key: d, type: 'button', tabIndex: -1, 'aria-hidden': 'true',
+          onClick: () => o.onChange(Math.max(0, Math.round((num(o.value) + d * (o.step || 1)) * 100) / 100)),
+          style: { width: 26, height: 16, display: 'grid', placeItems: 'center', padding: 0, cursor: 'pointer', border: 'none', borderRadius: 6, background: 'var(--white)', color: 'var(--text-body)', lineHeight: 0, boxShadow: 'var(--shadow-soft)' },
+        }, h('span', { style: { width: 0, height: 0, borderLeft: '4px solid transparent', borderRight: '4px solid transparent', borderBottom: d > 0 ? '5px solid currentColor' : 'none', borderTop: d > 0 ? 'none' : '5px solid currentColor' } })))),
+      ]),
+    ]);
+  }
+  slider(o) {
+    const pct = Math.max(0, Math.min(100, ((o.value - o.min) / Math.max(1, o.max - o.min)) * 100));
+    return h('label', { key: o.field, style: { display: 'grid', gap: 9, minWidth: 0 } }, [
+      h('span', { key: 'r', style: { display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 } }, [
+        this.fieldLabel(o.label, o.hint),
+        h('span', { key: 'v', style: { font: 'var(--fw-black) var(--fs-body-l)/1 var(--font-display)', color: 'var(--flame-600)', whiteSpace: 'nowrap' } }, o.value + (o.suffix || '')),
+      ]),
+      h('div', { key: 't', style: { position: 'relative', height: 24, display: 'grid', alignItems: 'center' } }, [
+        h('span', { key: 'bg', 'aria-hidden': 'true', style: { position: 'absolute', left: 0, right: 0, height: 6, borderRadius: 'var(--radius-pill)', background: 'var(--cream-400)' } }),
+        h('span', { key: 'f', 'aria-hidden': 'true', style: { position: 'absolute', left: 0, height: 6, width: pct + '%', borderRadius: 'var(--radius-pill)', background: 'var(--flame-500)' } }),
+        h('input', { key: 'i', type: 'range', min: o.min, max: o.max, step: o.step || 1, value: o.value, 'aria-label': o.label, onChange: (e) => o.onChange(parseFloat(e.target.value)), style: { position: 'relative' } }),
+      ]),
+      h('div', { key: 'sc', 'aria-hidden': 'true', style: { display: 'flex', justifyContent: 'space-between', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', color: 'var(--text-body)' } }, [
+        h('span', { key: 'a' }, o.min + (o.suffix || '')), h('span', { key: 'b' }, o.max + (o.suffix || '')),
+      ]),
+    ]);
+  }
+  textArea(o) {
+    return h('label', { key: 'ta', style: { display: 'grid', gap: 9, minWidth: 0 } }, [
+      this.fieldLabel(o.label, o.hint),
+      h('textarea', {
+        key: 't', value: o.value, onChange: (e) => o.onChange(e.target.value), rows: o.rows || 12, spellCheck: false,
+        style: { width: '100%', resize: 'vertical', padding: 16, border: 'none', outline: 'none', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', font: 'var(--fw-regular) var(--fs-body)/1.7 var(--font-body)', color: 'var(--text-strong)' },
+      }),
+      h('div', { key: 'm', style: { display: 'flex', justifyContent: 'space-between', gap: 10, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-body)' } }, [
+        h('span', { key: 'a' }, o.value.trim() ? o.value.trim().split(/\s+/).length + ' words' : 'Nothing pasted yet'),
+        h('span', { key: 'b' }, 'Stays in your browser'),
+      ]),
+    ]);
+  }
+  // the family's score display — numeral + word + glyph, colour never the only signal
+  scoreBlock(o) {
+    const band = o.value >= 80 ? 0 : o.value >= 60 ? 1 : 2;
+    const bg = ['var(--surface-card-alt)', 'var(--amber-200)', 'var(--peach-200)'][band];
+    const ink = ['var(--pink-600)', 'var(--flame-600)', 'var(--flame-600)'][band];
+    const word = (o.words || ['Strong', 'Workable', 'Needs work'])[band];
+    const glyph = ['check', 'asterisk', 'x'][band];
+    return h('div', { key: 'sb', style: { display: 'grid', gap: 14, padding: 22, borderRadius: 'var(--radius-lg)', background: bg } }, [
+      h('div', { key: 'r', style: { display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' } }, [
+        h('span', { key: 'n', style: { font: 'var(--fw-black) var(--fs-display-l)/.85 var(--font-display)', letterSpacing: 'var(--tracking-display)', color: 'var(--text-strong)' } }, o.value),
+        h('span', { key: 'd', style: { display: 'grid', gap: 5 } }, [
+          h('span', { key: 'a', style: { display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 13px', borderRadius: 'var(--radius-pill)', background: 'var(--white)', color: 'var(--ink-900)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', whiteSpace: 'nowrap' } }, [I(glyph, 13), word]),
+          h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.45 var(--font-body)', color: 'var(--text-body)' } }, o.scale || 'out of 100'),
+        ]),
+      ]),
+      h('div', { key: 't', style: { position: 'relative', height: 10, borderRadius: 'var(--radius-pill)', background: 'var(--white)', overflow: 'hidden' } }, [
+        h('span', { key: 'f', style: { position: 'absolute', inset: 0, width: o.value + '%', background: ink } }),
+        h('span', { key: 'm1', style: { position: 'absolute', left: '60%', top: 0, bottom: 0, width: 2, background: 'var(--cream-400)' } }),
+        h('span', { key: 'm2', style: { position: 'absolute', left: '80%', top: 0, bottom: 0, width: 2, background: 'var(--cream-400)' } }),
+      ]),
+      h('span', { key: 'l', style: { font: 'var(--fw-bold) var(--fs-label)/1.4 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-body)' } }, 'Marks at 60 and 80 — the same scale on every Multifolio tool'),
+    ]);
+  }
+  bigNumber(o) {
+    return h('div', { key: o.label, style: { display: 'grid', gap: 7, padding: 22, borderRadius: 'var(--radius-lg)', background: o.primary ? 'var(--ink-900)' : 'var(--surface-card-peach)' } }, [
+      h('span', { key: 'l', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: o.primary ? 'var(--peach-200)' : 'var(--text-body)' } }, o.label),
+      h('span', { key: 'v', style: { font: 'var(--fw-black) ' + (o.primary ? 'var(--fs-display-m)' : 'var(--fs-stat)') + '/.95 var(--font-display)', letterSpacing: 'var(--tracking-display)', color: o.primary ? 'var(--white)' : 'var(--text-strong)' } }, o.value),
+      o.sub ? h('span', { key: 's', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.5 var(--font-body)', color: o.primary ? 'var(--white)' : 'var(--text-body)' } }, o.sub) : null,
+    ]);
+  }
+  shareMark() {
+    const t = TOOLS.find(x => x.id === this.state.tool) || TOOLS[0];
+    return h('div', { key: 'mk', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12, paddingTop: 14, borderTop: '2px dashed rgba(58,36,27,.16)' } }, [
+      h('span', { key: 'a', style: { display: 'inline-flex', alignItems: 'center', gap: 8, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-body)' } }, [
+        h('span', { style: { width: 18, height: 18, borderRadius: 'var(--radius-pill)', background: 'var(--flame-500)', color: 'var(--white)', display: 'inline-grid', placeItems: 'center', font: 'var(--fw-black) 10px/1 var(--font-display)' } }, 'm'),
+        'multifolio.app' + t.href,
+      ]),
+      h('button', { key: 'b', type: 'button', style: { display: 'inline-flex', alignItems: 'center', gap: 7, border: 'none', background: 'transparent', cursor: 'pointer', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-body)' } }, [I('arrow-up-right', 13), 'Save as image']),
+    ]);
+  }
+  bar(k, l, pct, ink) {
+    return h('div', { key: k, style: { display: 'grid', gap: 7 } }, [
+      h('div', { key: 'r', style: { display: 'flex', justifyContent: 'space-between', gap: 10, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-body)' } }, [
+        h('span', { key: 'a' }, l), h('span', { key: 'b', style: { color: 'var(--text-strong)' } }, pct),
+      ]),
+      h('div', { key: 't', style: { height: 8, borderRadius: 'var(--radius-pill)', background: 'var(--cream-300)', overflow: 'hidden' } },
+        h('div', { style: { width: pct + '%', height: '100%', borderRadius: 'var(--radius-pill)', background: ink || 'var(--flame-500)', transition: 'width var(--dur-slow,320ms) var(--ease-pop)' } })),
+    ]);
+  }
+  finding(f) {
+    const map = { pass: ['var(--surface-card-alt)', 'var(--pink-600)', 'check'], warn: ['var(--amber-200)', 'var(--flame-600)', 'asterisk'], fail: ['var(--peach-200)', 'var(--flame-600)', 'x'] }[f.level];
+    return h('div', { key: f.title, style: { display: 'grid', gridTemplateColumns: '30px 1fr', gap: 13, padding: 16, borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } }, [
+      h('span', { key: 'i', style: { width: 30, height: 30, borderRadius: 'var(--radius-pill)', background: map[0], color: map[1], display: 'inline-grid', placeItems: 'center' } }, I(map[2], 14)),
+      h('span', { key: 'b', style: { display: 'grid', gap: 5 } }, [
+        h('span', { key: 't', style: { font: 'var(--fw-black) var(--fs-body)/1.3 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, f.title),
+        h('span', { key: 'd', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.6 var(--font-body)', color: 'var(--text-body)' } }, f.body),
+      ]),
+    ]);
+  }
+  findingsList(list, title) {
+    const fails = list.filter(f => f.level === 'fail').length;
+    const warns = list.filter(f => f.level === 'warn').length;
+    return h('div', { key: 'fl', style: { display: 'grid', gap: 13 } }, [
+      h('div', { key: 'h', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 } }, [
+        h('h3', { key: 't', style: { marginRight: 'auto', font: 'var(--fw-black) var(--fs-body-l)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, title),
+        h('span', { key: 'c', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-body)' } }, list.length + ' checks · ' + fails + ' blocking · ' + warns + ' to improve'),
+      ]),
+      h('div', { key: 'l', style: { display: 'grid', gap: 9 } },
+        list.slice().sort((a, b) => ({ fail: 0, warn: 1, pass: 2 })[a.level] - ({ fail: 0, warn: 1, pass: 2 })[b.level]).map(f => this.finding(f))),
+    ]);
+  }
+  twoCol(inputs, out) {
+    return h('div', { 'data-t': 'grid', style: { display: 'grid', gridTemplateColumns: '390px 1fr', gap: 22, alignItems: 'start' } }, [
+      h('div', { key: 'i', style: { display: 'grid', gap: 18, position: 'sticky', top: 20, minWidth: 0 } }, inputs),
+      h('div', { key: 'o', id: 'result', style: { display: 'grid', gap: 20, minWidth: 0, scrollMarginTop: 20 } }, out),
+    ]);
+  }
+  emptyStance(title, body, items) {
+    return h('div', { key: 'es', style: { display: 'grid', gap: 14 } }, [
+      h('span', { key: 'i', style: { width: 42, height: 42, borderRadius: 'var(--radius-pill)', background: 'var(--surface-card-alt)', color: 'var(--ink-700)', display: 'inline-grid', placeItems: 'center' } }, I('asterisk', 19)),
+      h('h2', { key: 't', style: { font: 'var(--fw-black) var(--fs-title)/1.15 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, title),
+      h('p', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)', maxWidth: '58ch' } }, body),
+      items ? h('div', { key: 'l', style: { display: 'grid', gap: 9 } }, items.map(x =>
+        h('span', { key: x, style: { display: 'flex', alignItems: 'center', gap: 11, padding: '13px 15px', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', font: 'var(--fw-bold) var(--fs-body-s)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-body)' } }, [
+          h('span', { style: { width: 7, height: 7, borderRadius: 'var(--radius-pill)', background: 'var(--pink-400)' } }), x,
+        ]))) : null,
+    ]);
+  }
+
+  // ---------- /rate
+  rateMath() {
+    const r = this.state.rate;
+    const billable = Math.max(1, r.weeks * r.hours * (1 - r.unbill / 100));
+    const gross = (num(r.net) + num(r.expenses)) / Math.max(0.05, (1 - r.tax / 100)) / Math.max(0.05, (1 - r.fee / 100));
+    const hourly = gross / billable;
+    return { billable, gross, hourly, daily: hourly * 7, project: hourly * 80, gap: hourly - num(r.current), pct: num(r.current) ? ((hourly / r.current) - 1) * 100 : 0 };
+  }
+  toolRate() {
+    const r = this.state.rate, m = this.rateMath();
+    const up = m.gap > 0;
+    const inputs = [this.card([
+      this.cardHead('Your numbers'),
+      this.numInput({ field: 'net', label: 'Take-home you want', hint: 'After tax and expenses, per year', prefix: '$', step: 1000, value: r.net, onChange: v => this.patch('rate', 'net', v) }),
+      h('div', { key: 'g', style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, minWidth: 0 } }, [
+        this.numInput({ field: 'weeks', label: 'Working weeks', hint: '52 minus holiday', value: r.weeks, onChange: v => this.patch('rate', 'weeks', v) }),
+        this.numInput({ field: 'hours', label: 'Hours a week', hint: 'What you intend', value: r.hours, onChange: v => this.patch('rate', 'hours', v) }),
+      ]),
+      this.slider({ field: 'unbill', label: 'Unbillable time', hint: 'Proposals, admin, calls, learning', min: 0, max: 70, value: r.unbill, suffix: '%', onChange: v => this.patch('rate', 'unbill', v) }),
+      this.numInput({ field: 'expenses', label: 'Business expenses', hint: 'Software, hardware, co-working, per year', prefix: '$', step: 500, value: r.expenses, onChange: v => this.patch('rate', 'expenses', v) }),
+      h('div', { key: 'g2', style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, minWidth: 0 } }, [
+        this.slider({ field: 'tax', label: 'Tax rate', min: 0, max: 55, value: r.tax, suffix: '%', onChange: v => this.patch('rate', 'tax', v) }),
+        this.slider({ field: 'fee', label: 'Platform fee', min: 0, max: 25, value: r.fee, suffix: '%', onChange: v => this.patch('rate', 'fee', v) }),
+      ]),
+      this.numInput({ field: 'current', label: 'What you charge today', hint: 'Optional — powers the gap', prefix: '$', suffix: '/hr', value: r.current, onChange: v => this.patch('rate', 'current', v) }),
+    ])];
+    const out = [
+      this.card([
+        this.cardHead('The rate that gets you there', h('span', { 'aria-live': 'polite', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-body)' } }, 'Live')),
+        h('div', { key: 'n', 'data-t': 'three', style: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 } }, [
+          this.bigNumber({ primary: true, label: 'Hourly', value: money(m.hourly) + '/hr', sub: Math.round(m.billable) + ' billable hours a year' }),
+          this.bigNumber({ label: 'Day rate', value: money(m.daily), sub: '7 billable hours' }),
+          this.bigNumber({ label: 'Two-week project', value: money(m.project), sub: '80 billable hours' }),
+        ]),
+        num(r.current) ? h('div', { key: 'gap', style: { display: 'grid', gap: 10, padding: 22, borderRadius: 'var(--radius-lg)', background: up ? 'var(--amber-200)' : 'var(--surface-card-alt)' } }, [
+          h('span', { key: 'a', style: { display: 'inline-flex', alignItems: 'center', gap: 10, font: 'var(--fw-black) var(--fs-title)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-display)', color: 'var(--text-strong)' } }, [
+            I(up ? 'arrow-up-right' : 'check', 18), up ? 'You are ' + money(m.gap) + '/hr short' : 'You are ' + money(-m.gap) + '/hr clear',
+          ]),
+          h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } },
+            up ? 'At $' + Math.round(r.current) + '/hr you land near ' + money((r.current * m.billable) * (1 - r.fee / 100) * (1 - r.tax / 100) - r.expenses) + ' take-home — a ' + Math.round(m.pct) + '% rise closes it.'
+               : 'Your current rate clears the target. The surplus is your buffer for slow months.'),
+        ]) : null,
+        this.shareMark(),
+      ]),
+      this.card([
+        this.cardHead('Where the money goes'),
+        h('div', { key: 'b', style: { display: 'grid', gap: 4 } }, [
+          ['Take-home target', money(r.net)], ['Business expenses', money(r.expenses)],
+          ['Tax at ' + r.tax + '%', money(m.gross * (1 - r.fee / 100) * (r.tax / 100))],
+          ['Platform fees at ' + r.fee + '%', money(m.gross * (r.fee / 100))],
+          ['Gross you must invoice', money(m.gross)],
+        ].map((row, i) => h('div', { key: row[0], style: { display: 'flex', justifyContent: 'space-between', gap: 12, padding: '13px 15px', borderRadius: i === 4 ? 'var(--radius-md)' : 0, background: i === 4 ? 'var(--ink-900)' : 'transparent', borderBottom: i === 4 ? 'none' : 'var(--border-hairline)' } }, [
+          h('span', { key: 'a', style: { font: 'var(--fw-bold) var(--fs-body-s)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.04em', color: i === 4 ? 'var(--white)' : 'var(--text-body)' } }, row[0]),
+          h('span', { key: 'b', style: { font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)', color: i === 4 ? 'var(--white)' : 'var(--text-strong)' } }, row[1]),
+        ]))),
+      ], 'var(--surface-card)'),
+    ];
+    return this.wrap([this.twoCol(inputs, out)]);
+  }
+
+  // ---------- /roi
+  toolRoi() {
+    const r = this.state.roi;
+    const wins = num(r.proposals) * (num(r.win) / 100);
+    const spend = num(r.proposals) * num(r.costPer);
+    const revenue = wins * num(r.value);
+    const roi = spend > 0 ? revenue / spend : 0;
+    const cpw = wins > 0 ? spend / wins : 0;
+    const be = num(r.value) > 0 ? (num(r.costPer) / num(r.value)) * 100 : 0;
+    const healthy = roi >= 10;
+    const inputs = [this.card([
+      this.cardHead('Your bidding month'),
+      this.numInput({ field: 'proposals', label: 'Proposals a month', value: r.proposals, onChange: v => this.patch('roi', 'proposals', v) }),
+      this.numInput({ field: 'costPer', label: 'Cost per proposal', hint: 'Connects, credits or your own hourly time', prefix: '$', step: 0.1, value: r.costPer, onChange: v => this.patch('roi', 'costPer', v) }),
+      this.slider({ field: 'win', label: 'Win rate', min: 0, max: 40, step: 0.5, value: r.win, suffix: '%', onChange: v => this.patch('roi', 'win', v) }),
+      this.numInput({ field: 'value', label: 'Average job value', prefix: '$', step: 100, value: r.value, onChange: v => this.patch('roi', 'value', v) }),
+    ])];
+    const out = [
+      this.card([
+        this.cardHead('Three numbers, in order of what they change'),
+        h('div', { key: 'n', 'data-t': 'three', style: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 } }, [
+          this.bigNumber({ primary: true, label: 'Return per $1 bid', value: roi.toFixed(1) + '×', sub: money(spend) + ' spent → ' + money(revenue) + ' won' }),
+          this.bigNumber({ label: 'Cost per won job', value: money(cpw), sub: wins.toFixed(1) + ' wins a month' }),
+          this.bigNumber({ label: 'Break-even win rate', value: be.toFixed(2) + '%', sub: 'Below this, bidding loses money' }),
+        ]),
+        h('div', { key: 'v', style: { display: 'grid', gap: 10, padding: 20, borderRadius: 'var(--radius-lg)', background: healthy ? 'var(--surface-card-alt)' : 'var(--amber-200)' } }, [
+          h('span', { key: 'a', style: { display: 'inline-flex', alignItems: 'center', gap: 10, font: 'var(--fw-black) var(--fs-body-l)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, [
+            I(healthy ? 'check' : 'asterisk', 16), healthy ? 'Bidding is paying for itself' : 'Thin margin on bidding',
+          ]),
+          h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } },
+            'You are ' + (r.win >= be ? (r.win / Math.max(0.01, be)).toFixed(0) + '× above' : 'below') + ' break-even. One extra point of win rate is worth ' + money((num(r.proposals) * 0.01) * num(r.value)) + ' a month — more than cutting volume.'),
+        ]),
+        this.shareMark(),
+      ]),
+      this.card([
+        this.cardHead('If your win rate moved'),
+        h('div', { key: 'r', style: { display: 'grid', gap: 9 } }, [r.win / 2, r.win, r.win * 1.5, r.win * 2].map((w, i) => {
+          const rev = num(r.proposals) * (w / 100) * num(r.value);
+          const mult = spend > 0 ? rev / spend : 0;
+          return h('div', { key: i, style: { display: 'grid', gridTemplateColumns: '74px 1fr 92px', gap: 12, alignItems: 'center', padding: '13px 15px', borderRadius: 'var(--radius-md)', background: i === 1 ? 'var(--surface-inverse)' : 'var(--surface-page)' } }, [
+            h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)', color: i === 1 ? 'var(--white)' : 'var(--text-strong)' } }, w.toFixed(1) + '%'),
+            h('span', { key: 'b', style: { height: 9, borderRadius: 'var(--radius-pill)', background: i === 1 ? 'rgba(255,255,255,.28)' : 'var(--cream-300)', overflow: 'hidden' } },
+              h('span', { style: { display: 'block', width: Math.min(100, mult * 3) + '%', height: '100%', background: i === 1 ? 'var(--white)' : 'var(--pink-500)' } })),
+            h('span', { key: 'c', style: { textAlign: 'right', font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)', color: i === 1 ? 'var(--white)' : 'var(--text-strong)' } }, money(rev)),
+          ]);
+        })),
+      ], 'var(--surface-card)'),
+    ];
+    return this.wrap([this.twoCol(inputs, out)]);
+  }
+
+  // ---------- /ats-check
+  atsFindings() {
+    const t = this.state.cvText || '';
+    const words = t.trim() ? t.trim().split(/\s+/).length : 0;
+    const has = (re) => re.test(t);
+    const f = [
+      { level: has(/\b[\w.+-]+@[\w-]+\.[\w.]+\b/) ? 'pass' : 'fail', title: has(/\b[\w.+-]+@[\w-]+\.[\w.]+\b/) ? 'Email found in the header' : 'No email address found', body: 'Parsers key the whole record on a contact email. It must be plain text in the first block, not inside a header graphic.' },
+      { level: has(/\+?\d[\d\s().-]{7,}/) ? 'pass' : 'warn', title: has(/\+?\d[\d\s().-]{7,}/) ? 'Phone number detected' : 'No phone number', body: 'Optional for remote roles, but its absence drops you out of recruiter phone screens on some systems.' },
+      { level: /EXPERIENCE|WORK HISTORY/i.test(t) ? 'pass' : 'fail', title: /EXPERIENCE|WORK HISTORY/i.test(t) ? 'Experience heading is conventional' : 'No recognisable Experience heading', body: 'Use the literal words Experience, Education, Skills, Summary. Creative headings are silently skipped.' },
+      { level: /SKILLS/i.test(t) ? 'pass' : 'warn', title: /SKILLS/i.test(t) ? 'Skills section present' : 'No Skills section', body: 'Keyword matching runs hardest here. A plain comma-separated list parses better than a chart or rating dots.' },
+      { level: /EDUCATION/i.test(t) ? 'pass' : 'warn', title: /EDUCATION/i.test(t) ? 'Education section present' : 'No Education section', body: 'Even a single line prevents some systems from marking the record incomplete.' },
+      { level: /\b(19|20)\d{2}\b[\s\S]*\b(19|20)\d{2}\b/.test(t) ? 'pass' : 'warn', title: /\b(19|20)\d{2}\b[\s\S]*\b(19|20)\d{2}\b/.test(t) ? 'Date ranges found' : 'No date ranges detected', body: 'Write 2021–2024, not "3 yrs". Tenure calculations depend on parseable years.' },
+      { level: /^[•\-*]\s/m.test(t) ? 'pass' : 'warn', title: /^[•\-*]\s/m.test(t) ? 'Bullet points used' : 'No bullet points', body: 'Bullets survive parsing; paragraphs of achievements get truncated at the first period by some parsers.' },
+      { level: /\d+%|\$\d/.test(t) ? 'pass' : 'warn', title: /\d+%|\$\d/.test(t) ? 'Quantified outcomes present' : 'No quantified outcomes', body: 'Numbers are not an ATS requirement but they are what the human after the ATS reads. Aim for one per role.' },
+      { level: /\t| {4,}\|/.test(t) ? 'fail' : 'pass', title: /\t| {4,}\|/.test(t) ? 'Table or column layout detected' : 'Single-column structure', body: 'Multi-column layouts get read across columns, scrambling sentences. One column, always.' },
+      { level: words === 0 ? 'fail' : words < 200 || words > 900 ? 'warn' : 'pass', title: words === 0 ? 'Nothing pasted' : words + ' words', body: words === 0 ? 'Paste your CV text to run the checks.' : words < 200 ? 'Under 200 words reads as a stub to human reviewers.' : words > 900 ? 'Over 900 words is two pages of scrolling; trim the oldest roles.' : 'In the 200–900 word range recruiters expect for a senior CV.' },
+    ];
+    const passes = f.filter(x => x.level === 'pass').length;
+    const fails = f.filter(x => x.level === 'fail').length;
+    return { findings: f, score: Math.max(0, Math.round((passes / f.length) * 100) - fails * 8) };
+  }
+  toolAts() {
+    const t = this.state.cvText;
+    const { findings, score } = this.atsFindings();
+    const inputs = [this.card([
+      this.textArea({ label: 'Paste your CV text', hint: 'Plain text — copy out of the PDF or document', value: t, onChange: v => this.setState({ cvText: v }), rows: 16 }),
+      h('div', { key: 'a', style: { display: 'flex', flexWrap: 'wrap', gap: 10 } }, [
+        Btn('Clear', { key: 'a', size: 'sm', variant: 'ghost', onClick: () => this.setState({ cvText: '' }) }),
+        Btn('Load a sample', { key: 'b', size: 'sm', variant: 'ghost', onClick: () => this.setState({ cvText: CV_SAMPLE }) }),
+      ]),
+    ])];
+    const out = t.trim()
+      ? [this.card([this.scoreBlock({ value: score, words: ['Parses cleanly', 'Parses with losses', 'Likely rejected'], scale: 'ATS structure score · out of 100' }), this.findingsList(findings, 'What produced that score'), this.shareMark()])]
+      : [this.card([this.emptyStance('What gets checked', 'Ten deterministic structural checks — no AI, no upload, nothing stored. They are listed now so the page is useful before you paste, and the layout does not move when the result arrives.',
+          ['Contact block parseable', 'Conventional section headings', 'Date ranges parseable', 'Bullet structure', 'Single-column layout', 'Length in the expected band'])])];
+    return this.wrap([this.twoCol(inputs, out)]);
+  }
+
+  // ---------- /proposal-checker
+  toolProposal() {
+    const t = this.state.propText || '';
+    const words = t.trim() ? t.trim().split(/\s+/).length : 0;
+    const findings = [
+      { level: /^(hi|hello|hey)\s+[A-Z][a-z]+/.test(t.trim()) ? 'pass' : 'warn', title: 'Opens with the client, not with you', body: 'The first sentence should name their problem. "I am a designer with 8 years…" is the most common opener and the weakest.' },
+      { level: /\d+%|\$\d|\b\d+\+/.test(t) ? 'pass' : 'fail', title: /\d+%|\$\d/.test(t) ? 'Carries a specific number' : 'No evidence with a number in it', body: 'One quantified outcome outperforms three adjectives. "Cut build time 40%" beats "highly experienced".' },
+      { level: /\?/.test(t) ? 'pass' : 'warn', title: /\?/.test(t) ? 'Asks something' : 'Asks nothing', body: 'A single specific question invites a reply and shows you read the brief.' },
+      { level: words === 0 ? 'fail' : words > 220 || words < 60 ? 'warn' : 'pass', title: words + ' words', body: words > 220 ? 'Over 220 words is skimmed, not read. Cut the second paragraph.' : words < 60 ? 'Under 60 words reads as a copy-paste bid.' : 'In the 60–220 band that gets read on a phone.' },
+      { level: /\b(passionate|hard.?working|team player|guru|ninja|rockstar)\b/i.test(t) ? 'fail' : 'pass', title: /\b(passionate|guru|ninja)\b/i.test(t) ? 'Filler adjectives found' : 'No filler adjectives', body: 'Words a client cannot verify cost you space and credibility.' },
+      { level: /\b(I would|I will|next step|happy to)\b/i.test(t) ? 'pass' : 'warn', title: 'Proposes a next step', body: 'Name what happens if they reply — a call, an audit, a first milestone.' },
+    ];
+    const score = Math.round((findings.filter(f => f.level === 'pass').length / findings.length) * 100);
+    const inputs = [this.card([
+      this.textArea({ label: 'Paste your proposal draft', hint: 'Checked in your browser against patterns from proposals that got replies', value: t, onChange: v => this.setState({ propText: v }), rows: 14 }),
+      Btn('Clear', { size: 'sm', variant: 'ghost', onClick: () => this.setState({ propText: '' }) }),
+    ])];
+    const out = t.trim() ? [this.card([
+      this.scoreBlock({ value: score, words: ['Send it', 'Tighten first', 'Rewrite it'], scale: 'Structure score · out of 100' }),
+      this.findingsList(findings, 'Six structural checks'),
+      h('div', { key: 'c', style: { display: 'grid', gap: 12, padding: 20, borderRadius: 'var(--radius-lg)', background: 'var(--surface-card-peach)' } }, [
+        h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body-l)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, 'This checks structure — it does not write'),
+        h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'Multifolio drafts the proposal from the job post and your profile for 1 credit — and 100 credits come free with an account.'),
+        h('div', { key: 'c', style: { display: 'flex', flexWrap: 'wrap', gap: 10 } }, [Btn('Draft one from a job post', { key: 'a', size: 'sm' }), Btn('See what a credit buys', { key: 'b', size: 'sm', variant: 'ghost' })]),
+      ]),
+      this.shareMark(),
+    ])] : [this.card([this.emptyStance('Paste a draft to see six checks', 'Nothing is uploaded and nothing is stored. The checks are listed below so you know what you get before pasting.',
+      ['Opener names their problem', 'One number as evidence', 'Asks a specific question', 'Length in the read band', 'No filler adjectives', 'Proposes a next step'])])];
+    return this.wrap([this.twoCol(inputs, out)]);
+  }
+
+  // ---------- /headline-optimizer
+  toolHeadline() {
+    const t = this.state.headlineText || '';
+    const chars = t.length;
+    const axes = [
+      { l: 'Specificity', v: /\b(design systems|fintech|react|shopify|saas|b2b|figma)\b/i.test(t) ? 88 : 32, n: 'Names a domain or stack a client searches for' },
+      { l: 'Outcome', v: /\d+%|\$|\bcut\b|\bgrew\b|\bship/i.test(t) ? 82 : 24, n: 'Says what the client gets, not what you are' },
+      { l: 'Length', v: chars >= 45 && chars <= 90 ? 90 : chars < 45 ? 45 : 60, n: '45–90 characters survives truncation everywhere' },
+      { l: 'Searchability', v: t.split(/\s+/).filter(w => w.length > 3).length >= 6 ? 76 : 40, n: 'Enough keyword surface for platform search' },
+    ];
+    const score = Math.round(axes.reduce((a, x) => a + x.v, 0) / axes.length);
+    const rewrites = [
+      { p: 'LinkedIn', t: 'Product designer scaling design systems for fintech teams — 40% faster builds at Paystack', bg: 'var(--surface-card-peach)' },
+      { p: 'Upwork', t: 'Design systems specialist · I cut your build time with documented, adopted component libraries', bg: 'var(--surface-card-alt)' },
+      { p: 'Fiverr', t: 'I will build a production-ready design system for your product team in 10 days', bg: 'var(--amber-200)' },
+    ];
+    const inputs = [this.card([
+      h('label', { key: 'l', style: { display: 'grid', gap: 9, minWidth: 0 } }, [
+        this.fieldLabel('Your current headline', 'Paste the exact line from your profile'),
+        h('input', { key: 'i', value: t, onChange: (e) => this.setState({ headlineText: e.target.value }), style: { width: '100%', minWidth: 0, minHeight: 50, padding: '0 15px', border: 'none', outline: 'none', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', font: 'var(--fw-medium) var(--fs-body-l)/1 var(--font-body)', color: 'var(--text-strong)' } }),
+        h('span', { key: 'c', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: chars > 90 ? 'var(--pink-600)' : 'var(--text-muted)' } }, chars + ' characters · LinkedIn truncates around 90'),
+      ]),
+    ])];
+    const out = t.trim() ? [
+      this.card([
+        this.scoreBlock({ value: score, words: ['Working hard', 'Half-working', 'Costing you views'], scale: 'Headline score · out of 100' }),
+        h('div', { key: 'ax', style: { display: 'grid', gap: 14 } }, axes.map(a =>
+          h('div', { key: a.l, style: { display: 'grid', gap: 7 } }, [
+            this.bar('b' + a.l, a.l, a.v, a.v >= 70 ? 'var(--pink-500)' : a.v >= 45 ? 'var(--amber-400)' : 'var(--flame-500)'),
+            h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-label)/1.5 var(--font-body)', color: 'var(--text-body)' } }, a.n),
+          ]))),
+        this.shareMark(),
+      ]),
+      this.card([
+        this.cardHead('Rewrites, per platform'),
+        h('div', { key: 'l', style: { display: 'grid', gap: 12 } }, rewrites.map(r =>
+          h('div', { key: r.p, style: { display: 'grid', gap: 10, padding: 18, borderRadius: 'var(--radius-lg)', background: r.bg } }, [
+            h('span', { key: 'p', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--ink-900)' } }, r.p),
+            h('span', { key: 't', style: { font: 'var(--fw-medium) var(--fs-body)/1.6 var(--font-body)', color: 'var(--text-strong)' } }, r.t),
+            Btn('Copy', { size: 'sm', variant: 'quiet', icon: 'check', iconPosition: 'left' }),
+          ]))),
+        h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-body)' } }, 'These three come from patterns, not from your history. Multifolio writes them from your actual profile.'),
+      ], 'var(--surface-card)'),
+    ] : [this.card([this.emptyStance('Type a headline to score it', 'Four axes: specificity, outcome, length and searchability. Runs entirely in your browser, updates as you type.')])];
+    return this.wrap([this.twoCol(inputs, out)]);
+  }
+
+  // ---------- /analyze
+  toolAnalyze() {
+    const st = this.state.analyzeState;
+    const mode = (id, label) => h('button', {
+      key: id, type: 'button', onClick: () => this.setState({ analyzeMode: id }),
+      style: { minHeight: 36, padding: '0 16px', border: 'none', borderRadius: 'var(--radius-pill)', cursor: 'pointer', whiteSpace: 'nowrap', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', background: this.state.analyzeMode === id ? 'var(--ink-900)' : 'transparent', color: this.state.analyzeMode === id ? 'var(--white)' : 'var(--ink-700)' },
+    }, label);
+
+    const input = this.card([
+      h('div', { key: 'seg', style: { display: 'flex', gap: 5, padding: 5, width: 'fit-content', borderRadius: 'var(--radius-pill)', background: 'var(--surface-page)' } }, [mode('url', 'Profile URL'), mode('text', 'Paste text')]),
+      this.state.analyzeMode === 'url'
+        ? h('label', { key: 'u', style: { display: 'grid', gap: 9, minWidth: 0 } }, [
+            this.fieldLabel('Public profile URL', 'LinkedIn, Upwork, Fiverr, Contra — must be publicly visible'),
+            h('div', { key: 'w', style: { display: 'flex', alignItems: 'center', gap: 9, minHeight: 50, padding: '0 14px', minWidth: 0, borderRadius: 'var(--radius-md)', background: st === 'invalid' ? 'rgba(240,86,140,.08)' : 'var(--surface-page)', boxShadow: st === 'invalid' ? 'inset 0 0 0 1.5px var(--pink-600)' : 'none' } }, [
+              h('span', { key: 'i', style: { color: 'var(--text-body)' } }, I('globe', 15)),
+              h('input', { key: 'x', value: this.state.analyzeInput, placeholder: 'linkedin.com/in/your-handle', onChange: (e) => this.setState({ analyzeInput: e.target.value }), style: { flex: 1, width: '100%', minWidth: 0, border: 'none', outline: 'none', background: 'transparent', font: 'var(--fw-medium) var(--fs-body-l)/1 var(--font-body)', color: 'var(--text-strong)' } }),
+            ]),
+            st === 'invalid' ? h('span', { key: 'e', role: 'alert', style: { display: 'inline-flex', alignItems: 'center', gap: 7, font: 'var(--fw-medium) var(--fs-body-s)/1.45 var(--font-body)', color: 'var(--ink-700)' } }, [I('x', 13), 'That URL is not a profile we can reach. Paste the text instead — it works just as well.']) : null,
+          ])
+        : this.textArea({ label: 'Paste your profile text', hint: 'Headline, about section and a couple of roles is enough', value: this.state.analyzeInput, onChange: v => this.setState({ analyzeInput: v }), rows: 10 }),
+      h('div', { key: 'a', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 14 } }, [
+        Btn(st === 'computing' ? 'Analysing…' : 'Analyse my profile', { size: 'md', icon: 'sparkles', iconPosition: 'left', disabled: st === 'computing' || st === 'limited', onClick: this.runAnalyze }),
+        h('span', { key: 'n', style: { font: 'var(--fw-bold) var(--fs-label)/1.4 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-body)' } }, '5 runs an hour · no account · no card'),
+      ]),
+    ]);
+
+    let out;
+    if (st === 'computing') {
+      out = this.card([
+        h('div', { key: 'r', style: { display: 'flex', alignItems: 'center', gap: 16 } }, [
+          h('span', { key: 's', style: { width: 26, height: 26, borderRadius: 'var(--radius-pill)', border: '3px solid var(--cream-400)', borderTopColor: 'var(--flame-500)', animation: this.state.reduced ? 'none' : 'tlSpin .8s linear infinite' } }),
+          h('span', { key: 'x', style: { display: 'grid', gap: 4 } }, [
+            h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body-l)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, 'Reading the profile — about 8 seconds'),
+            h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.5 var(--font-body)', color: 'var(--text-body)' } }, 'You can leave this tab. Nothing is saved and nothing is emailed.'),
+          ]),
+        ]),
+        h('div', { key: 'sk', style: { display: 'grid', gap: 10 } }, [0, 1, 2, 3].map(i =>
+          h('span', { key: i, style: { height: 48, borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', animation: this.state.reduced ? 'none' : 'tlPulse 1.4s ease-in-out infinite', animationDelay: (i * 0.12) + 's' } }))),
+        h('span', { key: 'n', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-body)' } }, 'The skeleton is the shape of the score card only — the report is never rendered before the server sends it.'),
+      ]);
+    } else if (st === 'limited') {
+      out = this.card([
+        h('div', { key: 'b', style: { display: 'grid', gap: 11, padding: 22, borderRadius: 'var(--radius-lg)', background: 'var(--amber-200)' } }, [
+          h('span', { key: 't', style: { display: 'inline-flex', alignItems: 'center', gap: 10, font: 'var(--fw-black) var(--fs-title)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-display)', color: 'var(--text-strong)' } }, [I('sun', 18), 'Five runs used — next one free in 24 minutes']),
+          h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'The limit is per IP and exists so the free tool stays free. Nothing is wrong with your profile or your last run.'),
+        ]),
+        h('div', { key: 'a', style: { display: 'grid', gap: 11 } }, [
+          h('span', { key: 'h', style: { font: 'var(--fw-black) var(--fs-body)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, 'While you wait, these need no quota'),
+          h('div', { key: 'l', style: { display: 'flex', flexWrap: 'wrap', gap: 10 } }, [
+            Btn('Headline optimizer', { key: 'a', size: 'sm', variant: 'ghost', onClick: () => this.setState({ tool: 'headline' }) }),
+            Btn('ATS check', { key: 'b', size: 'sm', variant: 'ghost', onClick: () => this.setState({ tool: 'ats' }) }),
+            Btn('Rate calculator', { key: 'c', size: 'sm', variant: 'ghost', onClick: () => this.setState({ tool: 'rate' }) }),
+          ]),
+        ]),
+      ]);
+    } else if (st === 'teaser') {
+      out = h('div', { style: { display: 'grid', gap: 20 } }, [
+        this.card([
+          this.scoreBlock({ value: 68, words: ['Strong profile', 'Middling profile', 'Weak profile'], scale: 'Profile score · out of 100' }),
+          h('div', { key: 'ta', style: { display: 'grid', gap: 11 } }, [
+            h('h3', { key: 'h', style: { font: 'var(--fw-black) var(--fs-body-l)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, 'The single biggest issue, in full'),
+            h('p', { key: 'p', style: { font: 'var(--fw-regular) var(--fs-body)/1.75 var(--font-body)', color: 'var(--text-body)' } }, 'Your headline describes a job title, not an outcome. Clients searching your category see 40 near-identical lines; yours has no number and no domain in it. That alone accounts for 11 of the 32 points you are missing.'),
+          ]),
+          this.shareMark(),
+        ]),
+        this.card([
+          h('div', { key: 'h', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 } }, [
+            h('span', { key: 'a', style: { marginRight: 'auto', display: 'inline-flex', alignItems: 'center', gap: 10, font: 'var(--fw-black) var(--fs-title)/1.15 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, [I('package', 17), 'The other six dimensions are on the server']),
+            h('span', { key: 'b', style: { padding: '7px 13px', borderRadius: 'var(--radius-pill)', background: 'var(--white)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--flame-600)', whiteSpace: 'nowrap' } }, 'Not blurred — not sent'),
+          ]),
+          h('p', { key: 'p', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'An account releases the per-dimension scores, the concrete suggestions and the platform-approval notes. We do not send them to your browser first and hide them.'),
+          h('div', { key: 'l', style: { display: 'grid', gap: 9 } }, ['Headline and positioning', 'Skill coverage vs. demand', 'Portfolio evidence', 'Rate positioning', 'Platform compliance', 'Client-appeal language'].map(x =>
+            h('span', { key: x, style: { display: 'flex', alignItems: 'center', gap: 11, padding: '14px 16px', borderRadius: 'var(--radius-md)', background: 'var(--white)', font: 'var(--fw-bold) var(--fs-body-s)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-body)' } }, [
+              h('span', { style: { width: 8, height: 8, borderRadius: 'var(--radius-pill)', border: '2px dashed var(--pink-400)' } }), x,
+              h('span', { style: { marginLeft: 'auto', font: 'var(--fw-black) var(--fs-body-s)/1 var(--font-display)', color: 'var(--text-body)' } }, '— / 100'),
+            ]))),
+          h('div', { key: 'c', style: { display: 'grid', gap: 11, justifyItems: 'stretch' } }, [
+            Btn('Create an account and release the report', { size: 'lg', icon: 'arrow-right', style: { justifyContent: 'center' } }),
+            h('span', { key: 'n', style: { textAlign: 'center', font: 'var(--fw-bold) var(--fs-label)/1.4 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-body)' } }, '100 free credits · no card · the score above stays free either way'),
+          ]),
+        ], 'var(--surface-card-alt)'),
+      ]);
+    } else if (st === 'full') {
+      const dims = [['Headline and positioning', 62], ['Skill coverage vs. demand', 78], ['Portfolio evidence', 55], ['Rate positioning', 84], ['Platform compliance', 91], ['Client-appeal language', 70]];
+      out = h('div', { style: { display: 'grid', gap: 20 } }, [
+        this.card([
+          this.scoreBlock({ value: 73, words: ['Strong profile', 'Middling profile', 'Weak profile'], scale: 'Profile score · out of 100' }),
+          h('div', { key: 'd', style: { display: 'grid', gap: 12 } }, dims.map(d =>
+            this.bar('d' + d[0], d[0], d[1], d[1] >= 80 ? 'var(--pink-500)' : d[1] >= 60 ? 'var(--amber-400)' : 'var(--flame-500)'))),
+          this.shareMark(),
+        ]),
+        this.card([
+          this.cardHead('Five concrete changes'),
+          h('div', { key: 'l', style: { display: 'grid', gap: 10 } }, [
+            'Put a number in your headline — "40% faster builds" outperforms "experienced".',
+            'Two of five projects have no result line. Add one sentence each.',
+            'Your rate sits 18% under comparable profiles with your skill set.',
+            'Three listed skills have almost no search demand; swap them for tokens, design ops, accessibility.',
+            'Remove the email address from your Upwork overview — it violates their off-platform rule.',
+          ].map((x, i) => h('div', { key: i, style: { display: 'grid', gridTemplateColumns: '28px 1fr', gap: 12, padding: '15px 16px', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } }, [
+            h('span', { key: 'n', style: { width: 26, height: 26, borderRadius: 'var(--radius-pill)', background: 'var(--flame-500)', color: 'var(--white)', display: 'inline-grid', placeItems: 'center', font: 'var(--fw-black) 12px/1 var(--font-display)' } }, i + 1),
+            h('span', { key: 't', style: { font: 'var(--fw-regular) var(--fs-body)/1.6 var(--font-body)', color: 'var(--text-body)' } }, x),
+          ]))),
+        ]),
+      ]);
+    } else {
+      out = this.card([
+        this.cardHead('What comes back'),
+        h('p', { key: 'p', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'A score out of 100 and the single biggest issue in full — free, no account. The six per-dimension scores and the suggestion list need an account, and they stay on the server until you have one.'),
+        h('div', { key: 'l', style: { display: 'grid', gap: 11 } }, [
+          ['Free, right now', 'Overall score · biggest issue explained in full', 'var(--surface-card-alt)', 'var(--pink-600)', 'check'],
+          ['With an account', '6 dimension scores · 5 concrete changes · compliance notes', 'var(--surface-page)', 'var(--text-muted)', 'package'],
+        ].map(r => h('div', { key: r[0], style: { display: 'grid', gridTemplateColumns: '34px 1fr', gap: 13, padding: 18, borderRadius: 'var(--radius-md)', background: r[2] } }, [
+          h('span', { key: 'i', style: { width: 34, height: 34, borderRadius: 'var(--radius-pill)', background: 'var(--white)', color: r[3], display: 'inline-grid', placeItems: 'center' } }, I(r[4], 15)),
+          h('span', { key: 'x', style: { display: 'grid', gap: 4 } }, [
+            h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, r[0]),
+            h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-body)' } }, r[1]),
+          ]),
+        ]))),
+      ]);
+    }
+
+    const states = [['empty', 'Empty'], ['computing', 'Computing'], ['teaser', 'Teaser (logged out)'], ['full', 'Full (logged in)'], ['limited', 'Rate-limited'], ['invalid', 'Bad URL']];
+    return this.wrap([
+      h('div', { key: 's', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 9, padding: '13px 16px', borderRadius: 'var(--radius-lg)', background: 'var(--surface-card)' } }, [
+        this.label('State', 'var(--text-muted)'),
+        ...states.map(s => h('button', {
+          key: s[0], type: 'button', onClick: () => this.setState({ analyzeState: s[0], loggedIn: s[0] === 'full' }),
+          style: { minHeight: 32, padding: '0 13px', border: 'none', borderRadius: 'var(--radius-pill)', cursor: 'pointer', whiteSpace: 'nowrap', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', background: st === s[0] ? 'var(--ink-900)' : 'var(--surface-page)', color: st === s[0] ? 'var(--white)' : 'var(--ink-700)' },
+        }, s[1])),
+      ]),
+      this.twoCol([input], [out]),
+    ]);
+  }
+
+  // ---------- long-read
+  toolGuide() {
+    const secs = [
+      { t: 'What the 2026 data actually shows', p: 'Median rates rose 6% year on year across the four platforms we track, but the spread widened: the top quartile pulled away while the bottom quartile fell in real terms. The headline number is close to useless on its own — what moves your rate is whether your profile names a domain.' },
+      { t: 'Why hourly is the wrong unit for most work', p: 'Hourly pricing caps your upside the moment you get faster. Fixed-scope pricing moves the reward from time spent to problem solved. The calculator here works in hourly terms because that is what platforms ask for — treat it as a floor, not a target.' },
+      { t: 'How to raise a rate with existing clients', p: 'Announce, do not negotiate. Give 60 days, name the new number once, and attach it to something concrete you have improved. Freelancers who raise annually report far less resistance than those who raise after three years of silence.' },
+      { t: 'What to do this week', p: 'Run the rate calculator with honest unbillable time — most people guess 10% and live at 35%. Then check whether your headline names a domain. Those two changes move more money than any negotiation script.' },
+    ];
+    return h('section', { style: { padding: '0 0 64px' } },
+      h('div', { 'data-t': 'longread', style: { width: '100%', maxWidth: 1240, margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: '230px minmax(0,68ch)', gap: 48, justifyContent: 'center' } }, [
+        h('nav', { key: 'toc', 'data-t': 'toc', style: { position: 'sticky', top: 24, alignSelf: 'start', display: 'grid', gap: 11 } }, [
+          this.label('On this page', 'var(--text-muted)'),
+          ...secs.map((s, i) => h('a', { key: s.t, href: '#s' + i, style: { paddingLeft: 14, borderLeft: '3px solid ' + (i === 0 ? 'var(--flame-500)' : 'var(--cream-400)'), font: 'var(--fw-bold) var(--fs-body-s)/1.45 var(--font-body)', color: i === 0 ? 'var(--flame-600)' : 'var(--text-body)' } }, s.t)),
+          h('div', { key: 'c', style: { marginTop: 10, display: 'grid', gap: 11, padding: 18, borderRadius: 'var(--radius-lg)', background: 'var(--surface-card-alt)' } }, [
+            h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body-s)/1.3 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, 'Run the numbers yourself'),
+            Btn('Rate calculator', { size: 'sm', onClick: () => this.setState({ tool: 'rate' }), style: { justifyContent: 'center' } }),
+          ]),
+        ]),
+        h('article', { key: 'a', style: { display: 'grid', gap: 28, minWidth: 0 } }, [
+          h('p', { key: 'l', style: { font: 'var(--fw-medium) var(--fs-body-l)/1.7 var(--font-body)', color: 'var(--text-strong)', textWrap: 'pretty' } }, 'Rates went up in 2026. Whether yours did depends on two things that have nothing to do with the market average.'),
+          ...secs.map((s, i) => h('section', { key: i, id: 's' + i, style: { display: 'grid', gap: 13 } }, [
+            h('h2', { key: 't', style: { font: 'var(--fw-black) var(--fs-display-s)/1.1 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, s.t),
+            h('p', { key: 'p', style: { font: 'var(--fw-regular) var(--fs-body-l)/1.8 var(--font-body)', color: 'var(--text-body)', textWrap: 'pretty' } }, s.p),
+            i === 1 ? h('div', { key: 'in', style: { display: 'grid', gap: 12, padding: 22, borderRadius: 'var(--radius-lg)', background: 'var(--surface-card-peach)' } }, [
+              h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-body-l)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, 'Inline tool, not an ad'),
+              h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'The rate calculator uses the same assumptions described above. It runs in your browser and needs no account.'),
+              Btn('Open the calculator', { size: 'sm', onClick: () => this.setState({ tool: 'rate' }) }),
+            ]) : null,
+          ])),
+          h('span', { key: 'm', style: { paddingTop: 14, borderTop: 'var(--border-hairline)', font: 'var(--fw-bold) var(--fs-label)/1.5 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-body)' } }, 'Updated August 2026 · 12 min read · Sources: platform rate reports, 2,400 tracked applications'),
+        ]),
+      ]));
+  }
+
+  // ---------- cross-link
+  crossLink() {
+    const others = TOOLS.filter(t => t.id !== this.state.tool && t.id !== 'guide').slice(0, 3);
+    const li = this.state.loggedIn;
+    return h('section', { style: { padding: '20px 0 64px' } },
+      h('div', { style: { width: '100%', maxWidth: 1240, margin: '0 auto', padding: '0 24px' } },
+        h('div', { style: { position: 'relative', overflow: 'hidden', padding: 30, borderRadius: 'var(--radius-xl)', background: 'var(--surface-inverse)', display: 'grid', gap: 22 } }, [
+          Blob({ key: 'b', size: 260, color: 'var(--flame-400)', shape: 'blob', style: { position: 'absolute', right: -90, bottom: -90 } }),
+          h('div', { key: 'h', style: { position: 'relative', display: 'grid', gap: 10, maxWidth: '52ch' } }, [
+            h('span', { key: 'e', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', padding: '6px 12px', borderRadius: 'var(--radius-pill)', background: 'var(--ink-900)', color: 'var(--white)', width: 'fit-content' } }, li ? 'Do this inside Multifolio' : 'Keep going, still free'),
+            h('h2', { key: 't', style: { font: 'var(--fw-black) var(--fs-display-m)/var(--lh-display) var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--white)' } }, li ? 'Your Profile Has These Answers' : 'Three More Tools, No Account'),
+          ]),
+          h('div', { key: 'g', 'data-t': 'three', style: { position: 'relative', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 } }, others.map(t =>
+            h('button', { key: t.id, type: 'button', onClick: () => this.setState({ tool: t.id }), style: { display: 'grid', gap: 10, textAlign: 'left', padding: 20, border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-lg)', background: 'var(--white)', minWidth: 0 } }, [
+              h('span', { key: 'f', style: { width: 'fit-content', padding: '6px 12px', borderRadius: 'var(--radius-pill)', background: 'var(--surface-card-alt)', color: 'var(--ink-700)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase' } }, 'Free'),
+              h('span', { key: 't', style: { font: 'var(--fw-black) var(--fs-body-l)/1.15 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, t.short),
+              h('span', { key: 'l', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-body)' } }, t.lede.split('.')[0] + '.'),
+              h('span', { key: 'a', style: { display: 'inline-flex', alignItems: 'center', gap: 7, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-body)' } }, ['Open', I('arrow-right', 13)]),
+            ]))),
+          h('div', { key: 'p', style: { position: 'relative', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 20, padding: 24, borderRadius: 'var(--radius-lg)', background: 'rgba(255,255,255,.16)' } }, [
+            h('div', { key: 'l', style: { display: 'grid', gap: 8, flex: '1 1 280px', minWidth: 0 } }, [
+              h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-title)/1.2 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--white)' } }, li ? 'Pick up where you left off' : 'These tools tell you. Multifolio does it.'),
+              h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'rgba(255,255,255,.9)' } }, li
+                ? 'Your profile, adapted per platform, with the scored job feed and proposal drafting already set up. 112 credits left.'
+                : 'One profile, rewritten for 8 platforms, with an ATS CV, a portfolio site and scored job matches. 100 free credits, no card.'),
+            ]),
+            h('div', { key: 'r', style: { display: 'flex', flexWrap: 'wrap', gap: 10 } }, li
+              ? [Btn('Open dashboard', { key: 'a', variant: 'quiet', icon: 'arrow-right' }), Btn('Buy credits', { key: 'b', variant: 'quiet' })]
+              : [Btn('Start free', { key: 'a', variant: 'quiet', icon: 'arrow-right' }), Btn('See pricing', { key: 'b', variant: 'quiet' })]),
+          ]),
+        ])));
+  }
+
+  stickyBar() {
+    const t = this.state.tool;
+    let label = '', value = '';
+    if (t === 'rate') { label = 'You need'; value = money(this.rateMath().hourly) + '/hr'; }
+    else if (t === 'roi') { const r = this.state.roi; const s = r.proposals * r.costPer; const rv = r.proposals * (r.win / 100) * r.value; label = 'Return per $1'; value = (s ? rv / s : 0).toFixed(1) + '×'; }
+    else if (t === 'ats') { label = 'ATS score'; value = this.atsFindings().score + ' / 100'; }
+    else return null;
+    return h('div', {
+      'data-t': 'sticky',
+      style: { display: 'none', position: 'fixed', left: 12, right: 12, bottom: 12, zIndex: 55, alignItems: 'center', gap: 14, padding: '14px 18px', borderRadius: 'var(--radius-xl)', background: 'var(--ink-900)', boxShadow: 'var(--shadow-lift)' },
+    }, [
+      h('span', { key: 'l', style: { display: 'grid', gap: 2, flex: 1, minWidth: 0 } }, [
+        h('span', { key: 'a', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--white)' } }, label),
+        h('span', { key: 'b', style: { font: 'var(--fw-black) var(--fs-title)/1 var(--font-display)', color: 'var(--white)', whiteSpace: 'nowrap' } }, value),
+      ]),
+      h('a', { key: 'j', href: '#result', style: { display: 'inline-flex', alignItems: 'center', gap: 8, minHeight: 42, padding: '0 16px', borderRadius: 'var(--radius-pill)', background: 'var(--white)', color: 'var(--text-strong)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', whiteSpace: 'nowrap' } }, ['Full result', I('arrow-right', 13)]),
+    ]);
+  }
+
+  renderVals() {
+    const st = this.state;
+    const tool = TOOLS.find(t => t.id === st.tool) || TOOLS[0];
+    const body = { rate: this.toolRate, roi: this.toolRoi, ats: this.toolAts, proposal: this.toolProposal, headline: this.toolHeadline, analyze: this.toolAnalyze, guide: this.toolGuide }[st.tool];
+    return {
+      ...SZ,
+      toolTitle: tool.title, toolScript: tool.script, toolLede: tool.lede, toolFlag: tool.flag, toolHref: tool.href,
+      toolBody: body ? body.call(this) : null,
+      crossLink: this.crossLink(),
+      stickyBar: this.stickyBar(),
+      headerNav: h('nav', { 'data-t': 'nav', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6 } }, TOOLS.map(t =>
+        h('button', {
+          key: t.id, type: 'button', onClick: () => this.setState({ tool: t.id }),
+          style: { minHeight: 34, padding: '0 13px', border: 'none', borderRadius: 'var(--radius-pill)', cursor: 'pointer', whiteSpace: 'nowrap', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', transition: 'all var(--dur-base) var(--ease-pop)', background: st.tool === t.id ? 'var(--ink-900)' : 'transparent', color: st.tool === t.id ? 'var(--white)' : 'var(--text-body)' },
+        }, t.short))),
+      headerAuth: h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } }, st.loggedIn
+        ? [Btn('Dashboard', { key: 'a', size: 'sm' })]
+        : [Btn('Log in', { key: 'a', size: 'sm', variant: 'ghost' }), Btn('Start free', { key: 'b', size: 'sm' })]),
+      heroBlobs: h('div', { 'aria-hidden': 'true', style: { position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' } }, [
+        Blob({ key: 'a', size: 280, color: 'var(--peach-200)', shape: 'blob', style: { position: 'absolute', right: -110, top: -80, opacity: 0.7 } }),
+        Blob({ key: 'b', size: 120, color: 'var(--pink-300)', shape: 'circle', style: { position: 'absolute', left: -50, bottom: -30, opacity: 0.6 } }),
+      ]),
+      footerCols: [
+        { title: 'Free tools', links: ['Rate calculator', 'Proposal ROI', 'ATS check', 'Proposal checker', 'Headline optimizer'] },
+        { title: 'Guides', links: ['Freelance rates 2026', 'Upwork vs. Fiverr fees', 'Proposals that land', 'ATS-safe CV structure'] },
+        { title: 'Product', links: ['How it works', 'Pricing', 'Log in', 'Create account'] },
+        { title: 'Legal', links: ['Privacy', 'Terms', 'Contact', 'Extension privacy'] },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>

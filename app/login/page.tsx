@@ -1,78 +1,105 @@
 "use client";
 
+// Giriş — Solar Pop "bilet" kompozisyonu. AKIŞ DEĞİŞMEDİ:
+// signInWithPassword → /dashboard. Yenilikler sunum tarafında: ince "welcome"
+// şeridi (mevcut kullanıcıya kredi tanıtımı gereksiz), şifre görünürlüğü
+// (buradaki en sık hata yazım hatası) ve çıkmaz sokak olmayan hata bandı.
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ArrowRight, ArrowLeft } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { AuthLayout } from "@/components/auth/auth-layout";
+import { Mail, Lock } from "lucide-react";
+import {
+  AuthLayout, AuthHead, AuthSubmit, AuthBanner, AltRoute, RevealButton,
+} from "@/components/auth/auth-layout";
+import { TextField } from "@/components/solar/fields";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
+  const ts = useTranslations("auth.sp");
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [reveal, setReveal] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
-  const [message, setMessage] = useState("");
+
+  const busy = status === "submitting";
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setStatus("submitting"); setMessage("");
+    setStatus("submitting");
     const supabase = createSupabaseBrowserClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) { setStatus("error"); setMessage(t("login.errorInvalid")); return; }
+    if (error) { setStatus("error"); return; }
     router.push("/dashboard");
     router.refresh();
   }
 
   return (
-    <AuthLayout>
-      <div className="text-center mb-8 space-y-3">
-        <h1 className="text-[2rem] font-extrabold text-foreground tracking-[-0.02em]">{t("login.title")}</h1>
-        <p className="text-sm text-muted-foreground leading-relaxed">{t("login.subtitle")}</p>
-      </div>
+    <AuthLayout
+      stub="welcome"
+      aside="login"
+      helper={{ text: ts("helper.noAccount"), label: ts("helper.signUp"), href: "/signup" }}
+      altRoute={
+        <AltRoute>
+          <span style={{ font: "var(--fw-regular) var(--fs-body-s)/1 var(--font-body)", color: "var(--text-body)" }}>
+            {t("login.noAccount")}
+          </span>
+          <Link href="/signup" className="sp-linkish">{ts("helper.signUpLong")}</Link>
+        </AltRoute>
+      }
+    >
+      {status === "error" ? (
+        <AuthBanner
+          tone="danger"
+          title={ts("login.errorTitle")}
+          body={ts("login.errorBody")}
+          action={ts("login.errorAction")}
+          actionHref="/forgot-password"
+        />
+      ) : null}
 
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email" className="text-sm font-semibold text-foreground">{t("shared.emailLabel")}</Label>
-          <Input id="email" type="email" required autoFocus autoComplete="email" value={email}
-            onChange={(e) => setEmail(e.target.value)} placeholder={t("shared.emailPlaceholder")} className="h-11" />
-        </div>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="text-sm font-semibold text-foreground">{t("shared.passwordLabel")}</Label>
-            <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2">
-              {t("login.forgotPassword")}
-            </Link>
-          </div>
-          <Input id="password" type="password" required autoComplete="current-password" value={password}
-            onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="h-11" />
-        </div>
+      <AuthHead title={ts("login.title")} script={ts("login.script")} />
 
-        {status === "error" && <p role="alert" className="text-sm text-destructive">{message}</p>}
-
-        <button type="submit" disabled={status === "submitting"}
-          className="w-full h-11 rounded-lg font-semibold text-sm cursor-pointer flex items-center justify-center bg-[#00F0FF] hover:bg-[#00d8e8] active:bg-[#00c8d6] text-[#080A10] shadow-lg shadow-[#00F0FF]/20 hover:shadow-xl hover:shadow-[#00F0FF]/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 px-4">
-          {status === "submitting" ? t("login.submitting") : (<><span className="flex-1 text-center">{t("login.submit")}</span><ArrowRight className="h-4 w-4 shrink-0" /></>)}
-        </button>
+      <form onSubmit={onSubmit} className="grid gap-[17px]">
+        <TextField
+          id="email"
+          label={t("shared.emailLabel")}
+          type="email"
+          autoComplete="username"
+          required
+          autoFocus
+          disabled={busy}
+          leading={<Mail size={16} />}
+          placeholder={t("shared.emailPlaceholder")}
+          value={email}
+          onChange={setEmail}
+        />
+        <TextField
+          id="password"
+          label={t("shared.passwordLabel")}
+          type={reveal ? "text" : "password"}
+          autoComplete="current-password"
+          required
+          disabled={busy}
+          leading={<Lock size={16} />}
+          value={password}
+          onChange={setPassword}
+          error={status === "error" ? ts("login.fieldError") : null}
+          aside={<Link href="/forgot-password" className="sp-linkish">{ts("login.forgot")}</Link>}
+          trailing={
+            <RevealButton
+              on={reveal}
+              onToggle={() => setReveal((r) => !r)}
+              labelShow={ts("showPassword")}
+              labelHide={ts("hidePassword")}
+            />
+          }
+        />
+        <AuthSubmit label={t("login.submit")} busyLabel={ts("login.submitting")} busy={busy} />
       </form>
-
-      <div className="mt-7 space-y-3 text-center anim-fade-in anim-d2">
-        <p className="text-sm text-muted-foreground">
-          {t("login.noAccount")}{" "}
-          <Link href="/signup" className="font-semibold text-foreground hover:underline underline-offset-2">{t("shared.signUp")}</Link>
-        </p>
-        <p className="text-sm text-muted-foreground">
-          {t("login.magicLinkPrompt")}{" "}
-          <Link href="/forgot-password" className="text-muted-foreground hover:underline underline-offset-2">{t("login.setPassword")}</Link>
-        </p>
-        <Link href="/" className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft className="h-3 w-3" />{t("shared.backHome")}
-        </Link>
-      </div>
     </AuthLayout>
   );
 }

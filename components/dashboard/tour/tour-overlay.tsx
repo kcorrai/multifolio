@@ -56,12 +56,12 @@ function TourTooltip({
       aria-modal="true"
       aria-label={t(`steps.${stepId}.title`)}
       style={style}
-      className={`pointer-events-auto ${atCenter ? "" : "fixed"} z-[102] w-[min(340px,calc(100vw-2rem))] rounded-2xl border border-[#00F0FF]/25 bg-popover text-popover-foreground shadow-2xl shadow-black/40 ring-1 ring-black/5`}
+      className={`pointer-events-auto ${atCenter ? "" : "fixed"} z-[102] w-[min(340px,calc(100vw-2rem))] rounded-2xl border border-[#FA531C]/25 bg-popover text-popover-foreground shadow-2xl shadow-black/40 ring-1 ring-black/5`}
     >
       <div className="p-4 space-y-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#00F0FF]/12 text-[#00F0FF]">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#FA531C]/12 text-[#FA531C]">
               <Sparkles className="h-4 w-4" />
             </span>
             <h3 className="text-sm font-bold leading-snug">{t(`steps.${stepId}.title`)}</h3>
@@ -80,7 +80,7 @@ function TourTooltip({
 
         {/* Tıklama adımı ipucu (fallback değilse) */}
         {isClickStep && !centered && (
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-[#00F0FF]">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-[#FA531C]">
             <MousePointerClick className="h-3.5 w-3.5" />{t("clickHint")}
           </p>
         )}
@@ -101,7 +101,7 @@ function TourTooltip({
             {showNextBtn && (
               <button
                 onClick={onNext}
-                className="inline-flex items-center gap-1 rounded-lg bg-[#00F0FF] px-3 py-1.5 text-xs font-bold text-black hover:bg-[#00F0FF]/90 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 rounded-lg bg-[#FA531C] px-3 py-1.5 text-xs font-bold text-black hover:bg-[#FA531C]/90 transition-colors cursor-pointer"
               >
                 {isLast ? t("finish") : t("next")}<ArrowRight className="h-3.5 w-3.5" />
               </button>
@@ -258,7 +258,7 @@ export function TourOverlay() {
         {/* Parlak nabız halkası (hedef çevresi) */}
         <div
           aria-hidden
-          className="fixed pointer-events-none rounded-xl border-2 border-[#00F0FF] shadow-[0_0_0_4px_rgba(0,240,255,0.35),0_0_32px_10px_rgba(0,240,255,0.30)] animate-[pulse_2s_ease-in-out_infinite] motion-reduce:animate-none"
+          className="fixed pointer-events-none rounded-xl border-2 border-[#FA531C] shadow-[0_0_0_4px_rgba(250,83,28,0.35),0_0_32px_10px_rgba(250,83,28,0.30)] animate-[pulse_2s_ease-in-out_infinite] motion-reduce:animate-none"
           style={{ top: hole.top, left: hole.left, width: hole.width, height: hole.height }}
         />
         {tooltip(ttStyle)}

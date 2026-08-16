@@ -175,7 +175,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#00F0FF]" />
+            <Sparkles className="h-4 w-4 text-[#FA531C]" />
             <h2 className="font-semibold text-sm">{t("modal.title")}</h2>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
@@ -191,7 +191,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
               <select
                 value={platform}
                 onChange={(e) => setPlatform(e.target.value as PlatformId)}
-                className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#00F0FF]/30 cursor-pointer"
+                className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#FA531C]/30 cursor-pointer"
               >
                 {PLATFORM_IDS.map((p) => (
                   <option key={p} value={p}>{PLATFORMS[p].label}</option>
@@ -212,7 +212,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
               <span className="text-xs font-semibold text-muted-foreground">{t("modal.tone")}</span>
               <div className="relative">
                 <select value={tone} onChange={(e) => setTone(e.target.value as ProposalTone)}
-                  className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F0FF]/30 cursor-pointer">
+                  className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#FA531C]/30 cursor-pointer">
                   {PROPOSAL_TONES.map((tn) => <option key={tn} value={tn}>{t(`modal.tones.${tn}`)}</option>)}
                 </select>
                 <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -222,7 +222,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
               <span className="text-xs font-semibold text-muted-foreground">{t("modal.length")}</span>
               <div className="relative">
                 <select value={length} onChange={(e) => setLength(e.target.value as ProposalLength)}
-                  className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F0FF]/30 cursor-pointer">
+                  className="w-full appearance-none rounded-xl border border-border bg-muted/40 px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#FA531C]/30 cursor-pointer">
                   {PROPOSAL_LENGTHS.map((ln) => <option key={ln} value={ln}>{t(`modal.lengths.${ln}`)}</option>)}
                 </select>
                 <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -233,10 +233,10 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
           {/* Kazanan teklif iskeleti (üretimden önce; kredisiz, kalite linter'ıyla uyumlu). */}
           {!generated && (
             <div className="rounded-xl border border-border bg-muted/30 p-3 space-y-1.5">
-              <p className="text-xs font-semibold flex items-center gap-1.5"><Lightbulb className="h-3.5 w-3.5 text-[#00F0FF]" />{t("tip.title")}</p>
+              <p className="text-xs font-semibold flex items-center gap-1.5"><Lightbulb className="h-3.5 w-3.5 text-[#FA531C]" />{t("tip.title")}</p>
               <ul className="space-y-1 text-xs text-muted-foreground">
                 {(["hook", "proof", "cta"] as const).map((k) => (
-                  <li key={k} className="flex gap-1.5"><span className="text-[#00F0FF] shrink-0">→</span>{t(`tip.${k}`)}</li>
+                  <li key={k} className="flex gap-1.5"><span className="text-[#FA531C] shrink-0">→</span>{t(`tip.${k}`)}</li>
                 ))}
               </ul>
             </div>
@@ -248,19 +248,19 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
 
           {/* Yeni oluşturulan teklif */}
           {generated && (
-            <div className="rounded-xl border border-[#00F0FF]/20 bg-[#00F0FF]/5 p-4 space-y-3">
+            <div className="rounded-xl border border-[#FA531C]/20 bg-[#FA531C]/5 p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#00F0FF]">{t("modal.newProposal", { platform: PLATFORMS[platform].label })}</span>
+                <span className="text-xs font-semibold text-[#FA531C]">{t("modal.newProposal", { platform: PLATFORMS[platform].label })}</span>
                 <CopyBtn text={generated} />
               </div>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{generated}</p>
-              <div className="pt-2 border-t border-[#00F0FF]/15">
+              <div className="pt-2 border-t border-[#FA531C]/15">
                 <ProposalQualityBadge text={generated} length={length} jobDescription={jobDescription} />
               </div>
               <HealthWarnings text={generated} platform={platform} />
               {generatedId && <TranslationBlock key={generatedId} proposalId={generatedId} platform={platform} />}
               {coverage.length > 0 && (
-                <div className="pt-3 mt-1 border-t border-[#00F0FF]/15 space-y-2">
+                <div className="pt-3 mt-1 border-t border-[#FA531C]/15 space-y-2">
                   <p className="text-xs font-semibold text-muted-foreground">
                     {t("modal.coverageSummary", { met: coverageSummary(coverage).met, total: coverageSummary(coverage).total })}
                   </p>
@@ -334,7 +334,7 @@ export function ProposalModal({ jobId, jobDescription, defaultPlatform, onClose,
 
           {loadingHistory && (
             <div className="flex items-center justify-center py-6">
-              <div className="h-5 w-5 rounded-full border-2 border-[#00F0FF]/30 border-t-[#00F0FF] animate-spin" />
+              <div className="h-5 w-5 rounded-full border-2 border-[#FA531C]/30 border-t-[#FA531C] animate-spin" />
             </div>
           )}
         </div>

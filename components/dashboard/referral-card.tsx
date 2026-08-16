@@ -34,14 +34,14 @@ export function ReferralCard() {
   const inviteUrl = info ? `${window.location.origin}/signup?ref=${info.code}` : "";
 
   return (
-    <div className="rounded-2xl border border-violet-500/15 dark:border-violet-500/20 bg-violet-500/5 p-5 space-y-3">
+    <div className="rounded-2xl border border-pink-500/15 dark:border-pink-500/20 bg-pink-500/5 p-5 space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-sm font-bold flex items-center gap-2">
-          <Gift className="h-4 w-4 text-violet-400" />
+          <Gift className="h-4 w-4 text-pink-400" />
           {t("title")}
         </h3>
         {info && (
-          <span className="text-xs font-semibold text-violet-500 dark:text-violet-300 tabular-nums">
+          <span className="text-xs font-semibold text-pink-500 dark:text-pink-300 tabular-nums">
             {t("stats", { invited: info.invited, credits: info.creditsEarned })}
           </span>
         )}

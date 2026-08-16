@@ -30,16 +30,16 @@ export async function ToolCta({ current, isLoggedIn }: { current: string; isLogg
 
       {/* Diğer ücretsiz araçlar */}
       <div>
-        <p className="mb-4 text-center text-xs font-bold uppercase tracking-[0.2em] text-violet-400">{t("more")}</p>
+        <p className="mb-4 text-center text-xs font-bold uppercase tracking-[0.2em] text-pink-400">{t("more")}</p>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {others.map((tool) => (
             <Link
               key={tool.key}
               href={tool.href}
-              className="group flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:border-[#00F0FF]/30 hover:shadow-md dark:border-white/8 dark:bg-[#161923]"
+              className="group flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:border-[#FA531C]/30 hover:shadow-md dark:border-white/8 dark:bg-[#FFFAF3]"
             >
               <span className="text-sm font-semibold text-slate-800 dark:text-white">{tt(`${tool.key}.title`)}</span>
-              <ArrowUpRight className="h-4 w-4 shrink-0 text-slate-400 transition-colors group-hover:text-[#00F0FF] dark:text-white/40" />
+              <ArrowUpRight className="h-4 w-4 shrink-0 text-slate-400 transition-colors group-hover:text-[#FA531C] dark:text-white/40" />
             </Link>
           ))}
         </div>
@@ -47,14 +47,14 @@ export async function ToolCta({ current, isLoggedIn }: { current: string; isLogg
 
       {/* Signup CTA (yalnız kayıtsız) */}
       {!isLoggedIn && (
-        <div className="relative overflow-hidden rounded-3xl border border-[#00F0FF]/15 bg-slate-50 px-8 py-10 text-center dark:border-[#00F0FF]/10 dark:bg-[#161923]">
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00F0FF]/6 blur-[80px]" />
+        <div className="relative overflow-hidden rounded-3xl border border-[#FA531C]/15 bg-slate-50 px-8 py-10 text-center dark:border-[#FA531C]/10 dark:bg-[#FFFAF3]">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FA531C]/6 blur-[80px]" />
           <div className="relative space-y-4">
             <h2 className="text-2xl font-extrabold tracking-tight">{t("unlockTitle")}</h2>
-            <p className="mx-auto max-w-md text-slate-500 dark:text-[#94A3B8] font-medium">{t("unlockDesc")}</p>
+            <p className="mx-auto max-w-md text-slate-500 dark:text-[#6B4A3C] font-medium">{t("unlockDesc")}</p>
             <Link
               href={`/signup?ref=${ref}`}
-              className="anim-neon-pulse inline-flex h-11 items-center rounded-xl bg-[#00F0FF] px-7 text-base font-bold text-[#090A0F] transition-colors hover:bg-[#00d8e8]"
+              className="anim-neon-pulse inline-flex h-11 items-center rounded-xl bg-[#FA531C] px-7 text-base font-bold text-[#3A241B] transition-colors hover:bg-[#E23C05]"
             >
               {t("unlockCta")} <ArrowRight className="ml-2 h-4 w-4" />
             </Link>

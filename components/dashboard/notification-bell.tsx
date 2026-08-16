@@ -93,7 +93,7 @@ export function NotificationBell() {
       >
         <Bell className="h-4 w-4" />
         {unread > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#00F0FF] px-1 text-[9px] font-bold text-[#090A0F] tabular-nums">
+          <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FA531C] px-1 text-[9px] font-bold text-[#3A241B] tabular-nums">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
@@ -131,11 +131,11 @@ export function NotificationBell() {
                     key={n.id}
                     onClick={() => openItem(n)}
                     className={`w-full text-left px-3 py-2.5 border-b border-border/60 last:border-0 transition-colors hover:bg-muted/50 ${
-                      n.read ? "" : "bg-[#00F0FF]/[0.04]"
+                      n.read ? "" : "bg-[#FA531C]/[0.04]"
                     }`}
                   >
                     <div className="flex items-start gap-2">
-                      {!n.read && <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#00F0FF] shrink-0" />}
+                      {!n.read && <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#FA531C] shrink-0" />}
                       <div className={`flex-1 min-w-0 ${n.read ? "pl-3.5" : ""}`}>
                         <p className="text-xs font-semibold leading-snug">{title}</p>
                         {body && <p className="text-xs text-muted-foreground leading-snug mt-0.5 line-clamp-2">{body}</p>}

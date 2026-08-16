@@ -127,7 +127,7 @@ export function FeedSettingsPanel({
       {/* ── Feed gücü (kredisiz metrik + keyword önerisi) ────────────────── */}
       <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
         <h4 className="text-sm font-bold flex items-center gap-2">
-          <Gauge className="h-4 w-4 text-[#00F0FF]" />{t("strength.title")}
+          <Gauge className="h-4 w-4 text-[#FA531C]" />{t("strength.title")}
         </h4>
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
@@ -156,7 +156,7 @@ export function FeedSettingsPanel({
                   type="button"
                   onClick={() => addKeyword(s)}
                   disabled={keywords.length >= 10}
-                  className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2 py-0.5 text-xs font-medium hover:border-[#00F0FF] hover:text-[#00F0FF] transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2 py-0.5 text-xs font-medium hover:border-[#FA531C] hover:text-[#FA531C] transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <Plus className="h-3 w-3" />{s}
                 </button>
@@ -167,12 +167,12 @@ export function FeedSettingsPanel({
       </div>
 
       {/* ── Otomatik Pilot: arka-plan otomatik taslak (opt-in) + asistanlı başvuru (AUTO-SUBMIT YOK) ─── */}
-      <div className="rounded-2xl border border-[#00F0FF]/25 bg-[#00F0FF]/[0.05] p-4 space-y-3">
+      <div className="rounded-2xl border border-[#FA531C]/25 bg-[#FA531C]/[0.05] p-4 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h4 className="text-sm font-bold flex items-center gap-2">
-            <Zap className="h-4 w-4 text-[#00F0FF]" />{t("autoPilot.title")}
+            <Zap className="h-4 w-4 text-[#FA531C]" />{t("autoPilot.title")}
           </h4>
-          <span className="rounded-full bg-[#00F0FF]/12 px-2 py-0.5 text-[11px] font-semibold text-[#00F0FF]">
+          <span className="rounded-full bg-[#FA531C]/12 px-2 py-0.5 text-[11px] font-semibold text-[#FA531C]">
             {t("autoPilot.cost", { count: CREDIT_COSTS.proposal })}
           </span>
         </div>
@@ -206,7 +206,7 @@ export function FeedSettingsPanel({
         </div>
 
         {/* ② Asistanlı başvuru — gönderimi hep kullanıcı yapar. */}
-        <p className="pt-2 border-t border-[#00F0FF]/15 text-xs leading-relaxed text-muted-foreground">
+        <p className="pt-2 border-t border-[#FA531C]/15 text-xs leading-relaxed text-muted-foreground">
           {t("assistedApply.desc")}
         </p>
       </div>
@@ -217,7 +217,7 @@ export function FeedSettingsPanel({
       <div className="rounded-2xl border border-border bg-card p-4 space-y-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h4 className="text-sm font-bold flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 text-[#00F0FF]" />{t("settingsPrefilter")}
+            <SlidersHorizontal className="h-4 w-4 text-[#FA531C]" />{t("settingsPrefilter")}
           </h4>
           <div className="relative">
             <select
@@ -280,16 +280,16 @@ export function FeedSettingsPanel({
       <div className="rounded-2xl border border-border bg-card p-4 space-y-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h4 className="text-sm font-bold flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#00F0FF]" />{t("settingsScoring")}
+            <Sparkles className="h-4 w-4 text-[#FA531C]" />{t("settingsScoring")}
           </h4>
           <label className="flex items-center gap-2 cursor-pointer">
-            <Bell className={`h-3.5 w-3.5 ${notify ? "text-[#00F0FF]" : "text-muted-foreground/50"}`} />
+            <Bell className={`h-3.5 w-3.5 ${notify ? "text-[#FA531C]" : "text-muted-foreground/50"}`} />
             <span className="text-xs font-medium">{t("modal.notifyLabel")}</span>
             <input
               type="checkbox"
               checked={notify}
               onChange={(e) => setNotify(e.target.checked)}
-              className="h-4 w-4 accent-[#00F0FF] cursor-pointer"
+              className="h-4 w-4 accent-[#FA531C] cursor-pointer"
             />
           </label>
         </div>
@@ -297,12 +297,12 @@ export function FeedSettingsPanel({
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">{t("modal.minScoreLabel")}</span>
-            <span className="text-xs font-bold text-[#00F0FF]">{minScore > 0 ? minScore : t("modal.minScoreOff")}</span>
+            <span className="text-xs font-bold text-[#FA531C]">{minScore > 0 ? minScore : t("modal.minScoreOff")}</span>
           </div>
           <input
             type="range" min={0} max={100} step={5} value={minScore}
             onChange={(e) => setMinScore(Number(e.target.value))}
-            className="w-full accent-[#00F0FF] cursor-pointer"
+            className="w-full accent-[#FA531C] cursor-pointer"
           />
           <p className="text-xs text-muted-foreground/70">{t("modal.minScoreHint")}</p>
         </div>
@@ -315,7 +315,7 @@ export function FeedSettingsPanel({
       <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
         <div className="flex items-center justify-between gap-2">
           <h4 className="text-sm font-bold flex items-center gap-2">
-            <FileText className="h-4 w-4 text-[#00F0FF]" />{t("settingsProposalPrompt")}
+            <FileText className="h-4 w-4 text-[#FA531C]" />{t("settingsProposalPrompt")}
           </h4>
           {proposalPrompt.trim() !== defaultPrompt.trim() && (
             <button
@@ -333,7 +333,7 @@ export function FeedSettingsPanel({
           rows={6}
           maxLength={2000}
           placeholder={t("settingsProposalPromptPlaceholder")}
-          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono leading-relaxed resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono leading-relaxed resize-y focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FA531C]/40"
         />
         <p className="text-xs text-muted-foreground/70">{t("settingsProposalPromptHint")}</p>
       </div>

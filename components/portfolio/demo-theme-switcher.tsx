@@ -7,35 +7,26 @@
  * sayfaya bilerek uygulanmaz). Demo ise bir vitrin — ziyaretçinin preset'leri
  * (ve dolayısıyla koyu modu) görebilmesi ürünü satan şeyin ta kendisi.
  *
- * Uygulama: sunucu kökteki inline CSS değişkenlerini basar; burada aynı elemanın
- * (#pf-root) style'ına setProperty ile yazarak override ediyoruz — sayfayı client
- * bileşene çevirmeye ya da yeniden render etmeye gerek yok. portfolioTheme SAF
- * olduğu için istemcide de aynı sonucu üretir (tek doğruluk kaynağı korunur). */
+ * Uygulama: preset artık YALNIZ renk/font değil DÜZEN de değiştiriyor (ölçü,
+ * bölüm aralığı, hero hizası, galeri kolonu — bkz. lib/portfolio/theme). Bunlar
+ * sunucuda hesaplandığı için değiştirici CSS değişkenlerini yamamak yerine
+ * `?preset=` ile SUNUCUYA gider: ziyaretçi preset'in gerçek ritmini görür,
+ * yarısı değişmiş bir sayfa değil. */
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Palette } from "lucide-react";
-import { PORTFOLIO_PRESETS, portfolioTheme, type PortfolioPreset, type PortfolioAccent } from "@/lib/portfolio/theme";
+import { PORTFOLIO_PRESETS, type PortfolioPreset } from "@/lib/portfolio/theme";
 
-export function DemoThemeSwitcher({
-  initialPreset = "studio",
-  accent = "blue",
-}: {
-  initialPreset?: PortfolioPreset;
-  accent?: PortfolioAccent;
-}) {
-  const [preset, setPreset] = useState<PortfolioPreset>(initialPreset);
+export function DemoThemeSwitcher({ initialPreset = "studio" }: { initialPreset?: PortfolioPreset }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const preset = (searchParams.get("preset") as PortfolioPreset) ?? initialPreset;
   const t = useTranslations("portfolioPublic");
   const tp = useTranslations("portfolio.preset");
 
   function apply(next: PortfolioPreset) {
-    const root = document.getElementById("pf-root");
-    if (!root) return;
-    const { vars } = portfolioTheme(next, accent);
-    for (const [key, value] of Object.entries(vars)) {
-      if (key.startsWith("--")) root.style.setProperty(key, String(value));
-    }
-    setPreset(next);
+    router.replace(`/p/demo?preset=${next}`, { scroll: false });
   }
 
   return (

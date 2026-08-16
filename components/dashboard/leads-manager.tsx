@@ -10,7 +10,7 @@ import { scoreLead, LEAD_TIER_RANK, type LeadTier } from "@/lib/portfolio/lead-s
 
 const STATUS_ORDER: LeadStatus[] = ["new", "contacted", "converted", "archived"];
 const STATUS_STYLE: Record<LeadStatus, string> = {
-  new: "border-[#00F0FF]/30 bg-[#00F0FF]/10 text-[#00c2cc] dark:text-[#00F0FF]",
+  new: "border-[#FA531C]/30 bg-[#FA531C]/10 text-[#00c2cc] dark:text-[#FA531C]",
   contacted: "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300",
   converted: "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
   archived: "border-border bg-muted/50 text-muted-foreground",
@@ -54,10 +54,10 @@ export function LeadsManager() {
   return (
     <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
       <div className="flex items-center gap-2">
-        <Inbox className="h-4 w-4 text-[#00F0FF]" />
+        <Inbox className="h-4 w-4 text-[#FA531C]" />
         <h3 className="text-sm font-bold">{t("title")}</h3>
         {newCount > 0 && (
-          <span className="ml-auto rounded-full bg-[#00F0FF] px-2 py-0.5 text-[11px] font-bold text-[#090A0F] tabular-nums">
+          <span className="ml-auto rounded-full bg-[#FA531C] px-2 py-0.5 text-[11px] font-bold text-[#3A241B] tabular-nums">
             {t("newBadge", { count: newCount })}
           </span>
         )}
@@ -79,7 +79,7 @@ export function LeadsManager() {
                     </span>
                     <span className="truncate">{l.name}</span>
                   </p>
-                  <a href={`mailto:${l.email}`} className="inline-flex items-center gap-1 text-xs text-[#00c2cc] dark:text-[#00F0FF] hover:underline">
+                  <a href={`mailto:${l.email}`} className="inline-flex items-center gap-1 text-xs text-[#00c2cc] dark:text-[#FA531C] hover:underline">
                     <Mail className="h-3 w-3" />{l.email}
                   </a>
                 </div>

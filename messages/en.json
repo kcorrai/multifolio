@@ -311,6 +311,341 @@
       "jobB": "Next.js landing page",
       "jobC": "UI/UX for SaaS app",
       "jobD": "Landing page revamp"
+    },
+    "sp": {
+      "hero": {
+        "badge": "100 free credits · no subscription",
+        "titleA": "One Profile,",
+        "titleB": "Every Platform",
+        "script": "everywhere",
+        "lede": "You write your work once — Multifolio rewrites it for LinkedIn, Upwork and Fiverr, then builds the portfolio, CV and proposals to match.",
+        "ctaStart": "Start free",
+        "ctaWatch": "Watch it work",
+        "ctaDashboard": "Open dashboard",
+        "ctaCredits": "Top up credits",
+        "trust": {
+          "card": "No card required",
+          "credit": "1 proposal ≈ 1 credit",
+          "payOnly": "Pay only for what you run"
+        },
+        "sampleName": "Amara Kane",
+        "sampleRole": "Product designer · 8 yrs · Lagos",
+        "profileIn": "Profile in",
+        "outputsOut": "6 outputs out",
+        "tapOne": "Tap one",
+        "outputs": {
+          "linkedin": {
+            "name": "LinkedIn",
+            "cost": "1 credit",
+            "line": "Product designer scaling design systems for fintech teams across three continents.",
+            "meta": "Headline · About · 4 roles rewritten"
+          },
+          "upwork": {
+            "name": "Upwork",
+            "cost": "1 credit",
+            "line": "I ship design systems that cut your build time — 40+ components, documented, handed off.",
+            "meta": "Title · Overview · 3 specialised profiles"
+          },
+          "fiverr": {
+            "name": "Fiverr",
+            "cost": "1 credit",
+            "line": "I will build a production-ready design system for your product team in 10 days.",
+            "meta": "Gig title · Description · 3 packages"
+          },
+          "portfolio": {
+            "name": "Portfolio",
+            "cost": "3 credits",
+            "line": "A live site at multifolio.app/p/amara-kane — three layouts, six accents, themed by you.",
+            "meta": "Published · re-editable free"
+          },
+          "cv": {
+            "name": "CV",
+            "cost": "1 credit",
+            "line": "ATS-parseable PDF, one per role — single column, no tables, every line read.",
+            "meta": "Greenhouse · Lever · Workable"
+          },
+          "proposal": {
+            "name": "Proposal",
+            "cost": "1 credit",
+            "line": "Hi Marcus — you need a system that survives three squads shipping in parallel. I did that at Paystack.",
+            "meta": "Tailored to the brief · follow-up on day 4"
+          }
+        }
+      },
+      "credits": {
+        "eyebrow": "Credits, not a plan",
+        "title": "Pay Per Action",
+        "script": "only",
+        "lede": "100 credits land in your account at signup. Nothing renews, nothing expires monthly.",
+        "items": {
+          "proposal": {
+            "cost": "1",
+            "label": "Tailored proposal",
+            "note": "Follow-up included"
+          },
+          "rewrite": {
+            "cost": "1",
+            "label": "Platform rewrite",
+            "note": "Per platform, per profile"
+          },
+          "portfolio": {
+            "cost": "3",
+            "label": "Portfolio site",
+            "note": "Published, re-editable free"
+          },
+          "cv": {
+            "cost": "1",
+            "label": "CV export",
+            "note": "ATS-checked PDF"
+          }
+        }
+      },
+      "showcase": {
+        "eyebrow": "The whole flow, step by step",
+        "title": "Watch It Do",
+        "script": "the work",
+        "play": "Play",
+        "pause": "Pause",
+        "stages": {
+          "profile": {
+            "title": "Enter it once",
+            "caption": "Roles, results, skills, rates — one structured profile."
+          },
+          "adapt": {
+            "title": "Adapt per platform",
+            "caption": "The same history, rewritten in each platform's register."
+          },
+          "feed": {
+            "title": "Score the job feed",
+            "caption": "Remote listings ranked against your actual profile."
+          },
+          "proposal": {
+            "title": "Draft the proposal",
+            "caption": "Tailored to the brief, in your voice, one credit."
+          },
+          "portfolio": {
+            "title": "Publish the portfolio",
+            "caption": "A live site at your own slug — no builder."
+          },
+          "cv": {
+            "title": "Export the CV",
+            "caption": "ATS-parseable PDF, per role, no template fiddling."
+          }
+        },
+        "panels": {
+          "profile": {
+            "label": "Step 1 — your profile, entered once",
+            "note": "Nothing here is written twice — everything downstream reads from this one record.",
+            "fields": {
+              "role": {
+                "label": "Role",
+                "value": "Senior Product Designer"
+              },
+              "years": {
+                "label": "Years",
+                "value": "8"
+              },
+              "result": {
+                "label": "Result",
+                "value": "Cut build time 40% at Paystack"
+              },
+              "rate": {
+                "label": "Rate",
+                "value": "$85 – $110 / hr"
+              }
+            },
+            "skills": {
+              "a": "Design systems",
+              "b": "Figma",
+              "c": "Fintech",
+              "d": "Accessibility",
+              "e": "Design ops"
+            }
+          },
+          "adapt": {
+            "label": "Step 2 — one history, three registers",
+            "note": "Same facts, same numbers — different length, register and keyword set per platform.",
+            "platforms": {
+              "linkedin": {
+                "name": "LinkedIn",
+                "line": "Product designer scaling design systems for fintech teams across three continents."
+              },
+              "upwork": {
+                "name": "Upwork",
+                "line": "I ship design systems that cut your build time — 40+ components, documented, handed off."
+              },
+              "fiverr": {
+                "name": "Fiverr",
+                "line": "I will build a production-ready design system for your product team in 10 days."
+              }
+            }
+          },
+          "feed": {
+            "label": "Step 3 — the feed, scored against your profile",
+            "note": "Scores are explained, not asserted — open one and it names the skills that matched and the two that did not.",
+            "jobs": {
+              "a": {
+                "role": "Senior Product Designer",
+                "meta": "Remote · Fintech · $85–110/hr"
+              },
+              "b": {
+                "role": "Design Systems Lead",
+                "meta": "Remote EU · SaaS · $95/hr"
+              },
+              "c": {
+                "role": "UX Designer, Growth",
+                "meta": "Remote US · Marketplace · $70/hr"
+              },
+              "d": {
+                "role": "Brand Designer (contract)",
+                "meta": "Remote · Agency · $55/hr"
+              }
+            }
+          },
+          "proposal": {
+            "label": "Step 4 — proposal, 1 credit",
+            "note": "Nothing is auto-submitted. Every draft is yours to edit, shorten or throw away.",
+            "re": "Re: Design Systems Lead · SaaS · $95/hr",
+            "body": "Hi Marcus — you need a design system that survives three squads shipping in parallel. I did exactly that at Paystack: 40+ components, tokens in Figma and code, adoption tracked. Two things I would check first…",
+            "cost": "1 credit",
+            "editable": "Editable before it is sent. Follow-up drafted on day 4 if nobody replies."
+          },
+          "portfolio": {
+            "label": "Step 5 — the portfolio site",
+            "note": "Your own slug, three layouts, six accents — themed by you, not branded by us. 3 credits.",
+            "url": "multifolio.app/p/amara-kane",
+            "headline": "Amara Kane — design systems",
+            "bio": "Eight years turning inconsistent product surfaces into systems teams actually use.",
+            "projects": {
+              "a": "Paystack",
+              "b": "Kuda",
+              "c": "Flutterwave"
+            }
+          },
+          "cv": {
+            "label": "Step 6 — the CV that parses",
+            "note": "One CV per role, generated from the same profile — no tables, no columns, no parser-breaking icons.",
+            "name": "Amara Kane",
+            "role": "Senior Product Designer · Design Systems",
+            "bars": {
+              "keywords": "Keyword coverage",
+              "structure": "Parse-safe structure",
+              "length": "Length vs. role norm"
+            },
+            "badge": "PDF · ATS-safe"
+          }
+        }
+      },
+      "features": {
+        "eyebrow": "Features",
+        "title": "Six Jobs You Do",
+        "script": "by hand",
+        "privacyTitle": "Your work history is yours",
+        "privacyBody": "Never used to train models, and deletable in one click.",
+        "feed": {
+          "title": "A feed that ranks",
+          "copy": "Remote listings pulled in hourly and scored against your real profile — so the top of the list is worth your credits."
+        },
+        "scores": {
+          "title": "Scores you can argue with",
+          "copy": "Platform fit, skill match and client appeal, each explained. When it says 87, it says why."
+        },
+        "proposals": {
+          "title": "Proposals in your voice",
+          "copy": "Written from the brief and your history, not a template. Follow-ups drafted if the client goes quiet."
+        },
+        "pipeline": {
+          "title": "Every application tracked",
+          "copy": "A pipeline that shows your real reply rate — and which platform is wasting your time."
+        },
+        "portfolio": {
+          "title": "A portfolio you did not build",
+          "copy": "Published at your own slug from the same profile. Three layouts, six accents, themed by you."
+        },
+        "cv": {
+          "title": "CVs that survive robots",
+          "copy": "One export per role, structured so applicant tracking systems read every line."
+        },
+        "demo": {
+          "jobs": {
+            "a": {
+              "role": "Senior Product Designer",
+              "meta": "Remote · Fintech · $85–110/hr"
+            },
+            "b": {
+              "role": "Design Systems Lead",
+              "meta": "Remote EU · SaaS · $95/hr"
+            },
+            "c": {
+              "role": "UX Designer, Growth",
+              "meta": "Remote US · Marketplace · $70/hr"
+            },
+            "d": {
+              "role": "Brand Designer (contract)",
+              "meta": "Remote · Agency · $55/hr"
+            }
+          },
+          "bars": {
+            "fit": "Platform fit",
+            "skill": "Skill match",
+            "appeal": "Client appeal"
+          },
+          "proposal": "Hi Marcus — you need a design system that survives three squads shipping in parallel. I did exactly that at Paystack: 40+ components, tokens in Figma and code, adoption tracked per squad.",
+          "funnel": {
+            "sent": "Sent",
+            "viewed": "Viewed",
+            "replied": "Replied",
+            "interviewing": "Interviewing",
+            "summary": "40% reply rate · +11 pts since tailored proposals"
+          },
+          "cv": "Single column · no tables · parsed clean by Greenhouse, Lever and Workable"
+        }
+      },
+      "tools": {
+        "eyebrow": "Free tools",
+        "title": "Try Before You",
+        "script": "sign up",
+        "lede": "Six calculators and checkers that run in your browser — no account, no credits, instant answers.",
+        "freeBadge": "Free",
+        "open": "Open"
+      },
+      "pricing": {
+        "title": "Packs, Not",
+        "script": "months",
+        "badgeLive": "On sale",
+        "badgeSoon": "Soon",
+        "neverExpire": "Credits never expire",
+        "noRenew": "Nothing renews — no plan to downgrade from",
+        "soonTitle": "Checkout opens soon"
+      },
+      "faq": {
+        "eyebrow": "FAQ",
+        "title": "Straight",
+        "script": "answers",
+        "lede": "Still unsure? Run a free tool first — nothing on this page needs an account.",
+        "q": {
+          "credit": "What does one credit buy?",
+          "subscription": "Is there a subscription?",
+          "checkout": "Why can I not buy credits yet?",
+          "invent": "Does the AI invent experience?",
+          "detect": "Will clients see it is AI-written?"
+        },
+        "a": {
+          "credit": "One tailored proposal, one platform rewrite or one mock-interview answer costs 1 credit. A portfolio build is 3. Every action shows its cost before you run it.",
+          "subscription": "No. Credits are bought once and never expire. Nothing renews, and there is no plan to downgrade from.",
+          "checkout": "Checkout is still being wired up. The free 100 credits are live and cover roughly a week of active applying — you will not hit a wall on day one.",
+          "invent": "No. It only rewrites what you entered. If a job needs a skill you have not listed, the match score drops and says so rather than papering over it.",
+          "detect": "Output follows your own phrasing from the profile, and every draft is editable before it leaves. Nothing is auto-submitted anywhere."
+        }
+      },
+      "finalCta": {
+        "title": "Stop Rewriting",
+        "script": "the same bio",
+        "lede": "Enter your work once. Multifolio handles the next platform, the CV, the portfolio and the follow-up.",
+        "ctaOut": "Create your account",
+        "ctaIn": "Back to your dashboard",
+        "note": "100 free credits · no card · no subscription"
+      }
     }
   },
   "auth": {
@@ -381,6 +716,103 @@
       "mobileTaglinePre": "One profile.",
       "mobileTaglineHighlight": "8 platforms.",
       "mobileTaglineSub": "Manage your freelance career from one place."
+    },
+    "sp": {
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "helper": {
+        "hasAccount": "Already a member?",
+        "noAccount": "No account yet?",
+        "remembered": "Remembered it?",
+        "logIn": "Log in",
+        "signUp": "Sign up",
+        "signUpLong": "Create an account"
+      },
+      "stub": {
+        "credits": {
+          "title": "100 credits",
+          "sub": "On signup, no card"
+        },
+        "platforms": {
+          "title": "3 platforms",
+          "sub": "One profile, rewritten"
+        },
+        "outputs": {
+          "title": "CV + site",
+          "sub": "Generated, not built"
+        },
+        "welcome": "Your credits, profiles and pipeline are exactly where you left them.",
+        "referralTitle": "You were invited — +20 credits each",
+        "referralTitleNamed": "{name} invited you — +20 each",
+        "referralBody": "Your account starts with 120 credits. Your inviter gets theirs when you save your first profile."
+      },
+      "aside": {
+        "quote": "I stopped rewriting the same bio five times. That alone was worth it.",
+        "quoteBy": "Dami O. · Product designer",
+        "noCardTitle": "No card, ever",
+        "noCardSignup": "Signup takes an email and a password. Payment is not even wired up yet.",
+        "noCardLogin": "Credits do not expire and nothing renews — your balance is exactly where you left it.",
+        "toolsTitle": "Not ready yet?",
+        "toolsBody": "Six free tools run without an account — rate calculator, ATS check, headline optimizer and more.",
+        "toolsCta": "Open free tools"
+      },
+      "strength": {
+        "min": "8 min",
+        "short": "Too short",
+        "good": "Good",
+        "strong": "Strong"
+      },
+      "signup": {
+        "title": "Create your",
+        "script": "account",
+        "sub": "You are in the product in about 30 seconds — no card, no confirmation step.",
+        "submitting": "Creating your account…",
+        "promise": "100 free credits · no card · no subscription",
+        "promiseReferral": "120 free credits · no card · no subscription",
+        "consentError": "Tick this to continue — it is the only box on the form.",
+        "takenTitle": "That email already has an account",
+        "takenBody": "Nothing was created. Sign in instead, or reset the password if you have forgotten it.",
+        "takenAction": "Go to log in",
+        "failedTitle": "That did not go through"
+      },
+      "login": {
+        "title": "Sign",
+        "script": "in",
+        "submitting": "Signing you in…",
+        "forgot": "Forgot?",
+        "errorTitle": "That email and password do not match",
+        "errorBody": "Check for a stray capital, or reset the password — trying again will not lock you out.",
+        "errorAction": "Reset password",
+        "fieldError": "Incorrect email or password."
+      },
+      "forgot": {
+        "title": "Reset your",
+        "script": "password",
+        "sub": "Enter the email you signed up with. We send a link that signs you in and lets you set a new password.",
+        "sentTitle": "Check your",
+        "sentScript": "inbox",
+        "sentBody": "If {email} has an account, a reset link is on its way. If it does not, no email was sent — that is deliberate, so nobody can use this form to discover who has an account.",
+        "tips": {
+          "spam": "Look in spam and promotions — it comes from our sending domain, not from a person.",
+          "expiry": "Links expire after an hour. Request a new one any time."
+        },
+        "tryAnother": "Try another address",
+        "errorTitle": "We could not send that"
+      },
+      "reset": {
+        "title": "Set a new",
+        "script": "password",
+        "sub": "Choose something you have not used on this account before.",
+        "expiredTitle": "This link has",
+        "expiredScript": "expired",
+        "expiredBody": "Reset links work once and do not last long. Nothing is wrong with your account — request a fresh link and you are back in two minutes.",
+        "expiredCta": "Send a new link",
+        "doneTitle": "Password",
+        "doneScript": "updated",
+        "doneBody": "You are signed in on this device. Taking you to your dashboard…",
+        "doneCta": "Go to dashboard",
+        "failedTitle": "That did not go through"
+      }
     }
   },
   "dashboard": {
@@ -392,11 +824,12 @@
       "cv": "CV",
       "jobs": "Jobs",
       "interview": "Interview",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "start": "Getting started"
     },
     "shell": {
       "credits": "Credits",
-      "buyCredits": "Buy",
+      "buyCredits": "Buy credits",
       "logout": "Sign out",
       "gettingStarted": "Getting started",
       "comingSoonTitle": "Payments coming soon!",
@@ -490,6 +923,69 @@
         "platformDataFetched": "Fetch your platform data",
         "adapted": "Adapt your profile for a platform"
       }
+    },
+    "sp": {
+      "navGroup": {
+        "work": "Work",
+        "assets": "Assets",
+        "practice": "Practice",
+        "help": "Help",
+        "admin": "Admin"
+      },
+      "creditsNote": "Nothing renews, nothing expires.",
+      "titles": {
+        "overview": {
+          "title": "Today's",
+          "script": "shortlist",
+          "sub": "The few things that move the needle — the rest can wait."
+        },
+        "jobs": {
+          "title": "Scored Job",
+          "script": "feed",
+          "sub": "Remote listings ranked against your actual profile, with the pipeline behind them."
+        },
+        "profile": {
+          "title": "One Profile,",
+          "script": "many uses",
+          "sub": "Everything downstream reads from this single record."
+        },
+        "platforms": {
+          "title": "Platform",
+          "script": "versions",
+          "sub": "The same history, rewritten in each platform's register."
+        },
+        "portfolio": {
+          "title": "Your Public",
+          "script": "page",
+          "sub": "Themed by you — Multifolio branding never appears on it."
+        },
+        "cv": {
+          "title": "CV",
+          "script": "builder",
+          "sub": "One export per role. Parsed in memory, never stored."
+        },
+        "interview": {
+          "title": "Mock",
+          "script": "interviews",
+          "sub": "Questions from the kind of role you are actually applying to."
+        },
+        "start": {
+          "title": "Steps to Your First",
+          "script": "reply",
+          "sub": "Each step unlocks the next one — no busywork."
+        },
+        "feedback": {
+          "title": "Tell Us What",
+          "script": "broke",
+          "sub": "Goes straight to the team. No ticket numbers, no auto-reply."
+        },
+        "import": {
+          "title": "Bring Your Work",
+          "script": "in",
+          "sub": "A URL, pasted text or a PDF — we turn it into a structured profile you can edit."
+        }
+      },
+      "creditsPill": "{count} credits"
     }
   },
   "jobs": {
@@ -1420,7 +1916,47 @@
     "lockedBody": "See the full score breakdown, every suggestion and Upwork approval notes — free with an account.",
     "lockedCount": "{suggestions} more improvement tips and {notes} Upwork approval notes are ready for you.",
     "lockedCta": "Sign up free",
-    "signupPerk": "Signing up also gets you 100 free credits to adapt your profile for every platform."
+    "signupPerk": "Signing up also gets you 100 free credits to adapt your profile for every platform.",
+    "sp": {
+      "urlLabel": "Public profile URL",
+      "textLabel": "Paste your profile text",
+      "scale": "Profile score · out of 100",
+      "words": {
+        "strong": "Strong profile",
+        "average": "Middling profile",
+        "weak": "Weak profile"
+      },
+      "biggestIssue": "The single biggest issue, in full",
+      "dimensionsTitle": "Every dimension, scored",
+      "computingTitle": "Reading the profile — about 8 seconds",
+      "computingBody": "You can leave this tab. Nothing is saved and nothing is emailed.",
+      "skeletonNote": "The skeleton is the shape of the score card only — the report is never rendered before the server sends it.",
+      "limitedTitle": "Five runs used — the next one is free within the hour",
+      "limitedBody": "The limit is per IP and exists so the free tool stays free. Nothing is wrong with your profile or your last run.",
+      "limitedAltTitle": "While you wait, these need no quota",
+      "altHeadline": "Headline optimizer",
+      "altAts": "ATS check",
+      "altRate": "Rate calculator",
+      "lockedTitle": "The rest of the report is on the server",
+      "notBlurred": "Not blurred — not sent",
+      "lockedBody": "An account releases the per-dimension scores, the concrete suggestions and the platform-approval notes. We do not send them to your browser first and hide them.",
+      "lockedScore": "— / 100",
+      "lockedCta": "Create an account and release the report",
+      "lockedPerk": "100 free credits · no card · the score above stays free either way",
+      "emptyTitle": "What comes back",
+      "emptyBody": "A score out of 100 and the single biggest issue in full — free, no account. The per-dimension scores and the suggestion list need an account, and they stay on the server until you have one.",
+      "tier": {
+        "free": {
+          "title": "Free, right now",
+          "body": "Overall score · biggest issue explained in full"
+        },
+        "account": {
+          "title": "With an account",
+          "body": "Every dimension scored · concrete changes · platform compliance notes"
+        }
+      },
+      "loggedInNote": "You are signed in, so the full report is released as soon as the analysis finishes."
+    }
   },
   "checkout": {
     "processing": "Processing…",
@@ -1797,7 +2333,32 @@
     "disclaimer": "All values are editable estimates and can change over time; this is not tax or financial advice. Check current platform and tax rates before deciding.",
     "ctaTitle": "Charge what you're worth",
     "ctaBody": "Multifolio helps you win better-paying work across platforms — optimized profiles, matched jobs and proposals. Start free with 100 credits.",
-    "ctaButton": "Start free"
+    "ctaButton": "Start free",
+    "sp": {
+      "inputsTitle": "Your numbers",
+      "netHint": "What lands in your account each month, after tax and expenses",
+      "hoursHint": "Only hours you can invoice",
+      "weeksOffHint": "Holiday, sickness, gaps",
+      "fee": "Platform fee",
+      "tax": "Tax rate",
+      "current": "What you charge today",
+      "currentHint": "Optional — powers the gap below",
+      "resultTitle": "The rate that gets you there",
+      "hourly": "Hourly",
+      "hourlySub": "{hours} billable hours a month",
+      "dayRate": "Day rate",
+      "daySub": "8 billable hours",
+      "project": "Two-week project",
+      "projectSub": "{hours} billable hours",
+      "gapShort": "You are {amount}/hr short",
+      "gapClear": "You are {amount}/hr clear",
+      "gapShortBody": "At {rate}/hr you land near {takeHome} take-home a month — a {rise}% rise closes it.",
+      "gapClearBody": "Your current rate clears the target. The surplus is your buffer for slow months.",
+      "breakdownTitle": "Where the money goes",
+      "taxRow": "Tax at {pct}%",
+      "feeRow": "Platform fees at {pct}%",
+      "grossRow": "Gross you must invoice"
+    }
   },
   "roi": {
     "metaTitle": "Upwork Connects ROI Calculator — Are Your Bids Paying Off? | Multifolio",
@@ -1831,6 +2392,23 @@
     "loss": "At this win rate your Connects cost more than they earn — raise your win rate or project value, or spend fewer Connects per bid.",
     "infeasible": "Enter proposals, Connects per proposal and an average project value to see your ROI.",
     "disclaimer": "All values are editable estimates; Connect prices and win rates vary. This is guidance, not a guarantee.",
+    "sp": {
+      "inputsTitle": "Your bidding month",
+      "resultTitle": "Three numbers, in order of what they change",
+      "roiLabel": "Return per $1 bid",
+      "roiSub": "{spend} spent → {won} won",
+      "costPerWin": "Cost per won job",
+      "winsSub": "{wins} wins a month",
+      "breakEven": "Break-even win rate",
+      "breakEvenSub": "Below this, bidding loses money",
+      "verdictGood": "Bidding is paying for itself",
+      "verdictThin": "Thin margin on bidding",
+      "verdictBody": "You are {position} break-even. One extra point of win rate is worth {point} a month — more than cutting volume.",
+      "above": "{times}× above",
+      "below": "below",
+      "scenarioTitle": "If your win rate moved",
+      "scenarioNote": "Half, current, 1.5× and double — the highlighted row is where you are today."
+    },
     "ctaTitle": "Win more with fewer bids",
     "ctaBody": "Multifolio scores jobs against your profile so you only spend Connects where you can actually win — plus proposals that convert. Start free with 100 credits.",
     "ctaButton": "Start free"
@@ -2025,7 +2603,56 @@
     "disclaimer": "A quick heuristic check, not a guarantee. Personalize every proposal to the specific job and client.",
     "ctaTitle": "Let AI write proposals that win",
     "ctaBody": "Multifolio generates tailored, platform-ready proposals that cover the job's requirements — in the client's language. Start free with 100 credits.",
-    "ctaButton": "Start free"
+    "ctaButton": "Start free",
+    "sp": {
+      "inputHint": "Checked in your browser against the structure of proposals that got replies",
+      "scale": "Structure score · out of 100",
+      "words": {
+        "strong": "Send it",
+        "average": "Tighten first",
+        "weak": "Rewrite it"
+      },
+      "findingsTitle": "Five structural checks",
+      "emptyTitle": "Paste a draft to see five checks",
+      "emptyBody": "Nothing is uploaded and nothing is stored. The checks are listed below so you know what you get before pasting.",
+      "emptyList": {
+        "opener": "Opener names their problem",
+        "number": "One number as evidence",
+        "question": "Asks a specific question",
+        "length": "Length in the read band",
+        "filler": "No filler adjectives"
+      },
+      "fillerTitle": "Filler found",
+      "upsellTitle": "This checks structure — it does not write",
+      "upsellBody": "Multifolio drafts the proposal from the job post and your profile for 1 credit — and 100 credits come free with an account.",
+      "checks": {
+        "length": {
+          "pass": "Length is in the read band",
+          "fail": "Length is outside the read band",
+          "body": "Over 250 words is skimmed, not read; under 30 reads as a copy-paste bid. The 60–220 band is what gets read on a phone."
+        },
+        "question": {
+          "pass": "Asks something",
+          "fail": "Asks nothing",
+          "body": "A single specific question invites a reply and shows you read the brief."
+        },
+        "numbers": {
+          "pass": "Carries a specific number",
+          "fail": "No evidence with a number in it",
+          "body": "One quantified outcome outperforms three adjectives. \"Cut build time 40%\" beats \"highly experienced\"."
+        },
+        "clientFocus": {
+          "pass": "Opens with the client, not with you",
+          "fail": "Opens with you, not the client",
+          "body": "The first sentence should name their problem. \"I am a designer with 8 years…\" is the most common opener and the weakest."
+        },
+        "noFiller": {
+          "pass": "No filler adjectives",
+          "fail": "Filler adjectives found",
+          "body": "Words a client cannot verify cost you space and credibility."
+        }
+      }
+    }
   },
   "guides": {
     "metaTitle": "Freelance guides — Multifolio",
@@ -2064,7 +2691,55 @@
     "disclaimer": "A quick heuristic check, not a rule. Write for the specific clients you want to attract.",
     "ctaTitle": "Get your whole profile optimized",
     "ctaBody": "Multifolio scores and rewrites your full profile for LinkedIn, Upwork, Fiverr and more — in each platform's voice. Start free with 100 credits.",
-    "ctaButton": "Start free"
+    "ctaButton": "Start free",
+    "sp": {
+      "inputHint": "Paste the exact line from your profile",
+      "charNote": "{count} characters · LinkedIn truncates around 90",
+      "formulaTitle": "The shape that works",
+      "scale": "Headline score · out of 100",
+      "words": {
+        "strong": "Working hard",
+        "average": "Half-working",
+        "weak": "Costing you views"
+      },
+      "worth": "worth {points} points",
+      "axes": {
+        "role": {
+          "label": "Specificity",
+          "note": "Names a role, stack or domain a client searches for"
+        },
+        "outcome": {
+          "label": "Outcome",
+          "note": "Says what the client gets, not what you are"
+        },
+        "length": {
+          "label": "Length",
+          "note": "20–90 characters survives truncation everywhere"
+        },
+        "noBuzzwords": {
+          "label": "Credibility",
+          "note": "No words a client cannot verify"
+        }
+      },
+      "emptyTitle": "Type a headline to score it",
+      "emptyBody": "Four axes: specificity, outcome, length and credibility. It runs entirely in your browser and updates as you type — nothing is sent anywhere.",
+      "rewritesTitle": "Rewrites, per platform",
+      "rewritesNote": "These three come from patterns, not from your history. Multifolio writes them from your actual profile.",
+      "rewrites": {
+        "linkedin": {
+          "platform": "LinkedIn",
+          "text": "Product designer scaling design systems for fintech teams — 40% faster builds"
+        },
+        "upwork": {
+          "platform": "Upwork",
+          "text": "Design systems specialist · I cut your build time with documented, adopted component libraries"
+        },
+        "fiverr": {
+          "platform": "Fiverr",
+          "text": "I will build a production-ready design system for your product team in 10 days"
+        }
+      }
+    }
   },
   "atsCheck": {
     "metaTitle": "Free ATS Resume Checker — Multifolio",
@@ -2107,6 +2782,79 @@
     "teaser": {
       "lockChecks": "{count, plural, one {# more check plus keyword match — free with an account} other {# more checks plus keyword match — free with an account}}",
       "unlock": "See full report"
+    },
+    "sp": {
+      "cvHint": "Plain text — copy it out of the PDF or document",
+      "scale": "ATS structure score · out of 100",
+      "words": {
+        "strong": "Parses cleanly",
+        "average": "Parses with losses",
+        "weak": "Likely rejected"
+      },
+      "findingsTitle": "What produced that score",
+      "emptyTitle": "What gets checked",
+      "emptyBody": "Ten deterministic structural checks — no AI, no upload, nothing stored. They are listed now so the page is useful before you paste, and the layout does not move when the result arrives.",
+      "emptyList": {
+        "contact": "Contact block parseable",
+        "headings": "Conventional section headings",
+        "dates": "Date ranges parseable",
+        "bullets": "Quantified bullet structure",
+        "column": "Single-column layout",
+        "length": "Length in the expected band"
+      },
+      "checks": {
+        "contact": {
+          "pass": "Contact details found in the header",
+          "fail": "No email or phone in the text",
+          "body": "Parsers key the whole record on a contact email. It must be plain text in the first block, not inside a header graphic."
+        },
+        "summary": {
+          "pass": "Summary section present",
+          "fail": "No summary or profile section",
+          "body": "The first block a human reads after the parser is done. Three lines is enough; a missing one reads as an unfinished record."
+        },
+        "skills": {
+          "pass": "Skills section present",
+          "fail": "No skills section",
+          "body": "Keyword matching runs hardest here. A plain comma-separated list parses better than a chart or rating dots."
+        },
+        "experience": {
+          "pass": "Experience heading is conventional",
+          "fail": "No recognisable Experience heading",
+          "body": "Use the literal words Experience, Education, Skills, Summary. Creative headings are silently skipped."
+        },
+        "education": {
+          "pass": "Education section present",
+          "fail": "No education section",
+          "body": "Even a single line prevents some systems from marking the record incomplete."
+        },
+        "quantified": {
+          "pass": "Quantified outcomes present",
+          "fail": "No quantified outcomes",
+          "body": "Numbers are not an ATS requirement but they are what the human after the ATS reads. Aim for one per role."
+        },
+        "noFiller": {
+          "pass": "No filler phrasing",
+          "fail": "Filler phrasing found",
+          "body": "\"Responsible for\" and its relatives cost you space without telling anyone what happened."
+        },
+        "dates": {
+          "pass": "Date ranges found",
+          "fail": "No date ranges detected",
+          "body": "Write 2021–2024, not \"3 yrs\". Tenure calculations depend on parseable years."
+        },
+        "length": {
+          "pass": "Length is in the expected band",
+          "fail": "Length is outside the expected band",
+          "body": "Under 200 words reads as a stub; over 900 is two pages of scrolling. Trim the oldest roles first."
+        },
+        "keywords": {
+          "pass": "Covers the job's key terms",
+          "fail": "Misses the job's key terms",
+          "body": "Paste a job post on the left and this compares its vocabulary against yours. Without one, it stays neutral."
+        }
+      },
+      "stickyLabel": "ATS score"
     }
   },
   "lead": {
@@ -2214,5 +2962,144 @@
     "platformProfileRequired": "Pull this platform's public profile first to adapt from it.",
     "portfolioNotGenerated": "Generate your portfolio first.",
     "cvNotGenerated": "Generate or upload your CV first."
+  },
+  "tools": {
+    "nav": {
+      "rate": "Rate",
+      "roi": "Proposal ROI",
+      "ats": "ATS check",
+      "proposal": "Proposal check",
+      "headline": "Headline",
+      "analyze": "Profile analysis"
+    },
+    "flagFree": "Free · no account",
+    "flagLimited": "Free · 5 runs an hour",
+    "hero": {
+      "rate": {
+        "title": "What Rate Do You Actually",
+        "script": "need?",
+        "lede": "Enter the income you want to take home. This works backwards through unbillable time, expenses, tax and platform fees to the rate that gets you there."
+      },
+      "roi": {
+        "title": "Is Your Bidding Paying For",
+        "script": "itself?",
+        "lede": "Connects, credits and hours spent bidding versus what you actually won — including the win rate you need just to break even."
+      },
+      "ats": {
+        "title": "Will a Robot Read Your",
+        "script": "CV?",
+        "lede": "Paste your CV. Every finding is structural — the things that make a parser drop a line, not style opinions."
+      },
+      "proposal": {
+        "title": "Score Your Proposal Before You",
+        "script": "send it",
+        "lede": "Paste a draft. It is checked against the structure of proposals that get replies: opener, evidence, specificity and length."
+      },
+      "headline": {
+        "title": "Fix the One Line Clients Read",
+        "script": "first",
+        "lede": "Your profile headline, critiqued on four axes with rewrites you can paste straight back."
+      },
+      "analyze": {
+        "title": "AI Analysis of Your Freelance",
+        "script": "profile",
+        "lede": "Paste a public profile URL or the text itself. The score is free; the full multi-dimension report needs an account."
+      }
+    },
+    "cross": {
+      "eyebrow": {
+        "out": "Keep going, still free",
+        "in": "Do this inside Multifolio"
+      },
+      "title": {
+        "out": "More Tools, No Account",
+        "in": "Your Profile Has These Answers"
+      },
+      "freeBadge": "Free",
+      "open": "Open",
+      "blurb": {
+        "rate": "Work backwards from the income you want to the rate that gets you there.",
+        "roi": "Whether the money you spend bidding is coming back.",
+        "ats": "Ten structural checks on the CV a parser actually sees.",
+        "proposal": "Six checks against the structure of proposals that get replies.",
+        "headline": "Four axes, plus rewrites you can paste straight back.",
+        "analyze": "An AI read of your public profile, scored out of 100."
+      },
+      "pitchTitle": {
+        "out": "These tools tell you. Multifolio does it.",
+        "in": "Pick up where you left off"
+      },
+      "pitchBody": {
+        "out": "One profile, rewritten for every platform, with an ATS CV, a portfolio site and scored job matches. 100 free credits, no card.",
+        "in": "Your profile, adapted per platform, with the scored job feed and proposal drafting already set up."
+      },
+      "ctaStart": "Start free",
+      "ctaPricing": "See pricing",
+      "ctaDashboard": "Open dashboard",
+      "ctaCredits": "Buy credits"
+    },
+    "shared": {
+      "live": "Live",
+      "scaleNote": "Marks at 60 and 80 — the same scale on every Multifolio tool",
+      "shareMark": "Screenshot-friendly",
+      "fullResult": "Full result",
+      "checksCount": "{total} checks · {fails} blocking · {warns} to improve",
+      "clear": "Clear",
+      "loadSample": "Load a sample",
+      "staysInBrowser": "Stays in your browser",
+      "nothingPasted": "Nothing pasted yet",
+      "wordCount": "{count} words"
+    }
+  },
+  "siteChrome": {
+    "nav": {
+      "tools": "Free tools",
+      "features": "Features",
+      "pricing": "Pricing",
+      "faq": "FAQ"
+    },
+    "auth": {
+      "login": "Log in",
+      "startFree": "Start free",
+      "startFreeLong": "Start free — 100 credits",
+      "dashboard": "Dashboard",
+      "credits": "{count} credits"
+    },
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "footer": {
+      "blurb": {
+        "site": "One profile, every platform — built for freelancers working across borders.",
+        "tools": "The tools above stay free and account-free — that is the whole point of them."
+      },
+      "col": {
+        "product": "Product",
+        "tools": "Free tools",
+        "grow": "Grow",
+        "company": "Company"
+      },
+      "link": {
+        "adapter": "Profile adapter",
+        "feed": "Job feed",
+        "proposals": "Proposals",
+        "portfolio": "Portfolio sites",
+        "pipeline": "Pipeline",
+        "analyze": "Profile analysis",
+        "rate": "Rate calculator",
+        "roi": "Proposal ROI",
+        "ats": "ATS check",
+        "proposalChecker": "Proposal checker",
+        "headline": "Headline optimizer",
+        "extension": "Browser extension",
+        "guides": "Guides",
+        "freelance": "Freelance by platform",
+        "pricing": "Pricing",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "contact": "Contact"
+      },
+      "legalLine": "© 2026 Multifolio · English-only for now",
+      "metaLine": "Built for freelancers, not for recruiters"
+    }
   }
 }

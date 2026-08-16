@@ -1,0 +1,586 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   SOLAR POP — Multifolio'nun yeni tasarım dili.
+   Kaynak: Claude Design "Solar Pop Studio" design system
+   (proje 7cf067ab-b1a4-46bb-9242-18e57e1c3f1d, _ds/solar-pop-studio-...).
+   Token bloğu design system'den BİREBİR kopyalanmıştır — değer değiştirme,
+   tasarımı güncellemek gerekirse önce design projesinden yeniden çek.
+
+   Sıcak krem zemin, tek düz renk katmanları, gradient/doku YOK, koyu tema YOK.
+   Referans komplar: docs/design/solar-pop/*.html
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── tokens/colors.css ───────────────────────────────────────────────── */
+:root {
+  /* base — sun palette */
+  --flame-600: #e23c05; --flame-500: #fa531c; --flame-400: #ff6b33; --flame-300: #ff8f5e;
+  --peach-300: #ffb98c; --peach-200: #ffceaa; --peach-100: #ffe2cc;
+  --amber-400: #f9a65a; --amber-200: #ffd9a8;
+  /* base — bubblegum palette */
+  --pink-600: #f0568c; --pink-500: #ff6fa5; --pink-400: #ff92bc;
+  --pink-300: #ffb8d2; --pink-200: #ffd5e4; --pink-100: #ffe9f1;
+  /* base — cream / ink */
+  --cream-100: #fffaf3; --cream-200: #fdf3e7; --cream-300: #fbe9d6; --cream-400: #f6dcc2;
+  --ink-900: #3a241b; --ink-700: #6b4a3c; --ink-500: #9a7a6b; --white: #ffffff;
+
+  /* semantic — surfaces */
+  --surface-page: var(--cream-200);
+  --surface-card: var(--cream-100);
+  --surface-card-alt: var(--pink-100);
+  --surface-card-peach: var(--peach-100);
+  --surface-inverse: var(--flame-500);
+  --surface-pink: var(--pink-500);
+  --surface-muted: var(--cream-300);
+
+  /* semantic — text */
+  --text-heading: var(--flame-500);
+  --text-heading-pink: var(--pink-500);
+  --text-body: var(--ink-700);
+  --text-strong: var(--ink-900);
+  --text-muted: var(--ink-500);
+  --text-on-inverse: var(--white);
+  --text-link: var(--flame-500);
+  --text-link-hover: var(--flame-600);
+
+  /* semantic — interactive */
+  --action-primary: var(--flame-500);
+  --action-primary-hover: var(--flame-600);
+  --action-secondary: var(--pink-500);
+  --action-secondary-hover: var(--pink-600);
+  --action-ghost-border: var(--ink-900);
+  --focus-ring: var(--flame-500);
+
+  /* semantic — decorative */
+  --blob-pink: var(--pink-400);
+  --blob-peach: var(--peach-200);
+  --blob-flame: var(--flame-500);
+  --divider: rgba(58, 36, 27, 0.12);
+
+  /* ── tokens/typography.css ─ font aileleri layout.tsx'te next/font ile bağlanır */
+  --font-display: var(--font-poppins), system-ui, sans-serif;
+  --font-body: var(--font-poppins), system-ui, sans-serif;
+  --font-script: var(--font-yellowtail), cursive;
+
+  --fs-display-xl: 76px; --fs-display-l: 56px; --fs-display-m: 40px; --fs-display-s: 28px;
+  --fs-title: 22px; --fs-body-l: 16px; --fs-body: 14px; --fs-body-s: 13px; --fs-label: 11px;
+  --fs-stat: 52px; --fs-script-l: 56px; --fs-script-m: 34px;
+
+  --lh-display: 0.92; --lh-title: 1.2; --lh-body: 1.55;
+  --tracking-display: -0.02em; --tracking-label: 0.14em; --tracking-eyebrow: 0.1em;
+
+  --fw-black: 900; --fw-bold: 700; --fw-semi: 600; --fw-medium: 500; --fw-regular: 400;
+
+  /* ── tokens/spacing.css ── */
+  --gutter: 20px; --section-pad: 28px; --card-pad: 20px; --page-max: 1240px;
+
+  /* ── tokens/shape.css ── */
+  --radius-sp-sm: 10px; --radius-sp-md: 16px; --radius-sp-lg: 22px;
+  --radius-sp-xl: 30px; --radius-pill: 999px;
+  --border-hairline: 1px solid var(--divider);
+  --border-ink: 1.5px solid var(--ink-900);
+  --shadow-soft: 0 6px 18px rgba(226, 60, 5, 0.08);
+  --shadow-lift: 0 12px 30px rgba(226, 60, 5, 0.14);
+  --ring-focus: 0 0 0 3px var(--pink-300);
+
+  /* ── tokens/motion.css ── */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 120ms; --dur-base: 220ms; --dur-slow: 420ms;
+}
+
+/* NOT: shadcn semantik token'ları (`--background`, `--card`, `--primary` …)
+   globals.css içinde Solar Pop paletine bağlanır — orada, çünkü bu dosya
+   @import ile ÖNCE gelir ve globals.css'teki `:root` bloğu sonra kazanır. */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Sayfa kabuğu
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Solar Pop sayfaları krem zeminlidir ve koyu tema TAŞIMAZ (design system'de
+   koyu varyant yok). .sp-page kökü uygulanan her sayfada temayı sabitler. */
+.sp-page {
+  min-height: 100vh;
+  background: var(--surface-page);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  overflow-x: clip;
+  color-scheme: light;
+}
+.sp-page *,
+.sp-page *::before,
+.sp-page *::after { box-sizing: border-box; }
+.sp-page h1, .sp-page h2, .sp-page h3, .sp-page h4, .sp-page p { margin: 0; }
+/* Bağlantı rengi :where() ile SIFIR özgüllükte tanımlanır — aksi halde
+   `.sp-page a` (0,1,1) buton sınıflarını (0,1,0) yener ve <a class="sp-btn">
+   turuncu zemin üstünde turuncu metinle görünmez olur. */
+:where(.sp-page) :where(a) { color: var(--text-link); text-decoration: none; }
+:where(.sp-page) :where(a:hover) { color: var(--text-link-hover); }
+.sp-page :focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: var(--radius-sp-sm); }
+
+.sp-wrap { width: 100%; max-width: var(--page-max); margin: 0 auto; padding: 0 24px; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Tipografi
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sp-h1 {
+  font: var(--fw-black) var(--fs-display-l) / var(--lh-display) var(--font-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--text-strong);
+}
+.sp-h2 {
+  font: var(--fw-black) var(--fs-display-m) / var(--lh-display) var(--font-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--text-strong);
+}
+.sp-title {
+  font: var(--fw-black) var(--fs-title) / 1.15 var(--font-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--text-strong);
+}
+/* Kart içi ara başlık — büyük harf ama sıkı harf aralığı yok */
+.sp-sub {
+  font: var(--fw-black) var(--fs-body-l) / 1.2 var(--font-display);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-strong);
+}
+/* Küçük, geniş harf aralıklı etiket — sistemin imzası */
+.sp-label {
+  font: var(--fw-bold) var(--fs-label) / 1 var(--font-display);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-body);
+}
+.sp-label--pink { color: var(--pink-600); }
+.sp-label--flame { color: var(--flame-600); }
+.sp-label--muted { color: var(--text-muted); }
+.sp-body {
+  font: var(--fw-regular) var(--fs-body) / var(--lh-body) var(--font-body);
+  color: var(--text-body);
+  text-wrap: pretty;
+}
+.sp-body--lead { font-size: var(--fs-body-l); }
+.sp-body--small { font-size: var(--fs-body-s); line-height: 1.55; }
+/* El yazısı vurgu kelimesi — satır sonunda kırılmaz */
+.sp-script {
+  display: inline-block;
+  font: 400 var(--fs-script-m) / 0.85 var(--font-script);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-heading);
+  white-space: nowrap;
+}
+.sp-script--lg { font-size: var(--fs-script-l); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Kart / panel
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sp-card {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  min-width: 0;
+  padding: 26px;
+  border-radius: var(--radius-sp-xl);
+  background: var(--white);
+  box-shadow: var(--shadow-soft);
+}
+/* Tonlu kart: gölge yok, ayrım rengin kendisiyle (design system kuralı) */
+.sp-card--tint { background: var(--surface-card); box-shadow: none; }
+.sp-card--pink { background: var(--surface-card-alt); box-shadow: none; }
+.sp-card--peach { background: var(--surface-card-peach); box-shadow: none; }
+.sp-card--amber { background: var(--amber-200); box-shadow: none; }
+.sp-card--flame { background: var(--surface-inverse); box-shadow: none; color: var(--white); }
+.sp-card--ink { background: var(--ink-900); box-shadow: none; color: var(--white); }
+.sp-card--sm { padding: 20px; border-radius: var(--radius-sp-lg); gap: 12px; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Butonlar — dolgu koyulaşarak hover eder, asla açılmaz
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 0 22px;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  white-space: nowrap;
+  font: var(--fw-bold) var(--fs-body) / 1 var(--font-display);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  background: var(--action-primary);
+  color: var(--white);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--dur-base) var(--ease-pop),
+    background var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+.sp-btn:hover { background: var(--action-primary-hover); color: var(--white); transform: var(--hover-lift, translateY(-2px)); box-shadow: var(--shadow-lift); }
+.sp-btn:active { transform: scale(0.97); box-shadow: none; }
+.sp-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.sp-btn--pink { background: var(--action-secondary); }
+.sp-btn--pink:hover { background: var(--action-secondary-hover); }
+/* Ghost: ink konturu, hover'da kremle dolar */
+.sp-btn--ghost {
+  background: transparent;
+  color: var(--text-strong);
+  box-shadow: inset 0 0 0 1.5px var(--ink-900);
+}
+.sp-btn--ghost:hover { background: var(--cream-300); color: var(--text-strong); box-shadow: inset 0 0 0 1.5px var(--ink-900); }
+/* Quiet: koyu/flame zemin üstünde beyaz hap */
+.sp-btn--quiet { background: var(--white); color: var(--text-strong); }
+.sp-btn--quiet:hover { background: var(--cream-200); color: var(--text-strong); }
+.sp-btn--sm { min-height: 34px; padding: 0 14px; font-size: var(--fs-label); letter-spacing: var(--tracking-label); }
+.sp-btn--lg { min-height: 54px; padding: 0 26px; font-size: var(--fs-body-l); }
+.sp-btn--block { width: 100%; }
+
+/* Hover'da hafif kalkan kart (araç ızgarası, tıklanabilir paneller) */
+.sp-lift {
+  transition: transform var(--dur-base) var(--ease-pop), box-shadow var(--dur-base) var(--ease-out);
+}
+.sp-lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+
+/* Hap biçimli seçim çipi (nav, durum seçici, segment) */
+.sp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 13px;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  white-space: nowrap;
+  font: var(--fw-bold) var(--fs-label) / 1 var(--font-display);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--text-body);
+  transition: all var(--dur-base) var(--ease-pop);
+}
+.sp-chip:hover { background: var(--cream-300); color: var(--text-strong); }
+.sp-chip--on, .sp-chip--on:hover { background: var(--ink-900); color: var(--white); }
+.sp-chip--flame, .sp-chip--flame:hover { background: var(--action-primary); color: var(--white); }
+.sp-chip--static { background: var(--surface-card-alt); color: var(--ink-700); cursor: default; }
+.sp-chip--static:hover { background: var(--surface-card-alt); color: var(--ink-700); }
+
+/* Metin bağlantısı-butonu (etiket görünümlü) */
+.sp-linkish {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font: var(--fw-bold) var(--fs-label) / 1 var(--font-display);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--flame-600);
+}
+.sp-linkish:hover { color: var(--flame-500); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Form alanları
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sp-fieldwrap {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  min-width: 0;
+  padding: 0 14px;
+  border-radius: var(--radius-sp-md);
+  background: var(--surface-page);
+  transition: box-shadow var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+}
+.sp-fieldwrap--error { background: rgba(240, 86, 140, 0.08); box-shadow: inset 0 0 0 1.5px var(--pink-600); }
+/* Odak halkası SARMALAYICIDA durur — input'un kendi halkası alanın içinde ikinci
+   bir çerçeve gibi görünüyor ve hata durumuyla karışıyordu. */
+.sp-fieldwrap:focus-within { box-shadow: var(--ring-focus); }
+.sp-fieldwrap--error:focus-within { box-shadow: inset 0 0 0 1.5px var(--pink-600), var(--ring-focus); }
+.sp-page .sp-input:focus-visible,
+.sp-page .sp-textarea:focus-visible { box-shadow: none; }
+.sp-page .sp-textarea:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.sp-input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: var(--fw-medium) var(--fs-body-l) / 1.4 var(--font-body);
+  color: var(--text-strong);
+}
+/* Sayısal alanlar display ailesiyle — rakamlar rozet gibi okunsun */
+.sp-input--num { font: var(--fw-black) var(--fs-body-l) / 1 var(--font-display); }
+.sp-input::placeholder { color: var(--text-muted); font-weight: var(--fw-regular); }
+
+.sp-textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 16px;
+  border: none;
+  outline: none;
+  border-radius: var(--radius-sp-md);
+  background: var(--surface-page);
+  font: var(--fw-regular) var(--fs-body) / 1.7 var(--font-body);
+  color: var(--text-strong);
+}
+
+/* Tarayıcı sayı okları gizli — kendi ok yığınımız var */
+.sp-page input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+.sp-page input[type="number"]::-webkit-outer-spin-button,
+.sp-page input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+
+/* Aralık kaydırıcı: ray bizim span'lerimiz, burada yalnız tutamak */
+.sp-page input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.sp-page input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: var(--radius-pill); background: transparent; }
+.sp-page input[type="range"]::-moz-range-track { height: 6px; border-radius: var(--radius-pill); background: transparent; }
+.sp-page input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px; height: 22px; margin-top: -8px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 3px solid var(--flame-500);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--dur-base) var(--ease-pop);
+}
+.sp-page input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 3px solid var(--flame-500);
+  box-shadow: var(--shadow-soft);
+}
+.sp-page input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.08); }
+.sp-page input[type="range"]:active::-webkit-slider-thumb { transform: scale(0.96); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Dekoratif blob'lar — daima tek düz renk, daima içeriğin ARDINDA
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sp-blobs { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.sp-blob { position: absolute; display: block; }
+.sp-blob--circle { border-radius: 50%; }
+.sp-blob--blob { border-radius: 42% 58% 63% 37% / 43% 39% 61% 57%; }
+.sp-blob--petal { border-radius: 0 50% 50% 50%; }
+.sp-blob--arch { border-radius: 50% 50% 12% 12%; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Sayfa düzenleri
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Landing bölüm ritmi — tek kolon, üst üste yığılı paneller */
+.sp-section { padding: 0 0 90px; }
+
+/* Bölüm içi büyük panel (krem/şeftali/alev/pembe zeminli kutu) */
+.sp-panel {
+  position: relative;
+  overflow: hidden;
+  padding: 34px 30px;
+  border-radius: var(--radius-sp-xl);
+}
+
+/* Hero: metin + çıktı destesi */
+.sp-hero { display: grid; grid-template-columns: 1.02fr .98fr; gap: 52px; align-items: center; }
+
+/* Vitrin: adım rayı + panel */
+.sp-showcase { grid-template-columns: 340px 1fr; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Dashboard kabuğu
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sp-appshell { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
+
+.sp-side {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--surface-card);
+  border-right: var(--border-hairline);
+}
+.sp-sidenav { display: flex; flex-direction: column; gap: 16px; flex: 1; min-height: 0; overflow-y: auto; }
+.sp-sidegroup { color: var(--ink-700); }
+
+/* Nav öğesi: hap; aktif olan ink dolgulu (renk değil KONTRAST ile ayrışır) */
+.sp-navitem {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  background: transparent;
+  color: var(--ink-700);
+  font: var(--fw-bold) var(--fs-body-s) / 1 var(--font-display);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition: all var(--dur-base) var(--ease-pop);
+}
+.sp-navitem:hover { background: var(--cream-300); color: var(--text-strong); }
+.sp-navitem[data-active] { background: var(--ink-900); color: var(--white); box-shadow: var(--shadow-soft); }
+.sp-navitem[data-active]:hover { background: var(--ink-900); color: var(--white); }
+
+.sp-navbadge {
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--pink-200);
+  color: var(--ink-900);
+  font: var(--fw-black) 10px/1.4 var(--font-display);
+}
+.sp-navitem[data-active] .sp-navbadge { background: var(--white); }
+
+.sp-topbar { padding: 26px 28px 4px; }
+.sp-dashpage { display: grid; gap: 20px; align-content: start; padding: 20px 28px 64px; min-width: 0; }
+
+@media (max-width: 1080px) {
+  /* Kenar çubuğu üstte yatay şeride iner; kredi kartı başlıktaki hapla temsil edilir. */
+  .sp-appshell { grid-template-columns: 1fr; }
+  .sp-side { position: static; height: auto; border-right: none; border-bottom: var(--border-hairline); }
+  .sp-sidenav { flex-direction: row; overflow-x: auto; gap: 10px; }
+  .sp-sidegroup { display: none; }
+  .sp-sidefoot { display: none; }
+  .sp-topbar { padding: 20px 18px 4px; }
+  .sp-dashpage { padding: 18px 18px 64px; }
+  .sp-dashh1 { font-size: clamp(26px, 7.5vw, 36px); }
+}
+
+/* Auth: bilet + kanıt sütunu */
+.sp-authgrid { /* grid-template-columns satır içinde (kenar sütunu opsiyonel) */ }
+
+@media (max-width: 720px) {
+  .sp-authgrid { grid-template-columns: 1fr !important; }
+  /* Kanıt sütunu telefonda tamamen düşer — form ekranın kendisidir. */
+  .sp-authaside { display: none; }
+  .sp-stub { grid-template-columns: 1fr !important; gap: 12px !important; }
+  .sp-authh1 { font-size: clamp(26px, 8vw, 34px) !important; }
+}
+
+/* FAQ: başlık + akordeon */
+.sp-faq { display: grid; grid-template-columns: .85fr 1.15fr; gap: 44px; align-items: start; }
+
+/* Yaygın ızgaralar */
+.sp-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.sp-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.sp-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Araç sayfası düzenleri
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Girdi rayı + sonuç. Masaüstünde girdiler yapışkan (kullanıcı sonucu okurken
+   sayıyı oynatabilsin); ≤980px'te tek kolona iner ve yapışkanlık kalkar. */
+.sp-twocol { grid-template-columns: 390px minmax(0, 1fr); }
+.sp-twocol__in { position: sticky; top: 20px; }
+
+.sp-three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+/* Uzun okuma (rehber / pSEO) — yapışkan içindekiler + ölçülü metin sütunu */
+.sp-longread {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 68ch);
+  gap: 48px;
+  justify-content: center;
+}
+.sp-toc { position: sticky; top: 24px; align-self: start; display: grid; gap: 11px; }
+
+/* Mobil sonuç çubuğu — masaüstünde gizli. Mobilde girdi ile sonuç aynı ekrana
+   sığmaz: baş rakam altta sabit durur, "tam sonuç" #result'a atlar. */
+.sp-sticky {
+  display: none;
+  position: fixed;
+  left: 12px; right: 12px; bottom: 12px;
+  z-index: 55;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: var(--radius-sp-xl);
+  background: var(--ink-900);
+  box-shadow: var(--shadow-lift);
+}
+
+@media (max-width: 980px) {
+  .sp-section { padding-bottom: 56px; }
+  .sp-panel { padding: 24px 20px; }
+  .sp-grid-2, .sp-grid-3 { grid-template-columns: 1fr; }
+  .sp-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .sp-hero { grid-template-columns: 1fr; gap: 36px; }
+  .sp-showcase { grid-template-columns: 1fr; }
+  .sp-faq { grid-template-columns: 1fr; gap: 24px; }
+  .sp-twocol { grid-template-columns: 1fr; }
+  .sp-twocol__in { position: static; top: auto; }
+  .sp-three { grid-template-columns: 1fr; }
+  .sp-longread { grid-template-columns: 1fr; }
+  .sp-toc { position: static; }
+  .sp-sticky { display: flex; }
+  .sp-toolnav { display: none; }
+  .sp-h1 { font-size: clamp(30px, 8.5vw, 42px); }
+  .sp-h2 { font-size: clamp(26px, 7vw, 34px); }
+  .sp-card { padding: 20px; }
+  /* Yapışkan çubuk sayfayı kapatmasın diye alt boşluk */
+  .sp-page { padding-bottom: 96px; }
+}
+
+/* Hamburger yalnız mobilde; masaüstünde çapa linkleri zaten görünür. */
+.sp-burger { display: none; }
+.sp-sheet { display: none; }
+
+@media (max-width: 980px) {
+  .sp-burger { display: inline-grid; }
+  .sp-sheet { display: block; }
+}
+
+/* Dar ekranda başlık satırı taşmasın: marka solda kalır, auth alta iner. */
+@media (max-width: 560px) {
+  .sp-toolhead { padding-left: 16px; padding-right: 16px; column-gap: 12px; }
+  .sp-wrap { padding-left: 16px; padding-right: 16px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Hareket — kısa ve yaylı; "sadece fade" bu markaya kurumsal geliyor
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@keyframes spRise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes spIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spSpin { to { transform: rotate(360deg); } }
+@keyframes spPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.9; } }
+
+.sp-rise { animation: spRise 0.3s var(--ease-pop) both; }
+.sp-in { animation: spIn 0.2s var(--ease-out) both; }
+.sp-spin { animation: spSpin 0.8s linear infinite; }
+.sp-pulse { animation: spPulse 1.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-page *, .sp-page *::before, .sp-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

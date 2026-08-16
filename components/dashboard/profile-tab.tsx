@@ -227,18 +227,18 @@ export function ProfileTab({
 
       {/* ── Kimlik hero'su ─────────────────────────────────────────── */}
       <div className={`relative overflow-hidden rounded-2xl border border-border bg-card ${ELEVATED}`}>
-        <div className="h-1 bg-gradient-to-r from-[#00F0FF] via-violet-500 to-[#00F0FF]/30" />
+        <div className="h-1 bg-gradient-to-r from-[#FA531C] via-pink-500 to-[#FA531C]/30" />
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 p-6">
           <div className="flex flex-col items-center gap-2 shrink-0">
             {selectedAvatar ? (
               <button type="button" onClick={() => setLightbox({ images: [{ src: selectedAvatar, alt: t("photoAlt") }], index: 0 })} title={t("viewPhoto")} aria-label={t("viewPhoto")} className="cursor-zoom-in">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={selectedAvatar} alt={t("photoAlt")}
-                  className="h-20 w-20 rounded-2xl object-cover ring-2 ring-[#00F0FF]/30" />
+                  className="h-20 w-20 rounded-2xl object-cover ring-2 ring-[#FA531C]/30" />
               </button>
             ) : (
-              <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#00F0FF]/15 to-violet-500/15 border border-[#00F0FF]/20 flex items-center justify-center">
-                <User className="h-9 w-9 text-[#00F0FF]/70" />
+              <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#FA531C]/15 to-pink-500/15 border border-[#FA531C]/20 flex items-center justify-center">
+                <User className="h-9 w-9 text-[#FA531C]/70" />
               </div>
             )}
             {/* Birden çok kaynaktan foto varsa hangisini kullanacağını seçtir (Kaydet'te persist). */}
@@ -253,7 +253,7 @@ export function ProfileTab({
                     aria-label={a.label}
                     aria-pressed={selectedAvatar === a.url}
                     className={`h-7 w-7 rounded-full overflow-hidden border-2 transition cursor-pointer ${
-                      selectedAvatar === a.url ? "border-[#00F0FF]" : "border-transparent opacity-50 hover:opacity-100"
+                      selectedAvatar === a.url ? "border-[#FA531C]" : "border-transparent opacity-50 hover:opacity-100"
                     }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -265,7 +265,7 @@ export function ProfileTab({
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#FA531C]/80">
               {t("identityEyebrow")}
             </p>
             <h2 className="mt-1 text-xl sm:text-2xl font-bold tracking-tight truncate">
@@ -308,14 +308,14 @@ export function ProfileTab({
             <div className="flex items-center justify-between gap-2 rounded-lg bg-muted/40 px-3 py-2">
               <p className="text-xs text-muted-foreground">{isTranslated ? t("translatedNote") : t("translateHint")}</p>
               {isTranslated ? (
-                <button onClick={showOriginalCore} className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[#00F0FF] hover:underline cursor-pointer">
+                <button onClick={showOriginalCore} className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[#FA531C] hover:underline cursor-pointer">
                   <Languages className="h-3.5 w-3.5" />{t("showOriginal")}
                 </button>
               ) : (
                 <button
                   onClick={translateCore}
                   disabled={translating || (!headline.trim() && !summary.trim() && skills.length === 0)}
-                  className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[#00F0FF] hover:underline cursor-pointer disabled:opacity-50"
+                  className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-[#FA531C] hover:underline cursor-pointer disabled:opacity-50"
                 >
                   <Languages className="h-3.5 w-3.5" />{translating ? t("translating") : t("translateToMine")}
                 </button>
@@ -387,16 +387,16 @@ export function ProfileTab({
           <ProfileStrength headline={headline} summary={summary} skills={skills} />
 
           {/* AI önerisi (public profillerden) */}
-          <div data-tour="profile-ai" className="rounded-2xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] overflow-hidden">
+          <div data-tour="profile-ai" className="rounded-2xl border border-[#FA531C]/20 bg-[#FA531C]/[0.04] overflow-hidden">
             <div className="p-4 space-y-3">
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-bold flex items-center gap-1.5">
-                    <Wand2 className="h-4 w-4 text-[#00F0FF]" />{t("aiTitle")}
+                    <Wand2 className="h-4 w-4 text-[#FA531C]" />{t("aiTitle")}
                   </h3>
                   <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">{t("aiDesc")}</p>
                 </div>
-                <span className="shrink-0 text-[#00F0FF]">
+                <span className="shrink-0 text-[#FA531C]">
                   <CreditCost kind="profile_suggest" />
                 </span>
               </div>
@@ -437,7 +437,7 @@ export function ProfileTab({
                           className={`shrink-0 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-semibold transition-colors cursor-pointer ${
                             applied[field]
                               ? "text-green-600 dark:text-green-400"
-                              : "text-[#00F0FF] hover:bg-[#00F0FF]/10"
+                              : "text-[#FA531C] hover:bg-[#FA531C]/10"
                           }`}
                         >
                           {applied[field] ? <><Check className="h-3 w-3" />{t("aiApplied")}</> : <><ArrowUpRight className="h-3 w-3" />{t("aiApply")}</>}
@@ -539,7 +539,7 @@ export function ProfileTab({
                       onClick={() => setLightbox({ images: portfolioImages, index: 6 })}
                       title={t("viewAllPhotos")}
                       aria-label={t("viewAllPhotos")}
-                      className="flex aspect-square w-full flex-col items-center justify-center gap-0.5 rounded-lg border border-dashed border-border text-muted-foreground hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-colors cursor-pointer"
+                      className="flex aspect-square w-full flex-col items-center justify-center gap-0.5 rounded-lg border border-dashed border-border text-muted-foreground hover:border-[#FA531C]/40 hover:text-[#FA531C] transition-colors cursor-pointer"
                     >
                       <span className="text-xl font-bold leading-none">…</span>
                       <span className="text-[11px] font-semibold">+{portfolioImages.length - 6}</span>
@@ -552,7 +552,7 @@ export function ProfileTab({
                       onClick={() => setPickerOpen(true)}
                       title={t("addPhotos")}
                       aria-label={t("addPhotos")}
-                      className="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-colors cursor-pointer"
+                      className="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground hover:border-[#FA531C]/40 hover:text-[#FA531C] transition-colors cursor-pointer"
                     >
                       <Plus className="h-5 w-5" />
                       <span className="text-[11px] font-semibold">{t("addPhotosShort", { count: extraPhotos.length })}</span>
@@ -572,7 +572,7 @@ export function ProfileTab({
       {projects.length > 0 && (
         <div className="space-y-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("projectsEyebrow")}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#FA531C]/80">{t("projectsEyebrow")}</p>
             <h2 className="mt-1 text-lg font-bold tracking-tight">{t("projectsTitle", { count: projects.length })}</h2>
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
@@ -587,15 +587,15 @@ export function ProfileTab({
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setProjectModal(pi); } }}
-                  className={`group cursor-pointer shadow-sm transition-colors hover:border-[#00F0FF]/50 ${ELEVATED}`}
+                  className={`group cursor-pointer shadow-sm transition-colors hover:border-[#FA531C]/50 ${ELEVATED}`}
                 >
                   <CardContent className="pt-5 space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <h3 className="text-base font-bold leading-snug">{p.title}</h3>
-                        {p.role && <p className="mt-0.5 text-xs font-semibold text-[#00F0FF]/80">{p.role}</p>}
+                        {p.role && <p className="mt-0.5 text-xs font-semibold text-[#FA531C]/80">{p.role}</p>}
                       </div>
-                      <ArrowUpRight className="h-4 w-4 shrink-0 text-[#00F0FF]/70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      <ArrowUpRight className="h-4 w-4 shrink-0 text-[#FA531C]/70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </div>
                     {p.description && (
                       <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground line-clamp-5">{p.description}</p>
@@ -656,7 +656,7 @@ export function ProfileTab({
             "--pf-text": "var(--foreground)",
             "--pf-muted": "var(--muted-foreground)",
             "--pf-border": "var(--border)",
-            "--pf-accent": "#00F0FF",
+            "--pf-accent": "#FA531C",
           } as CSSProperties}
         />
       )}
@@ -687,12 +687,12 @@ export function ProfileTab({
                       type="button"
                       onClick={() => togglePick(url)}
                       aria-pressed={isPicked}
-                      className={`group relative aspect-square w-full overflow-hidden rounded-lg border-2 transition ${isPicked ? "border-[#00F0FF]" : "border-transparent hover:border-border"}`}
+                      className={`group relative aspect-square w-full overflow-hidden rounded-lg border-2 transition ${isPicked ? "border-[#FA531C]" : "border-transparent hover:border-border"}`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt={item.title} className={`h-full w-full object-cover transition ${isPicked ? "" : "opacity-80 group-hover:opacity-100"}`} />
                       {isPicked && (
-                        <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#00F0FF] text-[#031014]">
+                        <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#FA531C] text-[#031014]">
                           <Check className="h-3 w-3" />
                         </span>
                       )}

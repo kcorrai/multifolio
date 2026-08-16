@@ -38,7 +38,7 @@ export function TestimonialsManager({ slug, published }: { slug: string; publish
   return (
     <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
       <div className="flex items-center gap-2">
-        <MessageSquareQuote className="h-4 w-4 text-[#00F0FF]" />
+        <MessageSquareQuote className="h-4 w-4 text-[#FA531C]" />
         <h3 className="text-sm font-bold">{t("title")}</h3>
       </div>
 

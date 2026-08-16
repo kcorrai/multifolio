@@ -259,7 +259,7 @@ export function PlatformDetailTab({
                     return hasMore ? (
                       <button
                         onClick={() => setHeroExpanded((v) => !v)}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-[#00F0FF] hover:underline cursor-pointer"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-[#FA531C] hover:underline cursor-pointer"
                       >
                         {heroExpanded ? t("detail.showLess") : t("detail.showAll")}
                         <ChevronDown className={`h-3.5 w-3.5 transition-transform ${heroExpanded ? "rotate-180" : ""}`} />
@@ -366,7 +366,7 @@ export function PlatformDetailTab({
       <div className={`grid gap-5 ${profile ? "lg:grid-cols-2" : ""}`}>
         <section className="pd-in space-y-3" style={{ animationDelay: "90ms" }}>
           <h3 className="text-sm font-semibold flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#00F0FF]" />{t("detail.profileSection")}
+            <Sparkles className="h-4 w-4 text-[#FA531C]" />{t("detail.profileSection")}
           </h3>
           {!profileSaved && !hasPlatformData && (
             <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-800/50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
@@ -470,7 +470,7 @@ export function PlatformDetailTab({
                       <img
                         src={profile.avatarUrl}
                         alt={t("detail.sourceProfileSection")}
-                        className="h-14 w-14 rounded-full object-cover ring-2 ring-[#00F0FF]/30"
+                        className="h-14 w-14 rounded-full object-cover ring-2 ring-[#FA531C]/30"
                       />
                     </button>
                   ) : (
@@ -543,7 +543,7 @@ export function PlatformDetailTab({
                   <CardContent className="pt-5 space-y-3">
                     <div>
                       <h4 className="text-base font-bold leading-snug">{p.title}</h4>
-                      {p.role && <p className="mt-0.5 text-xs font-semibold text-[#00F0FF]/80">{p.role}</p>}
+                      {p.role && <p className="mt-0.5 text-xs font-semibold text-[#FA531C]/80">{p.role}</p>}
                     </div>
                     {p.description && (
                       <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground line-clamp-5">{p.description}</p>
@@ -666,9 +666,9 @@ export function PlatformDetailTab({
                       setSelectedJobId(job.id === selectedJobId ? null : job.id);
                     }
                   }}
-                  className={`w-full text-left rounded-xl border px-3 py-2.5 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40 ${
+                  className={`w-full text-left rounded-xl border px-3 py-2.5 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FA531C]/40 ${
                     job.id === selectedJobId
-                      ? "border-[#00F0FF]/40 bg-[#00F0FF]/5"
+                      ? "border-[#FA531C]/40 bg-[#FA531C]/5"
                       : "border-border hover:border-border/80 hover:bg-muted/40"
                   }`}
                 >
@@ -741,14 +741,14 @@ export function PlatformDetailTab({
 
         {/* Platforma özel ipuçları (giriş yoksa gizle) */}
         {tips.length > 0 && (
-          <div className="rounded-2xl border border-violet-500/15 dark:border-violet-500/20 bg-violet-500/[0.04] p-4 space-y-2">
-            <p className="text-xs font-semibold flex items-center gap-2 text-violet-500 dark:text-violet-300">
+          <div className="rounded-2xl border border-pink-500/15 dark:border-pink-500/20 bg-pink-500/[0.04] p-4 space-y-2">
+            <p className="text-xs font-semibold flex items-center gap-2 text-pink-500 dark:text-pink-300">
               <Lightbulb className="h-3.5 w-3.5" />{t("detail.tipsTitle")}
             </p>
             <ul className="space-y-1.5">
               {tips.map((tip, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <span className="mt-1 h-1 w-1 rounded-full bg-violet-400 shrink-0" />
+                  <span className="mt-1 h-1 w-1 rounded-full bg-pink-400 shrink-0" />
                   <span>{tip}</span>
                 </li>
               ))}

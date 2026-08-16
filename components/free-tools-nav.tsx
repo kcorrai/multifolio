@@ -41,7 +41,7 @@ export function FreeToolsNav({
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex items-center gap-1 text-sm text-slate-500 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition-colors font-medium"
+        className="flex items-center gap-1 text-sm text-slate-500 dark:text-[#6B4A3C] hover:text-slate-900 dark:hover:text-white transition-colors font-medium"
       >
         {label}
         <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -52,14 +52,14 @@ export function FreeToolsNav({
           role="menu"
           className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3"
         >
-          <div className="min-w-52 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#161923] shadow-xl shadow-black/10 dark:shadow-black/40 p-1.5">
+          <div className="min-w-52 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#FFFAF3] shadow-xl shadow-black/10 dark:shadow-black/40 p-1.5">
             {items.map(({ label: l, href }) => (
               <Link
                 key={href}
                 href={href}
                 role="menuitem"
                 onClick={() => setOpen(false)}
-                className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 dark:text-[#94A3B8] hover:bg-slate-100 dark:hover:bg-white/8 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 dark:text-[#6B4A3C] hover:bg-slate-100 dark:hover:bg-white/8 hover:text-slate-900 dark:hover:text-white transition-colors"
               >
                 {l}
               </Link>

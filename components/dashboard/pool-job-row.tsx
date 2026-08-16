@@ -47,8 +47,8 @@ export function PoolJobRow({
       tabIndex={0}
       onClick={() => onOpen(job)}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onOpen(job); } }}
-      className={`w-full text-left rounded-xl border px-3.5 py-3 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40 ${
-        selected ? "border-[#00F0FF]/40 bg-[#00F0FF]/5" : "border-border hover:border-border/80 hover:bg-muted/40"
+      className={`w-full text-left rounded-xl border px-3.5 py-3 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FA531C]/40 ${
+        selected ? "border-[#FA531C]/40 bg-[#FA531C]/5" : "border-border hover:border-border/80 hover:bg-muted/40"
       }`}
     >
       <div className="flex items-start gap-2.5">
@@ -57,7 +57,7 @@ export function PoolJobRow({
             {/* Okunmamış ilan: cyan nokta + kalın başlık (kullanıcı açınca temizlenir). */}
             {!job.isRead && (
               <span
-                className="h-2 w-2 shrink-0 rounded-full bg-[#00F0FF]"
+                className="h-2 w-2 shrink-0 rounded-full bg-[#FA531C]"
                 title={t("unread")}
                 aria-label={t("unread")}
               />

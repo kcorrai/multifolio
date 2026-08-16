@@ -90,7 +90,7 @@ export function InterviewReport({ questions }: { questions: InterviewQuestionRec
         </p>
         {questions.map((q, i) => (
           <div key={i} className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-3">
-            <span className="shrink-0 rounded-full bg-violet-500/10 px-2 py-0.5 text-[11px] font-bold text-violet-600 dark:text-violet-400">
+            <span className="shrink-0 rounded-full bg-pink-500/10 px-2 py-0.5 text-[11px] font-bold text-pink-600 dark:text-pink-400">
               {t(`category.${q.category}`)}
             </span>
             <p className="flex-1 text-xs leading-snug">{q.question}</p>

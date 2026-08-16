@@ -1,43 +1,59 @@
 "use client";
 
+// Yeni şifre belirleme — Solar Pop. AKIŞ DEĞİŞMEDİ: /auth/confirm recovery
+// kodunu çevirmiş olmalı; oturum varsa updateUser({password}) → /dashboard.
+//
+// Tasarım kararı: token geçerliliği form BOYANMADAN önce çözülür (kimse
+// gönderilemeyecek bir forma yazmasın) ve süresi dolmuş durum kartın TAMAMINI
+// değiştirir — eskiden sessizce /forgot-password'a atıyorduk, kullanıcı ne
+// olduğunu anlamıyordu.
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { AuthLayout } from "@/components/auth/auth-layout";
+import { Lock, X, Check } from "lucide-react";
+import {
+  AuthLayout, AuthHead, AuthSubmit, AuthBanner, AuthIcon, PasswordStrength, RevealButton,
+} from "@/components/auth/auth-layout";
+import { TextField } from "@/components/solar/fields";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+
+type Token = "checking" | "valid" | "expired";
 
 export default function ResetPasswordPage() {
   const t = useTranslations("auth");
+  const ts = useTranslations("auth.sp");
   const router = useRouter();
-  const [ready, setReady] = useState(false);
+
+  const [token, setToken] = useState<Token>("checking");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [reveal, setReveal] = useState(false);
+  const [errors, setErrors] = useState<{ password?: string; confirm?: string }>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "error" | "done">("idle");
   const [message, setMessage] = useState("");
 
-  // Recovery oturumu var mı? (auth/confirm code'u çevirmiş olmalı). Async getSession
-  // unmount sonrası çözülürse setState/replace çağırmayı önle (mounted guard).
   useEffect(() => {
     let mounted = true;
     const supabase = createSupabaseBrowserClient();
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
-      if (data.session) setReady(true);
-      else router.replace("/forgot-password");
+      setToken(data.session ? "valid" : "expired");
     });
-    return () => {
-      mounted = false;
-    };
-  }, [router]);
+    return () => { mounted = false; };
+  }, []);
+
+  const busy = status === "submitting";
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage("");
-    if (password.length < 8) { setStatus("error"); setMessage(t("shared.passwordMin")); return; }
-    if (password !== confirm) { setStatus("error"); setMessage(t("shared.passwordsMismatch")); return; }
+    const next: { password?: string; confirm?: string } = {};
+    if (password.length < 8) next.password = t("shared.passwordMin");
+    if (password !== confirm) next.confirm = t("shared.passwordsMismatch");
+    setErrors(next);
+    if (Object.keys(next).length > 0) { setStatus("error"); return; }
+
     setStatus("submitting");
     const supabase = createSupabaseBrowserClient();
     const { error } = await supabase.auth.updateUser({ password });
@@ -46,40 +62,91 @@ export default function ResetPasswordPage() {
     setTimeout(() => router.push("/dashboard"), 1200);
   }
 
-  if (!ready) {
-    return <AuthLayout><p className="text-center text-sm text-muted-foreground">{t("reset.loading")}</p></AuthLayout>;
+  if (token === "checking") {
+    return (
+      <AuthLayout stub="none" aside={null}>
+        <div className="flex items-center gap-4">
+          <span
+            className="sp-spin h-[26px] w-[26px] rounded-[var(--radius-pill)]"
+            style={{ border: "3px solid var(--cream-400)", borderTopColor: "var(--flame-500)" }}
+          />
+          <span className="sp-body">{t("reset.loading")}</span>
+        </div>
+      </AuthLayout>
+    );
+  }
+
+  if (token === "expired") {
+    return (
+      <AuthLayout stub="none" aside={null}>
+        <AuthIcon icon={X} />
+        <AuthHead title={ts("reset.expiredTitle")} script={ts("reset.expiredScript")} sub={ts("reset.expiredBody")} />
+        <div className="grid gap-3">
+          <Link href="/forgot-password" className="sp-btn sp-btn--lg sp-btn--block">{ts("reset.expiredCta")}</Link>
+          <Link href="/login" className="sp-linkish justify-self-center">{t("shared.backToLogin")}</Link>
+        </div>
+      </AuthLayout>
+    );
+  }
+
+  if (status === "done") {
+    return (
+      <AuthLayout stub="none" aside={null}>
+        <AuthIcon icon={Check} />
+        <AuthHead title={ts("reset.doneTitle")} script={ts("reset.doneScript")} sub={ts("reset.doneBody")} />
+        <Link href="/dashboard" className="sp-btn sp-btn--lg sp-btn--block">{ts("reset.doneCta")}</Link>
+      </AuthLayout>
+    );
   }
 
   return (
-    <AuthLayout>
-      <div className="text-center mb-8 space-y-3">
-        <h1 className="text-[2rem] font-extrabold text-foreground tracking-[-0.02em]">{t("reset.title")}</h1>
-        <p className="text-sm text-muted-foreground leading-relaxed">{t("reset.subtitle")}</p>
-      </div>
-      {status === "done" ? (
-        <p className="text-center text-sm text-green-600 dark:text-green-400">{t("reset.done")}</p>
-      ) : (
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-semibold text-foreground">{t("reset.newPasswordLabel")}</Label>
-            <Input id="password" type="password" required autoFocus autoComplete="new-password" value={password}
-              onChange={(e) => setPassword(e.target.value)} placeholder={t("shared.passwordMinPlaceholder")} className="h-11" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirm" className="text-sm font-semibold text-foreground">{t("reset.confirmLabel")}</Label>
-            <Input id="confirm" type="password" required autoComplete="new-password" value={confirm}
-              onChange={(e) => setConfirm(e.target.value)} placeholder="••••••••" className="h-11" />
-          </div>
-          {status === "error" && <p role="alert" className="text-sm text-destructive">{message}</p>}
-          <button type="submit" disabled={status === "submitting"}
-            className="w-full h-11 rounded-lg font-semibold text-sm cursor-pointer bg-[#00F0FF] hover:bg-[#00d8e8] text-[#080A10] shadow-lg shadow-[#00F0FF]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
-            {status === "submitting" ? t("reset.submitting") : t("reset.submit")}
-          </button>
-        </form>
-      )}
-      <div className="mt-7 text-center">
-        <Link href="/login" className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t("shared.backToLogin")}</Link>
-      </div>
+    <AuthLayout stub="none" aside={null}>
+      {status === "error" && message ? <AuthBanner tone="danger" title={ts("reset.failedTitle")} body={message} /> : null}
+
+      <AuthHead title={ts("reset.title")} script={ts("reset.script")} sub={ts("reset.sub")} />
+
+      <form onSubmit={onSubmit} className="grid gap-[17px]">
+        <div className="grid gap-[9px]">
+          <TextField
+            id="password"
+            label={t("reset.newPasswordLabel")}
+            type={reveal ? "text" : "password"}
+            autoComplete="new-password"
+            required
+            autoFocus
+            disabled={busy}
+            leading={<Lock size={16} />}
+            placeholder={t("shared.passwordMinPlaceholder")}
+            value={password}
+            onChange={(v) => { setPassword(v); setErrors((e) => ({ ...e, password: undefined })); }}
+            error={errors.password ?? null}
+            trailing={
+              <RevealButton
+                on={reveal}
+                onToggle={() => setReveal((r) => !r)}
+                labelShow={ts("showPassword")}
+                labelHide={ts("hidePassword")}
+              />
+            }
+          />
+          {errors.password ? null : <PasswordStrength length={password.length} />}
+        </div>
+
+        <TextField
+          id="confirm"
+          label={t("reset.confirmLabel")}
+          type="password"
+          autoComplete="new-password"
+          required
+          disabled={busy}
+          leading={<Lock size={16} />}
+          value={confirm}
+          onChange={(v) => { setConfirm(v); setErrors((e) => ({ ...e, confirm: undefined })); }}
+          error={errors.confirm ?? null}
+        />
+
+        <AuthSubmit label={t("reset.submit")} busyLabel={t("reset.submitting")} busy={busy} />
+      </form>
     </AuthLayout>
   );
 }

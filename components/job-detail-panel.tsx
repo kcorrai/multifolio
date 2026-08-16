@@ -244,7 +244,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
 
         {loading ? (
           <div className="flex items-center justify-center flex-1">
-            <div className="h-5 w-5 rounded-full border-2 border-[#00F0FF]/30 border-t-[#00F0FF] animate-spin" />
+            <div className="h-5 w-5 rounded-full border-2 border-[#FA531C]/30 border-t-[#FA531C] animate-spin" />
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
@@ -457,7 +457,7 @@ export function JobDetailPanel({ job, onClose, onJobUpdated, onCreditsUpdate }: 
                 <ul className="space-y-1">
                   {(matchResult?.requirements ?? []).map((r, i) => (
                     <li key={i} className="text-xs text-muted-foreground flex gap-1.5">
-                      <span className="text-[#00F0FF]">·</span>
+                      <span className="text-[#FA531C]">·</span>
                       <span>{r}</span>
                     </li>
                   ))}

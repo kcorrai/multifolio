@@ -180,7 +180,7 @@ export function SearchView() {
       )}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("searchPlaceholder")} className="w-full rounded-xl border border-border bg-background pl-10 pr-3 py-2.5 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40" />
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("searchPlaceholder")} className="w-full rounded-xl border border-border bg-background pl-10 pr-3 py-2.5 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FA531C]/40" />
       </div>
 
       {/* ── Filtre çubuğu: zaman çipleri + filtre paneli + temizle + feed kaydet ── */}
@@ -193,7 +193,7 @@ export function SearchView() {
               aria-pressed={time === k}
               onClick={() => setTime(k)}
               className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors cursor-pointer ${
-                time === k ? "bg-[#00F0FF]/15 text-foreground" : "text-muted-foreground hover:text-foreground"
+                time === k ? "bg-[#FA531C]/15 text-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t(`time.${k}`)}
@@ -204,12 +204,12 @@ export function SearchView() {
           onClick={() => setFiltersOpen((o) => !o)}
           aria-expanded={filtersOpen}
           className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
-            filtersOpen || activeCount > 0 ? "border-[#00F0FF]/40 bg-[#00F0FF]/10 text-foreground" : "border-border text-muted-foreground hover:text-foreground"
+            filtersOpen || activeCount > 0 ? "border-[#FA531C]/40 bg-[#FA531C]/10 text-foreground" : "border-border text-muted-foreground hover:text-foreground"
           }`}
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
           {t("filters")}
-          {activeCount > 0 && <span className="rounded-full bg-[#00F0FF]/20 px-1.5 text-[11px] font-bold tabular-nums">{activeCount}</span>}
+          {activeCount > 0 && <span className="rounded-full bg-[#FA531C]/20 px-1.5 text-[11px] font-bold tabular-nums">{activeCount}</span>}
           <ChevronDown className={`h-3.5 w-3.5 transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
         </button>
         {anyFilter && (

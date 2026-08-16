@@ -93,7 +93,7 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <Plus className="h-4 w-4 text-[#00F0FF]" />
+            <Plus className="h-4 w-4 text-[#FA531C]" />
             <h2 className="font-semibold text-sm">{t("title")}</h2>
           </div>
           <button onClick={onClose} disabled={loading} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer disabled:opacity-40">
@@ -123,7 +123,7 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
                   value={platform}
                   onChange={(e) => setPlatform(e.target.value)}
                   disabled={loading}
-                  className="w-full appearance-none rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F0FF]/30 disabled:opacity-50 cursor-pointer"
+                  className="w-full appearance-none rounded-xl border border-input bg-background px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#FA531C]/30 disabled:opacity-50 cursor-pointer"
                 >
                   <option value="">{t("select")}</option>
                   {PLATFORM_OPTIONS.map((p) => <option key={p} value={p}>{p === "Diğer" ? t("other") : p}</option>)}
@@ -146,7 +146,7 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
           <div className="space-y-1.5">
             <Label htmlFor="job-description">
               {t("description")} *
-              {hasProfile && <span className="ml-2 text-xs text-[#00F0FF] font-normal">{t("aiRequired")}</span>}
+              {hasProfile && <span className="ml-2 text-xs text-[#FA531C] font-normal">{t("aiRequired")}</span>}
             </Label>
             <Textarea
               id="job-description"
@@ -177,7 +177,7 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
               checked={referred}
               onChange={(e) => setReferred(e.target.checked)}
               disabled={loading}
-              className="h-4 w-4 rounded border-border accent-[#00F0FF] cursor-pointer"
+              className="h-4 w-4 rounded border-border accent-[#FA531C] cursor-pointer"
             />
             <span>{t("referredLabel")}</span>
           </label>
@@ -189,8 +189,8 @@ export function JobAddModal({ hasProfile, onClose, onJobAdded, onCreditsUpdate }
           )}
 
           {step === "matching" && (
-            <p className="text-xs text-[#00F0FF] flex items-center gap-2">
-              <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-[#00F0FF]/30 border-t-[#00F0FF] animate-spin" />
+            <p className="text-xs text-[#FA531C] flex items-center gap-2">
+              <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-[#FA531C]/30 border-t-[#FA531C] animate-spin" />
               {t("matchingHint")}
             </p>
           )}

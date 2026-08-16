@@ -170,12 +170,12 @@ export function FeedModal({
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-muted-foreground">{t("modal.minScoreLabel")}</span>
-              <span className="text-xs font-bold text-[#00F0FF]">{minScore > 0 ? minScore : t("modal.minScoreOff")}</span>
+              <span className="text-xs font-bold text-[#FA531C]">{minScore > 0 ? minScore : t("modal.minScoreOff")}</span>
             </div>
             <input
               type="range" min={0} max={100} step={5} value={minScore}
               onChange={(e) => setMinScore(Number(e.target.value))}
-              className="w-full accent-[#00F0FF] cursor-pointer"
+              className="w-full accent-[#FA531C] cursor-pointer"
             />
             <p className="text-xs text-muted-foreground/70">{t("modal.minScoreHint")}</p>
           </div>
@@ -185,11 +185,11 @@ export function FeedModal({
               type="checkbox"
               checked={notify}
               onChange={(e) => setNotify(e.target.checked)}
-              className="mt-0.5 h-4 w-4 accent-[#00F0FF] cursor-pointer"
+              className="mt-0.5 h-4 w-4 accent-[#FA531C] cursor-pointer"
             />
             <span>
               <span className="flex items-center gap-1.5 text-xs font-semibold">
-                <Bell className="h-3.5 w-3.5 text-[#00F0FF]" />{t("modal.notifyLabel")}
+                <Bell className="h-3.5 w-3.5 text-[#FA531C]" />{t("modal.notifyLabel")}
               </span>
               <span className="block text-xs text-muted-foreground/70 mt-0.5">{t("modal.notifyHint")}</span>
             </span>

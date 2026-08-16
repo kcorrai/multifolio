@@ -58,7 +58,7 @@ export function KanbanBoard({
             onDrop={(e) => { e.preventDefault(); drop(status); }}
             className={`flex-none w-[220px] rounded-2xl border p-2.5 transition-colors ${
               overCol === status
-                ? "border-[#00F0FF]/50 bg-[#00F0FF]/5"
+                ? "border-[#FA531C]/50 bg-[#FA531C]/5"
                 : "border-border bg-muted/30"
             }`}
           >
@@ -82,13 +82,13 @@ export function KanbanBoard({
                   className={`rounded-xl border bg-card p-2.5 cursor-grab active:cursor-grabbing transition-shadow hover:shadow-sm ${
                     dragId === job.id ? "opacity-50" : ""
                   } ${
-                    selectedId === job.id ? "border-[#00F0FF]/50 ring-1 ring-[#00F0FF]/30" : "border-border"
+                    selectedId === job.id ? "border-[#FA531C]/50 ring-1 ring-[#FA531C]/30" : "border-border"
                   }`}
                 >
                   <button
                     type="button"
                     onClick={() => onSelect?.(job.id)}
-                    className="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40 rounded"
+                    className="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FA531C]/40 rounded"
                   >
                     <p className="text-xs font-semibold leading-snug line-clamp-2">{job.title}</p>
                     {(job.company || job.platform) && (

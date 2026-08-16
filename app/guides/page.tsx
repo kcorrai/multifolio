@@ -22,13 +22,13 @@ export default async function GuidesPage() {
   const t = await getTranslations("guides");
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
+    <div className="sp-page">
       <SiteHeader isLoggedIn={isLoggedIn} />
 
       <section className="mx-auto max-w-3xl px-8 pt-20 pb-6 text-center space-y-4">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("eyebrow")}</p>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FA531C]">{t("eyebrow")}</p>
         <h1 className="text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight">{t("title")}</h1>
-        <p className="text-lg text-slate-500 dark:text-[#94A3B8] leading-relaxed max-w-xl mx-auto font-medium">{t("subtitle")}</p>
+        <p className="text-lg text-slate-500 dark:text-[#6B4A3C] leading-relaxed max-w-xl mx-auto font-medium">{t("subtitle")}</p>
       </section>
 
       <section className="mx-auto max-w-3xl px-8 py-8 grid sm:grid-cols-2 gap-5">
@@ -38,14 +38,14 @@ export default async function GuidesPage() {
             <Link
               key={g.slug}
               href={`/guides/${g.slug}`}
-              className="group rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#161923] p-6 space-y-3 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-[#00F0FF]/30"
+              className="group rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-[#FFFAF3] p-6 space-y-3 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-[#FA531C]/30"
             >
-              <div className="h-10 w-10 rounded-xl bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center">
-                <BookOpen className="h-5 w-5 text-[#00F0FF]" />
+              <div className="h-10 w-10 rounded-xl bg-[#FA531C]/10 border border-[#FA531C]/20 flex items-center justify-center">
+                <BookOpen className="h-5 w-5 text-[#FA531C]" />
               </div>
               <h2 className="font-bold text-slate-900 dark:text-white leading-snug">{c.title}</h2>
-              <p className="text-sm text-slate-500 dark:text-[#94A3B8] leading-relaxed font-medium">{c.description}</p>
-              <span className="inline-flex items-center gap-1 text-sm font-bold text-[#00F0FF]">
+              <p className="text-sm text-slate-500 dark:text-[#6B4A3C] leading-relaxed font-medium">{c.description}</p>
+              <span className="inline-flex items-center gap-1 text-sm font-bold text-[#FA531C]">
                 {t("readingMinutes", { count: g.readingMinutes })} <ArrowRight className="h-4 w-4" />
               </span>
             </Link>

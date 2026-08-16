@@ -23,7 +23,7 @@ export function ShareButtons({ url, text }: { url: string; text: string }) {
     }
   }
 
-  const btn = "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-white/70 hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-colors";
+  const btn = "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-white/70 hover:border-[#FA531C]/40 hover:text-[#FA531C] transition-colors";
 
   return (
     <div className="flex flex-wrap items-center gap-2">

@@ -1,14 +1,18 @@
 "use client";
 
+// Dashboard kabuğu — Solar Pop tasarımı.
+// Referans komp: docs/design/solar-pop/multifolio-dashboard-solar-pop.html
+//
+// Yapı: 248px yapışkan kenar çubuğu (gruplu nav + kredi kartı) + ana kolon
+// (başlık şeridi + sayfa içeriği). Tema seçici KALDIRILDI (Solar Pop tek modlu).
+// DashboardContext, tur sağlayıcısı ve banner'lar aynen korunur.
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Wallet, LogOut, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { LogOut, ShieldCheck, Sun } from "lucide-react";
 import { NotificationBell } from "./notification-bell";
-import { NAV_ITEMS, isNavActive, type AdaptOutput } from "./shared";
+import { NAV_ITEMS, NAV_GROUPS, isNavActive, type AdaptOutput } from "./shared";
 import { DashboardContext } from "./dashboard-context";
 import { VerifyEmailBanner } from "./verify-email-banner";
 import { LowCreditsBanner } from "./low-credits-banner";
@@ -17,8 +21,18 @@ import { TourOverlay } from "./tour/tour-overlay";
 import type { PlatformId } from "@/lib/ai/platforms";
 import { marketPlatforms, type MarketId } from "@/lib/markets/config";
 
+/** Başlık şeridi için rota → i18n anahtarı (dashboard.sp.titles.<key>). */
+function titleKeyFor(pathname: string): string {
+  if (pathname === "/dashboard") return "overview";
+  const seg = pathname.split("/")[2] ?? "overview";
+  return ["profile", "platforms", "portfolio", "cv", "jobs", "interview", "feedback", "start", "import"].includes(seg)
+    ? seg
+    : "overview";
+}
+
 export function DashboardShell({
-  userEmail, credits: initialCredits, initialCreditsUsed, initialJobsCount, initialConnectionsCount, emailVerified, isAdmin = false, market, hasProfile = false, children,
+  userEmail, credits: initialCredits, initialCreditsUsed, initialJobsCount, initialConnectionsCount,
+  emailVerified, isAdmin = false, market, hasProfile = false, children,
 }: {
   userEmail: string;
   credits: number;
@@ -33,6 +47,8 @@ export function DashboardShell({
 }) {
   const pathname = usePathname();
   const t = useTranslations("dashboard");
+  const ts = useTranslations("dashboard.sp");
+
   const [credits, setCredits] = useState(initialCredits);
   const [creditsUsed, setCreditsUsed] = useState(initialCreditsUsed);
   const [jobsCount, setJobsCount] = useState(initialJobsCount);
@@ -49,217 +65,193 @@ export function DashboardShell({
     badge === "jobs" ? jobsCount : badge === "connections" ? connectionsCount : undefined;
 
   const userInitial = userEmail?.[0]?.toUpperCase() ?? "?";
-  const activeItem = NAV_ITEMS.find((n) => isNavActive(n.href, pathname));
-  const pageTitle = activeItem ? t(`nav.${activeItem.labelKey}`) : "Dashboard";
-  // Jobs sayfası UpHunt tarzı tam-ekran 3-kolon uygulama: dar ortalı kolon +
-  // dikey padding YOK; kendi tam-yükseklik düzenini yönetir (kolonlar ayrı kayar).
+  const titleKey = titleKeyFor(pathname);
+  // Jobs sayfası UpHunt tarzı tam-ekran 3-kolon uygulama: kendi yüksekliğini yönetir.
   const fullBleed = pathname.startsWith("/dashboard/jobs");
 
   return (
     <TourProvider hasProfile={hasProfile}>
-    <DashboardContext.Provider
-      value={{
-        market,
-        platforms: marketPlatforms(market),
-        credits,
-        creditsUsed,
-        applyCredits: ({ balance, spent }) => {
-          setCredits(balance);
-          setCreditsUsed((u) => u + spent);
-        },
-        jobsCount, setJobsCount,
-        connectionsCount, setConnectionsCount,
-        adaptResults,
-        setAdaptResult: (platform, output) => setAdaptResults((prev) => ({ ...prev, [platform]: output })),
-        triggerComingSoon,
-      }}
-    >
-      <div className="flex h-dvh overflow-hidden bg-background">
+      <DashboardContext.Provider
+        value={{
+          market,
+          platforms: marketPlatforms(market),
+          credits,
+          creditsUsed,
+          applyCredits: ({ balance, spent }) => {
+            setCredits(balance);
+            setCreditsUsed((u) => u + spent);
+          },
+          jobsCount, setJobsCount,
+          connectionsCount, setConnectionsCount,
+          adaptResults,
+          setAdaptResult: (platform, output) => setAdaptResults((prev) => ({ ...prev, [platform]: output })),
+          triggerComingSoon,
+        }}
+      >
+        <div className="sp-page sp-appshell">
 
-        {/* ── SIDEBAR (desktop) ──────────────────────────────────────── */}
-        <aside className="hidden lg:flex w-60 flex-col shrink-0 border-r border-border bg-background">
+          {/* ── Kenar çubuğu ───────────────────────────────────────────── */}
+          <aside className="sp-side">
+            <Link href="/dashboard" className="flex items-center gap-[11px] px-1.5">
+              <span
+                className="inline-grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[var(--radius-pill)]"
+                style={{ background: "var(--action-primary)", color: "var(--white)", font: "var(--fw-black) 16px/1 var(--font-display)" }}
+              >
+                m
+              </span>
+              <span
+                style={{
+                  font: "var(--fw-black) 18px/1 var(--font-display)",
+                  letterSpacing: "var(--tracking-display)", textTransform: "uppercase", color: "var(--text-strong)",
+                }}
+              >
+                multifolio
+              </span>
+            </Link>
 
-          {/* Brand → Getting Started (onboarding görev listesi) */}
-          <Link href="/dashboard/start" title={t("shell.gettingStarted")} className="group flex items-center gap-2.5 px-5 h-14 border-b border-border shrink-0 hover:bg-muted/50 transition-colors">
-            <div className="relative h-7 w-7 rounded-lg bg-gradient-to-br from-[#00F0FF]/25 to-[#00F0FF]/5 border border-[#00F0FF]/30 flex items-center justify-center shadow-sm shadow-[#00F0FF]/20 group-hover:scale-105 transition-transform">
-              <span className="text-[#00F0FF] text-sm font-extrabold drop-shadow-[0_0_6px_rgba(0,240,255,0.4)]">M</span>
-            </div>
-            <span className="font-bold tracking-tight text-sm bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">Multifolio</span>
-          </Link>
+            <nav className="sp-sidenav">
+              {NAV_GROUPS.map((group) => {
+                const items = NAV_ITEMS.filter((n) => n.group === group);
+                if (items.length === 0) return null;
+                return (
+                  <div key={group} className="grid min-w-0 gap-[5px]">
+                    <span className="sp-label sp-sidegroup px-2 whitespace-nowrap">{ts(`navGroup.${group}`)}</span>
+                    {items.map(({ href, labelKey, icon: Icon, badge }) => {
+                      const active = isNavActive(href, pathname);
+                      const count = badgeCount(badge);
+                      return (
+                        <Link
+                          key={href}
+                          href={href}
+                          data-tour={`nav-${labelKey}`}
+                          aria-current={active ? "page" : undefined}
+                          className="sp-navitem"
+                          data-active={active ? "true" : undefined}
+                        >
+                          <Icon size={15} className="shrink-0" />
+                          <span className="mr-auto">{t(`nav.${labelKey}`)}</span>
+                          {count !== undefined && count > 0 ? (
+                            <span className="sp-navbadge">{count}</span>
+                          ) : null}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                );
+              })}
 
-          {/* Nav */}
-          <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-            {NAV_ITEMS.map(({ href, labelKey, icon: Icon, badge }) => {
-              const active = isNavActive(href, pathname);
-              const count = badgeCount(badge);
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  data-tour={`nav-${labelKey}`}
-                  className={`group relative w-full flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-left ${
-                    active
-                      ? "bg-[#00F0FF]/10 text-[#00F0FF]"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
+              {isAdmin ? (
+                <div className="grid min-w-0 gap-[5px]">
+                  <span className="sp-label sp-sidegroup px-2">{ts("navGroup.admin")}</span>
+                  <Link href="/admin" className="sp-navitem" data-active={pathname.startsWith("/admin") ? "true" : undefined}>
+                    <ShieldCheck size={15} className="shrink-0" />
+                    <span className="mr-auto">{t("shell.admin")}</span>
+                  </Link>
+                </div>
+              ) : null}
+            </nav>
+
+            {/* Kredi kartı — bakiye her zaman görünür, birinci sınıf kavram. */}
+            <div className="sp-sidefoot grid gap-3 rounded-[var(--radius-sp-lg)] p-4" style={{ background: "var(--surface-card-peach)" }}>
+              <div className="flex items-baseline gap-2">
+                <span
+                  className="tabular-nums"
+                  style={{ font: "var(--fw-black) var(--fs-stat)/.9 var(--font-display)", letterSpacing: "var(--tracking-display)", color: "var(--text-heading)" }}
                 >
-                  <span className={`absolute left-1 top-1/2 -translate-y-1/2 w-1 rounded-full bg-[#00F0FF] transition-all duration-200 ${
-                    active ? "h-5 opacity-100" : "h-0 opacity-0 group-hover:h-3 group-hover:opacity-40"
-                  }`} />
-                  <Icon className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110" />
-                  <span className="flex-1">{t(`nav.${labelKey}`)}</span>
-                  {count !== undefined && count > 0 && (
-                    <span className={`rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none ${
-                      active ? "bg-[#00F0FF]/20 text-[#00F0FF]" : "bg-muted-foreground/20 text-muted-foreground"
-                    }`}>{count}</span>
-                  )}
-                </Link>
-              );
-            })}
-
-            {/* Admin link — yalnız ADMIN_EMAILS allowlist'indeki kullanıcıya görünür. */}
-            {isAdmin && (
-              <Link
-                href="/admin"
-                className={`group relative w-full flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-left ${
-                  pathname.startsWith("/admin")
-                    ? "bg-amber-500/10 text-amber-500"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <ShieldCheck className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110" />
-                <span className="flex-1">{t("shell.admin")}</span>
-              </Link>
-            )}
-          </nav>
-
-          {/* Bottom: credits + user */}
-          <div className="shrink-0 px-3 pb-4 pt-3 border-t border-border space-y-3">
-            <div className="rounded-xl bg-violet-500/8 dark:bg-violet-500/10 border border-violet-500/15 dark:border-violet-500/20 px-3 py-2.5 flex items-center gap-2.5 transition-colors hover:border-violet-500/35">
-              <Wallet className="h-4 w-4 text-violet-400 shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-[11px] text-muted-foreground font-medium leading-none mb-0.5">{t("shell.credits")}</p>
-                <p className="text-sm font-bold tabular-nums leading-none">{credits}</p>
+                  {credits}
+                </span>
+                <span className="sp-label">{t("shell.credits")}</span>
               </div>
-              <button
-                onClick={triggerComingSoon}
-                className="text-xs font-semibold text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
-              >
+              <span style={{ font: "var(--fw-regular) var(--fs-label)/1.5 var(--font-body)", color: "var(--text-body)" }}>
+                {ts("creditsNote")}
+              </span>
+              <button type="button" onClick={triggerComingSoon} className="sp-btn sp-btn--sm sp-btn--quiet sp-btn--block">
                 {t("shell.buyCredits")}
               </button>
             </div>
-            <div className="flex items-center gap-2.5 px-1">
-              <div className="h-7 w-7 rounded-full bg-[#00F0FF]/15 border border-[#00F0FF]/20 flex items-center justify-center shrink-0">
-                <span className="text-[11px] font-bold text-[#00F0FF]">{userInitial}</span>
-              </div>
-              <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">{userEmail}</span>
-              <form action="/auth/signout" method="post">
-                <button type="submit" title={t("shell.logout")} aria-label={t("shell.logout")} className="text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer">
-                  <LogOut className="h-3.5 w-3.5" />
-                </button>
-              </form>
-            </div>
-          </div>
-        </aside>
+          </aside>
 
-        {/* ── MAIN AREA ─────────────────────────────────────────────── */}
-        <div className="flex-1 flex flex-col min-w-0">
-
-          {/* Top bar */}
-          <header className="h-14 flex items-center justify-between px-4 sm:px-6 border-b border-border shrink-0 bg-background/80 backdrop-blur-sm">
-            {/* Mobile: logo → Getting Started */}
-            <Link href="/dashboard/start" className="flex items-center gap-2 lg:hidden">
-              <div className="h-6 w-6 rounded-md bg-[#00F0FF]/20 border border-[#00F0FF]/30 flex items-center justify-center">
-                <span className="text-[#00F0FF] text-xs font-extrabold">M</span>
-              </div>
-              <span className="font-bold text-sm tracking-tight">Multifolio</span>
-            </Link>
-            {/* Desktop: page title */}
-            <h1 className="hidden lg:block text-base font-semibold text-foreground">{pageTitle}</h1>
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              <NotificationBell />
-              <ThemeToggle />
-              <form action="/auth/signout" method="post" className="lg:hidden">
-                <Button type="submit" variant="ghost" size="sm" title={t("shell.logout")} aria-label={t("shell.logout")} className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
-                  <LogOut className="h-3.5 w-3.5" />
-                </Button>
-              </form>
-            </div>
-          </header>
-
-          {/* Mobile tab scroll */}
-          <div className="lg:hidden flex overflow-x-auto border-b border-border px-3 py-2 gap-1 shrink-0 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-            {NAV_ITEMS.map(({ href, labelKey, icon: Icon, badge }) => {
-              const active = isNavActive(href, pathname);
-              const count = badgeCount(badge);
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  data-tour={`nav-${labelKey}`}
-                  className={`flex items-center gap-1.5 shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
-                    active
-                      ? "bg-[#00F0FF]/10 text-[#00F0FF]"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
+          {/* ── Ana kolon ──────────────────────────────────────────────── */}
+          <main className="grid min-w-0 content-start">
+            <header className="sp-topbar flex flex-wrap items-center gap-3.5">
+              <div className="mr-auto grid min-w-0 gap-2">
+                <h1
+                  className="sp-dashh1"
+                  style={{
+                    font: "var(--fw-black) var(--fs-display-m)/var(--lh-display) var(--font-display)",
+                    letterSpacing: "var(--tracking-display)", textTransform: "uppercase", color: "var(--text-strong)",
+                  }}
                 >
-                  <Icon className="h-3.5 w-3.5 shrink-0" />
-                  {t(`nav.${labelKey}`)}
-                  {count !== undefined && count > 0 && (
-                    <span className={`rounded-full px-1 text-[9px] font-bold py-0.5 ${
-                      active ? "bg-[#00F0FF]/20 text-[#00F0FF]" : "bg-muted-foreground/20 text-muted-foreground"
-                    }`}>{count}</span>
-                  )}
-                </Link>
-              );
-            })}
-            {isAdmin && (
-              <Link
-                href="/admin"
-                className={`flex items-center gap-1.5 shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
-                  pathname.startsWith("/admin")
-                    ? "bg-amber-500/10 text-amber-500"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-              >
-                <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
-                {t("shell.admin")}
-              </Link>
-            )}
-          </div>
-
-          {/* Scrollable content — Jobs sayfası tam ekran (kendi düzeni), diğerleri dar ortalı kolon */}
-          <main className={fullBleed ? "flex-1 min-h-0 overflow-y-auto lg:overflow-hidden" : "flex-1 overflow-y-auto min-h-0"}>
-            {fullBleed ? (
-              children
-            ) : (
-              <div className="mx-auto max-w-5xl 2xl:max-w-6xl px-4 sm:px-6 py-6 overflow-x-clip">
-                <VerifyEmailBanner emailVerified={emailVerified} email={userEmail} />
-                <LowCreditsBanner />
-                {children}
+                  {ts(`titles.${titleKey}.title`)}
+                  <span className="sp-script ml-3" style={{ fontSize: "var(--fs-script-m)" }}>
+                    {ts(`titles.${titleKey}.script`)}
+                  </span>
+                </h1>
+                <p className="sp-body" style={{ maxWidth: "62ch" }}>{ts(`titles.${titleKey}.sub`)}</p>
               </div>
-            )}
+
+              <div className="flex items-center gap-2.5">
+                <span className="sp-chip sp-chip--static tabular-nums">
+                  <Sun size={12} />
+                  {ts("creditsPill", { count: credits })}
+                </span>
+                <NotificationBell />
+                <span
+                  className="inline-grid h-10 w-10 shrink-0 place-items-center rounded-[var(--radius-pill)]"
+                  title={userEmail}
+                  style={{ background: "var(--action-primary)", color: "var(--white)", font: "var(--fw-black) 15px/1 var(--font-display)" }}
+                >
+                  {userInitial}
+                </span>
+                <form action="/auth/signout" method="post">
+                  <button
+                    type="submit"
+                    title={t("shell.logout")}
+                    aria-label={t("shell.logout")}
+                    className="inline-grid h-10 w-10 cursor-pointer place-items-center rounded-[var(--radius-pill)] border-none"
+                    style={{ background: "var(--white)", color: "var(--text-muted)", boxShadow: "var(--shadow-soft)" }}
+                  >
+                    <LogOut size={15} />
+                  </button>
+                </form>
+              </div>
+            </header>
+
+            <div className={fullBleed ? "min-h-0" : "sp-dashpage"}>
+              {fullBleed ? (
+                children
+              ) : (
+                <>
+                  <VerifyEmailBanner emailVerified={emailVerified} email={userEmail} />
+                  <LowCreditsBanner />
+                  {children}
+                </>
+              )}
+            </div>
           </main>
+
+          {/* Kredi satın alma henüz açık değil — dürüst geçici bildirim. */}
+          {showComingSoon ? (
+            <div
+              className="sp-rise fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-[var(--radius-sp-lg)] px-4 py-3"
+              style={{ background: "var(--white)", boxShadow: "var(--shadow-lift)" }}
+            >
+              <span
+                className="inline-grid h-7 w-7 shrink-0 place-items-center rounded-[var(--radius-pill)]"
+                style={{ background: "var(--surface-card-alt)", color: "var(--pink-600)" }}
+              >
+                <Sun size={14} />
+              </span>
+              <div className="grid gap-0.5">
+                <span className="sp-sub" style={{ fontSize: "var(--fs-body)" }}>{t("shell.comingSoonTitle")}</span>
+                <span className="sp-body sp-body--small">{t("shell.comingSoonBody")}</span>
+              </div>
+            </div>
+          ) : null}
+
+          <TourOverlay />
         </div>
-
-        {/* ── Coming soon toast ──────────────────────────────────────── */}
-        {showComingSoon && (
-          <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-violet-200 bg-white dark:bg-slate-900 dark:border-violet-800/60 px-4 py-3 shadow-lg shadow-violet-500/10">
-            <div className="h-7 w-7 rounded-lg bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center shrink-0">
-              <Wallet className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-foreground">{t("shell.comingSoonTitle")}</p>
-              <p className="text-xs text-muted-foreground">{t("shell.comingSoonBody")}</p>
-            </div>
-          </div>
-        )}
-
-        {/* ── Onboarding turu spotlight overlay ──────────────────────── */}
-        <TourOverlay />
-      </div>
-    </DashboardContext.Provider>
+      </DashboardContext.Provider>
     </TourProvider>
   );
 }

@@ -22,11 +22,11 @@ export function ProfileStrengthCard({ strength }: { strength: ProfileStrengthRes
     <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-sm font-bold flex items-center gap-2">
-          <Gauge className="h-4 w-4 text-[#00F0FF]" />
+          <Gauge className="h-4 w-4 text-[#FA531C]" />
           {t("title")}
         </h3>
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-[#00F0FF]/10 px-2 py-0.5 text-xs font-bold text-[#0891b2] dark:text-[#00F0FF]">
+          <span className="rounded-full bg-[#FA531C]/10 px-2 py-0.5 text-xs font-bold text-[#E23C05] dark:text-[#FA531C]">
             {t(`stage.${strength.stage}`)}
           </span>
           <span className="text-lg font-extrabold tabular-nums">{t("percent", { percent: strength.percent })}</span>
@@ -52,11 +52,11 @@ export function ProfileStrengthCard({ strength }: { strength: ProfileStrengthRes
               <li key={item.key}>
                 <Link
                   href={item.href}
-                  className="group flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-[#00F0FF]/30 hover:bg-[#00F0FF]/5 transition-colors"
+                  className="group flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-[#FA531C]/30 hover:bg-[#FA531C]/5 transition-colors"
                 >
                   <span>{t(`items.${item.key}`)}</span>
                   <span className="flex items-center gap-1.5 shrink-0">
-                    <span className="text-[11px] font-bold text-[#0891b2] dark:text-[#00F0FF]">{t("step", { percent: strength.stepPercent })}</span>
+                    <span className="text-[11px] font-bold text-[#E23C05] dark:text-[#FA531C]">{t("step", { percent: strength.stepPercent })}</span>
                     <ArrowRight className="h-3.5 w-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
                   </span>
                 </Link>
@@ -76,7 +76,7 @@ export function ProfileStrengthCard({ strength }: { strength: ProfileStrengthRes
             className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium transition-colors ${
               b.done
                 ? "border-green-500/30 bg-green-500/10 text-green-600 dark:text-green-400"
-                : "border-border text-muted-foreground hover:text-foreground hover:border-[#00F0FF]/30"
+                : "border-border text-muted-foreground hover:text-foreground hover:border-[#FA531C]/30"
             }`}
           >
             {b.done && <Check className="h-3 w-3" />}

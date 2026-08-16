@@ -57,14 +57,14 @@ export function MatchImprovements({ improvements }: { improvements: string[] }) 
   const t = useTranslations("rubric");
   if (improvements.length === 0) return null;
   return (
-    <div className="rounded-xl border border-[#00F0FF]/20 bg-[#00F0FF]/[0.04] px-3 py-2.5 space-y-1.5">
-      <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0891b2] dark:text-[#00F0FF]">
+    <div className="rounded-xl border border-[#FA531C]/20 bg-[#FA531C]/[0.04] px-3 py-2.5 space-y-1.5">
+      <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#E23C05] dark:text-[#FA531C]">
         <TrendingUp className="h-3.5 w-3.5" />{t("improveTitle")}
       </p>
       <ul className="space-y-1">
         {improvements.map((item, i) => (
           <li key={i} className="flex items-start gap-1.5 text-xs leading-snug text-muted-foreground">
-            <span className="mt-1 h-1 w-1 rounded-full bg-[#00F0FF] shrink-0" />
+            <span className="mt-1 h-1 w-1 rounded-full bg-[#FA531C] shrink-0" />
             <span>{item}</span>
           </li>
         ))}

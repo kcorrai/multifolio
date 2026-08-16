@@ -41,7 +41,7 @@ export function PipelineStats({ jobs }: { jobs: { status: JobStatus; referred?: 
   // Huni: gönderilen tam genişlik, sonrakiler orana göre daralır.
   const funnel = [
     { label: t("pipeline.fSent"), value: p.sent, color: "bg-slate-400 dark:bg-slate-500" },
-    { label: t("pipeline.fResponded"), value: p.responded, color: "bg-[#00F0FF]" },
+    { label: t("pipeline.fResponded"), value: p.responded, color: "bg-[#FA531C]" },
     { label: t("pipeline.fInterview"), value: p.interviewing, color: "bg-amber-500" },
     { label: t("pipeline.fOffer"), value: p.offers, color: "bg-emerald-500" },
   ];

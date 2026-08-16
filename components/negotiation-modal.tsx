@@ -128,15 +128,15 @@ export function NegotiationModal({ jobId, onClose, onCreditsUpdate }: Props) {
               {/* Konuşma noktaları */}
               {result.talkingPoints.length > 0 && (
                 <section className="space-y-1.5">
-                  <h4 className="text-xs font-bold flex items-center gap-1.5"><MessageSquare className="h-3.5 w-3.5 text-[#00F0FF]" />{t("talkingPoints")}</h4>
-                  <ul className="space-y-1">{result.talkingPoints.map((s, i) => <li key={i} className="text-xs text-muted-foreground flex gap-1.5"><span className="text-[#00F0FF]">·</span><span>{s}</span></li>)}</ul>
+                  <h4 className="text-xs font-bold flex items-center gap-1.5"><MessageSquare className="h-3.5 w-3.5 text-[#FA531C]" />{t("talkingPoints")}</h4>
+                  <ul className="space-y-1">{result.talkingPoints.map((s, i) => <li key={i} className="text-xs text-muted-foreground flex gap-1.5"><span className="text-[#FA531C]">·</span><span>{s}</span></li>)}</ul>
                 </section>
               )}
 
               {/* Hazır e-posta */}
               <section className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold flex items-center gap-1.5"><Mail className="h-3.5 w-3.5 text-violet-500" />{t("email")}</h4>
+                  <h4 className="text-xs font-bold flex items-center gap-1.5"><Mail className="h-3.5 w-3.5 text-pink-500" />{t("email")}</h4>
                   <CopyBtn text={result.email} />
                 </div>
                 <p className="text-xs leading-relaxed whitespace-pre-wrap rounded-xl bg-muted/40 border border-border p-3">{result.email}</p>

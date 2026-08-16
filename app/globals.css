@@ -1,13 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* Solar Pop tasarım dili (token'lar + .sp-* sınıfları) — bkz. app/solar-pop.css */
+@import "./solar-pop.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-jakarta);
+  /* Solar Pop tek aile kullanır (Poppins): display + gövde. Jakarta değişkeni
+     yüklü kalır ama artık hiçbir yüzey onu çağırmaz. */
+  --font-sans: var(--font-poppins);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -48,78 +52,49 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* shadcn semantik token'ları → Solar Pop paleti (app/solar-pop.css).
+   Tek kaynak: hazır bileşenler (Button/Input/Dialog) ve bg-card /
+   text-muted-foreground / border-border kullanan tüm ekranlar buradan ısınır.
+   Solar Pop'ta KOYU TEMA YOK — tema ThemeProvider'da light'a sabitlenmiştir. */
 :root {
-  --background: oklch(0.985 0.002 264);
-  --foreground: oklch(0.13 0.01 264);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.13 0.01 264);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.13 0.01 264);
-  --primary: oklch(0.52 0.23 264);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.96 0.005 264);
-  --secondary-foreground: oklch(0.25 0.02 264);
-  --muted: oklch(0.96 0.005 264);
-  --muted-foreground: oklch(0.5 0.02 264);
-  --accent: oklch(0.94 0.02 264);
-  --accent-foreground: oklch(0.25 0.02 264);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.008 264);
-  --input: oklch(0.9 0.008 264);
-  --ring: oklch(0.52 0.23 264 / 40%);
-  --chart-1: oklch(0.52 0.23 264);
-  --chart-2: oklch(0.65 0.18 264);
-  --chart-3: oklch(0.75 0.1 264);
-  --chart-4: oklch(0.85 0.05 264);
-  --chart-5: oklch(0.35 0.15 264);
-  --radius: 0.5rem;
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.13 0.01 264);
-  --sidebar-primary: oklch(0.52 0.23 264);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.94 0.02 264);
-  --sidebar-accent-foreground: oklch(0.25 0.02 264);
-  --sidebar-border: oklch(0.9 0.008 264);
-  --sidebar-ring: oklch(0.52 0.23 264 / 40%);
-  --ring-track: rgba(0, 0, 0, 0.07);
-  --ring-arc: #6366f1;
+  --background: var(--cream-200);
+  --foreground: var(--ink-900);
+  --card: var(--white);
+  --card-foreground: var(--ink-900);
+  --popover: var(--white);
+  --popover-foreground: var(--ink-900);
+  --primary: var(--flame-500);
+  --primary-foreground: var(--white);
+  --secondary: var(--cream-300);
+  --secondary-foreground: var(--ink-900);
+  --muted: var(--cream-300);
+  --muted-foreground: var(--ink-500);
+  --accent: var(--surface-card-alt);
+  --accent-foreground: var(--ink-900);
+  --destructive: var(--pink-600);
+  --border: rgba(58, 36, 27, 0.12);
+  --input: rgba(58, 36, 27, 0.12);
+  --ring: var(--pink-300);
+  --chart-1: var(--flame-500);
+  --chart-2: var(--pink-500);
+  --chart-3: var(--amber-400);
+  --chart-4: var(--peach-300);
+  --chart-5: var(--flame-600);
+  --radius: 0.75rem;
+  --sidebar: var(--cream-100);
+  --sidebar-foreground: var(--ink-900);
+  --sidebar-primary: var(--flame-500);
+  --sidebar-primary-foreground: var(--white);
+  --sidebar-accent: var(--surface-card-alt);
+  --sidebar-accent-foreground: var(--ink-900);
+  --sidebar-border: rgba(58, 36, 27, 0.12);
+  --sidebar-ring: var(--pink-300);
+  --ring-track: var(--cream-300);
+  --ring-arc: var(--flame-500);
 }
 
-.dark {
-  --background: oklch(0.13 0.015 264);
-  --foreground: oklch(0.96 0.005 264);
-  --card: oklch(0.17 0.015 264);
-  --card-foreground: oklch(0.96 0.005 264);
-  --popover: oklch(0.17 0.015 264);
-  --popover-foreground: oklch(0.96 0.005 264);
-  --primary: oklch(0.64 0.22 264);
-  --primary-foreground: oklch(0.13 0.015 264);
-  --secondary: oklch(0.22 0.018 264);
-  --secondary-foreground: oklch(0.92 0.005 264);
-  --muted: oklch(0.22 0.018 264);
-  --muted-foreground: oklch(0.6 0.02 264);
-  --accent: oklch(0.25 0.025 264);
-  --accent-foreground: oklch(0.92 0.005 264);
-  --destructive: oklch(0.65 0.22 22);
-  --border: oklch(0.96 0.005 264 / 10%);
-  --input: oklch(0.96 0.005 264 / 12%);
-  --ring: oklch(0.64 0.22 264 / 40%);
-  --chart-1: oklch(0.64 0.22 264);
-  --chart-2: oklch(0.72 0.18 280);
-  --chart-3: oklch(0.55 0.2 264);
-  --chart-4: oklch(0.45 0.15 264);
-  --chart-5: oklch(0.35 0.12 264);
-  --sidebar: oklch(0.17 0.015 264);
-  --sidebar-foreground: oklch(0.96 0.005 264);
-  --sidebar-primary: oklch(0.64 0.22 264);
-  --sidebar-primary-foreground: oklch(0.13 0.015 264);
-  --sidebar-accent: oklch(0.25 0.025 264);
-  --sidebar-accent-foreground: oklch(0.92 0.005 264);
-  --sidebar-border: oklch(0.96 0.005 264 / 10%);
-  --sidebar-ring: oklch(0.64 0.22 264 / 40%);
-  --ring-track: rgba(255, 255, 255, 0.06);
-  --ring-arc: #00f0ff;
-}
+/* Koyu tema Solar Pop ile kaldırıldı — blok nötr bırakıldı. */
+.dark { color-scheme: light; }
 
 @layer base {
   * {
@@ -163,8 +138,8 @@
   to   { opacity: 1; transform: scale(1); }
 }
 @keyframes neonPulse {
-  0%, 100% { box-shadow: 0 0 18px rgba(0,240,255,0.45), 0 0 36px rgba(0,240,255,0.20); }
-  50%       { box-shadow: 0 0 28px rgba(0,240,255,0.65), 0 0 56px rgba(0,240,255,0.30); }
+  0%, 100% { box-shadow: 0 0 18px rgba(250,83,28,0.45), 0 0 36px rgba(250,83,28,0.20); }
+  50%       { box-shadow: 0 0 28px rgba(250,83,28,0.65), 0 0 56px rgba(250,83,28,0.30); }
 }
 @keyframes gridGlow {
   0%, 100% { opacity: 0.03; }
@@ -279,8 +254,8 @@
   50%       { box-shadow: 0 0 24px rgba(99,102,241,.38), 0 0 9px rgba(99,102,241,.14); }
 }
 @keyframes hubGlowDark {
-  0%, 100% { box-shadow: 0 0 14px rgba(0,240,255,.22), 0 0 0 0 rgba(0,240,255,0); }
-  50%       { box-shadow: 0 0 28px rgba(0,240,255,.42), 0 0 9px rgba(0,240,255,.18); }
+  0%, 100% { box-shadow: 0 0 14px rgba(250,83,28,.22), 0 0 0 0 rgba(250,83,28,0); }
+  50%       { box-shadow: 0 0 28px rgba(250,83,28,.42), 0 0 9px rgba(250,83,28,.18); }
 }
 .hub-glow      { animation: hubGlow     3s ease-in-out infinite; }
 .dark .hub-glow{ animation: hubGlowDark 3s ease-in-out infinite; }
@@ -339,7 +314,7 @@
   to   { background-position: 200% 0; }
 }
 .demo-shimmer {
-  background-image: linear-gradient(90deg, transparent, rgba(0,240,255,0.28), transparent);
+  background-image: linear-gradient(90deg, transparent, rgba(250,83,28,0.28), transparent);
   background-size: 200% 100%;
   animation: shimmerSlide 1.8s linear infinite;
 }
@@ -393,7 +368,7 @@
 }
 .landing-aurora .a1 {
   width: 60vw; height: 60vw; left: -8vw; top: -22vh;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.16), transparent 62%);
+  background: radial-gradient(circle, rgba(250,83,28, 0.16), transparent 62%);
   animation: aurora1 28s ease-in-out infinite alternate;
 }
 .landing-aurora .a2 {
@@ -403,7 +378,7 @@
 }
 .landing-aurora .a3 {
   width: 40vw; height: 40vw; left: 32vw; top: -8vh;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.10), transparent 60%);
+  background: radial-gradient(circle, rgba(250,83,28, 0.10), transparent 60%);
   animation: aurora3 24s ease-in-out infinite alternate;
 }
 @keyframes aurora1 { to { transform: translate(7vw, 5vh); } }

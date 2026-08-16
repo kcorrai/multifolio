@@ -64,11 +64,11 @@ export function FeedbackTab({ initialFeedback }: { initialFeedback: FeedbackRow[
                     aria-pressed={selected}
                     className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 text-xs font-semibold transition-colors cursor-pointer ${
                       selected
-                        ? "border-[#00F0FF]/60 bg-[#00F0FF]/10 text-foreground"
+                        ? "border-[#FA531C]/60 bg-[#FA531C]/10 text-foreground"
                         : "border-border bg-muted/30 text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    <Icon className={`h-5 w-5 ${selected ? "text-[#00F0FF]" : ""}`} />
+                    <Icon className={`h-5 w-5 ${selected ? "text-[#FA531C]" : ""}`} />
                     {t(`category.${c}`)}
                   </button>
                 );

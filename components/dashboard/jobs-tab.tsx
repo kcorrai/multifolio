@@ -249,13 +249,13 @@ export function JobsTab({
   ];
 
   const sideItem = "flex w-full items-center justify-between gap-2 rounded-lg border px-2.5 py-2 text-sm font-medium transition-colors cursor-pointer";
-  const sideActive = "border-[#00F0FF]/30 bg-[#00F0FF]/10 text-foreground";
+  const sideActive = "border-[#FA531C]/30 bg-[#FA531C]/10 text-foreground";
   const sideIdle = "border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground";
 
   // Sidebar okunmamış rozeti / sayaç.
   const countBadge = (unread: number, totalCount: number) =>
     unread > 0
-      ? <span className="rounded-full bg-[#00F0FF]/20 px-1.5 text-xs font-bold tabular-nums text-[#00F0FF]">{unread}</span>
+      ? <span className="rounded-full bg-[#FA531C]/20 px-1.5 text-xs font-bold tabular-nums text-[#FA531C]">{unread}</span>
       : <span className="text-xs tabular-nums text-muted-foreground">{totalCount}</span>;
 
   return (
@@ -272,7 +272,7 @@ export function JobsTab({
         </button>
       )}
       {notice && (
-        <div role="status" className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-[#00F0FF]/30 bg-[#00F0FF]/10 px-4 py-2 text-sm font-medium text-[#00F0FF] shadow-lg backdrop-blur">
+        <div role="status" className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-[#FA531C]/30 bg-[#FA531C]/10 px-4 py-2 text-sm font-medium text-[#FA531C] shadow-lg backdrop-blur">
           {notice}
         </div>
       )}
@@ -292,11 +292,11 @@ export function JobsTab({
           {feeds.map((f) => (
             <button key={f.id} onClick={() => selectFeed(f.id)} className={`${sideItem} ${view === "feed" && f.id === selectedFeedId ? sideActive : sideIdle}`}>
               <span className="inline-flex items-center gap-2 min-w-0">
-                <Rss className="h-3.5 w-3.5 shrink-0 text-[#00F0FF]/70" />
+                <Rss className="h-3.5 w-3.5 shrink-0 text-[#FA531C]/70" />
                 <span className="truncate">{f.name}</span>
                 {(f.auto_draft_daily ?? 0) > 0 && (
                   <span title={`${t("autoPilot.title")} · ${t("autoPilot.on")}`} className="inline-flex shrink-0">
-                    <Zap className="h-3 w-3 text-[#00F0FF]" aria-label={t("autoPilot.title")} />
+                    <Zap className="h-3 w-3 text-[#FA531C]" aria-label={t("autoPilot.title")} />
                   </span>
                 )}
               </span>
@@ -356,7 +356,7 @@ export function JobsTab({
                       <ListChecks className="h-7 w-7 text-muted-foreground/40 mb-3" />
                       <p className="text-sm font-semibold text-muted-foreground">{t("queueEmptyTitle")}</p>
                       <p className="text-xs text-muted-foreground/60 mt-1 max-w-xs">{t("queueEmptyHint")}</p>
-                      <button onClick={() => selectFeed(null)} className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-[#00F0FF]/10 px-4 py-2 text-sm font-semibold text-[#00F0FF] hover:bg-[#00F0FF]/15 transition-colors cursor-pointer">
+                      <button onClick={() => selectFeed(null)} className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-[#FA531C]/10 px-4 py-2 text-sm font-semibold text-[#FA531C] hover:bg-[#FA531C]/15 transition-colors cursor-pointer">
                         {t("browseFeed")}<ArrowRight className="h-4 w-4" />
                       </button>
                     </div>
@@ -382,7 +382,7 @@ export function JobsTab({
                 <h3 className="text-sm font-bold truncate">{t("railTitle")}</h3>
                 {activeFeed && activeFeed.min_score != null && activeFeed.min_score > 0 && (
                   <label className="flex items-center gap-1.5 cursor-pointer shrink-0">
-                    <input type="checkbox" checked={showLowScores} onChange={(e) => setShowLowScores(e.target.checked)} className="h-3.5 w-3.5 accent-[#00F0FF] cursor-pointer" />
+                    <input type="checkbox" checked={showLowScores} onChange={(e) => setShowLowScores(e.target.checked)} className="h-3.5 w-3.5 accent-[#FA531C] cursor-pointer" />
                     <span className="text-xs text-muted-foreground">{t("showLowScores")}</span>
                   </label>
                 )}
@@ -445,9 +445,9 @@ export function JobsTab({
                 <div className="flex flex-col items-center justify-center h-full min-h-[300px] px-6 py-12 text-center">
                   {weakRelevanceSignal ? (
                     <Link href="/dashboard/profile" className="flex flex-col items-center gap-3 max-w-sm">
-                      <div className="h-14 w-14 rounded-2xl bg-[#00F0FF]/10 flex items-center justify-center"><Sparkles className="h-7 w-7 text-[#00F0FF]" /></div>
+                      <div className="h-14 w-14 rounded-2xl bg-[#FA531C]/10 flex items-center justify-center"><Sparkles className="h-7 w-7 text-[#FA531C]" /></div>
                       <p className="text-sm font-semibold">{t("weakSignalHint")}</p>
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#00F0FF]">{t("weakSignalCta")}<ArrowRight className="h-3.5 w-3.5" /></span>
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#FA531C]">{t("weakSignalCta")}<ArrowRight className="h-3.5 w-3.5" /></span>
                     </Link>
                   ) : (
                     <div className="flex flex-col items-center gap-3 max-w-sm">

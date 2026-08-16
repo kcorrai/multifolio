@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/colors.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/typography.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/shape.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/tokens/motion.css">
+<link rel="stylesheet" href="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/styles.css">
+<script src="_ds/solar-pop-studio-design-system-db422856-5654-4f64-903b-cf7cec080615/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;padding:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+h1,h2,h3,h4,p{margin:0}
+a{color:var(--text-link);text-decoration:none}
+a:hover{color:var(--text-link-hover)}
+@keyframes spRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes spIn{from{opacity:0}to{opacity:1}}
+@keyframes spWipe{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+input[type=range]{-webkit-appearance:none;appearance:none;background:transparent}
+[data-s="script"]{white-space:nowrap}
+@media (max-width:1140px){
+[data-s="hero"]{grid-template-columns:1fr !important;gap:36px !important}
+[data-s="fan"]{grid-template-columns:1fr !important;gap:12px !important}
+[data-s="fan"] > div:nth-child(2){display:none !important}
+}
+@media (max-width:900px){
+[data-s="nav"]{display:none !important}
+[data-s="burger"]{display:inline-flex !important}
+[data-s="two"]{grid-template-columns:1fr !important}
+[data-s="panel"]{padding:28px 20px !important}
+[data-s="pad"]{padding-top:56px !important;padding-bottom:56px !important}
+[data-s="h1"]{font-size:clamp(38px,11vw,54px) !important}
+[data-s="h2"]{font-size:clamp(28px,8vw,38px) !important}
+[data-s="stats"]{grid-template-columns:repeat(2,1fr) !important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+
+<div style="position:relative;min-height:100vh;background:var(--surface-page);overflow-x:clip">
+
+  <header style="position:relative;z-index:40;width:100%;max-width:1240px;margin:0 auto;padding:22px 24px;display:flex;align-items:center;gap:28px">
+    <a href="#top" style="display:flex;align-items:center;gap:11px;color:var(--text-strong);margin-right:auto">
+      <span style="width:34px;height:34px;border-radius:var(--radius-pill);background:var(--action-primary);color:var(--white);display:inline-grid;place-items:center;font:var(--fw-black) 16px/1 var(--font-display)">m</span>
+      <span style="font:var(--fw-black) 19px/1 var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong)">multifolio</span>
+    </a>
+    <nav data-s="nav" style="display:flex;align-items:center;gap:26px">
+      <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="4">
+        <a href="{{ l.href }}" style="font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-strong)" style-hover="color:var(--text-link)">{{ l.label }}</a>
+      </sc-for>
+    </nav>
+    <div data-s="nav" style="display:flex;align-items:center;gap:12px">
+      {{ headerAuth }}
+    </div>
+    <button type="button" data-s="burger" onClick="{{ toggleNav }}" aria-label="Menu" style="display:none;width:40px;height:40px;align-items:center;justify-content:center;border:none;border-radius:var(--radius-pill);background:var(--white);box-shadow:var(--shadow-soft);color:var(--text-strong);cursor:pointer">
+      <x-import component-from-global-scope="SolarPopStudioDesignSystem_db4228.Icon" name="{{ navIcon }}" size="{{ s18 }}" hint-size="18px,18px"></x-import>
+    </button>
+  </header>
+
+  {{ mobileSheet }}
+
+  <section id="top" data-s="pad" style="position:relative;padding:34px 0 90px">
+    {{ heroBlobs }}
+    <div style="position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;padding:0 24px">
+      <div data-s="hero" style="display:grid;grid-template-columns:1.02fr .98fr;gap:52px;align-items:center">
+
+        <div style="display:grid;gap:24px;justify-items:start">
+          <span style="display:inline-flex;align-items:center;gap:9px;padding:8px 15px;border-radius:var(--radius-pill);background:var(--surface-card-alt);color:var(--pink-600);font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase">
+            <x-import component-from-global-scope="SolarPopStudioDesignSystem_db4228.Icon" name="sun" size="{{ s14 }}" hint-size="14px,14px"></x-import>100 free credits · no subscription
+          </span>
+
+          <h1 data-s="h1" style="font:var(--fw-black) var(--fs-display-xl)/var(--lh-display) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong);max-width:15ch">One Profile,<br>Every Platform <span data-s="script" style="display:inline-block;font:400 var(--fs-script-l)/.9 var(--font-script);letter-spacing:0;text-transform:none;color:var(--text-heading)">everywhere</span></h1>
+
+          <p style="font:var(--fw-regular) var(--fs-body-l)/var(--lh-body) var(--font-body);color:var(--text-body);max-width:46ch;text-wrap:pretty">You write your work once — Multifolio rewrites it for LinkedIn, Upwork and Fiverr, then builds the portfolio, CV and proposals to match.</p>
+
+          <div style="display:flex;flex-wrap:wrap;gap:12px">
+            {{ heroCtas }}
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding-top:2px">
+            <sc-for list="{{ trust }}" as="t" hint-placeholder-count="3">
+              <span style="display:inline-flex;align-items:center;gap:7px;font:var(--fw-medium) var(--fs-body-s)/1 var(--font-body);color:var(--text-body)">
+                <span style="width:20px;height:20px;border-radius:var(--radius-pill);background:var(--surface-card-alt);color:var(--pink-600);display:inline-grid;place-items:center">
+                  <x-import component-from-global-scope="SolarPopStudioDesignSystem_db4228.Icon" name="check" size="{{ s12 }}" hint-size="12px,12px"></x-import>
+                </span>{{ t }}
+              </span>
+            </sc-for>
+          </div>
+        </div>
+
+        {{ heroStack }}
+      </div>
+    </div>
+  </section>
+
+  <section data-s="pad" style="padding:0 0 90px">
+    <div style="width:100%;max-width:1240px;margin:0 auto;padding:0 24px">
+      <div data-s="panel" style="padding:28px;border-radius:var(--radius-xl);background:var(--surface-card-peach);display:grid;gap:22px">
+        <div style="display:flex;flex-wrap:wrap;align-items:end;gap:18px">
+          <div style="display:grid;gap:9px;margin-right:auto">
+            <span style="font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--pink-600)">Credits, not a plan</span>
+            <h2 data-s="h2" style="font:var(--fw-black) var(--fs-display-m)/var(--lh-display) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong)">Pay Per Action <span data-s="script" style="font:400 var(--fs-script-m)/.9 var(--font-script);letter-spacing:0;text-transform:none;color:var(--text-heading)">only</span></h2>
+          </div>
+          <p style="font:var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body);color:var(--text-body);max-width:38ch">100 credits land in your account at signup. Nothing renews, nothing expires monthly.</p>
+        </div>
+        <div data-s="stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+          <sc-for list="{{ creditCosts }}" as="c" hint-placeholder-count="4">
+            <div style="display:grid;gap:6px;padding:20px;border-radius:var(--radius-lg);background:var(--white)">
+              <span style="font:var(--fw-black) var(--fs-stat)/1 var(--font-display);letter-spacing:var(--tracking-display);color:var(--text-heading)">{{ c.cost }}</span>
+              <span style="font:var(--fw-bold) var(--fs-body)/1.3 var(--font-display);text-transform:uppercase;letter-spacing:.04em;color:var(--text-strong)">{{ c.label }}</span>
+              <span style="font:var(--fw-regular) var(--fs-body-s)/1.45 var(--font-body);color:var(--text-muted)">{{ c.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="showcase" data-s="pad" style="padding:0 0 90px">
+    <div style="width:100%;max-width:1240px;margin:0 auto;padding:0 24px">
+      <div data-s="panel" style="position:relative;overflow:hidden;padding:34px 30px;border-radius:var(--radius-xl);background:var(--surface-inverse)">
+        {{ showcaseBlob }}
+        <div style="position:relative;z-index:2;display:grid;gap:26px">
+          <div style="display:flex;flex-wrap:wrap;align-items:end;gap:20px">
+            <div style="display:grid;gap:10px;margin-right:auto">
+              <span style="font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--peach-200)">The whole flow · 24 seconds</span>
+              <h2 data-s="h2" style="font:var(--fw-black) var(--fs-display-l)/var(--lh-display) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--white)">Watch It Do <span data-s="script" style="font:400 var(--fs-script-l)/.85 var(--font-script);letter-spacing:0;text-transform:none;color:var(--pink-300)">the work</span></h2>
+            </div>
+            {{ playBtn }}
+          </div>
+          <div data-s="two" style="display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start">
+            <div style="display:grid;gap:8px">
+              <sc-for list="{{ stages }}" as="s" hint-placeholder-count="6">
+                <button type="button" onClick="{{ s.onClick }}" style="{{ s.railStyle }}">
+                  <span style="{{ s.numStyle }}">{{ s.num }}</span>
+                  <span style="display:grid;gap:3px;text-align:left;min-width:0">
+                    <span style="{{ s.titleStyle }}">{{ s.title }}</span>
+                    <span style="{{ s.capStyle }}">{{ s.caption }}</span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="min-width:0;padding:20px;border-radius:var(--radius-lg);background:var(--white);min-height:360px">{{ stagePanel }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" data-s="pad" style="padding:0 0 90px">
+    <div style="width:100%;max-width:1240px;margin:0 auto;padding:0 24px;display:grid;gap:28px">
+      <div style="display:grid;gap:10px;max-width:52ch">
+        <span style="font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--pink-600)">Features</span>
+        <h2 data-s="h2" style="font:var(--fw-black) var(--fs-display-l)/var(--lh-display) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong)">Six Jobs You Do <span data-s="script" style="font:400 var(--fs-script-l)/.85 var(--font-script);letter-spacing:0;text-transform:none;color:var(--text-heading)">by hand</span></h2>
+      </div>
+      <div data-s="two" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">{{ featureCards }}</div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:20px 24px;border-radius:var(--radius-lg);background:var(--surface-card-alt)">
+        <span style="width:34px;height:34px;flex:0 0 auto;border-radius:var(--radius-pill);background:var(--pink-200);color:var(--pink-600);display:inline-grid;place-items:center">
+          <x-import component-from-global-scope="SolarPopStudioDesignSystem_db4228.Icon" name="heart" size="{{ s16 }}" hint-size="16px,16px"></x-import>
+        </span>
+        <span style="font:var(--fw-bold) var(--fs-body)/1.4 var(--font-display);text-transform:uppercase;letter-spacing:.04em;color:var(--text-strong)">Your work history is yours</span>
+        <span style="font:var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body);color:var(--text-body)">Encrypted at rest, never used to train models, deletable in one click.</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" data-s="pad" style="padding:0 0 90px">
+    <div style="width:100%;max-width:1240px;margin:0 auto;padding:0 24px;display:grid;gap:28px">
+      <div style="display:grid;gap:10px;max-width:54ch">
+        <span style="font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--pink-600)">Free tools</span>
+        <h2 data-s="h2" style="font:var(--fw-black) var(--fs-display-l)/var(--lh-display) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong)">Try Before You <span data-s="script" style="font:400 var(--fs-script-l)/.85 var(--font-script);letter-spacing:0;text-transform:none;color:var(--text-heading)">sign up</span></h2>
+        <p style="font:var(--fw-regular) var(--fs-body-l)/var(--lh-body) var(--font-body);color:var(--text-body);text-wrap:pretty">Six calculators and checkers that run in your browser — no account, no credits, instant answers.</p>
+      </div>
+      {{ toolCards }}
+    </div>
+  </section>
+
+  <section id="pricing" data-s="pad" style="padding:0 0 90px">
+    <div style="width:100%;max-width:1240px;margin:0 auto;padding:0 24px;display:grid;gap:28px">
+      <div style="display:grid;gap:10px;max-width:54ch">
+        <span style="font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--pink-600)">Pricing</span>
+        <h2 data-s="h2" style="font:var(--fw-black) var(--fs-display-l)/var(--lh-display) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong)">Packs, Not <span data-s="script" style="font:400 var(--fs-script-l)/.85 var(--font-script);letter-spacing:0;text-transform:none;color:var(--text-heading)">months</span></h2>
+      </div>
+      {{ priceCards }}
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:20px 24px;border-radius:var(--radius-lg);background:var(--amber-200)">
+        <span style="width:34px;height:34px;flex:0 0 auto;border-radius:var(--radius-pill);background:var(--white);color:var(--flame-500);display:inline-grid;place-items:center">
+          <x-import component-from-global-scope="SolarPopStudioDesignSystem_db4228.Icon" name="sun" size="{{ s16 }}" hint-size="16px,16px"></x-import>
+        </span>
+        <span style="font:var(--fw-bold) var(--fs-body)/1.4 var(--font-display);text-transform:uppercase;letter-spacing:.04em;color:var(--text-strong)">Checkout opens later this quarter</span>
+        <span style="font:var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body);color:var(--text-body)">Your 100 free credits are live today — join the list and we'll email you when packs go on sale.</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" data-s="pad" style="padding:0 0 90px">
+    <div data-s="two" style="width:100%;max-width:1240px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:.85fr 1.15fr;gap:44px;align-items:start">
+      <div style="display:grid;gap:12px">
+        <span style="font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--pink-600)">FAQ</span>
+        <h2 data-s="h2" style="font:var(--fw-black) var(--fs-display-l)/var(--lh-display) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--text-strong)">Straight <span data-s="script" style="font:400 var(--fs-script-l)/.85 var(--font-script);letter-spacing:0;text-transform:none;color:var(--text-heading)">answers</span></h2>
+        <p style="font:var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body);color:var(--text-body);max-width:34ch">Still unsure? Run a free tool first — nothing on this page needs an account.</p>
+      </div>
+      <div style="display:grid;gap:12px">{{ faqItems }}</div>
+    </div>
+  </section>
+
+  <section data-s="pad" style="padding:0 0 90px">
+    <div style="width:100%;max-width:1240px;margin:0 auto;padding:0 24px">
+      <div data-s="panel" style="position:relative;overflow:hidden;padding:72px 40px;border-radius:var(--radius-xl);background:var(--surface-pink);display:grid;gap:22px;justify-items:center;text-align:center">
+        {{ ctaBlobs }}
+        <h2 data-s="h2" style="position:relative;z-index:2;font:var(--fw-black) var(--fs-display-l)/var(--lh-display) var(--font-display);letter-spacing:var(--tracking-display);text-transform:uppercase;color:var(--white);max-width:22ch">Stop Rewriting <span data-s="script" style="font:400 var(--fs-script-l)/.85 var(--font-script);letter-spacing:0;text-transform:none;color:var(--ink-900)">the same bio</span></h2>
+        <p style="position:relative;z-index:2;font:var(--fw-regular) var(--fs-body-l)/var(--lh-body) var(--font-body);color:var(--white);max-width:48ch;text-wrap:pretty">Enter your work once. Multifolio handles the fifth platform, the CV, the portfolio and the follow-up.</p>
+        <div style="position:relative;z-index:2;display:grid;gap:14px;justify-items:center">
+          {{ finalCta }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="width:100%;max-width:1240px;margin:0 auto;padding:0 24px 44px">
+    <div style="padding-top:36px;border-top:var(--border-hairline);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:34px">
+      <div style="display:grid;gap:12px;align-content:start">
+        <span style="display:flex;align-items:center;gap:10px">
+          <span style="width:30px;height:30px;border-radius:var(--radius-pill);background:var(--action-primary);color:var(--white);display:inline-grid;place-items:center;font:var(--fw-black) 14px/1 var(--font-display)">m</span>
+          <span style="font:var(--fw-black) 16px/1 var(--font-display);text-transform:uppercase;letter-spacing:var(--tracking-display);color:var(--text-strong)">multifolio</span>
+        </span>
+        <p style="font:var(--fw-regular) var(--fs-body-s)/var(--lh-body) var(--font-body);color:var(--text-muted);max-width:28ch">One profile, every platform — built for freelancers working across borders.</p>
+      </div>
+      <sc-for list="{{ footerCols }}" as="c" hint-placeholder-count="4">
+        <div style="display:grid;gap:11px;align-content:start">
+          <span style="font:var(--fw-bold) var(--fs-label)/1 var(--font-display);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--pink-600)">{{ c.title }}</span>
+          <sc-for list="{{ c.links }}" as="l" hint-placeholder-count="4">
+            <a href="#" style="font:var(--fw-medium) var(--fs-body-s)/1.5 var(--font-body);color:var(--text-body)" style-hover="color:var(--text-link)">{{ l }}</a>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:28px;padding-top:18px;border-top:var(--border-hairline);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between">
+      <span style="font:var(--fw-regular) var(--fs-body-s)/1.5 var(--font-body);color:var(--text-muted)">© 2026 Multifolio · English-only for now</span>
+      <span style="font:var(--fw-regular) var(--fs-body-s)/1.5 var(--font-body);color:var(--text-muted)">Extension privacy · Status · Contact</span>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;loggedIn&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;States&quot;}}">
+const h = React.createElement;
+const SZ = { s12: 12, s13: 13, s14: 14, s15: 15, s16: 16, s18: 18, s20: 20 };
+const DS = () => (window.SolarPopStudioDesignSystem_db4228 || {});
+const I = (name, size, color) => DS().Icon ? h(DS().Icon, { name, size: size || 16, color }) : null;
+const Btn = (label, props) => DS().Button ? h(DS().Button, props, label) : h('button', props, label);
+const Blob = (props) => DS().Blob ? h(DS().Blob, props) : null;
+
+const OUTPUTS = [
+  { name: 'LinkedIn', icon: 'globe', cost: '1 credit', tint: 'var(--peach-200)', ink: 'var(--flame-600)',
+    line: '“Product designer scaling design systems for fintech teams across three continents.”',
+    meta: 'Headline · About · 4 roles rewritten' },
+  { name: 'Upwork', icon: 'monitor', cost: '1 credit', tint: 'var(--pink-200)', ink: 'var(--pink-600)',
+    line: '“I ship design systems that cut your build time — 40+ components, documented, handed off.”',
+    meta: 'Title · Overview · 3 specialised profiles' },
+  { name: 'Fiverr', icon: 'package', cost: '1 credit', tint: 'var(--amber-200)', ink: 'var(--flame-600)',
+    line: '“I will build a production-ready design system for your product team in 10 days.”',
+    meta: 'Gig title · Description · 3 packages' },
+  { name: 'Portfolio', icon: 'sun', cost: '3 credits', tint: 'var(--pink-100)', ink: 'var(--pink-600)',
+    line: 'A live site at multifolio.app/p/amara-kane — three layouts, six accents, themed by you.',
+    meta: 'Published · re-editable free' },
+  { name: 'CV', icon: 'check', cost: '1 credit', tint: 'var(--peach-100)', ink: 'var(--flame-600)',
+    line: 'ATS-parseable PDF, one per role — single column, no tables, every line read.',
+    meta: 'Greenhouse · Lever · Workable' },
+  { name: 'Proposal', icon: 'flower', cost: '1 credit', tint: 'var(--cream-300)', ink: 'var(--flame-600)',
+    line: '“Hi Marcus — you need a system that survives three squads shipping in parallel. I did that at Paystack.”',
+    meta: 'Tailored to the brief · follow-up on day 4' },
+];
+
+const PLATFORMS = [
+  { name: 'LinkedIn', tint: 'var(--peach-200)', ink: 'var(--flame-600)',
+    line: 'Product designer scaling design systems for fintech teams across three continents.',
+    meta: 'Headline · About · 4 roles rewritten' },
+  { name: 'Upwork', tint: 'var(--pink-200)', ink: 'var(--pink-600)',
+    line: 'I ship design systems that cut your build time — 40+ components, documented, handed off.',
+    meta: 'Title · Overview · 3 specialised profiles' },
+  { name: 'Fiverr', tint: 'var(--amber-200)', ink: 'var(--flame-600)',
+    line: 'I will build a production-ready design system for your product team in 10 days.',
+    meta: 'Gig title · Description · 3 packages' },
+];
+
+const STAGES = [
+  { title: 'Enter it once', caption: 'Roles, results, skills, rates — one structured profile.' },
+  { title: 'Adapt per platform', caption: 'The same history, rewritten in each platform\u2019s register.' },
+  { title: 'Score the job feed', caption: 'Remote listings ranked against your actual profile.' },
+  { title: 'Draft the proposal', caption: 'Tailored to the brief, in your voice, one credit.' },
+  { title: 'Publish the portfolio', caption: 'A live site at your own slug — no builder.' },
+  { title: 'Export the CV', caption: 'ATS-parseable PDF, per role, no template fiddling.' },
+];
+
+const JOBS = [
+  { role: 'Senior Product Designer', co: 'Remote · Fintech · $85–110/hr', score: 92, good: true },
+  { role: 'Design Systems Lead', co: 'Remote EU · SaaS · $95/hr', score: 88, good: true },
+  { role: 'UX Designer, Growth', co: 'Remote US · Marketplace · $70/hr', score: 74, good: false },
+  { role: 'Brand Designer (contract)', co: 'Remote · Agency · $55/hr', score: 61, good: false },
+];
+
+const PROPOSAL = 'Hi Marcus — you need a design system that survives three squads shipping in parallel. I did exactly that at Paystack: 40+ components, tokens in Figma and code, adoption tracked. Two things I would check first';
+
+const FAQS = [
+  { q: 'What does one credit buy?', a: 'One tailored proposal, one platform rewrite or one mock-interview round costs 1 credit. A portfolio build is 3, a CV export is 1. Every action shows its cost before you run it.' },
+  { q: 'Is there a subscription?', a: 'No. Credits are bought once and never expire. Nothing renews, and there is no plan to downgrade from.' },
+  { q: 'Why can I not buy credits yet?', a: 'Checkout is still being wired up. The free 100 credits are live and cover roughly a week of active applying — you will not hit a wall on day one.' },
+  { q: 'Does the AI invent experience?', a: 'No. It only rewrites what you entered. If a job needs a skill you have not listed, the score drops and says so rather than papering over it.' },
+  { q: 'Will recruiters see it is AI-written?', a: 'Output follows your own phrasing from the profile, and every draft is editable before it leaves. Nothing is auto-submitted anywhere.' },
+];
+
+class Component extends DCLogic {
+  state = { navOpen: false, stage: 0, playing: true, adapt: 0, typed: 0, openFaq: 0, reduced: false };
+
+  componentDidMount() {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.setState({ reduced, typed: reduced ? PROPOSAL.length : 0, playing: !reduced });
+    if (!reduced) {
+      this.tA = setInterval(() => this.setState(s => ({ adapt: (s.adapt + 1) % OUTPUTS.length })), 3000);
+      this.tS = setInterval(() => { if (this.state.playing) this.setState(s => ({ stage: (s.stage + 1) % 6, typed: 0 })); }, 4200);
+      this.tT = setInterval(() => this.setState(s => ({ typed: Math.min(s.typed + 2, PROPOSAL.length) })), 40);
+    }
+  }
+  componentWillUnmount() { clearInterval(this.tA); clearInterval(this.tS); clearInterval(this.tT); }
+
+  label(t, color) {
+    return h('span', { key: 'lb', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: color || 'var(--pink-600)' } }, t);
+  }
+
+  // ---------- hero
+  sourceCard() {
+    return h('div', { style: { display: 'grid', gap: 16, padding: 22, borderRadius: 'var(--radius-lg)', background: 'var(--white)', boxShadow: 'var(--shadow-soft)' } }, [
+      h('div', { key: 'h', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 } }, [
+        this.label('Source of truth', 'var(--text-muted)'),
+        h('span', { key: 'b', style: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 10px', borderRadius: 'var(--radius-pill)', background: 'var(--surface-card-alt)', color: 'var(--pink-600)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase' } }, 'Once'),
+      ]),
+      h('div', { key: 'p', style: { display: 'flex', alignItems: 'center', gap: 13 } }, [
+        h('span', { key: 'a', style: { width: 48, height: 48, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: 'var(--action-primary)', color: 'var(--white)', display: 'inline-grid', placeItems: 'center', font: 'var(--fw-black) 17px/1 var(--font-display)' } }, 'AK'),
+        h('span', { key: 'b', style: { display: 'grid', gap: 3, minWidth: 0 } }, [
+          h('span', { key: 'n', style: { font: 'var(--fw-black) 17px/1.1 var(--font-display)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-display)', color: 'var(--text-strong)' } }, 'Amara Kane'),
+          h('span', { key: 'r', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.35 var(--font-body)', color: 'var(--text-muted)' } }, 'Product designer · 8 yrs · Lagos'),
+        ]),
+      ]),
+      h('div', { key: 'f', style: { display: 'grid', gap: 9, padding: 16, borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } },
+        ['4 roles · 11 projects · 6 outcomes', 'Rates, availability, timezone', 'Skills tagged and levelled'].map(t =>
+          h('span', { key: t, style: { display: 'grid', gridTemplateColumns: '20px 1fr', gap: 10, alignItems: 'center', font: 'var(--fw-medium) var(--fs-body-s)/1.45 var(--font-body)', color: 'var(--text-body)' } }, [
+            h('span', { key: 'i', style: { width: 20, height: 20, borderRadius: 'var(--radius-pill)', background: 'var(--pink-200)', color: 'var(--pink-600)', display: 'inline-grid', placeItems: 'center' } }, I('check', 12)), t,
+          ]))),
+      h('span', { key: 'n', style: { display: 'flex', alignItems: 'center', gap: 8, font: 'var(--fw-bold) var(--fs-label)/1.3 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-muted)' } }, [I('asterisk', 13), '1 record feeds 8 platforms, the CV and the portfolio']),
+    ]);
+  }
+
+  fanConnector() {
+    const i = this.state.reduced ? -1 : this.state.adapt;
+    const col = (n) => i === n ? 'var(--flame-500)' : 'rgba(58,36,27,.16)';
+    const wd = (n) => i === n ? 2 : 1.5;
+    const elbow = (n, dir) => h('span', {
+      key: n, style: {
+        position: 'absolute', left: '50%', right: 0,
+        top: dir === 'up' ? '17%' : '50%', height: '33%',
+        borderColor: col(n), borderStyle: 'solid', borderWidth: 0, borderLeftWidth: wd(n),
+        borderTopWidth: dir === 'up' ? wd(n) : 0, borderBottomWidth: dir === 'down' ? wd(n) : 0,
+        borderTopLeftRadius: dir === 'up' ? 18 : 0, borderBottomLeftRadius: dir === 'down' ? 18 : 0,
+        transition: 'border-color var(--dur-base) var(--ease-out)',
+      },
+    });
+    return h('div', { 'aria-hidden': 'true', style: { position: 'relative', height: '100%', minHeight: 270 } }, [
+      elbow(0, 'up'),
+      h('span', { key: 'm', style: { position: 'absolute', left: '50%', right: 0, top: '50%', height: wd(1), background: col(1), transition: 'background var(--dur-base) var(--ease-out)' } }),
+      elbow(2, 'down'),
+      h('span', { key: 't', style: { position: 'absolute', left: 0, top: '50%', width: '50%', height: 1.5, background: 'rgba(58,36,27,.16)' } }),
+      h('span', { key: 'hub', style: { position: 'absolute', left: 'calc(50% - 12px)', top: 'calc(50% - 12px)', width: 24, height: 24, borderRadius: 'var(--radius-pill)', background: 'var(--white)', display: 'inline-grid', placeItems: 'center', boxShadow: 'var(--shadow-soft)' } },
+        h('span', { style: { width: 8, height: 8, borderRadius: 'var(--radius-pill)', background: 'var(--flame-500)' } })),
+    ]);
+  }
+
+  adaptCards() {
+    return PLATFORMS.map((p, i) => {
+      const on = !this.state.reduced && this.state.adapt === i;
+      return h('div', {
+        key: p.name,
+        style: {
+          position: 'relative', overflow: 'hidden', display: 'grid', gap: 10, padding: 18,
+          borderRadius: 'var(--radius-lg)', background: on ? 'var(--white)' : 'var(--surface-card)',
+          boxShadow: on ? 'var(--shadow-lift)' : 'var(--shadow-soft)',
+          transform: on ? 'translateY(-2px)' : 'none',
+          transition: 'transform var(--dur-base) var(--ease-pop), box-shadow var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out)',
+        },
+      }, [
+        h('div', { key: 'h', style: { display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' } }, [
+          h('span', { key: 'i', style: { width: 30, height: 30, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: p.tint, color: p.ink, display: 'inline-grid', placeItems: 'center', font: 'var(--fw-black) 13px/1 var(--font-display)' } }, p.name[0]),
+          h('span', { key: 'n', style: { font: 'var(--fw-black) 14px/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, p.name),
+          h('span', { key: 's', style: { marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 10px', borderRadius: 'var(--radius-pill)', background: on ? 'var(--surface-card-alt)' : 'var(--surface-muted)', color: on ? 'var(--pink-600)' : 'var(--text-muted)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.08em', textTransform: 'uppercase', transition: 'background var(--dur-base) var(--ease-out)' } }, on ? 'Rewriting' : 'Ready'),
+        ]),
+        h('p', { key: 'l', style: { margin: 0, font: 'var(--fw-medium) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-body)', textWrap: 'pretty' } }, '“' + p.line + '”'),
+        h('span', { key: 'm', style: { font: 'var(--fw-regular) var(--fs-label)/1.3 var(--font-body)', letterSpacing: '.04em', color: 'var(--text-muted)' } }, p.meta),
+        h('span', { key: 'b', 'aria-hidden': 'true', style: { position: 'absolute', left: 0, bottom: 0, height: 3, width: on ? '100%' : '0%', background: p.ink, transition: 'width 2.9s linear' } }),
+      ]);
+    });
+  }
+
+  // ---------- hero: one panel, a rotated deck of outputs
+  heroStack() {
+    const act = this.state.reduced ? 0 : this.state.adapt;
+    const outs = OUTPUTS;
+    const cur = outs[act % outs.length];
+
+    const chip = (o, i) => {
+      const on = i === act % outs.length;
+      return h('button', {
+        key: o.name, type: 'button', onClick: () => this.setState({ adapt: i }),
+        style: {
+          display: 'inline-flex', alignItems: 'center', gap: 8, padding: '9px 14px', border: 'none', cursor: 'pointer',
+          borderRadius: 'var(--radius-pill)', background: on ? o.ink : 'var(--surface-page)',
+          color: on ? 'var(--white)' : 'var(--text-body)',
+          font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)',
+          textTransform: 'uppercase', whiteSpace: 'nowrap',
+          boxShadow: on ? 'var(--shadow-soft)' : 'none',
+          transform: on ? 'translateY(-2px)' : 'none',
+          transition: 'all var(--dur-base) var(--ease-pop)',
+        },
+      }, [I(o.icon, 13), o.name]);
+    };
+
+    // the deck: back cards peek out at a slight angle; the wrapper sizes to the tallest card
+    const deck = h('div', { style: { position: 'relative', marginTop: 6, padding: '0 10px 14px', overflow: 'hidden' } }, outs.map((o, i) => {
+      const rel = (i - act % outs.length + outs.length) % outs.length;
+      const on = rel === 0;
+      const depth = Math.min(rel, 2);
+      return h('div', {
+        key: o.name,
+        'aria-hidden': on ? undefined : 'true',
+        style: {
+          gridArea: '1 / 1', display: 'grid', gap: 12, alignContent: 'start',
+          position: on ? 'relative' : 'absolute', left: on ? undefined : 10, right: on ? undefined : 10, top: on ? undefined : 0,
+          gridTemplateRows: on ? 'auto 1fr auto' : undefined,
+          minHeight: 158, padding: 22, borderRadius: 'var(--radius-lg)',
+          background: on ? 'var(--white)' : o.tint,
+          boxShadow: on ? 'var(--shadow-lift)' : 'var(--shadow-soft)',
+          transform: on ? 'none' : 'rotate(' + (depth * (i % 2 ? -1.6 : 1.8)) + 'deg) translateY(' + depth * 7 + 'px)',
+          opacity: on ? 1 : depth > 1 ? 0 : 1,
+          zIndex: 10 - depth,
+          height: on ? undefined : '100%',
+          transition: 'transform var(--dur-slow,320ms) var(--ease-pop), opacity var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out)',
+          pointerEvents: on ? 'auto' : 'none',
+        },
+      }, on ? [
+        h('div', { key: 'h', style: { display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' } }, [
+          h('span', { key: 'i', style: { width: 32, height: 32, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: o.tint, color: o.ink, display: 'inline-grid', placeItems: 'center' } }, I(o.icon, 15)),
+          h('span', { key: 'n', style: { font: 'var(--fw-black) 15px/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--text-strong)' } }, o.name),
+          h('span', { key: 'c', style: { marginLeft: 'auto', padding: '6px 11px', borderRadius: 'var(--radius-pill)', background: 'var(--surface-page)', color: 'var(--text-muted)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' } }, o.cost),
+        ]),
+        h('p', { key: 'l', style: { margin: 0, font: 'var(--fw-medium) var(--fs-body)/1.6 var(--font-body)', color: 'var(--text-strong)', textWrap: 'pretty' } }, o.line),
+        h('span', { key: 'm', style: { display: 'flex', alignItems: 'center', gap: 8, marginTop: 'auto', font: 'var(--fw-bold) var(--fs-label)/1.3 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-muted)' } }, [I('asterisk', 12), o.meta]),
+        h('span', { key: 'b', 'aria-hidden': 'true', style: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 4, borderRadius: '0 0 var(--radius-lg) var(--radius-lg)', overflow: 'hidden', background: 'var(--surface-page)' } },
+          h('span', { style: { display: 'block', height: '100%', width: this.state.reduced ? '100%' : '100%', background: o.ink, transformOrigin: 'left', animation: this.state.reduced ? 'none' : 'spWipe 3s linear infinite' } })),
+      ] : null);
+    }));
+
+    return h('div', { 'data-s': 'stack', style: { position: 'relative', minWidth: 0 } }, [
+      Blob({ key: 'blob', size: 200, color: 'var(--pink-200)', shape: 'petal', rotate: 22, style: { position: 'absolute', right: -46, top: -44, zIndex: 0 } }),
+      h('div', {
+        key: 'panel',
+        style: { position: 'relative', zIndex: 2, display: 'grid', gap: 18, padding: 26, borderRadius: 'var(--radius-xl)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-soft)' },
+      }, [
+        h('div', { key: 'top', style: { display: 'flex', alignItems: 'center', gap: 14 } }, [
+          h('span', { key: 'a', style: { width: 52, height: 52, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: 'var(--action-primary)', color: 'var(--white)', display: 'inline-grid', placeItems: 'center', font: 'var(--fw-black) 18px/1 var(--font-display)' } }, 'AK'),
+          h('span', { key: 'b', style: { display: 'grid', gap: 3, minWidth: 0, marginRight: 'auto' } }, [
+            h('span', { key: 'n', style: { font: 'var(--fw-black) 18px/1.1 var(--font-display)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-display)', color: 'var(--text-strong)', whiteSpace: 'nowrap' } }, 'Amara Kane'),
+            h('span', { key: 'r', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.35 var(--font-body)', color: 'var(--text-muted)' } }, 'Product designer · 8 yrs · Lagos'),
+          ]),
+          h('span', { key: 'c', style: { display: 'grid', gap: 1, justifyItems: 'end' } }, [
+            h('span', { key: 'v', style: { font: 'var(--fw-black) 30px/1 var(--font-display)', color: 'var(--text-heading)' } }, '1'),
+            h('span', { key: 'l', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-muted)', whiteSpace: 'nowrap' } }, 'Profile in'),
+          ]),
+        ]),
+        h('div', { key: 'div', style: { height: 1, background: 'var(--divider)' } }),
+        h('div', { key: 'lb', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' } }, [
+          this.label('6 outputs out', 'var(--pink-600)'),
+          h('span', { key: 'n', style: { font: 'var(--fw-medium) var(--fs-label)/1 var(--font-body)', color: 'var(--text-muted)', whiteSpace: 'nowrap' } }, 'Tap one'),
+        ]),
+        h('div', { key: 'chips', style: { display: 'flex', flexWrap: 'wrap', gap: 8 } }, outs.map(chip)),
+        deck,
+      ]),
+    ]);
+  }
+
+  // ---------- showcase panels
+  shell(kids) { return h('div', { style: { display: 'grid', gap: 16, animation: this.state.reduced ? 'none' : 'spIn .3s var(--ease-out) both' } }, kids); }
+  field(k, l, v) {
+    return h('div', { key: k, style: { display: 'grid', gap: 5 } }, [
+      this.label(l, 'var(--text-muted)'),
+      h('div', { key: 'v', style: { padding: '11px 13px', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', font: 'var(--fw-medium) var(--fs-body)/1.4 var(--font-body)', color: 'var(--text-strong)' } }, v),
+    ]);
+  }
+  bar(k, l, pct, tint) {
+    return h('div', { key: k, style: { display: 'grid', gap: 6 } }, [
+      h('div', { key: 'r', style: { display: 'flex', justifyContent: 'space-between', gap: 10, font: 'var(--fw-bold) var(--fs-body-s)/1 var(--font-display)', letterSpacing: '.03em', textTransform: 'uppercase', color: 'var(--text-body)' } }, [
+        h('span', { key: 'a' }, l), h('span', { key: 'b', style: { color: 'var(--text-strong)' } }, pct),
+      ]),
+      h('div', { key: 't', style: { height: 8, borderRadius: 'var(--radius-pill)', background: 'var(--surface-muted)', overflow: 'hidden' } },
+        h('div', { style: { width: pct + '%', height: '100%', borderRadius: 'var(--radius-pill)', background: tint || 'var(--flame-500)', transition: 'width var(--dur-slow,320ms) var(--ease-pop)' } })),
+    ]);
+  }
+
+  stagePanel() {
+    const s = this.state.stage;
+    if (s === 0) return this.shell([
+      this.label('Step 1 — your profile, entered once'),
+      h('div', { key: 'g', style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,210px),1fr))', gap: 14 } }, [
+        this.field('a', 'Role', 'Senior Product Designer'), this.field('b', 'Years', '8'),
+        this.field('c', 'Result', 'Cut build time 40% at Paystack'), this.field('d', 'Rate', '$85 – $110 / hr'),
+      ]),
+      h('div', { key: 'sk', style: { display: 'flex', flexWrap: 'wrap', gap: 8 } }, ['Design systems', 'Figma', 'Fintech', 'Accessibility', 'Design ops'].map(t =>
+        h('span', { key: t, style: { padding: '7px 13px', borderRadius: 'var(--radius-pill)', background: 'var(--surface-card-alt)', color: 'var(--pink-600)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase' } }, t))),
+      h('p', { key: 'p', style: { margin: 0, font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'Nothing here is written twice — everything downstream reads from this one record.'),
+    ]);
+
+    if (s === 1) return this.shell([
+      this.label('Step 2 — one history, three registers'),
+      h('div', { key: 'g', style: { display: 'grid', gap: 12 } }, PLATFORMS.map(p =>
+        h('div', { key: p.name, style: { display: 'grid', gridTemplateColumns: '92px 1fr', gap: 14, alignItems: 'center', padding: 15, borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } }, [
+          h('span', { key: 'n', style: { font: 'var(--fw-black) var(--fs-body-s)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.05em', color: p.ink } }, p.name),
+          h('span', { key: 'l', style: { font: 'var(--fw-medium) var(--fs-body)/1.55 var(--font-body)', color: 'var(--text-strong)', textWrap: 'pretty' } }, p.line),
+        ]))),
+      h('p', { key: 'p', style: { margin: 0, font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'Same facts, same numbers — different length, register and keyword set per platform.'),
+    ]);
+
+    if (s === 2) return this.shell([
+      this.label('Step 3 — the feed, scored against your profile'),
+      h('div', { key: 'g', style: { display: 'grid', gap: 9 } }, JOBS.map(j =>
+        h('div', { key: j.role, style: { display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center', padding: '14px 16px', borderRadius: 'var(--radius-md)', background: 'var(--surface-page)' } }, [
+          h('span', { key: 'a', style: { display: 'grid', gap: 3, minWidth: 0 } }, [
+            h('span', { key: 'r', style: { font: 'var(--fw-black) var(--fs-body)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, j.role),
+            h('span', { key: 'c', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.3 var(--font-body)', color: 'var(--text-muted)' } }, j.co),
+          ]),
+          h('span', { key: 'b', style: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 13px', borderRadius: 'var(--radius-pill)', background: j.good ? 'var(--pink-200)' : 'var(--amber-200)', color: j.good ? 'var(--pink-600)' : 'var(--flame-600)', font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)' } }, j.score),
+        ]))),
+      h('p', { key: 'p', style: { margin: 0, font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'Scores are explained, not asserted — open one and it names the skills that matched and the two that did not.'),
+    ]);
+
+    if (s === 3) return this.shell([
+      this.label('Step 4 — proposal, 1 credit'),
+      h('div', { key: 'w', style: { padding: 20, borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', minHeight: 160 } }, [
+        h('span', { key: 'to', style: { display: 'block', marginBottom: 12, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--text-muted)' } }, 'Re: Design Systems Lead · SaaS · $95/hr'),
+        h('p', { key: 'p', style: { margin: 0, font: 'var(--fw-regular) var(--fs-body)/1.8 var(--font-body)', color: 'var(--text-strong)', textWrap: 'pretty' } }, [
+          PROPOSAL.slice(0, this.state.typed),
+          h('span', { key: 'c', style: { display: 'inline-block', width: 2, height: 15, marginLeft: 2, verticalAlign: '-2px', background: 'var(--flame-500)', opacity: this.state.typed < PROPOSAL.length ? 1 : 0 } }),
+        ]),
+      ]),
+      h('div', { key: 'f', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 } }, [
+        h('span', { key: 'a', style: { padding: '7px 13px', borderRadius: 'var(--radius-pill)', background: 'var(--surface-card-alt)', color: 'var(--pink-600)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.08em', textTransform: 'uppercase' } }, '1 credit'),
+        h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.5 var(--font-body)', color: 'var(--text-muted)' } }, 'Editable before it is sent. Follow-up drafted on day 4 if nobody replies.'),
+      ]),
+    ]);
+
+    if (s === 4) return this.shell([
+      this.label('Step 5 — the portfolio site'),
+      h('div', { key: 'br', style: { borderRadius: 'var(--radius-md)', overflow: 'hidden', background: 'var(--surface-page)' } }, [
+        h('div', { key: 'bar', style: { display: 'flex', alignItems: 'center', gap: 9, padding: '11px 14px' } }, [
+          h('span', { key: 'd', style: { display: 'flex', gap: 5 } }, [0, 1, 2].map(i => h('span', { key: i, style: { width: 9, height: 9, borderRadius: 'var(--radius-pill)', background: ['var(--flame-400)', 'var(--amber-400)', 'var(--pink-400)'][i] } }))),
+          h('span', { key: 'u', style: { padding: '5px 12px', borderRadius: 'var(--radius-pill)', background: 'var(--white)', font: 'var(--fw-medium) var(--fs-label)/1 var(--font-body)', color: 'var(--text-muted)' } }, 'multifolio.app/p/amara-kane'),
+        ]),
+        h('div', { key: 'b', style: { padding: 20, display: 'grid', gap: 14, background: 'var(--white)' } }, [
+          h('span', { key: 'h', style: { font: 'var(--fw-black) 22px/1.1 var(--font-display)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-display)', color: 'var(--text-strong)' } }, 'Amara Kane — design systems'),
+          h('span', { key: 's', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.6 var(--font-body)', color: 'var(--text-body)', maxWidth: '46ch' } }, 'Eight years turning inconsistent product surfaces into systems teams actually use.'),
+          h('div', { key: 'g', style: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 } }, ['Paystack', 'Kuda', 'Flutterwave'].map((t, i) =>
+            h('div', { key: t, style: { display: 'grid', gap: 7, padding: 12, borderRadius: 'var(--radius-md)', background: ['var(--peach-100)', 'var(--pink-100)', 'var(--amber-200)'][i] } }, [
+              h('span', { key: 'r', style: { height: 36, borderRadius: 'var(--radius-sm)', background: 'rgba(255,255,255,.62)' } }),
+              h('span', { key: 't', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-strong)' } }, t),
+            ]))),
+        ]),
+      ]),
+      h('p', { key: 'p', style: { margin: 0, font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'Your own slug, three layouts, six accents — themed by you, not branded by us. 3 credits.'),
+    ]);
+
+    return this.shell([
+      this.label('Step 6 — the CV that parses'),
+      h('div', { key: 'r', style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,190px),1fr))', gap: 16, alignItems: 'start' } }, [
+        h('div', { key: 'd', style: { padding: 16, borderRadius: 'var(--radius-md)', background: 'var(--surface-page)', display: 'grid', gap: 8 } }, [
+          h('span', { key: 'n', style: { font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, 'Amara Kane'),
+          h('span', { key: 'r', style: { font: 'var(--fw-medium) var(--fs-label)/1 var(--font-body)', color: 'var(--text-muted)' } }, 'Senior Product Designer · Design Systems'),
+          h('div', { key: 'l', style: { display: 'grid', gap: 6, marginTop: 4 } }, [90, 76, 84, 60, 70, 48].map((w, i) =>
+            h('span', { key: i, style: { height: 5, width: w + '%', borderRadius: 3, background: 'var(--cream-400)' } }))),
+        ]),
+        h('div', { key: 'c', style: { display: 'grid', gap: 11 } }, [
+          this.bar('a', 'Keyword coverage', 94, 'var(--pink-500)'),
+          this.bar('b', 'Parse-safe structure', 100, 'var(--flame-500)'),
+          this.bar('c', 'Length vs. role norm', 82, 'var(--amber-400)'),
+          h('span', { key: 'p', style: { width: 'fit-content', padding: '7px 13px', borderRadius: 'var(--radius-pill)', background: 'var(--flame-500)', color: 'var(--white)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.08em', textTransform: 'uppercase' } }, 'PDF · ATS-safe'),
+        ]),
+      ]),
+      h('p', { key: 'p', style: { margin: 0, font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, 'One CV per role, generated from the same profile — no tables, no columns, no parser-breaking icons.'),
+    ]);
+  }
+
+  // ---------- features
+  featureCards() {
+    const ring = h('div', { style: { display: 'flex', alignItems: 'center', gap: 18 } }, [
+      h('div', { key: 'r', style: { width: 96, height: 96, flex: '0 0 auto', borderRadius: 'var(--radius-pill)', background: 'conic-gradient(var(--flame-500) 0% 87%, var(--cream-300) 87% 100%)', display: 'grid', placeItems: 'center' } },
+        h('div', { style: { width: 74, height: 74, borderRadius: 'var(--radius-pill)', background: 'var(--white)', display: 'grid', placeItems: 'center' } }, [
+          h('span', { key: 'n', style: { font: 'var(--fw-black) 28px/1 var(--font-display)', color: 'var(--text-strong)' } }, '87'),
+          h('span', { key: 'd', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.08em', color: 'var(--text-muted)' } }, '/ 100'),
+        ])),
+      h('div', { key: 'b', style: { display: 'grid', gap: 10, flex: 1, minWidth: 0 } }, [
+        this.bar('p1', 'Platform fit', 91, 'var(--flame-500)'),
+        this.bar('p2', 'Skill match', 84, 'var(--pink-500)'),
+        this.bar('p3', 'Client appeal', 79, 'var(--amber-400)'),
+      ]),
+    ]);
+
+    const feed = h('div', { style: { display: 'grid', gap: 8 } }, JOBS.map(j =>
+      h('div', { key: j.role, style: { display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px', borderRadius: 'var(--radius-md)', background: 'var(--white)' } }, [
+        h('span', { key: 'a', style: { flex: 1, minWidth: 0, display: 'grid', gap: 2 } }, [
+          h('span', { key: 'r', style: { font: 'var(--fw-bold) var(--fs-body-s)/1.2 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, j.role),
+          h('span', { key: 'c', style: { font: 'var(--fw-regular) var(--fs-label)/1.3 var(--font-body)', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, j.co),
+        ]),
+        h('span', { key: 'b', style: { font: 'var(--fw-black) var(--fs-body)/1 var(--font-display)', color: j.good ? 'var(--pink-600)' : 'var(--flame-600)' } }, j.score),
+      ])));
+
+    const typer = h('div', { style: { padding: 16, borderRadius: 'var(--radius-md)', background: 'var(--white)', minHeight: 96 } },
+      h('p', { style: { margin: 0, font: 'var(--fw-regular) var(--fs-body-s)/1.75 var(--font-body)', color: 'var(--text-strong)' } }, [
+        PROPOSAL.slice(0, Math.min(this.state.typed, 118)),
+        h('span', { key: 'c', style: { display: 'inline-block', width: 2, height: 12, marginLeft: 2, background: 'var(--flame-500)', opacity: this.state.typed < 118 ? 1 : 0 } }),
+      ]));
+
+    const funnel = h('div', { style: { display: 'grid', gap: 9 } }, [
+      { l: 'Sent', v: 48, w: 100 }, { l: 'Viewed', v: 31, w: 65 }, { l: 'Replied', v: 19, w: 40 }, { l: 'Interviewing', v: 6, w: 13 },
+    ].map((r, i) => h('div', { key: r.l, style: { display: 'flex', alignItems: 'center', gap: 10 } }, [
+      h('span', { key: 'l', style: { width: 84, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-muted)' } }, r.l),
+      h('span', { key: 'b', style: { flex: 1, height: 22, borderRadius: 'var(--radius-sm)', background: 'var(--white)', overflow: 'hidden' } },
+        h('span', { style: { display: 'block', width: r.w + '%', height: '100%', borderRadius: 'var(--radius-sm)', background: ['var(--flame-500)', 'var(--flame-400)', 'var(--pink-500)', 'var(--pink-400)'][i] } })),
+      h('span', { key: 'v', style: { width: 26, textAlign: 'right', font: 'var(--fw-black) var(--fs-body-s)/1 var(--font-display)', color: 'var(--text-strong)' } }, r.v),
+    ])).concat([
+      h('span', { key: 'r', style: { marginTop: 2, font: 'var(--fw-bold) var(--fs-body-s)/1.4 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--pink-600)' } }, '40% reply rate · +11 pts since tailored proposals'),
+    ]));
+
+    const site = h('div', { style: { borderRadius: 'var(--radius-md)', overflow: 'hidden', background: 'var(--white)' } }, [
+      h('div', { key: 'bar', style: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px' } }, [
+        h('span', { key: 'd', style: { display: 'flex', gap: 4 } }, [0, 1, 2].map(i => h('span', { key: i, style: { width: 7, height: 7, borderRadius: 'var(--radius-pill)', background: ['var(--flame-400)', 'var(--amber-400)', 'var(--pink-400)'][i] } }))),
+        h('span', { key: 'u', style: { font: 'var(--fw-medium) var(--fs-label)/1 var(--font-body)', color: 'var(--text-muted)' } }, '/p/amara-kane'),
+      ]),
+      h('div', { key: 'g', style: { padding: 14, display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 9 } }, [0, 1, 2, 3, 4, 5].map(i =>
+        h('span', { key: i, style: { height: 38, borderRadius: 'var(--radius-sm)', background: ['var(--peach-100)', 'var(--pink-100)', 'var(--amber-200)', 'var(--pink-200)', 'var(--peach-200)', 'var(--cream-300)'][i] } }))),
+    ]);
+
+    const cv = h('div', { style: { display: 'flex', gap: 16, alignItems: 'flex-start' } }, [
+      h('div', { key: 'd', style: { width: 100, flex: '0 0 auto', padding: 12, borderRadius: 'var(--radius-md)', background: 'var(--white)', display: 'grid', gap: 6 } },
+        [86, 60, 74, 50, 68, 44, 58].map((w, i) => h('span', { key: i, style: { height: 4, width: w + '%', borderRadius: 3, background: i === 0 ? 'var(--flame-500)' : 'var(--cream-400)' } }))),
+      h('div', { key: 'b', style: { display: 'grid', gap: 9 } }, [
+        h('span', { key: 'p', style: { width: 'fit-content', padding: '7px 13px', borderRadius: 'var(--radius-pill)', background: 'var(--flame-500)', color: 'var(--white)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: '.08em', textTransform: 'uppercase' } }, 'PDF'),
+        h('span', { key: 't', style: { font: 'var(--fw-regular) var(--fs-body-s)/1.55 var(--font-body)', color: 'var(--text-muted)' } }, 'Single column · no tables · parsed clean by Greenhouse, Lever, Workable'),
+      ]),
+    ]);
+
+    const card = (o) => h('div', {
+      key: o.title,
+      style: { display: 'grid', gap: 16, alignContent: 'start', padding: 24, borderRadius: 'var(--radius-lg)', background: o.bg, minWidth: 0 },
+    }, [
+      h('div', { key: 'h', style: { display: 'grid', gap: 10 } }, [
+        h('span', { key: 'i', style: { width: 38, height: 38, borderRadius: 'var(--radius-pill)', background: 'var(--pink-200)', color: 'var(--pink-600)', display: 'inline-grid', placeItems: 'center' } }, I(o.icon, 18)),
+        h('h3', { key: 't', style: { margin: 0, font: 'var(--fw-black) var(--fs-title)/1.15 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, o.title),
+        h('p', { key: 'c', style: { margin: 0, font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)', textWrap: 'pretty' } }, o.copy),
+      ]),
+      h('div', { key: 'd' }, o.demo),
+    ]);
+
+    return [
+      card({ bg: 'var(--surface-card)', icon: 'sparkles', title: 'A feed that ranks', copy: 'Remote listings pulled in hourly and scored against your real profile — so the top of the list is worth your credits.', demo: feed }),
+      card({ bg: 'var(--surface-card-peach)', icon: 'sun', title: 'Scores you can argue with', copy: 'Platform fit, skill match and client appeal, each explained. When it says 87, it says why.', demo: ring }),
+      card({ bg: 'var(--surface-card-alt)', icon: 'flower', title: 'Proposals in your voice', copy: 'Written from the brief and your history, not a template. Follow-ups drafted if the client goes quiet.', demo: typer }),
+      card({ bg: 'var(--surface-card)', icon: 'asterisk', title: 'Every application tracked', copy: 'A pipeline that shows your real reply rate — and which platform is wasting your time.', demo: funnel }),
+      card({ bg: 'var(--surface-card-alt)', icon: 'globe', title: 'A portfolio you did not build', copy: 'Published at your own slug from the same profile. Three layouts, six accents, themed by you.', demo: site }),
+      card({ bg: 'var(--surface-card-peach)', icon: 'package', title: 'CVs that survive robots', copy: 'One export per role, structured so applicant tracking systems read every line.', demo: cv }),
+    ];
+  }
+
+  // ---------- tools
+  toolCards() {
+    const tools = [
+      { n: 'Profile analysis', href: '/analyze', icon: 'sparkles', b: 'Score any profile in 20 seconds.', bg: 'var(--surface-card-alt)' },
+      { n: 'Rate calculator', href: '/rate', icon: 'sun', b: 'What you should charge, by market and skill.', bg: 'var(--surface-card-peach)' },
+      { n: 'Proposal ROI', href: '/roi', icon: 'asterisk', b: 'What your proposal hours actually return.', bg: 'var(--surface-card)' },
+      { n: 'ATS check', href: '/ats-check', icon: 'package', b: 'Will a tracking system read your CV?', bg: 'var(--surface-card-peach)' },
+      { n: 'Proposal checker', href: '/proposal-checker', icon: 'check', b: 'Paste a draft, get the three things to cut.', bg: 'var(--surface-card)' },
+      { n: 'Headline optimizer', href: '/headline-optimizer', icon: 'flower', b: 'Rewrite one line, per platform.', bg: 'var(--surface-card-alt)' },
+    ];
+    return h('div', { 'data-s': 'two', style: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 } }, tools.map(t =>
+      h(HoverCard, { key: t.n, href: t.href, bg: t.bg }, [
+        h('div', { key: 'h', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 } }, [
+          h('span', { key: 'i', style: { width: 40, height: 40, borderRadius: 'var(--radius-pill)', background: 'var(--white)', color: 'var(--pink-600)', display: 'inline-grid', placeItems: 'center' } }, I(t.icon, 18)),
+          h('span', { key: 'f', style: { padding: '6px 12px', borderRadius: 'var(--radius-pill)', background: 'var(--white)', color: 'var(--flame-600)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase' } }, 'Free'),
+        ]),
+        h('span', { key: 'n', style: { font: 'var(--fw-black) var(--fs-title)/1.15 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: 'var(--text-strong)' } }, t.n),
+        h('span', { key: 'b', style: { font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: 'var(--text-body)' } }, t.b),
+        h('span', { key: 'a', style: { display: 'inline-flex', alignItems: 'center', gap: 7, font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--flame-600)' } }, ['Open', I('arrow-right', 13)]),
+      ])));
+  }
+
+  // ---------- pricing
+  priceCards() {
+    const packs = [
+      { n: 'Free start', p: '$0', c: '100', live: true, note: 'Every new account — no card, no trial clock.', items: ['≈ 100 proposals or 33 portfolios', 'All free tools included', 'Credits never expire'], cta: 'Create account' },
+      { n: 'Pack of 500', p: '$19', c: '500', live: false, note: 'For an active month of applying.', items: ['≈ $0.038 per credit', 'Mock interviews included', 'Rolls over indefinitely'], cta: 'Notify me' },
+      { n: 'Pack of 2,000', p: '$59', c: '2,000', live: false, note: 'For a full job search, start to offer.', items: ['≈ $0.030 per credit', 'Priority job-feed refresh', 'Rolls over indefinitely'], cta: 'Notify me' },
+    ];
+    return h('div', { 'data-s': 'two', style: { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, alignItems: 'stretch' } }, packs.map(p =>
+      h('div', {
+        key: p.n,
+        style: { display: 'grid', gap: 16, alignContent: 'start', padding: 26, borderRadius: 'var(--radius-lg)', background: p.live ? 'var(--surface-inverse)' : 'var(--surface-card)', boxShadow: p.live ? 'var(--shadow-lift)' : 'none' },
+      }, [
+        h('div', { key: 't', style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 } }, [
+          h('span', { key: 'n', style: { font: 'var(--fw-black) var(--fs-title)/1 var(--font-display)', letterSpacing: 'var(--tracking-display)', textTransform: 'uppercase', color: p.live ? 'var(--white)' : 'var(--text-strong)' } }, p.n),
+          h('span', { key: 'b', style: { padding: '6px 12px', borderRadius: 'var(--radius-pill)', background: p.live ? 'rgba(255,255,255,.22)' : 'var(--surface-muted)', color: p.live ? 'var(--white)' : 'var(--text-muted)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', whiteSpace: 'nowrap' } }, p.live ? 'Live now' : 'Soon'),
+        ]),
+        h('div', { key: 'p', style: { display: 'flex', alignItems: 'baseline', gap: 10 } }, [
+          h('span', { key: 'a', style: { font: 'var(--fw-black) var(--fs-display-m)/1 var(--font-display)', letterSpacing: 'var(--tracking-display)', color: p.live ? 'var(--white)' : 'var(--text-heading)' } }, p.p),
+          h('span', { key: 'b', style: { font: 'var(--fw-bold) var(--fs-body-s)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.05em', color: p.live ? 'rgba(255,255,255,.8)' : 'var(--text-muted)' } }, p.c + ' credits'),
+        ]),
+        h('p', { key: 'n', style: { margin: 0, font: 'var(--fw-regular) var(--fs-body)/var(--lh-body) var(--font-body)', color: p.live ? 'rgba(255,255,255,.9)' : 'var(--text-body)' } }, p.note),
+        h('div', { key: 'i', style: { display: 'grid', gap: 9 } }, p.items.map(t =>
+          h('span', { key: t, style: { display: 'grid', gridTemplateColumns: '18px 1fr', gap: 10, font: 'var(--fw-regular) var(--fs-body-s)/1.5 var(--font-body)', color: p.live ? 'rgba(255,255,255,.92)' : 'var(--text-body)' } }, [
+            h('span', { key: 'd', style: { marginTop: 5, width: 7, height: 7, borderRadius: 'var(--radius-pill)', background: p.live ? 'var(--white)' : 'var(--pink-400)' } }), t,
+          ]))),
+        Btn(p.cta, { variant: p.live ? 'quiet' : 'ghost', size: 'md', style: { marginTop: 4, justifyContent: 'center' } }),
+      ])));
+  }
+
+  faqItems() {
+    return FAQS.map((f, i) => {
+      const open = this.state.openFaq === i;
+      return h('div', {
+        key: f.q,
+        style: { borderRadius: 'var(--radius-lg)', background: open ? 'var(--white)' : 'var(--surface-card)', boxShadow: open ? 'var(--shadow-soft)' : 'none', overflow: 'hidden', transition: 'background var(--dur-base) var(--ease-out)' },
+      }, [
+        h('button', {
+          key: 'q', type: 'button', 'aria-expanded': open, onClick: () => this.setState({ openFaq: open ? -1 : i }),
+          style: { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, padding: '19px 22px', border: 'none', background: 'transparent', cursor: 'pointer', textAlign: 'left', font: 'var(--fw-black) var(--fs-body-l)/1.3 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.01em', color: 'var(--text-strong)' },
+        }, [
+          f.q,
+          h('span', { key: 'i', style: { flex: '0 0 auto', width: 28, height: 28, borderRadius: 'var(--radius-pill)', background: open ? 'var(--flame-500)' : 'var(--pink-200)', color: open ? 'var(--white)' : 'var(--pink-600)', display: 'inline-grid', placeItems: 'center', transform: open ? 'rotate(-8deg)' : 'none', transition: 'all var(--dur-base) var(--ease-pop)' } }, I(open ? 'x' : 'arrow-right', 14)),
+        ]),
+        open ? h('p', { key: 'a', style: { margin: 0, padding: '0 22px 20px', font: 'var(--fw-regular) var(--fs-body)/1.7 var(--font-body)', color: 'var(--text-body)', textWrap: 'pretty', animation: this.state.reduced ? 'none' : 'spIn .2s var(--ease-out) both' } }, f.a) : null,
+      ]);
+    });
+  }
+
+  renderVals() {
+    const st = this.state;
+    const loggedIn = !!this.props.loggedIn;
+    return {
+      ...SZ,
+      navIcon: st.navOpen ? 'x' : 'asterisk',
+      toggleNav: () => this.setState({ navOpen: !st.navOpen }),
+      navLinks: [
+        { label: 'Free tools', href: '#tools' }, { label: 'Features', href: '#features' },
+        { label: 'Pricing', href: '#pricing' }, { label: 'FAQ', href: '#faq' },
+      ],
+      headerAuth: loggedIn
+        ? h('div', { style: { display: 'flex', alignItems: 'center', gap: 12 } }, [
+            h('span', { key: 'c', style: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 'var(--radius-pill)', background: 'var(--surface-card-alt)', color: 'var(--pink-600)', font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase' } }, [I('sun', 13), '112 credits']),
+            Btn('Dashboard', { size: 'sm' }),
+          ])
+        : h('div', { style: { display: 'flex', alignItems: 'center', gap: 12 } }, [
+            Btn('Log in', { key: 'a', variant: 'ghost', size: 'sm' }),
+            Btn('Start free', { key: 'b', size: 'sm' }),
+          ]),
+      heroCtas: loggedIn
+        ? [Btn('Open dashboard', { key: 'a', size: 'lg', icon: 'arrow-right' }), Btn('Top up credits', { key: 'b', size: 'lg', variant: 'ghost' })]
+        : [Btn('Start free', { key: 'a', size: 'lg', icon: 'arrow-right' }), Btn('Watch it work', { key: 'b', size: 'lg', variant: 'ghost', icon: 'sun', iconPosition: 'left', as: 'a', href: '#showcase' })],
+      finalCta: loggedIn
+        ? [Btn('Back to your dashboard', { key: 'a', size: 'lg', variant: 'quiet', icon: 'arrow-right' }),
+           h('span', { key: 'n', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--white)' } }, '112 credits · 3 proposals this week')]
+        : [Btn('Create your account', { key: 'a', size: 'lg', variant: 'quiet', icon: 'arrow-right' }),
+           h('span', { key: 'n', style: { font: 'var(--fw-bold) var(--fs-label)/1 var(--font-display)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--white)' } }, '100 free credits · no card · no subscription')],
+      mobileSheet: st.navOpen ? h('div', { style: { position: 'relative', zIndex: 39, width: '100%', maxWidth: 1240, margin: '0 auto', padding: '0 24px 12px' } },
+        h('div', { style: { display: 'grid', gap: 4, padding: 20, borderRadius: 'var(--radius-xl)', background: 'var(--white)', boxShadow: 'var(--shadow-lift)', animation: 'spRise .22s var(--ease-pop) both' } }, [
+          ...['Free tools', 'Features', 'Pricing', 'FAQ'].map((l, i) =>
+            h('a', { key: l, href: ['#tools', '#features', '#pricing', '#faq'][i], onClick: () => this.setState({ navOpen: false }), style: { padding: '13px 2px', borderBottom: 'var(--border-hairline)', font: 'var(--fw-black) var(--fs-body-l)/1 var(--font-display)', textTransform: 'uppercase', letterSpacing: '.02em', color: 'var(--text-strong)' } }, l)),
+          h('div', { key: 'a', style: { display: 'grid', gap: 10, marginTop: 14 } }, [
+            Btn('Start free — 100 credits', { key: 'x', size: 'md', style: { justifyContent: 'center' } }),
+            Btn('Log in', { key: 'y', size: 'md', variant: 'ghost', style: { justifyContent: 'center' } }),
+          ]),
+        ])) : null,
+      heroBlobs: h('div', { 'aria-hidden': 'true', style: { position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' } }, [
+        Blob({ key: 'a', size: 340, color: 'var(--peach-200)', shape: 'blob', style: { position: 'absolute', right: -110, top: -60, opacity: 0.75 } }),
+        Blob({ key: 'b', size: 190, color: 'var(--pink-300)', shape: 'petal', rotate: 18, style: { position: 'absolute', left: -78, bottom: 40, opacity: 0.6 } }),
+        Blob({ key: 'c', size: 120, color: 'var(--amber-200)', shape: 'circle', style: { position: 'absolute', right: '38%', bottom: -40 } }),
+      ]),
+      showcaseBlob: h('div', { 'aria-hidden': 'true', style: { position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' } }, [
+        Blob({ key: 'a', size: 280, color: 'var(--flame-400)', shape: 'blob', style: { position: 'absolute', right: -90, bottom: -90 } }),
+        Blob({ key: 'b', size: 150, color: 'var(--flame-600)', shape: 'circle', style: { position: 'absolute', left: -50, top: -50, opacity: 0.55 } }),
+      ]),
+      ctaBlobs: h('div', { 'aria-hidden': 'true', style: { position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' } }, [
+        Blob({ key: 'a', size: 260, color: 'var(--pink-400)', shape: 'blob', style: { position: 'absolute', left: -80, top: -70 } }),
+        Blob({ key: 'b', size: 200, color: 'var(--pink-600)', shape: 'petal', rotate: 24, style: { position: 'absolute', right: -60, bottom: -70, opacity: 0.7 } }),
+      ]),
+      playBtn: Btn(st.playing ? 'Pause' : 'Play', { variant: 'quiet', size: 'sm', icon: st.playing ? 'x' : 'arrow-right', onClick: () => this.setState({ playing: !st.playing }) }),
+      trust: ['No card required', '1 proposal ≈ 1 credit', 'Pay only for what you run'],
+      heroStack: this.heroStack(),
+      stagePanel: this.stagePanel(),
+      featureCards: this.featureCards(),
+      toolCards: this.toolCards(),
+      priceCards: this.priceCards(),
+      faqItems: this.faqItems(),
+      stages: STAGES.map((s, i) => {
+        const on = st.stage === i;
+        return {
+          num: String(i + 1).padStart(2, '0'), title: s.title, caption: s.caption,
+          onClick: () => this.setState({ stage: i, typed: 0, playing: false }),
+          railStyle: 'display:grid;grid-template-columns:38px 1fr;gap:13px;align-items:start;width:100%;padding:13px 15px;cursor:pointer;text-align:left;border:none;border-radius:var(--radius-md);transition:background var(--dur-base) var(--ease-out);background:' + (on ? 'var(--white)' : 'rgba(255,255,255,.13)'),
+          numStyle: 'width:30px;height:30px;border-radius:var(--radius-pill);display:inline-grid;place-items:center;font:var(--fw-black) 12px/1 var(--font-display);background:' + (on ? 'var(--flame-500)' : 'rgba(255,255,255,.22)') + ';color:' + (on ? 'var(--white)' : 'var(--white)'),
+          titleStyle: 'font:var(--fw-black) var(--fs-body)/1.2 var(--font-display);text-transform:uppercase;letter-spacing:.02em;color:' + (on ? 'var(--text-strong)' : 'var(--white)'),
+          capStyle: 'font:var(--fw-regular) var(--fs-body-s)/1.45 var(--font-body);color:' + (on ? 'var(--text-body)' : 'rgba(255,255,255,.82)'),
+        };
+      }),
+      creditCosts: [
+        { cost: '1', label: 'Tailored proposal', note: 'Follow-up included' },
+        { cost: '1', label: 'Platform rewrite', note: 'Per platform, per profile' },
+        { cost: '3', label: 'Portfolio site', note: 'Published, re-editable free' },
+        { cost: '1', label: 'CV export', note: 'ATS-checked PDF' },
+      ],
+      footerCols: [
+        { title: 'Product', links: ['Profile adapter', 'Job feed', 'Proposals', 'Portfolio sites', 'Pipeline'] },
+        { title: 'Free tools', links: ['Profile analysis', 'Rate calculator', 'Proposal ROI', 'ATS check'] },
+        { title: 'Grow', links: ['Browser extension', 'Referral program', 'Guides'] },
+        { title: 'Company', links: ['Pricing', 'Privacy', 'Terms', 'Contact'] },
+      ],
+    };
+  }
+}
+
+// small hover-lift card used by the tools grid
+function HoverCard({ href, bg, children }) {
+  const [hot, setHot] = React.useState(false);
+  return h('a', {
+    href, onMouseEnter: () => setHot(true), onMouseLeave: () => setHot(false),
+    style: {
+      display: 'grid', gap: 13, padding: 24, borderRadius: 'var(--radius-lg)', background: bg,
+      textDecoration: 'none', minWidth: 0,
+      transform: hot ? 'translateY(-2px)' : 'none', boxShadow: hot ? 'var(--shadow-lift)' : 'none',
+      transition: 'transform var(--dur-base) var(--ease-pop), box-shadow var(--dur-base) var(--ease-out)',
+    },
+  }, children);
+}
+
+</script>
+</body>
+</html>

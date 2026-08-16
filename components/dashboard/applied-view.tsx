@@ -139,7 +139,7 @@ export function AppliedView({
               aria-pressed={activeTags.includes(tag)}
               className={`rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${
                 activeTags.includes(tag)
-                  ? "bg-[#00F0FF]/15 text-foreground ring-1 ring-[#00F0FF]/40"
+                  ? "bg-[#FA531C]/15 text-foreground ring-1 ring-[#FA531C]/40"
                   : "bg-muted text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -198,9 +198,9 @@ export function AppliedView({
                     setSelectedJobId(job.id === selectedJobId ? null : job.id);
                   }
                 }}
-                className={`w-full text-left rounded-xl border px-3 py-2.5 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF]/40 ${
+                className={`w-full text-left rounded-xl border px-3 py-2.5 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FA531C]/40 ${
                   job.id === selectedJobId
-                    ? "border-[#00F0FF]/40 bg-[#00F0FF]/5"
+                    ? "border-[#FA531C]/40 bg-[#FA531C]/5"
                     : "border-border hover:border-border/80 hover:bg-muted/40"
                 }`}
               >

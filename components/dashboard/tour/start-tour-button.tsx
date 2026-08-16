@@ -13,7 +13,7 @@ export function StartTourButton({ className }: { className?: string }) {
       onClick={start}
       className={
         className ??
-        "inline-flex items-center gap-1.5 rounded-full border border-[#00F0FF]/30 bg-[#00F0FF]/10 px-3 py-1.5 text-xs font-semibold text-[#00F0FF] hover:bg-[#00F0FF]/15 transition-colors cursor-pointer"
+        "inline-flex items-center gap-1.5 rounded-full border border-[#FA531C]/30 bg-[#FA531C]/10 px-3 py-1.5 text-xs font-semibold text-[#FA531C] hover:bg-[#FA531C]/15 transition-colors cursor-pointer"
       }
     >
       <PlayCircle className="h-3.5 w-3.5" />

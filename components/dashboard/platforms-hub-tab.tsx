@@ -68,7 +68,7 @@ export function PlatformsHubTab({
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#00F0FF]/80">{t("eyebrow")}</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#FA531C]/80">{t("eyebrow")}</p>
         <h2 className="text-2xl font-bold tracking-tight mt-1">{t("hubTitle")}</h2>
         <p className="text-sm text-muted-foreground mt-0.5">{t("hubSubtitle")}</p>
       </div>
@@ -88,11 +88,11 @@ export function PlatformsHubTab({
 
       {/* ── Tek-tık: tüm platformlara uyarla (aktivasyon) ─────────────── */}
       {profileSaved && (
-        <div className="rounded-2xl border border-violet-500/25 bg-gradient-to-br from-violet-500/10 to-[#00F0FF]/[0.06] p-5">
+        <div className="rounded-2xl border border-pink-500/25 bg-gradient-to-br from-pink-500/10 to-[#FA531C]/[0.06] p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3 min-w-0">
-              <div className="h-10 w-10 shrink-0 rounded-xl bg-violet-500/15 flex items-center justify-center">
-                <Wand2 className="h-5 w-5 text-violet-400" />
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-pink-500/15 flex items-center justify-center">
+                <Wand2 className="h-5 w-5 text-pink-400" />
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-bold">{t("adaptAll.title")}</p>
@@ -120,7 +120,7 @@ export function PlatformsHubTab({
                     aria-pressed={on}
                     className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
                       on
-                        ? "border-[#00F0FF]/40 bg-[#00F0FF]/10 text-foreground"
+                        ? "border-[#FA531C]/40 bg-[#FA531C]/10 text-foreground"
                         : "border-border bg-transparent text-muted-foreground hover:border-foreground/20"
                     }`}
                   >
@@ -177,7 +177,7 @@ export function PlatformsHubTab({
                       </span>
                     )}
                     {adapted && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-[#00F0FF]/10 text-[#00F0FF]">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-full bg-[#FA531C]/10 text-[#FA531C]">
                         <Sparkles className="h-3 w-3" />{t("card.adapted")}
                       </span>
                     )}

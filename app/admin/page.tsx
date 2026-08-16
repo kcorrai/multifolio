@@ -65,7 +65,7 @@ export default async function AdminPage({ searchParams }: PageProps) {
     <Link
       href={href}
       className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
-        active ? "border-[#00F0FF]/60 bg-[#00F0FF]/10 text-foreground" : "border-border bg-muted/30 text-muted-foreground hover:text-foreground"
+        active ? "border-[#FA531C]/60 bg-[#FA531C]/10 text-foreground" : "border-border bg-muted/30 text-muted-foreground hover:text-foreground"
       }`}
     >
       {label}
@@ -110,7 +110,7 @@ export default async function AdminPage({ searchParams }: PageProps) {
                 <div key={f.id} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 min-w-0">
-                      <Icon className="h-4 w-4 shrink-0 text-[#00F0FF]" />
+                      <Icon className="h-4 w-4 shrink-0 text-[#FA531C]" />
                       <span className="text-xs font-semibold">{tf(`category.${f.category}`)}</span>
                       <span className="truncate text-xs text-muted-foreground">· {emailById.get(f.user_id)}</span>
                     </div>

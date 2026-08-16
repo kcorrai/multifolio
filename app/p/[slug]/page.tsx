@@ -14,7 +14,7 @@ import { ArrowUpRight, Download } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { portfolioContentSchema, type PortfolioContent } from "@/lib/validation/schemas/portfolio";
 import { SITE_URL } from "@/lib/seo/site";
-import { portfolioTheme, ACCENT_HEX } from "@/lib/portfolio/theme";
+import { portfolioTheme, ACCENT_HEX, PORTFOLIO_PRESETS, type PortfolioPreset } from "@/lib/portfolio/theme";
 import { LeadForm } from "@/components/portfolio/lead-form";
 import { DemoThemeSwitcher } from "@/components/portfolio/demo-theme-switcher";
 import { getSafeEmbed } from "@/lib/portfolio/embed";
@@ -43,6 +43,8 @@ const fraunces = Fraunces({ subsets: ["latin", "latin-ext"], variable: "--font-f
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  /** Yalnız /p/demo: vitrin değiştiricisinin seçtiği preset (`?preset=`). */
+  searchParams?: Promise<{ preset?: string }>;
 }
 
 // Herkese açık "canlı demo" portfolyo (slug = "demo"): DB/auth GEREKTİRMEZ — landing'den
@@ -51,7 +53,7 @@ const DEMO_TESTIMONIALS = [
   { id: "d1", author_name: "Deniz K.", author_role: "Founder, SaaS startup", quote: "Elif redesigned our dashboard and daily active use doubled. Clear thinking, fast delivery." },
   { id: "d2", author_name: "Marco R.", author_role: "Head of Product", quote: "One of the few designers who also ships production React. Rare and worth it." },
 ];
-const demoContent = (): PortfolioContent => ({
+const demoContent = (preset: PortfolioPreset = "studio"): PortfolioContent => ({
   headline: "Elif Demir — Product Designer & Frontend Developer",
   bio:
     "I help startups turn messy ideas into clean, shippable products. Over 6 years I've designed and built web apps end-to-end — from user research and UI to production React. I care about clarity, speed, and results you can measure.\n\nCurrently open to freelance product design and frontend work.",
@@ -62,7 +64,7 @@ const demoContent = (): PortfolioContent => ({
     { title: "E-commerce design system", description: "Built a component library and Figma kit for a fast-growing store.", problem: "Every page looked different and engineering was slow.", solution: "Created 40+ reusable components with design tokens and documentation.", result: "New pages ship 3x faster with a consistent brand." },
   ],
   layout: "gallery",
-  theme: { preset: "studio", accent: "blue" },
+  theme: { preset, accent: "blue" },
   media: { avatarUrl: null, gallery: [], projectGroups: [] },
   contactEmail: null,
   contactUrl: `${SITE_URL}/signup`,
@@ -70,9 +72,9 @@ const demoContent = (): PortfolioContent => ({
 });
 
 // cache() ile aynı istek içinde generateMetadata + page tek sorgu yapar.
-const fetchPortfolio = cache(async (slug: string) => {
+const fetchPortfolio = cache(async (slug: string, demoPreset: PortfolioPreset = "studio") => {
   if (slug === "demo") {
-    return { content: demoContent(), updatedAt: "2026-07-01T00:00:00.000Z", userId: "demo" };
+    return { content: demoContent(demoPreset), updatedAt: "2026-07-01T00:00:00.000Z", userId: "demo" };
   }
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
@@ -122,10 +124,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function PortfolioPage({ params }: PageProps) {
+export default async function PortfolioPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const isDemo = slug === "demo";
-  const portfolio = await fetchPortfolio(slug);
+  // Vitrin değiştiricisi preset'i sunucuya taşır — düzen (ölçü/hiza/aralık)
+  // sunucuda hesaplandığı için istemcide yamamak yarım bir sayfa üretirdi.
+  const requested = (await searchParams)?.preset;
+  const demoPreset: PortfolioPreset = PORTFOLIO_PRESETS.includes(requested as PortfolioPreset)
+    ? (requested as PortfolioPreset)
+    : "studio";
+  const portfolio = await fetchPortfolio(slug, demoPreset);
   if (!portfolio) notFound();
   const { content, updatedAt } = portfolio;
 
@@ -151,7 +159,12 @@ export default async function PortfolioPage({ params }: PageProps) {
   const t = await getTranslations("portfolioPublic");
   // Tarih formatı ziyaretçi/UI diline bağlanır — görsel preset'e DEĞİL (atelier ≠ TR).
   const locale = await getLocale();
-  const { vars, dark } = portfolioTheme(theme.preset, theme.accent);
+  // NOT: `layout` adı içerikte zaten kullanılıyor (gösterim modu) → tema düzeni `pf`.
+  const { vars, dark, layout: pf } = portfolioTheme(theme.preset, theme.accent);
+  // Preset'ler yalnız renkte değil RİTİMDE de ayrışır (ölçü, aralık, hiza, oran).
+  const centred = pf.heroAlign === "center";
+  const sectionCls = "mx-auto w-full px-6";
+  const sectionStyle = { maxWidth: pf.maxWidth, paddingTop: pf.sectionGap / 3, paddingBottom: pf.sectionGap / 3 };
   const accentHex = ACCENT_HEX[theme.accent] ?? ACCENT_HEX.blue;
 
   // İletişim/işe-al hedefi: e-posta öncelikli (mailto), yoksa http(s) link. İkisi de yoksa CTA gizli.
@@ -197,35 +210,39 @@ export default async function PortfolioPage({ params }: PageProps) {
       <div className="h-1 w-full bg-[var(--pf-accent)]" />
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <header className="mx-auto max-w-5xl px-6 pt-14 pb-10 sm:pt-24 sm:pb-14">
-        <div className="flex flex-col items-start gap-6 sm:gap-8">
+      <header
+        className={`mx-auto w-full px-6 pt-14 sm:pt-24 ${centred ? "text-center" : ""}`}
+        style={{ maxWidth: pf.maxWidth, paddingBottom: pf.sectionGap / 2 }}
+      >
+        <div className={`flex flex-col gap-6 sm:gap-8 ${centred ? "items-center" : "items-start"}`}>
           {media.avatarUrl ? (
             // Dış görsel (bağlı platformdan). Tıklanınca lightbox'ta büyür (ZoomableImage).
             <ZoomableImage
               src={media.avatarUrl}
               alt={headline}
-              className="anim-fade-in anim-d0 h-24 w-24 sm:h-28 sm:w-28 rounded-2xl object-cover ring-1 ring-[var(--pf-border)] shadow-xl"
+              className="anim-fade-in anim-d0 h-24 w-24 sm:h-28 sm:w-28 object-cover ring-1 ring-[var(--pf-border)] shadow-xl rounded-[var(--pf-avatar-radius)]"
             />
           ) : (
             // Avatar yoksa (yalnız Bionluk/LinkedIn foto verir) baş-harfli çapa —
             // hero görsel kimlik hissini korur.
             <div
               aria-hidden
-              className="anim-fade-in anim-d0 flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-2xl text-4xl font-bold text-white shadow-xl ring-1 ring-[var(--pf-border)]"
+              className="anim-fade-in anim-d0 flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center text-4xl font-bold text-white shadow-xl ring-1 ring-[var(--pf-border)] rounded-[var(--pf-avatar-radius)]"
               style={{ backgroundColor: "var(--pf-accent)" }}
             >
               {(headline.trim()[0] ?? "?").toUpperCase()}
             </div>
           )}
-          <div className="space-y-4">
+          <div className={`space-y-4 ${centred ? "flex flex-col items-center" : ""}`}>
             <h1
-              style={heading}
-              className="anim-fade-up anim-d1 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.05] max-w-3xl"
+              // Başlık ölçeği preset'ten gelir — üç preset üç farklı okuma ritmi.
+              style={{ ...heading, fontSize: "var(--pf-h1)", maxWidth: "22ch" }}
+              className="anim-fade-up anim-d1 font-bold tracking-tight leading-[1.05]"
             >
               {headline}
             </h1>
             {skills.length > 0 && (
-              <div className="anim-fade-up anim-d2 flex flex-wrap gap-2">
+              <div className={`anim-fade-up anim-d2 flex flex-wrap gap-2 ${centred ? "justify-center" : ""}`}>
                 {skills.slice(0, 12).map((s) => (
                   <span
                     key={s}
@@ -265,7 +282,7 @@ export default async function PortfolioPage({ params }: PageProps) {
 
       {/* ── Görseller: "projects" modu = proje-proje kart+modal; aksi = düz galeri ── */}
       {showProjectGroups ? (
-        <section className="mx-auto max-w-5xl px-6 py-8">
+        <section className={sectionCls} style={sectionStyle}>
           <SectionLabel style={heading}>{t("projects")}</SectionLabel>
           {/* Karta tıklanınca Upwork tarzı proje detay modalı (rol/açıklama/beceriler/görseller). */}
           <div className="mt-5">
@@ -275,7 +292,7 @@ export default async function PortfolioPage({ params }: PageProps) {
           </div>
         </section>
       ) : gallery.length > 0 ? (
-        <section className="mx-auto max-w-5xl px-6 py-8">
+        <section className={sectionCls} style={sectionStyle}>
           <SectionLabel style={heading}>{t("gallery")}</SectionLabel>
           {/* Tıklanınca lightbox + foto arası ileri/geri (PublicGallery, client). */}
           <PublicGallery images={gallery} fallbackAlt={headline} />
@@ -287,9 +304,9 @@ export default async function PortfolioPage({ params }: PageProps) {
         const embed = getSafeEmbed(content.embedUrl);
         if (!embed) return null;
         return (
-          <section className="mx-auto max-w-4xl px-6 py-8">
+          <section className={sectionCls} style={sectionStyle}>
             <SectionLabel style={heading}>{t("liveDemo")}</SectionLabel>
-            <div className="mt-4 aspect-video w-full overflow-hidden rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)]">
+            <div className="mt-4 aspect-video w-full overflow-hidden rounded-[var(--pf-radius)] border border-[var(--pf-border)] bg-[var(--pf-surface)]">
               <iframe
                 src={embed.src}
                 title={t("liveDemo")}
@@ -305,7 +322,7 @@ export default async function PortfolioPage({ params }: PageProps) {
       })()}
 
       {/* ── Hakkında ─────────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-3xl px-6 py-10">
+      <section className={sectionCls} style={sectionStyle}>
         <SectionLabel style={heading}>{t("about")}</SectionLabel>
         <p className="mt-4 whitespace-pre-wrap text-lg leading-relaxed text-[var(--pf-text)]/90">{bio}</p>
       </section>
@@ -315,12 +332,27 @@ export default async function PortfolioPage({ params }: PageProps) {
           kartlarını (rol/açıklama/beceri/görsel) gösterir → yinelenmeyi önlemek için
           bu metin bölümü yalnız galeri modunda render edilir. */}
       {projects.length > 0 && !showProjectGroups && (
-        <section className="mx-auto max-w-5xl px-6 py-10">
+        <section className={sectionCls} style={sectionStyle}>
           <SectionLabel style={heading}>{t("projects")}</SectionLabel>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             {projects.map((project, i) => {
+              // KANIT ÖNCE: sonuç satırı işe alma kararını veren cümledir, bu yüzden
+              // kartın en üstünde ve vurgu renginde durur; başlık/açıklama onu izler.
               const inner = (
                 <>
+                  {project.result && (
+                    <div className="mb-3 border-b border-[var(--pf-border)] pb-3">
+                      <span
+                        className="block text-[11px] font-semibold text-[var(--pf-accent)]"
+                        style={{ textTransform: "var(--pf-eyebrow-case)" as never, letterSpacing: "var(--pf-eyebrow-track)" }}
+                      >
+                        {t("caseResult")}
+                      </span>
+                      <p className="mt-1 font-semibold leading-snug text-[var(--pf-text)]" style={{ ...heading, fontSize: "var(--pf-h2)" }}>
+                        {project.result}
+                      </p>
+                    </div>
+                  )}
                   <div className="flex items-start justify-between gap-3">
                     <h3 style={heading} className="text-lg font-semibold leading-snug">{project.title}</h3>
                     {project.url && (
@@ -328,7 +360,7 @@ export default async function PortfolioPage({ params }: PageProps) {
                     )}
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-[var(--pf-muted)]">{project.description}</p>
-                  {(project.problem || project.solution || project.result) && (
+                  {(project.problem || project.solution) && (
                     <dl className="mt-3 space-y-2 border-t border-[var(--pf-border)] pt-3 text-xs">
                       {project.problem && (
                         <div>
@@ -342,18 +374,12 @@ export default async function PortfolioPage({ params }: PageProps) {
                           <dd className="mt-0.5 leading-relaxed text-[var(--pf-text)]">{project.solution}</dd>
                         </div>
                       )}
-                      {project.result && (
-                        <div>
-                          <dt className="font-semibold uppercase tracking-wide text-[var(--pf-accent)]">{t("caseResult")}</dt>
-                          <dd className="mt-0.5 font-medium leading-relaxed text-[var(--pf-text)]">{project.result}</dd>
-                        </div>
-                      )}
                     </dl>
                   )}
                 </>
               );
               const cls =
-                "anim-fade-up block rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-5 transition-colors hover:border-[var(--pf-accent)]";
+                "anim-fade-up block block border border-[var(--pf-border)] bg-[var(--pf-surface)] p-5 transition-colors hover:border-[var(--pf-accent)] rounded-[var(--pf-radius)]";
               return project.url ? (
                 <a
                   key={i}
@@ -377,11 +403,11 @@ export default async function PortfolioPage({ params }: PageProps) {
 
       {/* ── Müşteri yorumları ("Wall of Love") — yalnız onaylılar ──────── */}
       {testimonials.length > 0 && (
-        <section className="mx-auto max-w-5xl px-6 py-10">
+        <section className={sectionCls} style={sectionStyle}>
           <SectionLabel style={heading}>{t("testimonials")}</SectionLabel>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             {testimonials.map((tm) => (
-              <figure key={tm.id} className="rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-5">
+              <figure key={tm.id} className="border border-[var(--pf-border)] bg-[var(--pf-surface)] p-5 rounded-[var(--pf-radius)]">
                 <blockquote className="text-sm leading-relaxed text-[var(--pf-text)]">“{tm.quote}”</blockquote>
                 <figcaption className="mt-3 text-xs font-semibold text-[var(--pf-muted)]">
                   {tm.author_name}{tm.author_role ? <span className="font-normal"> · {tm.author_role}</span> : null}
@@ -394,7 +420,7 @@ export default async function PortfolioPage({ params }: PageProps) {
 
       {/* ── İletişim / işe-al CTA bölümü ─────────────────────────────── */}
       {contactHref && (
-        <section className="mx-auto max-w-3xl px-6 py-12">
+        <section className={sectionCls} style={sectionStyle}>
           <div
             className="anim-fade-up rounded-3xl border border-[var(--pf-border)] p-8 text-center sm:p-10"
             style={{ backgroundColor: accentTint }}
@@ -415,7 +441,7 @@ export default async function PortfolioPage({ params }: PageProps) {
 
       {/* ── İşe al: lead formu (yayınlanan portfolyolarda). Demo'da → "kendininkini kur" CTA. ── */}
       {isDemo ? (
-        <section className="mx-auto max-w-2xl px-6 py-12">
+        <section className={sectionCls} style={sectionStyle}>
           <div className="anim-fade-up rounded-3xl border border-[var(--pf-border)] p-8 text-center sm:p-10" style={{ backgroundColor: accentTint }}>
             <h2 style={heading} className="text-2xl font-bold sm:text-3xl">{t("demoCtaTitle")}</h2>
             <p className="mx-auto mt-2 max-w-md text-[var(--pf-muted)]">{t("demoCtaBody")}</p>
@@ -429,7 +455,7 @@ export default async function PortfolioPage({ params }: PageProps) {
           </div>
         </section>
       ) : (
-        <section className="mx-auto max-w-2xl px-6 py-12">
+        <section className={sectionCls} style={sectionStyle}>
           <div className="anim-fade-up rounded-3xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-6 sm:p-8">
             <SectionLabel style={heading}>{t("leadEyebrow")}</SectionLabel>
             <h2 style={heading} className="mt-2 text-2xl font-bold">{t("leadHeading")}</h2>
@@ -442,7 +468,7 @@ export default async function PortfolioPage({ params }: PageProps) {
       )}
 
       {/* ── Footer ───────────────────────────────────────────────────── */}
-      <footer className="mx-auto max-w-5xl px-6 pb-16 pt-10">
+      <footer className={sectionCls} style={{ maxWidth: pf.maxWidth, paddingBottom: 64, paddingTop: 40 }}>
         <div className="flex flex-col gap-2 border-t border-[var(--pf-border)] pt-6 text-xs text-[var(--pf-muted)] sm:flex-row sm:items-center sm:justify-between">
           <span>
             {t("lastUpdated")}: {new Date(updatedAt).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-US")}
@@ -462,7 +488,7 @@ export default async function PortfolioPage({ params }: PageProps) {
 
       {/* Tema değiştirici YALNIZ demo vitrininde — gerçek portfolyoda görünüm
           sahibinin kararıdır, ziyaretçi değiştiremez. */}
-      {isDemo && <DemoThemeSwitcher initialPreset={theme.preset} accent={theme.accent} />}
+      {isDemo && <DemoThemeSwitcher initialPreset={theme.preset} />}
     </div>
   );
 }
@@ -471,8 +497,9 @@ export default async function PortfolioPage({ params }: PageProps) {
 function SectionLabel({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
     <h2
-      style={style}
-      className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--pf-accent)]"
+      // Etiket biçimi preset'ten: studio/noir BÜYÜK HARF + geniş aralık, atelier cümle düzeni.
+      style={{ ...style, textTransform: "var(--pf-eyebrow-case)" as never, letterSpacing: "var(--pf-eyebrow-track)" }}
+      className="flex items-center gap-2 text-xs font-semibold text-[var(--pf-accent)]"
     >
       <span className="h-px w-6 bg-[var(--pf-accent)]" />
       {children}

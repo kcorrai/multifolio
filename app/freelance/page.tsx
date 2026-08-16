@@ -23,17 +23,17 @@ export default async function FreelanceHubPage() {
   const locale = await getLocale();
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#090A0F] text-slate-900 dark:text-white overflow-x-hidden">
+    <div className="sp-page">
       <SiteHeader isLoggedIn={false} />
 
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/4 top-0 h-[400px] w-[400px] rounded-full bg-[#00F0FF]/6 blur-[100px]" />
+          <div className="absolute left-1/4 top-0 h-[400px] w-[400px] rounded-full bg-[#FA531C]/6 blur-[100px]" />
         </div>
         <div className="relative mx-auto max-w-3xl px-8 pt-20 pb-6 text-center space-y-4">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#00F0FF]">{t("hubEyebrow")}</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FA531C]">{t("hubEyebrow")}</p>
           <h1 className="text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight">{t("hubTitle")}</h1>
-          <p className="text-lg text-slate-500 dark:text-[#94A3B8] leading-relaxed max-w-xl mx-auto font-medium">{t("hubSubtitle")}</p>
+          <p className="text-lg text-slate-500 dark:text-[#6B4A3C] leading-relaxed max-w-xl mx-auto font-medium">{t("hubSubtitle")}</p>
         </div>
       </section>
 
@@ -49,10 +49,10 @@ export default async function FreelanceHubPage() {
                 <Link
                   key={r.id}
                   href={`/freelance/${platform}/${r.id}`}
-                  className="group flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:border-[#00F0FF]/30 hover:shadow-md dark:border-white/8 dark:bg-[#161923]"
+                  className="group flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:border-[#FA531C]/30 hover:shadow-md dark:border-white/8 dark:bg-[#FFFAF3]"
                 >
                   <span className="text-sm font-semibold">{locale === "tr" ? r.tr : r.en}</span>
-                  <ArrowUpRight className="h-4 w-4 shrink-0 text-slate-400 transition-colors group-hover:text-[#00F0FF] dark:text-white/40" />
+                  <ArrowUpRight className="h-4 w-4 shrink-0 text-slate-400 transition-colors group-hover:text-[#FA531C] dark:text-white/40" />
                 </Link>
               ))}
             </div>
