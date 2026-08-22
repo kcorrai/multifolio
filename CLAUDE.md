@@ -184,6 +184,6 @@ Next.js (App Router, TS) · Tailwind · shadcn/ui · Supabase (Postgres+Auth+Sto
    yukarıdaki **"Neyin nerede"** bölümünü güncelle.
 
 ## Detay → docs/
-`DESIGN.md` (Solar Pop tasarım dili — token'lar, kurallar, komp durumu) · `ROADMAP.md` (fazlar) · `ARCHITECTURE.md` · `OBSERVABILITY.md` · `SECURITY.md` · `EXPANSION-PLAN.md` (platform genişletme + başvuru-taktikleri ürünleştirme araştırma/görev planı, 2026-07-14 — uygulama fazları burada).
+**`MULTIFOLIO.md` (ürün + sistem genel dokümanı — "nedir, ne yapar, nasıl çalışır"; yeni gelen önce bunu okur)** · `DESIGN.md` (Solar Pop tasarım dili — token'lar, kurallar, komp durumu) · `ROADMAP.md` (fazlar) · `ARCHITECTURE.md` · `OBSERVABILITY.md` · `SECURITY.md` · `EXPANSION-PLAN.md` (platform genişletme + başvuru-taktikleri ürünleştirme araştırma/görev planı, 2026-07-14 — uygulama fazları burada).
 
 @AGENTS.md
